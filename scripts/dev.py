@@ -74,8 +74,19 @@ class Handler(SimpleHTTPRequestHandler):
 def check():
     for command in [
         ["python3", "scripts/validate.py"],
-        ["python3", "-m", "compileall", "-q", "scripts", "backend/vati_tax/vati_tax", "ai"],
+        [
+            "python3",
+            "-m",
+            "compileall",
+            "-q",
+            "scripts",
+            "backend/vati_tax/vati_tax",
+            "ai",
+            "integration/api",
+        ],
         ["python3", "-m", "unittest", "discover", "-s", "tests/tooling", "-v"],
+        ["python3", "integration/api/contract.py"],
+        ["python3", "-m", "unittest", "discover", "-s", "tests/contracts", "-v"],
     ]:
         subprocess.check_call(command, cwd=ROOT)
     print("Workspace checks passed")

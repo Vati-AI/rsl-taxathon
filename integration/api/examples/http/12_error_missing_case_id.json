@@ -1,0 +1,38 @@
+{
+  "name": "error_missing_case_id",
+  "operation_id": "listFindings",
+  "scenario": "SYN-004",
+  "synthetic": true,
+  "description": "A path with an empty case ID is rejected; case IDs are never inferred.",
+  "request_conformant": false,
+  "request": {
+    "method": "GET",
+    "path": "/api/v1/cases//findings",
+    "headers": {
+      "Authorization": "Bearer synthetic-dev-token-not-a-secret",
+      "X-Vati-Tenant-ID": "10000000-0000-4000-8000-000000000001",
+      "X-Correlation-ID": "c0000000-0000-4000-8000-000000000012"
+    }
+  },
+  "response": {
+    "status": 400,
+    "headers": {
+      "X-Correlation-ID": "c0000000-0000-4000-8000-000000000012"
+    },
+    "body": {
+      "error": {
+        "code": "invalid_case_id",
+        "message": "case_id must be a UUID.",
+        "retryable": false,
+        "correlation_id": "c0000000-0000-4000-8000-000000000012",
+        "service": "vati",
+        "field_errors": [
+          {
+            "field": "case_id",
+            "code": "required"
+          }
+        ]
+      }
+    }
+  }
+}
