@@ -24,15 +24,15 @@
   "acceptance": [
     {
       "text": "Install vati_tax in an isolated Frappe bench/site; package migrations, modules and configuration with documented commands",
-      "done": false
+      "done": true
     },
     {
       "text": "Install on a clean site, migrate twice and import the app without manual database edits",
-      "done": false
+      "done": true
     },
     {
       "text": "Record relevant tests and evidence, update task status and open a human-review PR",
-      "done": false
+      "done": true
     }
   ],
   "verification": "Install on a clean site, migrate twice and import the app without manual database edits",
@@ -42,7 +42,20 @@
     "update-project-task",
     "finish-task"
   ],
-  "evidence": [],
+  "evidence": [
+    {
+      "criterion": 1,
+      "text": "scripts/frappe_dev.py init --project rsl-taxathon-frappe-tax019 --http-port 58010 --socketio-port 59010 built an isolated pinned bench (own Compose project, loopback ports) without touching the existing rsl-taxathon-frappe-dev stack; vati_tax installed editable with modules, hooks and pre/post_model_sync patches; commands documented in docs/FRAPPE_DEV.md and backend/vati_tax/README.md; tests/tooling/test_frappe_dev.py (7) pass"
+    },
+    {
+      "criterion": 2,
+      "text": "frappe_dev.py verify (2026-11-03): new disposable site verify-20261103t192839.localhost, install-app vati_tax, list-apps [frappe, vati_tax], migrate x2 ok, vati_tax.api.health ok, Module Def [Vati Tax], imports ok (0.1.0), app unittest Ran 9 OK, site dropped; no manual DB edits"
+    },
+    {
+      "criterion": 3,
+      "text": "dev.py check and quality.py pass (Node 24); verify JSON report recorded above; human-review PR opened by finish"
+    }
+  ],
   "notes": [
     "TAX-017 supplies the pinned developer bench/site and installed app scaffold. Reuse scripts/frappe_dev.py and docs/FRAPPE_DEV.md; this task still owns a fresh-site installation without manual database edits and its repeat-migration acceptance evidence.",
     {
