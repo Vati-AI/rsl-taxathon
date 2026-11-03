@@ -3,7 +3,6 @@
 import argparse
 import json
 import subprocess
-import tempfile
 from pathlib import Path
 
 from github_setup import api, gh
@@ -11,8 +10,8 @@ from github_setup import api, gh
 ROOT = Path(__file__).resolve().parents[1]
 
 
-def command(*args):
-    return subprocess.check_output(["gh", *args], text=True, cwd=ROOT).strip()
+def command(*args, stdin=None):
+    return subprocess.check_output(["gh", *args], text=True, cwd=ROOT, input=stdin).strip()
 
 
 def main():
@@ -109,48 +108,49 @@ def main():
             + t.get("verification", "See canonical task acceptance criteria")
             + "\n"
         )
-        with tempfile.NamedTemporaryFile(mode="w", suffix=".md") as f:
-            f.write(body)
-            f.flush()
-            if matches:
-                issue = matches[0]
-                command(
-                    "issue",
-                    "edit",
-                    str(issue["number"]),
-                    "--repo",
-                    a.repo,
-                    "--title",
-                    t["id"] + ": " + t["title"],
-                    "--body-file",
-                    f.name,
-                )
-                # Preserve human labels; replace only managed labels.
-                preserved = [
-                    x["name"]
-                    for x in issue["labels"]
-                    if not x["name"].startswith(("owner:", "status:", "area:", "phase:", "kind:"))
-                    and x["name"] != "task"
-                ]
-                api(
-                    f"repos/{a.repo}/issues/{issue['number']}/labels",
-                    "PUT",
-                    {"labels": preserved + labels},
-                )
-                url = issue["url"]
-            else:
-                url = command(
-                    "issue",
-                    "create",
-                    "--repo",
-                    a.repo,
-                    "--title",
-                    t["id"] + ": " + t["title"],
-                    "--body-file",
-                    f.name,
-                    "--label",
-                    ",".join(labels),
-                )
+        # Pass the body on stdin: an open NamedTemporaryFile cannot be read by
+        # another process on Windows.
+        if matches:
+            issue = matches[0]
+            command(
+                "issue",
+                "edit",
+                str(issue["number"]),
+                "--repo",
+                a.repo,
+                "--title",
+                t["id"] + ": " + t["title"],
+                "--body-file",
+                "-",
+                stdin=body,
+            )
+            # Preserve human labels; replace only managed labels.
+            preserved = [
+                x["name"]
+                for x in issue["labels"]
+                if not x["name"].startswith(("owner:", "status:", "area:", "phase:", "kind:"))
+                and x["name"] != "task"
+            ]
+            api(
+                f"repos/{a.repo}/issues/{issue['number']}/labels",
+                "PUT",
+                {"labels": preserved + labels},
+            )
+            url = issue["url"]
+        else:
+            url = command(
+                "issue",
+                "create",
+                "--repo",
+                a.repo,
+                "--title",
+                t["id"] + ": " + t["title"],
+                "--body-file",
+                "-",
+                "--label",
+                ",".join(labels),
+                stdin=body,
+            )
         number = url.rsplit("/", 1)[1]
         api(
             f"repos/{a.repo}/issues/{number}",

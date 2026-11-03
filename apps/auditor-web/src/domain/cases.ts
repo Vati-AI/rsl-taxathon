@@ -11,26 +11,26 @@ const SCENARIOS: Record<string, string> = {
   unverified_legal_route: 'No verified legal route',
 };
 
-// Review lanes are routing signals for a human officer, never verdicts, so no
-// lane uses the red "danger" theme.
+// Review lanes are routing signals for an officer, never verdicts, so no lane
+// uses the red "danger" theme. Keys come from the shared fixture contract.
 const REVIEW_LANES: Record<string, { label: string; theme: BadgeTheme }> = {
-  human_clearance: { label: 'Human clearance', theme: 'green' },
+  human_clearance: { label: 'Officer clearance', theme: 'green' },
   targeted_evidence_request: { label: 'Targeted evidence request', theme: 'amber' },
   specialist_review: { label: 'Specialist review', theme: 'blue' },
   policy_gap_review: { label: 'Policy gap review', theme: 'gray' },
 };
 
-function humanize(key: string): string {
+function formatKey(key: string): string {
   const text = key.replaceAll('_', ' ').trim();
   return text ? text[0].toUpperCase() + text.slice(1) : 'Unknown';
 }
 
 export function scenarioLabel(key: string): string {
-  return SCENARIOS[key] ?? humanize(key);
+  return SCENARIOS[key] ?? formatKey(key);
 }
 
 export function reviewLane(key: string): { label: string; theme: BadgeTheme } {
-  return REVIEW_LANES[key] ?? { label: humanize(key), theme: 'gray' };
+  return REVIEW_LANES[key] ?? { label: formatKey(key), theme: 'gray' };
 }
 
 export type SortKey = 'id' | 'name' | 'scenario' | 'refund_claim' | 'supported_refund' | 'expected';
