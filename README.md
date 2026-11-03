@@ -27,3 +27,5 @@ Folders: `apps/auditor-web`, `apps/taxpayer-web`, `backend`, `ai`, `integration`
 One task → one branch → one PR → human review. `main` is read-only for normal agent work.
 
 [GitHub setup](docs/GITHUB_SETUP.md) explains publishing, teams, board sync and enforcement limits.
+
+[Verified setup and remaining configuration](docs/SETUP_STATUS.md).

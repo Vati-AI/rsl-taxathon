@@ -26,7 +26,7 @@ def main():
     report_path = ROOT / '.local/github-setup.json'; report_path.parent.mkdir(exist_ok=True)
     def attempt(label, action):
         try: return action()
-        except RuntimeError as exc:
+        except (RuntimeError, subprocess.CalledProcessError) as exc:
             report['errors'].append({'step': label, 'error': str(exc)}); print(label + ': blocked'); return None
     api('repos/' + a.repo, 'PATCH', {'allow_squash_merge': True, 'allow_merge_commit': False, 'allow_rebase_merge': False, 'delete_branch_on_merge': True, 'has_issues': True})
     team = json.loads((ROOT / 'config/team.json').read_text())
@@ -44,7 +44,8 @@ def main():
         if person['github']:
             access = attempt('check access ' + person['name'], lambda: api(f'repos/{a.repo}/collaborators/{person["github"]}/permission'))
             if access and access['permission'] in {'write','admin','maintain'}:
-                owners.append('/' + person['path'] + '/ @' + person['github'] + ' @Kellybrackets')
+                reviewers = list(dict.fromkeys([person['github'], 'Kellybrackets']))
+                owners.append('/' + person['path'] + '/ ' + ' '.join('@' + user for user in reviewers))
     (ROOT / '.github/CODEOWNERS').write_text('\n'.join(owners)+'\n')
     protection = attempt('branch protection (private repo needs supported plan)', lambda: api('repos/'+a.repo+'/branches/main/protection','PUT',json.loads((ROOT/'.github/branch-protection.json').read_text())))
     report['branch_protection_enforced'] = protection is not None
