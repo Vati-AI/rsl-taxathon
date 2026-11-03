@@ -5,14 +5,14 @@
   "owner": "Keletso",
   "area": "integration",
   "phase": "pilot",
-  "status": "BACKLOG",
+  "status": "IN_PROGRESS",
   "priority": "P0",
   "depends_on": [
     "TAX-025",
     "TAX-024"
   ],
-  "claimed_by": null,
-  "branch": null,
+  "claimed_by": "keletso-claude-code-tax035",
+  "branch": "task/TAX-035",
   "pr": null,
   "scope": "Configure versioned synthetic rules for refund mismatch, related-party fees, losses and imported-service gaps",
   "inputs": [
@@ -46,5 +46,10 @@
     "finish-task"
   ],
   "evidence": [],
-  "notes": []
+  "notes": [
+    {
+      "at": "2026-11-03T19:29:22.734860+00:00",
+      "text": "Claimed by keletso-claude-code-tax035"
+    }
+  ]
 }
