@@ -32,5 +32,9 @@ export default defineConfig({
   test: {
     environment: 'jsdom',
     include: ['src/**/*.test.ts'],
+    // frappe-ui ships source with extensionless relative imports (e.g.
+    // './resources'). Node's ESM loader rejects those on Linux, so let Vite
+    // transform the package instead of externalising it.
+    server: { deps: { inline: ['frappe-ui'] } },
   },
 });

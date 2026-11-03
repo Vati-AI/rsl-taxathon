@@ -56,6 +56,12 @@
   --surface-blue-8: var(--vati-accent-active);
   --ink-blue-5: var(--vati-accent);
   --ink-blue-link: var(--vati-accent);
+  /* frappe-ui subtle badges use ink-*-7 text on surface-*-2. Amber and blue -7
+     fall below WCAG AA 4.5:1 for small text (axe color-contrast), so use the
+     darker -8 step; green follows for a consistent margin. */
+  --ink-amber-7: var(--ink-amber-8);
+  --ink-blue-7: var(--ink-blue-8);
+  --ink-green-7: var(--ink-green-8);
 }
 
 html {

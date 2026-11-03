@@ -57,7 +57,7 @@
     },
     {
       "criterion": 4,
-      "text": "Follows docs/DESIGN_STANDARD.md via shared apps/shared/design tokens + preset (ADR-004). Screenshots in docs/evidence/TAX-020: overview/queue/case-detail/showcase at 1440, 1024, 390px; loading, empty, no-matches, error, denied, not-found and unavailable-tab states at 1440 and 390px; skip-link and table-sort focus, button hover/focus, form validation and dialog at 1440px (Edge 156). Accessibility: axe (wcag2a/aa, wcag21aa) reports no serious/critical violations on overview, queue, case detail and showcase; no page-wide horizontal scroll at 320px width (reflow); keyboard checks as in criterion 2. Supplied for human visual review; visual approval NOT assumed and remains with the human reviewer."
+      "text": "Follows docs/DESIGN_STANDARD.md via shared apps/shared/design tokens + preset (ADR-004). Screenshots in docs/evidence/TAX-020: overview/queue/case-detail/showcase at 1440, 1024, 390px; loading, empty, no-matches, error, denied, not-found and unavailable-tab states at 1440 and 390px; skip-link and table-sort focus, button hover/focus, form validation and dialog at 1440px (Edge 156). Accessibility: axe (wcag2a/aa, wcag21aa) reports no serious/critical violations on overview, queue, case detail and showcase; no page-wide horizontal scroll at 320px width (reflow); keyboard checks as in criterion 2. CI (Linux Chromium) found badge color-contrast failures that the Edge run did not report; fixed by mapping badge text to the darker ink-*-8 tokens and re-verified: all 4 axe scans pass in mcr.microsoft.com/playwright:v1.64.1-noble and in Edge. Supplied for human visual review; visual approval NOT assumed and remains with the human reviewer."
     },
     {
       "criterion": 3,
