@@ -5,7 +5,7 @@
   "owner": "Leseli",
   "area": "apps/auditor-web",
   "phase": "pilot",
-  "status": "IN_PROGRESS",
+  "status": "IN_REVIEW",
   "priority": "P0",
   "depends_on": [
     "TAX-020",
@@ -13,7 +13,7 @@
   ],
   "claimed_by": "leseli-claude-20261103-2",
   "branch": "task/TAX-040",
-  "pr": null,
+  "pr": "https://github.com/Vati-AI/rsl-taxathon/pull/108",
   "scope": "Show filterable assigned case queue, selection reasons, taxpayer context and processing/error state",
   "inputs": [
     "PROJECT.md",
@@ -35,7 +35,7 @@
     },
     {
       "text": "Record relevant tests and evidence, update task status and open a human-review PR",
-      "done": false
+      "done": true
     },
     {
       "text": "Follow docs/DESIGN_STANDARD.md; supply relevant viewport/state screenshots and keyboard/accessibility evidence for human visual review",
@@ -61,12 +61,20 @@
     {
       "criterion": 4,
       "text": "Follows docs/DESIGN_STANDARD.md using the shared tokens/components (status badges text plus colour; numeric columns right-aligned; wide tables scroll inside labelled regions; one primary action per page). Screenshots in docs/evidence/TAX-040 (Edge 156): overview, queue, case detail, failed-processing case and taxpayer profile at 1440, 1024 and 390px; loading, empty queue, no matches, failed filter, unavailable, denied and taxpayer-not-found states at 1440 and 390px; focus and filter interaction at 1440px. Accessibility: axe (wcag2a/aa, wcag21aa) reports no serious or critical violations on overview, queue, two case pages, taxpayer profile and showcase (red error text moved to ink-red-7 after axe flagged ink-red-4); keyboard: skip link, visible focus, Enter-to-sort, case and taxpayer links by keyboard; reflow at 320px with no page-wide scroll and no clipped content (test strengthened after it missed a clipped mobile layout, which was fixed). Supplied for the reviewer's visual review; visual approval NOT assumed."
+    },
+    {
+      "criterion": 3,
+      "text": "Tests and evidence recorded in this task file; status IN_REVIEW with PR https://github.com/Vati-AI/rsl-taxathon/pull/108 (opened 2026-11-03; review requested, not merged by the agent). Branch refreshed from main 52191cd and checks rerun after the merge."
     }
   ],
   "notes": [
     {
       "at": "2026-11-03T14:20:44.115865+00:00",
       "text": "Claimed by leseli-claude-20261103-2"
+    },
+    {
+      "at": "2026-11-03T15:59:09.636971+00:00",
+      "text": "Agent leseli-claude-20261103-2 finished implementation and opened review (https://github.com/Vati-AI/rsl-taxathon/pull/108). Contract changes (ADR-005) flagged for Keletso. quality.py steps run individually: Smart App Control blocks local mypy and Docker could not reach PyPI after the merge, so mypy is left to CI."
     }
   ]
 }
