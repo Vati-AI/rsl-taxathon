@@ -29,6 +29,24 @@ MUTATING_METHODS = {"post", "put", "patch", "delete"}
 HTTP_METHODS = {"get", "post", "put", "patch", "delete"}
 BASE_ERRORS = {"400", "401", "403", "404", "429", "503"}
 MUTATION_ERRORS = {"409", "422"}
+# One HTTP status per error code (API_STANDARD.md; ADR-003). 409 is reserved for stale
+# versions and in-progress idempotent requests; a reused key with a changed body is 422.
+ERROR_STATUS = {
+    "invalid_request": "400",
+    "missing_tenant_context": "400",
+    "invalid_case_id": "400",
+    "unauthenticated": "401",
+    "forbidden": "403",
+    "tenant_scope_denied": "403",
+    "not_found": "404",
+    "version_conflict": "409",
+    "idempotency_in_progress": "409",
+    "idempotency_conflict": "422",
+    "invalid_domain_input": "422",
+    "rate_limited": "429",
+    "upstream_unavailable": "503",
+    "upstream_timeout": "503",
+}
 
 VALIDATION_KEYWORDS = {
     "$ref",
@@ -219,6 +237,11 @@ def lint_spec(spec: dict[str, Any]) -> list[str]:
     errors: list[str] = []
     if not str(spec.get("openapi", "")).startswith("3.1."):
         errors.append("openapi must be 3.1.x")
+    declared = set(spec["components"]["schemas"]["ErrorCode"]["enum"])
+    if declared != set(ERROR_STATUS):
+        errors.append(
+            f"ErrorCode enum and ERROR_STATUS differ: {sorted(declared ^ set(ERROR_STATUS))}"
+        )
     for name, schema in spec.get("components", {}).get("schemas", {}).items():
         errors += lint_schema(schema, spec, f"#/components/schemas/{name}")
     seen_ids: set[str] = set()
@@ -406,6 +429,8 @@ def check_example(spec: dict[str, Any], example: dict[str, Any]) -> list[str]:
         errors.append(f"{name}: response must echo the request correlation ID")
     if error_code and res["body"]["error"].get("correlation_id") != correlation:
         errors.append(f"{name}: error correlation_id must equal X-Correlation-ID")
+    if error_code and ERROR_STATUS.get(error_code) != status:
+        errors.append(f"{name}: {error_code} must use HTTP {ERROR_STATUS.get(error_code)}")
     if status.startswith("2"):
         tenant = req_headers.get(TENANT_HEADER)
         case_id = path_values.get("case_id")

@@ -16,7 +16,7 @@
 Rules every implementation must keep (see [ADR-003](../../docs/decisions/ADR-003-vati-api-contract.md)):
 
 - `X-Vati-Tenant-ID` is required and checked against the authenticated principal's scope. Missing: `400 missing_tenant_context`. Out of scope: `403 tenant_scope_denied`. A missing or malformed `case_id` gives `400 invalid_case_id`.
-- Mutations require `Idempotency-Key`. Same key with the same body replays the original response (`Idempotent-Replayed: true`); a changed body gives `409 idempotency_conflict`. State updates send `expected_version`; a stale version gives `409 version_conflict`.
+- Mutations require `Idempotency-Key`. Same key with the same body replays the original response (`Idempotent-Replayed: true`); a changed body gives `422 idempotency_conflict`; a retry while the original is still running gives `409 idempotency_in_progress`; a missing key gives `400 invalid_request`. The checker enforces each error code's status. State updates send `expected_version`; a stale version gives `409 version_conflict`.
 - Errors use `{"error": {code, message, retryable, correlation_id}}` and echo `X-Correlation-ID`. Upstream failures return `503` and are never replaced by fixture data.
 - `service_links` maps a case, evidence item or entity to upstream IDs with sync state. The case status is a Jube projection.
 - Money and scores are decimal strings. Findings separate facts, inference and evidence gaps; legal routes stay `unverified` until a reviewer cites authority; proposed actions always require human approval.

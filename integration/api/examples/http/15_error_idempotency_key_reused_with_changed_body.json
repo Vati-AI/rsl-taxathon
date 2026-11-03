@@ -3,7 +3,7 @@
   "operation_id": "createCase",
   "scenario": "SYN-001",
   "synthetic": true,
-  "description": "The same Idempotency-Key with a different request digest is a conflict (repository API_STANDARD; see ADR-003).",
+  "description": "The same Idempotency-Key with a different request digest is unprocessable (422), per draft-ietf-httpapi-idempotency-key-header-08 and API_STANDARD.md.",
   "request": {
     "method": "POST",
     "path": "/api/v1/cases",
@@ -26,7 +26,7 @@
     }
   },
   "response": {
-    "status": 409,
+    "status": 422,
     "headers": {
       "X-Correlation-ID": "c0000000-0000-4000-8000-000000000015"
     },

@@ -28,7 +28,7 @@
         "operationId": "createCase",
         "tags": ["cases"],
         "summary": "Register a Frappe submission as a case and request the matching Jube case.",
-        "description": "Called by the Frappe server after submission validation. Replaying the same Idempotency-Key with an identical request digest returns the original response with Idempotent-Replayed: true; a changed digest returns 409 idempotency_conflict. The returned case is a projection; Jube remains the operational authority.",
+        "description": "Called by the Frappe server after submission validation. Replaying the same Idempotency-Key with an identical request digest returns the original response with Idempotent-Replayed: true; a changed digest returns 422 idempotency_conflict; a concurrent retry while the original is still running returns 409 idempotency_in_progress. The returned case is a projection; Jube remains the operational authority.",
         "parameters": [
           { "$ref": "#/components/parameters/TenantHeader" },
           { "$ref": "#/components/parameters/IdempotencyKeyHeader" },
@@ -330,7 +330,7 @@
         "name": "Idempotency-Key",
         "in": "header",
         "required": true,
-        "description": "Client-generated unique key per logical mutation. Stored with a request digest; same key and digest replays the original response, changed digest returns 409 idempotency_conflict.",
+        "description": "Client-generated unique key per logical mutation. Missing: 400 invalid_request. Stored with a request digest; same key and digest replays the original response, changed digest returns 422 idempotency_conflict, original still in progress returns 409 idempotency_in_progress.",
         "schema": { "type": "string", "minLength": 16, "maxLength": 255, "pattern": "^[A-Za-z0-9:._-]+$" }
       },
       "CorrelationIdHeader": {
@@ -403,14 +403,14 @@
         }
       },
       "Conflict": {
-        "description": "Stale expected_version, or Idempotency-Key reused with a different request digest, or same key still in progress.",
+        "description": "Stale expected_version (version_conflict), or the original request for this Idempotency-Key is still in progress (idempotency_in_progress).",
         "headers": { "X-Correlation-ID": { "$ref": "#/components/headers/CorrelationId" } },
         "content": {
           "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } }
         }
       },
       "InvalidDomainInput": {
-        "description": "Well-formed request violating a domain rule.",
+        "description": "Well-formed request that cannot be processed: a domain rule is violated (invalid_domain_input), or the Idempotency-Key was already used with a different request digest (idempotency_conflict).",
         "headers": { "X-Correlation-ID": { "$ref": "#/components/headers/CorrelationId" } },
         "content": {
           "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } }

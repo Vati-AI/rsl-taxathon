@@ -45,6 +45,7 @@ class ContractTests(unittest.TestCase):
                 "tenant_scope_denied",
                 "version_conflict",
                 "idempotency_conflict",
+                "idempotency_in_progress",
                 "upstream_timeout",
             }
             <= error_codes
@@ -61,6 +62,26 @@ class ContractTests(unittest.TestCase):
         self.assertEqual(replay["response"]["headers"]["Idempotent-Replayed"], "true")
         self.assertEqual(conflict["request"]["headers"]["Idempotency-Key"], key)
         self.assertNotEqual(conflict["request"]["body"], original["request"]["body"])
+        self.assertEqual(conflict["response"]["status"], 422)
+
+    def test_in_progress_retry_is_a_409_conflict(self):
+        example = EXAMPLES["error_idempotency_request_in_progress"]
+        self.assertEqual(example["response"]["status"], 409)
+        self.assertTrue(example["response"]["body"]["error"]["retryable"])
+
+    def test_changed_body_under_reused_key_cannot_use_409(self):
+        example = copy.deepcopy(EXAMPLES["error_idempotency_key_reused_with_changed_body"])
+        example["response"]["status"] = 409
+        errors = contract.check_example(SPEC, example)
+        self.assertIn(
+            "error_idempotency_key_reused_with_changed_body: idempotency_conflict must use HTTP 422",
+            errors,
+        )
+
+    def test_error_codes_and_status_mapping_stay_in_sync(self):
+        spec = copy.deepcopy(SPEC)
+        spec["components"]["schemas"]["ErrorCode"]["enum"].append("teapot")
+        self.assertTrue(any("ERROR_STATUS differ" in e for e in contract.lint_spec(spec)))
 
 
 class RequestRejectionTests(unittest.TestCase):
