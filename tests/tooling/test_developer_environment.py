@@ -2,9 +2,11 @@ import contextlib
 import importlib.util
 import io
 import json
+import tempfile
 import threading
 import unittest
 from pathlib import Path
+from unittest import mock
 from urllib.error import HTTPError
 from urllib.request import urlopen
 
@@ -63,13 +65,75 @@ class FixtureServerTests(unittest.TestCase):
         self.assertEqual(501, result.exception.code)
 
 
+class BuiltAuditorServingTests(unittest.TestCase):
+    def setUp(self):
+        self.tmp = tempfile.TemporaryDirectory()
+        dist = Path(self.tmp.name) / "dist"
+        (dist / "assets").mkdir(parents=True)
+        (dist / "index.html").write_text("<div id=app>built</div>")
+        (dist / "assets" / "index-abc123.js").write_text("console.log(1)")
+        (dist / "assets" / "notes.txt").write_text("not an allowed type")
+        (Path(self.tmp.name) / "secret.js").write_text("outside dist")
+        patcher = mock.patch.object(dev, "AUDITOR_DIST", dist)
+        patcher.start()
+        self.addCleanup(patcher.stop)
+        self.addCleanup(self.tmp.cleanup)
+
+    def test_client_routes_load_built_shell(self):
+        for route in ["/auditor/", "/auditor/cases/SYN-001", "/auditor/showcase"]:
+            self.assertEqual("index.html", dev.static_target(route).name)
+
+    def test_only_flat_allowed_assets_are_served(self):
+        self.assertEqual(
+            "index-abc123.js", dev.static_target("/auditor/assets/index-abc123.js").name
+        )
+        for route in [
+            "/auditor/assets/../../secret.js",
+            "/auditor/assets/..",
+            "/auditor/assets/notes.txt",
+            "/auditor/assets/missing.js",
+            "/auditor/assets/sub/index-abc123.js",
+        ]:
+            self.assertIsNone(dev.static_target(route), route)
+
+    def test_starter_is_served_without_a_build(self):
+        with mock.patch.object(dev, "AUDITOR_DIST", Path(self.tmp.name) / "absent"):
+            self.assertEqual("starter.html", dev.static_target("/auditor/").name)
+            self.assertIsNone(dev.static_target("/auditor/cases/SYN-001"))
+        self.assertEqual("starter.css", dev.static_target("/starter.css").name)
+
+
 class TaskReadinessTests(unittest.TestCase):
     def test_ready_list_excludes_epics_and_unmet_dependencies(self):
+        # Use a synthetic task set: real tasks change status when claimed, so
+        # asserting on live task IDs breaks as soon as an agent starts work.
         from argparse import Namespace
 
-        output = io.StringIO()
-        with contextlib.redirect_stdout(output):
-            task.list_tasks(Namespace(owner="Leseli", ready=True))
-        self.assertIn("TAX-020", output.getvalue())
-        self.assertNotIn("TAX-001", output.getvalue())
-        self.assertNotIn("TAX-041", output.getvalue())
+        def leaf(status, depends_on=(), owner="Leseli", kind="task"):
+            return {
+                "kind": kind,
+                "owner": owner,
+                "status": status,
+                "depends_on": list(depends_on),
+                "title": "t",
+            }
+
+        fixtures = {
+            "TAX-001": leaf("READY", kind="epic"),
+            "TAX-002": leaf("READY"),
+            "TAX-003": leaf("BACKLOG", ["TAX-004"]),
+            "TAX-004": leaf("IN_REVIEW", owner="Jane"),
+            "TAX-005": leaf("IN_PROGRESS"),
+            "TAX-006": leaf("BACKLOG", ["TAX-007"]),
+            "TAX-007": leaf("DONE", owner="Jane"),
+            "TAX-008": leaf("READY", owner="Jane"),
+        }
+        with tempfile.TemporaryDirectory() as tmp:
+            (Path(tmp) / "tasks").mkdir()
+            for key, value in fixtures.items():
+                (Path(tmp) / "tasks" / f"{key}.json").write_text(json.dumps(value))
+            output = io.StringIO()
+            with mock.patch.object(task, "ROOT", Path(tmp)), contextlib.redirect_stdout(output):
+                task.list_tasks(Namespace(owner="Leseli", ready=True))
+        listed = {line.split(" | ")[0] for line in output.getvalue().splitlines()}
+        self.assertEqual({"TAX-002", "TAX-006"}, listed)
