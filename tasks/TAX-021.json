@@ -5,11 +5,11 @@
   "owner": "Kananelo",
   "area": "apps/taxpayer-web",
   "phase": "foundation",
-  "status": "READY",
+  "status": "IN_PROGRESS",
   "priority": "P0",
   "depends_on": [],
-  "claimed_by": null,
-  "branch": null,
+  "claimed_by": "kananelo-claude-20261103-1",
+  "branch": "task/TAX-021",
   "pr": null,
   "scope": "Create taxpayer portal routes and authenticated session boundary in the Frappe app, using synthetic fixtures initially; reuse shared design contract and provide submission form/status screens for the first visual baseline",
   "inputs": [
@@ -47,5 +47,10 @@
     "finish-task"
   ],
   "evidence": [],
-  "notes": []
+  "notes": [
+    {
+      "at": "2026-11-03T12:11:22.596157+00:00",
+      "text": "Claimed by kananelo-claude-20261103-1"
+    }
+  ]
 }
