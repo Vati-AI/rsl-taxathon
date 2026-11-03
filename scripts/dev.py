@@ -45,7 +45,7 @@ class Handler(SimpleHTTPRequestHandler):
         routes = {
             "/": "apps/auditor-web/index.html",
             "/auditor/": "apps/auditor-web/index.html",
-            "/taxpayer/": "apps/taxpayer-web/index.html",
+            "/taxpayer/": "apps/taxpayer-web/fixture-starter.html",
             "/starter.css": "apps/shared/starter.css",
             "/starter.js": "apps/shared/starter.js",
         }
@@ -76,6 +76,8 @@ def check():
         ["python3", "scripts/validate.py"],
         ["python3", "-m", "compileall", "-q", "scripts", "backend/vati_tax/vati_tax", "ai"],
         ["python3", "-m", "unittest", "discover", "-s", "tests/tooling", "-v"],
+        # Frappe-free app logic (portal boundary/fixtures); bench tests cover the rest.
+        ["python3", "-m", "unittest", "discover", "-s", "backend/vati_tax", "-p", "test_*.py"],
     ]:
         subprocess.check_call(command, cwd=ROOT)
     print("Workspace checks passed")

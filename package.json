@@ -1,16 +1,23 @@
 {
   "name": "vati-taxathon-workspace",
   "private": true,
+  "workspaces": [
+    "apps/taxpayer-web"
+  ],
   "scripts": {
-    "lint": "eslint \"apps/**/*.js\"",
-    "format:check": "prettier --check \"apps/**/*.{js,css,html}\"",
-    "format": "prettier --write \"apps/**/*.{js,css,html}\"",
-    "check": "npm run lint && npm run format:check"
+    "lint": "eslint \"apps/**/*.{js,ts,vue}\"",
+    "format:check": "prettier --check \"apps/**/*.{js,ts,vue,css,html}\"",
+    "format": "prettier --write \"apps/**/*.{js,ts,vue,css,html}\"",
+    "taxpayer:check": "npm run typecheck -w @vati/taxpayer-web && npm run test -w @vati/taxpayer-web && npm run build -w @vati/taxpayer-web",
+    "check": "npm run lint && npm run format:check && npm run taxpayer:check"
   },
   "devDependencies": {
     "@eslint/js": "10.0.1",
     "eslint": "10.14.0",
-    "prettier": "3.9.10"
+    "eslint-plugin-vue": "10.11.1",
+    "prettier": "3.9.10",
+    "typescript-eslint": "8.72.0",
+    "vue-eslint-parser": "10.4.1"
   },
   "engines": {
     "node": "^22.13.0 || >=24"

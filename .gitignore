@@ -22,3 +22,7 @@ build/
 .pytest_cache/
 .idea/
 .vscode/
+
+# TAX-021 taxpayer portal build output (npm run build -w @vati/taxpayer-web)
+backend/vati_tax/vati_tax/public/taxpayer/
+backend/vati_tax/vati_tax/www/taxpayer.html

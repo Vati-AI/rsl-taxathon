@@ -1,0 +1,12 @@
+/* frappe-ui's stylesheet already contains the @tailwind layers. */
+@import 'frappe-ui/style.css';
+
+/*
+ * Taxpayer reading size from docs/DESIGN_STANDARD.md: 16px form text with a
+ * 1.5 line height. Component tokens come from frappe-ui; shared Vati tokens
+ * are consolidated with the auditor showcase in TAX-020.
+ */
+.taxpayer-page {
+  font-size: 1rem;
+  line-height: 1.5;
+}
