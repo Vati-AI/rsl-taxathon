@@ -5,11 +5,11 @@
   "owner": "Leseli",
   "area": "apps/auditor-web",
   "phase": "foundation",
-  "status": "READY",
+  "status": "IN_PROGRESS",
   "priority": "P0",
   "depends_on": [],
-  "claimed_by": null,
-  "branch": null,
+  "claimed_by": "leseli-claude-20261103-1",
+  "branch": "task/TAX-020",
   "pr": null,
   "scope": "Build officer navigation, dashboard shell and case page skeleton against the fixture contract; establish shared Frappe-inspired tokens/component showcase and first auditor queue/detail visual baseline",
   "inputs": [
@@ -47,5 +47,10 @@
     "finish-task"
   ],
   "evidence": [],
-  "notes": []
+  "notes": [
+    {
+      "at": "2026-11-03T12:18:56.159277+00:00",
+      "text": "Claimed by leseli-claude-20261103-1"
+    }
+  ]
 }
