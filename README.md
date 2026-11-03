@@ -22,3 +22,5 @@ Our code stays in this monorepo. Official upstream source is reproducibly fetche
 Root Compose runs Vati PostgreSQL/Redis on separate loopback ports. Optional Docling Compose is provided. Vendor services use their supported stacks; live deployments and adapters must pass their assigned tasks before being called connected.
 
 [Private task board](https://github.com/orgs/Vati-AI/projects/1) · [Setup PR](https://github.com/Vati-AI/rsl-taxathon/pull/17) · [Verified setup and blockers](docs/SETUP_STATUS.md)
+
+Prototype v1 standards and checks: [engineering](docs/ENGINEERING_STANDARD.md) and [toolchain](docs/TOOLCHAIN.md).

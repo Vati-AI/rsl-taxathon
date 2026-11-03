@@ -12,15 +12,15 @@ python3 scripts/github_setup.py --repo Vati-AI/rsl-taxathon
 python3 scripts/github_sync.py --repo Vati-AI/rsl-taxathon --project-number NUMBER
 ```
 
-The setup script refuses a public repo, configures squash-only merges and branch cleanup, creates role teams, links a private Project and attempts branch protection. It records a resumable local report in ignored `.local/github-setup.json`. The CLI needs `repo`, `admin:org` and `project` authorization as applicable. Use `gh auth refresh -h github.com -s project -s admin:org` interactively if scopes are missing. Never paste tokens into chat or commit them.
+The setup script refuses a public repo, configures squash-only merges and branch cleanup, creates role teams, links a private Project and records current branch protection without attempting paid-only changes. It records a resumable local report in ignored `.local/github-setup.json`. The CLI needs `repo`, `admin:org` and `project` authorization as applicable. Use `gh auth refresh -h github.com -s project -s admin:org` interactively if scopes are missing. Never paste tokens into chat or commit them.
 
-Only Keletso's username (`Kellybrackets`) has been verified. Fill null entries in `config/team.json` from confirmed team identities, then run `scripts/github_setup.py --invite`. This explicitly invites those people to their role teams; it never searches names and guesses accounts. Members receive write access through teams; Keletso retains ownership/admin access. CODEOWNERS is generated only from verified configured usernames, with Keletso as fallback. Invitation acceptance is separate from sending an invitation.
+Only Keletso's username (`Kellybrackets`) has been verified. Fill null entries in `config/team.json` from confirmed team identities, then run `scripts/github_setup.py --invite`. This explicitly invites those people to their role teams; it never searches names and guesses accounts. Members receive write access through teams; Keletso retains ownership/admin access. CODEOWNERS uses verified role teams with repository access, with Keletso as fallback. Invitation acceptance is separate from sending an invitation.
 
 ## Branch policy
 
-Intended protection in `.github/branch-protection.json`: one approving review, code-owner review, stale approvals dismissed, required `validate` check, up-to-date branch, resolved conversations, linear history, admin enforcement, no force push or branch deletion. Enable after initial main seed. Human reviewer merges after acceptance; agents do not merge.
+GitHub Free is the explicit v1 choice. Human area-owner review, passing validate/quality/ai-smoke checks, a refreshed branch and resolved comments precede squash merge. Agents never merge or push directly to main. CODEOWNERS records review responsibility; reviewers should be requested explicitly where automatic requests are unavailable.
 
-GitHub Free organizations cannot enforce protected branches/CODEOWNERS on private repositories. A paid plan such as GitHub Team is required; no purchase is performed by these scripts. If GitHub rejects protection, the setup report explicitly records the failure. CI and written instructions are not a substitute for server-enforced protection. Keep the repository private; do not make it public to gain protection.
+The historical `.github/branch-protection.json` is a reference only, not an active requirement. Setup does not purchase plans, attempt paid-only protection or make the repository public. CI and team conventions do not technically prevent an authorized user bypassing review; the team accepts that prototype tradeoff.
 
 ## Board and tasks
 
@@ -30,6 +30,8 @@ Automation is provided as a manual workflow, using optional `PROJECT_TOKEN` and 
 
 ## Verification
 
-Check repo visibility, organization ownership, accepted memberships, team permissions, project visibility/items, actual branch protection response, and a successful `validate` CI run. Preserve actual URLs and unresolved blockers in the setup handover; do not label untested service adapters as ready.
+Check repo visibility, organization ownership, accepted memberships, team permissions, project visibility/items, the documented free-plan review convention, and successful CI checks. Preserve actual URLs and unresolved blockers in the setup handover; do not label untested service adapters as ready.
 
 Expanded workspace: PROJECT.md and docs/ONBOARDING.md are the developer entry points. Initial broad tasks are epics; use dependency-ready leaf tasks from task.py list. During the authorized setup only, a maintainer may run github_sync.py with --allow-branch chore/TAX-017-setup-handover to seed the reviewed backlog before merge.
+
+Prototype v1 uses [the shared engineering standard](ENGINEERING_STANDARD.md) and [toolchain checks](TOOLCHAIN.md).

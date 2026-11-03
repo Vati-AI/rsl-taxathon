@@ -7,3 +7,6 @@
 /tests/frontend/ @Vati-AI/frontend-qa @Kellybrackets
 /tests/ai/ @Vati-AI/ai-data-qa @Kellybrackets
 /integration/ @Vati-AI/integration @Kellybrackets
+/apps/shared/ @Vati-AI/auditor-frontend @Vati-AI/taxpayer-frontend @Kellybrackets
+/scripts/ @Vati-AI/integration @Kellybrackets
+/.github/ @Kellybrackets

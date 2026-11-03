@@ -16,3 +16,9 @@ external/
 .venv*/
 *.egg-info/
 build/
+
+.ruff_cache/
+.mypy_cache/
+.pytest_cache/
+.idea/
+.vscode/

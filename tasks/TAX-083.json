@@ -1,0 +1,57 @@
+{
+  "id": "TAX-083",
+  "kind": "task",
+  "title": "Prototype v1 engineering standards and practical quality checks",
+  "owner": "Keletso",
+  "area": "integration",
+  "phase": "foundation",
+  "status": "IN_REVIEW",
+  "priority": "P0",
+  "depends_on": [],
+  "claimed_by": "codex-standards",
+  "branch": "task/TAX-083",
+  "pr": "https://github.com/Vati-AI/rsl-taxathon/pull/86",
+  "scope": "Apply researched cross-stack prototype standards, free-plan workflow, automated quality checks and consistent developer onboarding",
+  "inputs": [
+    "PROJECT.md",
+    "AGENTS.md",
+    "docs/ENGINEERING_STANDARD.md",
+    "docs/V1_ACCEPTANCE.md",
+    "docs/API_STANDARD.md"
+  ],
+  "acceptance": [
+    {
+      "text": "Publish source-backed engineering, API, AI, testing and essential security conventions with prototype boundaries",
+      "done": true
+    },
+    {
+      "text": "Configure and verify repeatable Python and frontend quality checks in local tooling and CI",
+      "done": true
+    },
+    {
+      "text": "Update agent/task onboarding, reconcile merged setup status and open a review PR without merging",
+      "done": true
+    }
+  ],
+  "verification": "Run lint/format/type checks, tooling tests, AI smoke and CI; inspect task and documentation consistency",
+  "skills": [
+    "implement-change",
+    "finish-task"
+  ],
+  "evidence": [
+    "Source-backed ADR-002 and cross-stack standards linked from all implementation tasks and agent guidance.",
+    "Ruff lint/format, Mypy (14 source files), ESLint/Prettier, 12 tooling tests and LangGraph smoke pass locally with isolated Node 22.",
+    "Tested Frappe development image pinned by digest; free-plan setup no longer attempts paid-only protection.",
+    {
+      "criterion": 3,
+      "text": "Opened PR #86 using finish-task after refreshing main and passing workspace/quality checks. Merged setup task TAX-017 verified and reconciled; standards linked throughout onboarding."
+    }
+  ],
+  "notes": [
+    "User explicitly chose GitHub Free and proportional v1 prototype safeguards; paid protection is not a prerequisite.",
+    {
+      "at": "2026-11-03T11:57:36.470808+00:00",
+      "text": "Agent finished implementation and opened human review"
+    }
+  ]
+}

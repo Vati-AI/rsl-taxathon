@@ -16,7 +16,10 @@
     "PROJECT.md",
     "docs/ARCHITECTURE.md",
     "docs/API_CONTRACTS.md",
-    "docs/REQUIREMENTS.md"
+    "docs/REQUIREMENTS.md",
+    "docs/ENGINEERING_STANDARD.md",
+    "docs/V1_ACCEPTANCE.md",
+    "docs/AI_STANDARD.md"
   ],
   "acceptance": [
     {
