@@ -24,11 +24,11 @@
   "acceptance": [
     {
       "text": "Build officer navigation, dashboard shell and case page skeleton against the fixture contract",
-      "done": false
+      "done": true
     },
     {
       "text": "Run browser smoke checks for navigation, keyboard focus and loading/error/empty states",
-      "done": false
+      "done": true
     },
     {
       "text": "Record relevant tests and evidence, update task status and open a human-review PR",
@@ -36,7 +36,7 @@
     },
     {
       "text": "Follow docs/DESIGN_STANDARD.md; supply relevant viewport/state screenshots and keyboard/accessibility evidence for human visual review",
-      "done": false
+      "done": true
     }
   ],
   "verification": "Run browser smoke checks for navigation, keyboard focus and loading/error/empty states",
@@ -46,7 +46,20 @@
     "update-project-task",
     "finish-task"
   ],
-  "evidence": [],
+  "evidence": [
+    {
+      "criterion": 1,
+      "text": "apps/auditor-web Vue 3 + TS + frappe-ui 1.1.0 app: sidebar navigation (Overview, Case queue, Component showcase), overview shell grouping fixture cases by review lane, case queue with search/scenario/lane filters, numeric decimal sorting and pagination, case detail skeleton (summary; Evidence/Entities/Findings tabs state 'not available in fixture mode' pending TAX-018 rather than inventing data). Reads GET /api/cases and /api/cases/{id}; client rejects responses not marked mode=fixture/synthetic=true. Observed 2026-11-03: npm run typecheck:auditor exit 0; npm run test:auditor 28/28 passed; npm run build:auditor succeeded; served by scripts/dev.py at http://127.0.0.1:58080/auditor/."
+    },
+    {
+      "criterion": 2,
+      "text": "npm run test:auditor:browser (Playwright 1.64.1, Microsoft Edge 156 channel, Windows 11): 17 tests passed, rerun with --repeat-each=2 -> 34/34 passed. Covers sidebar/breadcrumb navigation and back, lane link to filtered queue, keyboard skip link, visible focus outline and Enter-to-sort, keyboard sidebar activation, loading -> ready, unavailable service with retry recovery, non-fixture data refused, empty queue and empty filter results, 403 denied, unknown case/page, failed page chunk recovery. CI job auditor-browser added (Chromium)."
+    },
+    {
+      "criterion": 4,
+      "text": "Follows docs/DESIGN_STANDARD.md via shared apps/shared/design tokens + preset (ADR-003). Screenshots in docs/evidence/TAX-020: overview/queue/case-detail/showcase at 1440, 1024, 390px; loading, empty, no-matches, error, denied, not-found and unavailable-tab states at 1440 and 390px; skip-link and table-sort focus, button hover/focus, form validation and dialog at 1440px (Edge 156). Accessibility: axe (wcag2a/aa, wcag21aa) reports no serious/critical violations on overview, queue, case detail and showcase; no page-wide horizontal scroll at 320px width (reflow); keyboard checks as in criterion 2. Supplied for human visual review; visual approval NOT assumed and remains with the human reviewer."
+    }
+  ],
   "notes": [
     {
       "at": "2026-11-03T12:18:56.159277+00:00",
