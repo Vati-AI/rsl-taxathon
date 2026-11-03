@@ -1,0 +1,29 @@
+/* Tailwind layers for frappe-ui, as in apps/auditor-web (ADR-004). frappe-ui/style.css
+   is not imported: it loads the Inter web font, while the design standard specifies
+   the system sans-serif font. Shared tokens (apps/shared/design/tokens.css) are
+   imported after this file in main.ts so they override frappe-ui base variables. */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* frappe-ui shells size themselves with h-full; give them the full window. */
+html,
+body,
+#app {
+  height: 100%;
+}
+
+/* Taxpayer pages use the shared form text size (16px) for readability. */
+.taxpayer-page {
+  font-size: var(--vati-text-form);
+  line-height: var(--vati-line-height);
+}
+
+/*
+ * WCAG AA text contrast: frappe-ui's field error text measured 4.45:1 with axe on
+ * the live Frappe site (needs 4.5:1). The shared tokens do not cover red yet, so
+ * use the darker step here and propose adding it to tokens.css (TAX-020 owner).
+ */
+#app [data-slot='error'] {
+  color: var(--ink-red-8);
+}

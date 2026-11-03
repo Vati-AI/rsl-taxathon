@@ -14,7 +14,7 @@ ROOT = Path(__file__).resolve().parents[1]
 AUDITOR_DIST = ROOT / "apps/auditor-web/dist"
 STARTER_ROUTES = {
     "/auditor/": "apps/auditor-web/starter.html",
-    "/taxpayer/": "apps/taxpayer-web/index.html",
+    "/taxpayer/": "apps/taxpayer-web/starter.html",
     "/starter.css": "apps/shared/starter.css",
     "/starter.js": "apps/shared/starter.js",
 }
@@ -123,6 +123,8 @@ def check():
         ["python3", "-m", "unittest", "discover", "-s", "tests/tooling", "-v"],
         ["python3", "integration/api/contract.py"],
         ["python3", "-m", "unittest", "discover", "-s", "tests/contracts", "-v"],
+        # Frappe-free app logic (portal boundary/fixtures); bench tests cover the rest.
+        ["python3", "-m", "unittest", "discover", "-s", "backend/vati_tax", "-p", "test_*.py"],
     ]:
         subprocess.check_call(command, cwd=ROOT)
     print("Workspace checks passed")
