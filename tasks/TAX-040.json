@@ -27,11 +27,11 @@
   "acceptance": [
     {
       "text": "Show filterable assigned case queue, selection reasons, taxpayer context and processing/error state",
-      "done": false
+      "done": true
     },
     {
       "text": "Test fixture and API contract states, empty queue and access-denied responses",
-      "done": false
+      "done": true
     },
     {
       "text": "Record relevant tests and evidence, update task status and open a human-review PR",
@@ -39,7 +39,7 @@
     },
     {
       "text": "Follow docs/DESIGN_STANDARD.md; supply relevant viewport/state screenshots and keyboard/accessibility evidence for human visual review",
-      "done": false
+      "done": true
     }
   ],
   "verification": "Test fixture and API contract states, empty queue and access-denied responses",
@@ -49,7 +49,20 @@
     "update-project-task",
     "finish-task"
   ],
-  "evidence": [],
+  "evidence": [
+    {
+      "criterion": 1,
+      "text": "Auditor app reads the Vati /api/v1 contract (src/api/vati.ts). My case queue: cases assigned to the signed-in officer (listCases assigned_to=me; other officers' and unassigned cases excluded), with selection reasons, taxpayer name/type, status, refund lane, refund claimed and per-service processing state; search, status and refund-lane filters kept in the URL; numeric sorting; pagination. Case detail: why selected (with signal source), taxpayer summary linking to the taxpayer profile (masked TIN, registration, sector, visible open cases), case summary and processing-by-service table. Processing/error state: failed-processing alert on overview and case, failed service named in text (e.g. Document extraction (Docling) timed out), pending services shown as waiting. The TAX-018 contract had no list operation, selection reasons or taxpayer context; added with the contract owner's agreement (ADR-005): listCases, getTaxpayer, Case.selection_reasons and Case.taxpayer, served from synthetic fixtures by scripts/fixture_api.py. Observed 2026-11-03: npm run check exit 0 (41 auditor + 27 taxpayer tests, both builds)."
+    },
+    {
+      "criterion": 2,
+      "text": "Fixture and API contract states: python3 integration/api/contract.py -> valid, 20 HTTP examples (new: assigned queue, taxpayer profile, empty queue), 2 events; tests/contracts 44 tests OK, including 16 fixture API tests (every fixture response validates against its operation schema; assigned_to=me filtering; empty page is 200; cursor paging; invalid query values 400; missing tenant 400 missing_tenant_context; other tenant 403 tenant_scope_denied with no data; unknown/undisclosed records 404). Browser (Playwright 1.64.1, Edge 156, Windows 11): 22 tests passed, 44/44 with --repeat-each=2, rerun after merging main 52191cd; also 22/22 in Linux Chromium (mcr.microsoft.com/playwright:v1.64.1-noble). Covers empty queue (No cases are assigned to you), empty filter results, access denied end-to-end (request re-sent with another tenant; real fixture server returns 403 tenant_scope_denied; UI shows the denial with a reference and no data on queue, case and taxpayer pages), unavailable service with retry, non-synthetic data refused, loading, unknown/malformed case and taxpayer links, failed and pending processing."
+    },
+    {
+      "criterion": 4,
+      "text": "Follows docs/DESIGN_STANDARD.md using the shared tokens/components (status badges text plus colour; numeric columns right-aligned; wide tables scroll inside labelled regions; one primary action per page). Screenshots in docs/evidence/TAX-040 (Edge 156): overview, queue, case detail, failed-processing case and taxpayer profile at 1440, 1024 and 390px; loading, empty queue, no matches, failed filter, unavailable, denied and taxpayer-not-found states at 1440 and 390px; focus and filter interaction at 1440px. Accessibility: axe (wcag2a/aa, wcag21aa) reports no serious or critical violations on overview, queue, two case pages, taxpayer profile and showcase (red error text moved to ink-red-7 after axe flagged ink-red-4); keyboard: skip link, visible focus, Enter-to-sort, case and taxpayer links by keyboard; reflow at 320px with no page-wide scroll and no clipped content (test strengthened after it missed a clipped mobile layout, which was fixed). Supplied for the reviewer's visual review; visual approval NOT assumed."
+    }
+  ],
   "notes": [
     {
       "at": "2026-11-03T14:20:44.115865+00:00",
