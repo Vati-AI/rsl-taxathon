@@ -22,7 +22,7 @@ For live infrastructure: `python3 scripts/dev_env.py`, then `docker compose up -
 - `backend/vati_tax`: custom Frappe app scaffold; `backend`: shared tax-domain and gateway contracts.
 - `integration`: API adapters, service configuration, upstream lock. Keletso owns cross-service coordination.
 - `ai`: Vati LangGraph workflows, approved tools and prompts. Gupta owns AI implementation.
-- `tests/frontend`: Jane. `tests/ai`, synthetic fixtures and data evaluation: Yellow.
+- `tests/frontend`: Kananelo (frontend QA, reassigned from Jane). `tests/ai`, synthetic fixtures and data evaluation: Leseli (reassigned from Yellow).
 - `tasks`: canonical task state. `.agents/skills`: reusable agent workflows.
 
 Jube owns operational cases, assignment/status/escalation/risk execution. Frappe owns application identity/permissions, submissions/evidence requests and approved decision records. The Vati API coordinates these authorities; it must not create a second independent operational case state machine.
@@ -37,6 +37,6 @@ Jube owns operational cases, assignment/status/escalation/risk execution. Frappe
 
 Foundation and pilot tasks build the five-scenario vertical slice. Expansion and future tasks describe the broader national platform; they are deliberately not claimed as already implemented. Humans review PRs and consequential investigation actions. Agents implement, test and keep task files/issues current.
 
-Frontend implementation and review must follow [the shared design standard](docs/DESIGN_STANDARD.md). Leseli and Kananelo establish representative screen baselines; Jane checks visual consistency and accessibility.
+Frontend implementation and review must follow [the shared design standard](docs/DESIGN_STANDARD.md). Leseli and Kananelo establish representative screen baselines; Kananelo owns frontend QA (visual consistency and accessibility checks).
 
 Shared implementation rules: [engineering](docs/ENGINEERING_STANDARD.md), [API](docs/API_STANDARD.md), [AI](docs/AI_STANDARD.md), [v1 acceptance](docs/V1_ACCEPTANCE.md), [tool installation](docs/TOOLCHAIN.md). GitHub Free and proportional prototype safeguards are deliberate decisions (ADR-002).

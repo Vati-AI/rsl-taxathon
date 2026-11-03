@@ -2,7 +2,7 @@
   "id": "TAX-081",
   "kind": "task",
   "title": "Pilot operational acceptance and performance baseline",
-  "owner": "Yellow",
+  "owner": "Leseli",
   "area": "tests/integration",
   "phase": "expansion",
   "status": "BACKLOG",
@@ -47,5 +47,10 @@
     "finish-task"
   ],
   "evidence": [],
-  "notes": []
+  "notes": [
+    {
+      "at": "2026-11-03T15:40:40.955115+00:00",
+      "text": "Owner reassigned from Yellow to Leseli by team lead Keletso to balance workload; Yellow keeps no open tasks for now."
+    }
+  ]
 }

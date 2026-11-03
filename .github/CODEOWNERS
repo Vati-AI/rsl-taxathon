@@ -4,8 +4,8 @@
 /apps/taxpayer-web/ @Vati-AI/taxpayer-frontend @Kellybrackets
 /backend/ @Vati-AI/backend @Kellybrackets
 /ai/ @Vati-AI/ai @Kellybrackets
-/tests/frontend/ @Vati-AI/frontend-qa @Kellybrackets
-/tests/ai/ @Vati-AI/ai-data-qa @Kellybrackets
+/tests/frontend/ @Vati-AI/frontend-qa @Vati-AI/taxpayer-frontend @Kellybrackets
+/tests/ai/ @Vati-AI/ai-data-qa @Vati-AI/auditor-frontend @Kellybrackets
 /integration/ @Vati-AI/integration @Kellybrackets
 /apps/shared/ @Vati-AI/auditor-frontend @Vati-AI/taxpayer-frontend @Kellybrackets
 /scripts/ @Vati-AI/integration @Kellybrackets
