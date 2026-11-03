@@ -5,12 +5,12 @@
   "owner": "Gupta",
   "area": "ai",
   "phase": "foundation",
-  "status": "BLOCKED",
+  "status": "IN_REVIEW",
   "priority": "P0",
   "depends_on": [],
   "claimed_by": "codex-hlompho28-20261103-01a1a134",
   "branch": "task/TAX-022",
-  "pr": null,
+  "pr": "https://github.com/Vati-AI/rsl-taxathon/pull/93",
   "scope": "Implement typed investigation state, tool result envelope and fake-tool graph without model keys",
   "inputs": [
     "PROJECT.md",
@@ -32,7 +32,7 @@
     },
     {
       "text": "Record relevant tests and evidence, update task status and open a human-review PR",
-      "done": false
+      "done": true
     }
   ],
   "verification": "Run deterministic graph tests for case isolation, tool errors and bounded steps",
@@ -58,6 +58,14 @@
     {
       "criterion": 2,
       "text": "After main refresh: .venv-ai Python 3.13.17 ran python3 -m pytest tests/ai/test_fake_graph.py -q (10 passed) and ai/smoke.py (passed); python3 scripts/dev.py check passed with 12 tooling tests."
+    },
+    {
+      "criterion": 3,
+      "text": "Human-review PR opened at https://github.com/Vati-AI/rsl-taxathon/pull/93; acceptance evidence recorded in this task; no merge performed."
+    },
+    {
+      "criterion": 2,
+      "text": "After refreshing to origin/main bf5c528, focused graph tests passed (10), ai/smoke.py passed, scripts/validate.py passed, and scripts/quality.py passed. scripts/dev.py check ran 17 tooling tests: 16 passed; one Windows POSIX-mode assertion failed (0600 expected, 0666 observed) in unrelated Jube env-file test."
     }
   ],
   "notes": [
@@ -72,6 +80,10 @@
     {
       "at": "2026-11-03T12:13:43.965244+00:00",
       "text": "GitHub CLI is installed and the official device login is pending, but gh auth status still reports no logged-in account. PR creation and board sync must wait for the GitHub browser authorization."
+    },
+    {
+      "at": "2026-11-03T13:30:27.824730+00:00",
+      "text": "Opened human-review PR #93; all acceptance criteria have recorded evidence. Windows tooling test has one unrelated POSIX file-mode failure, disclosed in the PR."
     }
   ]
 }
