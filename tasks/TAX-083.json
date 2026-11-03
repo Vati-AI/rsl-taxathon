@@ -30,7 +30,7 @@
     },
     {
       "text": "Update agent/task onboarding, reconcile merged setup status and open a review PR without merging",
-      "done": false
+      "done": true
     }
   ],
   "verification": "Run lint/format/type checks, tooling tests, AI smoke and CI; inspect task and documentation consistency",
@@ -41,7 +41,11 @@
   "evidence": [
     "Source-backed ADR-002 and cross-stack standards linked from all implementation tasks and agent guidance.",
     "Ruff lint/format, Mypy (14 source files), ESLint/Prettier, 12 tooling tests and LangGraph smoke pass locally with isolated Node 22.",
-    "Tested Frappe development image pinned by digest; free-plan setup no longer attempts paid-only protection."
+    "Tested Frappe development image pinned by digest; free-plan setup no longer attempts paid-only protection.",
+    {
+      "criterion": 3,
+      "text": "Opened PR #86 using finish-task after refreshing main and passing workspace/quality checks. Merged setup task TAX-017 verified and reconciled; standards linked throughout onboarding."
+    }
   ],
   "notes": [
     "User explicitly chose GitHub Free and proportional v1 prototype safeguards; paid protection is not a prerequisite.",
