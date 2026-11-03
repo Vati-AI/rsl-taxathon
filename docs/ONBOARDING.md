@@ -10,6 +10,6 @@ No real taxpayer data, cloud credentials or model key is needed to start UI/doma
 
 Prerequisites: Python 3.11+, Git, GitHub CLI with repository access; Docker Compose for live services. Native Frappe development uses its vendor devcontainer/bench rather than installing system services on your machine. Check free ports and resources; do not stop other projects.
 
-First tasks: Leseli TAX-020; Kananelo TAX-021; Edga TAX-019; Gupta TAX-022; Jane TAX-023; Yellow TAX-024; Keletso TAX-018 (then service setup tasks TAX-025–028). All seven can begin independently.
+First tasks: Leseli TAX-020; Kananelo TAX-021; Edga TAX-019; Gupta TAX-022; Kananelo TAX-023 (frontend QA, reassigned from Jane); Yellow TAX-024 (done); Keletso TAX-018 (then service setup tasks TAX-025–028). All seven can begin independently.
 
 Prototype v1 uses [the shared engineering standard](ENGINEERING_STANDARD.md) and [toolchain checks](TOOLCHAIN.md).

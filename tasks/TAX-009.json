@@ -1,7 +1,7 @@
 {
   "id": "TAX-009",
   "title": "Frontend QA plan and browser fixtures",
-  "owner": "Jane",
+  "owner": "Kananelo",
   "area": "tests/frontend",
   "status": "BACKLOG",
   "priority": "P0",
@@ -26,7 +26,11 @@
   ],
   "evidence": [],
   "notes": [
-    "Expanded into implementation tasks TAX-018 onward; do not claim this planning epic."
+    "Expanded into implementation tasks TAX-018 onward; do not claim this planning epic.",
+    {
+      "at": "2026-11-03T15:40:40.955115+00:00",
+      "text": "Owner reassigned from Jane to Kananelo by team lead Keletso to balance workload; Jane keeps no open tasks for now."
+    }
   ],
   "kind": "epic",
   "phase": "planning",

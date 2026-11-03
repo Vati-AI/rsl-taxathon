@@ -6,7 +6,7 @@ User direction: both interfaces should feel like polished Frappe applications. T
 
 Use the official [Frappe UI desktop and component examples](https://ui.frappe.io/) as the visual reference (reviewed 2026-11-03). Use Vue 3/TypeScript and supported Frappe UI components for custom screens per ADR-002; verify and pin the package version before adoption. Native Frappe pages should reuse framework form/list patterns. A custom portal does not inherit the Desk appearance automatically. Do not switch frameworks merely to imitate a screenshot: record the component choice in TAX-020/021 and reuse one shared visual contract.
 
-Leseli leads the shared component showcase in TAX-020; Kananelo contributes taxpayer forms and validates the same contract in TAX-021. Both can start independently from the defaults below. Jane owns visual/accessibility checks in TAX-023 and subsequent UI QA. Shared-file changes must be coordinated through a focused PR; consuming screens reuse those components and tokens.
+Leseli leads the shared component showcase in TAX-020; Kananelo contributes taxpayer forms and validates the same contract in TAX-021. Both can start independently from the defaults below. Kananelo owns visual/accessibility checks in TAX-023 and subsequent UI QA (reassigned from Jane). Shared-file changes must be coordinated through a focused PR; consuming screens reuse those components and tokens.
 
 ## Visual contract
 
@@ -32,4 +32,4 @@ Attach screenshots of the changed screens at 1440px, 1024px and 390px widths and
 
 No clipped text, unintended page-wide horizontal scrolling, overlapping controls or inconsistent spacing. Wide officer tables may scroll inside a labelled region; taxpayer forms must reflow. Use actionable error text that preserves entered values. Confirmations and consequential decisions must preserve existing human-approval requirements.
 
-Jane records visual defects with screenshots and reproduction steps. The human frontend owner reviews alignment with this standard and approves the first-screen baseline; agents do not mark visual approval as passed on their own. Functional checks alone do not satisfy visual acceptance. Subsequent UI PRs link the baseline and explain intentional deviations. Human review and merge remain mandatory.
+The frontend QA owner (Kananelo) records visual defects with screenshots and reproduction steps. The human frontend owner reviews alignment with this standard and approves the first-screen baseline; agents do not mark visual approval as passed on their own. Functional checks alone do not satisfy visual acceptance. Subsequent UI PRs link the baseline and explain intentional deviations. Human review and merge remain mandatory.

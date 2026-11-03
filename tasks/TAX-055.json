@@ -2,7 +2,7 @@
   "id": "TAX-055",
   "kind": "task",
   "title": "Portal and auditor end-to-end regression",
-  "owner": "Jane",
+  "owner": "Kananelo",
   "area": "tests/frontend",
   "phase": "pilot",
   "status": "BACKLOG",
@@ -52,5 +52,10 @@
     "finish-task"
   ],
   "evidence": [],
-  "notes": []
+  "notes": [
+    {
+      "at": "2026-11-03T15:40:40.955115+00:00",
+      "text": "Owner reassigned from Jane to Kananelo by team lead Keletso to balance workload; Jane keeps no open tasks for now."
+    }
+  ]
 }

@@ -9,7 +9,7 @@ Human owner = accountability. AI agent = implementer recorded in `claimed_by`. T
 | [TAX-020](TAX-020.json) | Leseli | foundation | Auditor shell and shared visual components | none |
 | [TAX-021](TAX-021.json) | Kananelo | foundation | Frappe taxpayer portal shell | none |
 | [TAX-022](TAX-022.json) | Gupta | foundation | LangGraph state and tool interface | none |
-| [TAX-023](TAX-023.json) | Jane | foundation | Frontend test harness and accessibility baseline | none |
+| [TAX-023](TAX-023.json) | Kananelo | foundation | Frontend test harness and accessibility baseline | none |
 | [TAX-024](TAX-024.json) | Yellow | foundation | Five pilot scenarios and expected outcomes | none |
 | [TAX-025](TAX-025.json) | Keletso | foundation | Jube isolated development deployment | none |
 | [TAX-026](TAX-026.json) | Keletso | foundation | OpenAleph isolated development deployment | none |
@@ -41,9 +41,9 @@ Human owner = accountability. AI agent = implementer recorded in `claimed_by`. T
 | [TAX-052](TAX-052.json) | Gupta | pilot | Legal-route registry and policy-gap gate | TAX-022, TAX-024 |
 | [TAX-053](TAX-053.json) | Gupta | pilot | Evidence search and cited case briefing agents | TAX-036, TAX-038, TAX-047 |
 | [TAX-054](TAX-054.json) | Keletso | pilot | End-to-end pipeline and degraded-service behavior | TAX-039, TAX-037, TAX-038, TAX-047, TAX-053 |
-| [TAX-055](TAX-055.json) | Jane | pilot | Portal and auditor end-to-end regression | TAX-041, TAX-042, TAX-044, TAX-045 |
-| [TAX-056](TAX-056.json) | Yellow | pilot | Agent evaluation and injection regression | TAX-049, TAX-050, TAX-051, TAX-052, TAX-053 |
-| [TAX-057](TAX-057.json) | Yellow | pilot | Tenant isolation, replay and failure matrix | TAX-054, TAX-046 |
+| [TAX-055](TAX-055.json) | Kananelo | pilot | Portal and auditor end-to-end regression | TAX-041, TAX-042, TAX-044, TAX-045 |
+| [TAX-056](TAX-056.json) | Leseli | pilot | Agent evaluation and injection regression | TAX-049, TAX-050, TAX-051, TAX-052, TAX-053 |
+| [TAX-057](TAX-057.json) | Leseli | pilot | Tenant isolation, replay and failure matrix | TAX-054, TAX-046 |
 | [TAX-058](TAX-058.json) | Keletso | pilot | Five-scenario demo and measured acceptance | TAX-055, TAX-056, TAX-057 |
 | [TAX-059](TAX-059.json) | Edga | pilot | Audit ledger and segregation of duties | TAX-046 |
 | [TAX-060](TAX-060.json) | Leseli | pilot | Management workload and assurance dashboard | TAX-040, TAX-059 |
@@ -52,7 +52,7 @@ Human owner = accountability. AI agent = implementer recorded in `claimed_by`. T
 | [TAX-063](TAX-063.json) | Keletso | pilot | Deployment configuration, backup and restore rehearsal | TAX-054, TAX-062 |
 | [TAX-064](TAX-064.json) | Gupta | expansion | Auditor action observation and workflow proposals | TAX-061, TAX-059 |
 | [TAX-065](TAX-065.json) | Edga | expansion | Workflow approval, versioning and rollback | TAX-064 |
-| [TAX-066](TAX-066.json) | Yellow | expansion | Risk calibration and drift evaluation | TAX-056, TAX-059 |
+| [TAX-066](TAX-066.json) | Leseli | expansion | Risk calibration and drift evaluation | TAX-056, TAX-059 |
 | [TAX-067](TAX-067.json) | Gupta | expansion | Taxpayer baselines and peer-group intelligence | TAX-066, TAX-024 |
 | [TAX-068](TAX-068.json) | Gupta | expansion | Institutional knowledge retrieval | TAX-053, TAX-062 |
 | [TAX-069](TAX-069.json) | Edga | expansion | Objection, appeal and final-outcome records | TAX-046, TAX-059 |
@@ -67,7 +67,7 @@ Human owner = accountability. AI agent = implementer recorded in `claimed_by`. T
 | [TAX-078](TAX-078.json) | Kananelo | expansion | Recurring submission-error guidance | TAX-044, TAX-069 |
 | [TAX-079](TAX-079.json) | Keletso | future | Lawful payment-channel extension contracts | TAX-073, TAX-074 |
 | [TAX-080](TAX-080.json) | Gupta | future | Additional tax-domain playbook extension design | TAX-061, TAX-070 |
-| [TAX-081](TAX-081.json) | Yellow | expansion | Pilot operational acceptance and performance baseline | TAX-058, TAX-060, TAX-063 |
-| [TAX-082](TAX-082.json) | Jane | expansion | User onboarding and officer usability validation | TAX-055, TAX-060 |
+| [TAX-081](TAX-081.json) | Leseli | expansion | Pilot operational acceptance and performance baseline | TAX-058, TAX-060, TAX-063 |
+| [TAX-082](TAX-082.json) | Kananelo | expansion | User onboarding and officer usability validation | TAX-055, TAX-060 |
 
 | [TAX-083](TAX-083.json) | Keletso | foundation | Prototype engineering standards and checks | none |
