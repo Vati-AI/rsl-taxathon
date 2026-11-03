@@ -1,0 +1,871 @@
+{
+  "openapi": "3.1.1",
+  "jsonSchemaDialect": "https://spec.openapis.org/oas/3.1/dialect/base",
+  "info": {
+    "title": "Vati Integration API",
+    "version": "1.0.0-draft",
+    "summary": "Versioned Vati coordination boundary for cases, evidence, entities, findings, investigations and evidence requests.",
+    "description": "Proposed Vati routes (TAX-018). These are Vati contracts, not claims about Jube, Frappe, OpenAleph, yente, Docling or LangGraph endpoints. Jube is the operational case authority; Frappe owns users, submissions, evidence requests and approved decisions; Vati stores cross-service links, idempotency and delivery state. Tenant context is resolved from the authenticated principal; the X-Vati-Tenant-ID header selects a tenant and must fall inside the principal's permitted scope. Case IDs alone never authorise access. No route performs tax assessment, refund denial/payment, enforcement or referral. Synthetic data only."
+  },
+  "servers": [
+    {
+      "url": "http://127.0.0.1:58090",
+      "description": "Reserved local development port for the future Vati API implementation. Not running in TAX-018."
+    }
+  ],
+  "security": [{ "bearerAuth": [] }],
+  "tags": [
+    { "name": "cases" },
+    { "name": "evidence" },
+    { "name": "entities" },
+    { "name": "findings" },
+    { "name": "investigations" },
+    { "name": "evidence-requests" }
+  ],
+  "paths": {
+    "/api/v1/cases": {
+      "post": {
+        "operationId": "createCase",
+        "tags": ["cases"],
+        "summary": "Register a Frappe submission as a case and request the matching Jube case.",
+        "description": "Called by the Frappe server after submission validation. Replaying the same Idempotency-Key with an identical request digest returns the original response with Idempotent-Replayed: true; a changed digest returns 409 idempotency_conflict. The returned case is a projection; Jube remains the operational authority.",
+        "parameters": [
+          { "$ref": "#/components/parameters/TenantHeader" },
+          { "$ref": "#/components/parameters/IdempotencyKeyHeader" },
+          { "$ref": "#/components/parameters/CorrelationIdHeader" }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": { "schema": { "$ref": "#/components/schemas/CreateCaseRequest" } }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Case registered (or original response replayed).",
+            "headers": {
+              "X-Correlation-ID": { "$ref": "#/components/headers/CorrelationId" },
+              "Idempotent-Replayed": { "$ref": "#/components/headers/IdempotentReplayed" }
+            },
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/CaseEnvelope" } }
+            }
+          },
+          "400": { "$ref": "#/components/responses/BadRequest" },
+          "401": { "$ref": "#/components/responses/Unauthenticated" },
+          "403": { "$ref": "#/components/responses/Forbidden" },
+          "404": { "$ref": "#/components/responses/NotFound" },
+          "409": { "$ref": "#/components/responses/Conflict" },
+          "422": { "$ref": "#/components/responses/InvalidDomainInput" },
+          "429": { "$ref": "#/components/responses/RateLimited" },
+          "503": { "$ref": "#/components/responses/DependencyUnavailable" }
+        }
+      }
+    },
+    "/api/v1/cases/{case_id}": {
+      "get": {
+        "operationId": "getCase",
+        "tags": ["cases"],
+        "summary": "Read the case projection and its cross-service links.",
+        "parameters": [
+          { "$ref": "#/components/parameters/TenantHeader" },
+          { "$ref": "#/components/parameters/CorrelationIdHeader" },
+          { "$ref": "#/components/parameters/CaseIdPath" }
+        ],
+        "responses": {
+          "200": {
+            "description": "Case projection.",
+            "headers": { "X-Correlation-ID": { "$ref": "#/components/headers/CorrelationId" } },
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/CaseEnvelope" } }
+            }
+          },
+          "400": { "$ref": "#/components/responses/BadRequest" },
+          "401": { "$ref": "#/components/responses/Unauthenticated" },
+          "403": { "$ref": "#/components/responses/Forbidden" },
+          "404": { "$ref": "#/components/responses/NotFound" },
+          "429": { "$ref": "#/components/responses/RateLimited" },
+          "503": { "$ref": "#/components/responses/DependencyUnavailable" }
+        }
+      }
+    },
+    "/api/v1/cases/{case_id}/investigate": {
+      "post": {
+        "operationId": "startInvestigation",
+        "tags": ["investigations"],
+        "summary": "Queue an approved LangGraph investigation run for the case.",
+        "description": "Asynchronous: returns 202 with a run that has a finite deadline. The run drafts findings, alternatives and evidence gaps only; consequential actions stop at a human checkpoint.",
+        "parameters": [
+          { "$ref": "#/components/parameters/TenantHeader" },
+          { "$ref": "#/components/parameters/IdempotencyKeyHeader" },
+          { "$ref": "#/components/parameters/CorrelationIdHeader" },
+          { "$ref": "#/components/parameters/CaseIdPath" }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/StartInvestigationRequest" }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "Investigation run accepted.",
+            "headers": {
+              "X-Correlation-ID": { "$ref": "#/components/headers/CorrelationId" },
+              "Idempotent-Replayed": { "$ref": "#/components/headers/IdempotentReplayed" }
+            },
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/InvestigationRunEnvelope" }
+              }
+            }
+          },
+          "400": { "$ref": "#/components/responses/BadRequest" },
+          "401": { "$ref": "#/components/responses/Unauthenticated" },
+          "403": { "$ref": "#/components/responses/Forbidden" },
+          "404": { "$ref": "#/components/responses/NotFound" },
+          "409": { "$ref": "#/components/responses/Conflict" },
+          "422": { "$ref": "#/components/responses/InvalidDomainInput" },
+          "429": { "$ref": "#/components/responses/RateLimited" },
+          "503": { "$ref": "#/components/responses/DependencyUnavailable" }
+        }
+      }
+    },
+    "/api/v1/cases/{case_id}/evidence": {
+      "get": {
+        "operationId": "listEvidence",
+        "tags": ["evidence"],
+        "summary": "List permission-scoped evidence metadata and provenance for the case.",
+        "parameters": [
+          { "$ref": "#/components/parameters/TenantHeader" },
+          { "$ref": "#/components/parameters/CorrelationIdHeader" },
+          { "$ref": "#/components/parameters/CaseIdPath" },
+          { "$ref": "#/components/parameters/LimitQuery" },
+          { "$ref": "#/components/parameters/CursorQuery" }
+        ],
+        "responses": {
+          "200": {
+            "description": "Evidence page.",
+            "headers": { "X-Correlation-ID": { "$ref": "#/components/headers/CorrelationId" } },
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/EvidenceList" } }
+            }
+          },
+          "400": { "$ref": "#/components/responses/BadRequest" },
+          "401": { "$ref": "#/components/responses/Unauthenticated" },
+          "403": { "$ref": "#/components/responses/Forbidden" },
+          "404": { "$ref": "#/components/responses/NotFound" },
+          "429": { "$ref": "#/components/responses/RateLimited" },
+          "503": { "$ref": "#/components/responses/DependencyUnavailable" }
+        }
+      }
+    },
+    "/api/v1/cases/{case_id}/documents": {
+      "post": {
+        "operationId": "registerDocument",
+        "tags": ["evidence"],
+        "summary": "Register an original document already held in the Frappe evidence store and queue extraction.",
+        "description": "Vati never receives arbitrary URLs or full document bodies here. The caller supplies the restricted Frappe file reference and SHA-256 of the original; extraction (Docling) is asynchronous. Evidence is append-only; corrections set supersedes_evidence_id.",
+        "parameters": [
+          { "$ref": "#/components/parameters/TenantHeader" },
+          { "$ref": "#/components/parameters/IdempotencyKeyHeader" },
+          { "$ref": "#/components/parameters/CorrelationIdHeader" },
+          { "$ref": "#/components/parameters/CaseIdPath" }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/RegisterDocumentRequest" }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "Document registered; extraction queued.",
+            "headers": {
+              "X-Correlation-ID": { "$ref": "#/components/headers/CorrelationId" },
+              "Idempotent-Replayed": { "$ref": "#/components/headers/IdempotentReplayed" }
+            },
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/EvidenceEnvelope" }
+              }
+            }
+          },
+          "400": { "$ref": "#/components/responses/BadRequest" },
+          "401": { "$ref": "#/components/responses/Unauthenticated" },
+          "403": { "$ref": "#/components/responses/Forbidden" },
+          "404": { "$ref": "#/components/responses/NotFound" },
+          "409": { "$ref": "#/components/responses/Conflict" },
+          "422": { "$ref": "#/components/responses/InvalidDomainInput" },
+          "429": { "$ref": "#/components/responses/RateLimited" },
+          "503": { "$ref": "#/components/responses/DependencyUnavailable" }
+        }
+      }
+    },
+    "/api/v1/cases/{case_id}/entities": {
+      "get": {
+        "operationId": "listEntities",
+        "tags": ["entities"],
+        "summary": "List FtM-shaped entities linked to the case with unreviewed or reviewed match candidates.",
+        "description": "Match candidates are proposals with dataset version; similarity is never identity or wrongdoing.",
+        "parameters": [
+          { "$ref": "#/components/parameters/TenantHeader" },
+          { "$ref": "#/components/parameters/CorrelationIdHeader" },
+          { "$ref": "#/components/parameters/CaseIdPath" },
+          { "$ref": "#/components/parameters/LimitQuery" },
+          { "$ref": "#/components/parameters/CursorQuery" }
+        ],
+        "responses": {
+          "200": {
+            "description": "Entity page.",
+            "headers": { "X-Correlation-ID": { "$ref": "#/components/headers/CorrelationId" } },
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/EntityList" } }
+            }
+          },
+          "400": { "$ref": "#/components/responses/BadRequest" },
+          "401": { "$ref": "#/components/responses/Unauthenticated" },
+          "403": { "$ref": "#/components/responses/Forbidden" },
+          "404": { "$ref": "#/components/responses/NotFound" },
+          "429": { "$ref": "#/components/responses/RateLimited" },
+          "503": { "$ref": "#/components/responses/DependencyUnavailable" }
+        }
+      }
+    },
+    "/api/v1/cases/{case_id}/findings": {
+      "get": {
+        "operationId": "listFindings",
+        "tags": ["findings"],
+        "summary": "List findings separating facts, inference, evidence gaps, legal-route status and proposed human actions.",
+        "parameters": [
+          { "$ref": "#/components/parameters/TenantHeader" },
+          { "$ref": "#/components/parameters/CorrelationIdHeader" },
+          { "$ref": "#/components/parameters/CaseIdPath" },
+          { "$ref": "#/components/parameters/LimitQuery" },
+          { "$ref": "#/components/parameters/CursorQuery" }
+        ],
+        "responses": {
+          "200": {
+            "description": "Finding page.",
+            "headers": { "X-Correlation-ID": { "$ref": "#/components/headers/CorrelationId" } },
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/FindingList" } }
+            }
+          },
+          "400": { "$ref": "#/components/responses/BadRequest" },
+          "401": { "$ref": "#/components/responses/Unauthenticated" },
+          "403": { "$ref": "#/components/responses/Forbidden" },
+          "404": { "$ref": "#/components/responses/NotFound" },
+          "429": { "$ref": "#/components/responses/RateLimited" },
+          "503": { "$ref": "#/components/responses/DependencyUnavailable" }
+        }
+      }
+    },
+    "/api/v1/cases/{case_id}/request-evidence": {
+      "post": {
+        "operationId": "requestEvidence",
+        "tags": ["evidence-requests"],
+        "summary": "Record an officer-authorised evidence request in Frappe for the taxpayer.",
+        "description": "The authenticated officer is the authorising actor; the request references the findings that justify it. Frappe owns the request record; Vati returns the pending synchronisation link. A failed Frappe write is reported as sync failure, never as a sent request.",
+        "parameters": [
+          { "$ref": "#/components/parameters/TenantHeader" },
+          { "$ref": "#/components/parameters/IdempotencyKeyHeader" },
+          { "$ref": "#/components/parameters/CorrelationIdHeader" },
+          { "$ref": "#/components/parameters/CaseIdPath" }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/RequestEvidenceRequest" }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "Evidence request recorded; Frappe synchronisation state included.",
+            "headers": {
+              "X-Correlation-ID": { "$ref": "#/components/headers/CorrelationId" },
+              "Idempotent-Replayed": { "$ref": "#/components/headers/IdempotentReplayed" }
+            },
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/EvidenceRequestEnvelope" }
+              }
+            }
+          },
+          "400": { "$ref": "#/components/responses/BadRequest" },
+          "401": { "$ref": "#/components/responses/Unauthenticated" },
+          "403": { "$ref": "#/components/responses/Forbidden" },
+          "404": { "$ref": "#/components/responses/NotFound" },
+          "409": { "$ref": "#/components/responses/Conflict" },
+          "422": { "$ref": "#/components/responses/InvalidDomainInput" },
+          "429": { "$ref": "#/components/responses/RateLimited" },
+          "503": { "$ref": "#/components/responses/DependencyUnavailable" }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "description": "Opaque session or service token. Issuance and role/tenant mapping are implemented by TAX-029; browser code never holds vendor secrets."
+      }
+    },
+    "parameters": {
+      "TenantHeader": {
+        "name": "X-Vati-Tenant-ID",
+        "in": "header",
+        "required": true,
+        "description": "Tenant selected for this request. Must fall inside the authenticated principal's permitted scope; otherwise 403 tenant_scope_denied. Missing or malformed: 400 missing_tenant_context.",
+        "schema": { "$ref": "#/components/schemas/Uuid" }
+      },
+      "IdempotencyKeyHeader": {
+        "name": "Idempotency-Key",
+        "in": "header",
+        "required": true,
+        "description": "Client-generated unique key per logical mutation. Stored with a request digest; same key and digest replays the original response, changed digest returns 409 idempotency_conflict.",
+        "schema": { "type": "string", "minLength": 16, "maxLength": 255, "pattern": "^[A-Za-z0-9:._-]+$" }
+      },
+      "CorrelationIdHeader": {
+        "name": "X-Correlation-ID",
+        "in": "header",
+        "required": false,
+        "description": "Optional caller correlation ID; generated when absent and always echoed.",
+        "schema": { "$ref": "#/components/schemas/Uuid" }
+      },
+      "CaseIdPath": {
+        "name": "case_id",
+        "in": "path",
+        "required": true,
+        "description": "Internal immutable case UUID. Missing or malformed: 400 invalid_case_id. Never sufficient for authorisation alone.",
+        "schema": { "$ref": "#/components/schemas/Uuid" }
+      },
+      "LimitQuery": {
+        "name": "limit",
+        "in": "query",
+        "required": false,
+        "schema": { "type": "string", "pattern": "^([1-9]|[1-9][0-9]|100)$", "default": "25" },
+        "description": "Page size 1-100, default 25."
+      },
+      "CursorQuery": {
+        "name": "cursor",
+        "in": "query",
+        "required": false,
+        "schema": { "type": "string", "minLength": 1, "maxLength": 512 },
+        "description": "Opaque cursor from meta.next_cursor."
+      }
+    },
+    "headers": {
+      "CorrelationId": {
+        "required": true,
+        "schema": { "$ref": "#/components/schemas/Uuid" }
+      },
+      "IdempotentReplayed": {
+        "required": false,
+        "description": "Present with value true when the stored original response is replayed.",
+        "schema": { "type": "string", "enum": ["true"] }
+      }
+    },
+    "responses": {
+      "BadRequest": {
+        "description": "Malformed request, missing tenant context or missing/invalid case ID.",
+        "headers": { "X-Correlation-ID": { "$ref": "#/components/headers/CorrelationId" } },
+        "content": {
+          "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } }
+        }
+      },
+      "Unauthenticated": {
+        "description": "Missing or invalid authentication.",
+        "headers": { "X-Correlation-ID": { "$ref": "#/components/headers/CorrelationId" } },
+        "content": {
+          "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } }
+        }
+      },
+      "Forbidden": {
+        "description": "Operation or tenant scope denied.",
+        "headers": { "X-Correlation-ID": { "$ref": "#/components/headers/CorrelationId" } },
+        "content": {
+          "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } }
+        }
+      },
+      "NotFound": {
+        "description": "Resource missing or concealed from this principal.",
+        "headers": { "X-Correlation-ID": { "$ref": "#/components/headers/CorrelationId" } },
+        "content": {
+          "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } }
+        }
+      },
+      "Conflict": {
+        "description": "Stale expected_version, or Idempotency-Key reused with a different request digest, or same key still in progress.",
+        "headers": { "X-Correlation-ID": { "$ref": "#/components/headers/CorrelationId" } },
+        "content": {
+          "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } }
+        }
+      },
+      "InvalidDomainInput": {
+        "description": "Well-formed request violating a domain rule.",
+        "headers": { "X-Correlation-ID": { "$ref": "#/components/headers/CorrelationId" } },
+        "content": {
+          "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } }
+        }
+      },
+      "RateLimited": {
+        "description": "Rate limited; honour Retry-After.",
+        "headers": { "X-Correlation-ID": { "$ref": "#/components/headers/CorrelationId" } },
+        "content": {
+          "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } }
+        }
+      },
+      "DependencyUnavailable": {
+        "description": "Required upstream unavailable or timed out. Never replaced by fixture data or an invented result; timeouts mean unknown outcome.",
+        "headers": { "X-Correlation-ID": { "$ref": "#/components/headers/CorrelationId" } },
+        "content": {
+          "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } }
+        }
+      }
+    },
+    "schemas": {
+      "Uuid": {
+        "type": "string",
+        "format": "uuid"
+      },
+      "Timestamp": {
+        "type": "string",
+        "format": "date-time",
+        "description": "UTC ISO-8601 timestamp."
+      },
+      "Sha256": {
+        "type": "string",
+        "pattern": "^[a-f0-9]{64}$"
+      },
+      "Money": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["amount", "currency"],
+        "properties": {
+          "amount": { "type": "string", "pattern": "^-?(0|[1-9][0-9]*)(\\.[0-9]{1,4})?$" },
+          "currency": { "type": "string", "pattern": "^[A-Z]{3}$" }
+        }
+      },
+      "ServiceName": {
+        "type": "string",
+        "enum": ["jube", "frappe", "openaleph", "yente", "docling", "langgraph"]
+      },
+      "SyncState": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["state", "last_attempt_at", "error_code"],
+        "properties": {
+          "state": { "type": "string", "enum": ["pending", "synced", "failed"] },
+          "last_attempt_at": { "anyOf": [{ "$ref": "#/components/schemas/Timestamp" }, { "type": "null" }] },
+          "error_code": { "type": ["string", "null"], "maxLength": 64 }
+        }
+      },
+      "ServiceLink": {
+        "type": "object",
+        "description": "Cross-service mapping row; unique on (tenant_id, service, external_id).",
+        "additionalProperties": false,
+        "required": ["service", "external_type", "external_id", "sync"],
+        "properties": {
+          "service": { "$ref": "#/components/schemas/ServiceName" },
+          "external_type": { "type": "string", "minLength": 1, "maxLength": 64 },
+          "external_id": { "type": ["string", "null"], "minLength": 1, "maxLength": 255, "description": "Null until the upstream has acknowledged creation." },
+          "sync": { "$ref": "#/components/schemas/SyncState" }
+        }
+      },
+      "CaseStatus": {
+        "type": "string",
+        "description": "UI projection of the configured Jube workflow; not an independent lifecycle.",
+        "enum": ["RECEIVED", "VALIDATING", "INVESTIGATING", "AWAITING_EVIDENCE", "AWAITING_HUMAN", "RESOLVED", "FAILED_PROCESSING"]
+      },
+      "Case": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["case_id", "tenant_id", "display_id", "taxpayer_id", "submission_id", "status", "status_authority", "version", "refund_claim", "refund_lane", "assigned_officer_id", "service_links", "created_at", "updated_at", "synthetic"],
+        "properties": {
+          "case_id": { "$ref": "#/components/schemas/Uuid" },
+          "tenant_id": { "$ref": "#/components/schemas/Uuid" },
+          "display_id": { "type": "string", "pattern": "^[A-Z]{2,5}-[0-9]{3,10}$" },
+          "taxpayer_id": { "$ref": "#/components/schemas/Uuid" },
+          "submission_id": { "$ref": "#/components/schemas/Uuid" },
+          "status": { "$ref": "#/components/schemas/CaseStatus" },
+          "status_authority": { "const": "jube" },
+          "version": { "type": "integer", "minimum": 1 },
+          "refund_claim": { "anyOf": [{ "$ref": "#/components/schemas/Money" }, { "type": "null" }] },
+          "refund_lane": { "type": ["string", "null"], "enum": ["fast", "standard", "targeted", null] },
+          "assigned_officer_id": { "anyOf": [{ "$ref": "#/components/schemas/Uuid" }, { "type": "null" }] },
+          "service_links": { "type": "array", "items": { "$ref": "#/components/schemas/ServiceLink" } },
+          "created_at": { "$ref": "#/components/schemas/Timestamp" },
+          "updated_at": { "$ref": "#/components/schemas/Timestamp" },
+          "synthetic": { "type": "boolean" }
+        }
+      },
+      "CaseEnvelope": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["data"],
+        "properties": { "data": { "$ref": "#/components/schemas/Case" } }
+      },
+      "CreateCaseRequest": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["taxpayer_id", "submission_id", "frappe_submission_ref", "submission_type", "period", "refund_claim"],
+        "properties": {
+          "taxpayer_id": { "$ref": "#/components/schemas/Uuid" },
+          "submission_id": { "$ref": "#/components/schemas/Uuid" },
+          "frappe_submission_ref": { "type": "string", "minLength": 1, "maxLength": 140, "description": "Frappe document name of the validated submission." },
+          "submission_type": { "type": "string", "enum": ["vat_return", "refund_claim", "paye_return", "withholding_return"] },
+          "period": { "type": "string", "pattern": "^[0-9]{4}-(0[1-9]|1[0-2])$" },
+          "refund_claim": { "anyOf": [{ "$ref": "#/components/schemas/Money" }, { "type": "null" }] }
+        }
+      },
+      "StartInvestigationRequest": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["expected_version", "playbook_id"],
+        "properties": {
+          "expected_version": { "type": "integer", "minimum": 1 },
+          "playbook_id": { "type": "string", "pattern": "^[a-z0-9_]+@[0-9]+$", "description": "Approved, versioned playbook identifier." }
+        }
+      },
+      "InvestigationRun": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["run_id", "case_id", "tenant_id", "status", "playbook_id", "thread_id", "case_version", "created_at", "deadline_at"],
+        "properties": {
+          "run_id": { "$ref": "#/components/schemas/Uuid" },
+          "case_id": { "$ref": "#/components/schemas/Uuid" },
+          "tenant_id": { "$ref": "#/components/schemas/Uuid" },
+          "status": { "type": "string", "enum": ["queued", "running", "awaiting_human", "completed", "failed", "cancelled"] },
+          "playbook_id": { "type": "string", "pattern": "^[a-z0-9_]+@[0-9]+$" },
+          "thread_id": { "type": "string", "minLength": 1, "maxLength": 255, "description": "LangGraph thread derived from tenant/case/run." },
+          "case_version": { "type": "integer", "minimum": 1 },
+          "created_at": { "$ref": "#/components/schemas/Timestamp" },
+          "deadline_at": { "$ref": "#/components/schemas/Timestamp" }
+        }
+      },
+      "InvestigationRunEnvelope": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["data"],
+        "properties": { "data": { "$ref": "#/components/schemas/InvestigationRun" } }
+      },
+      "RegisterDocumentRequest": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["frappe_file_ref", "document_sha256", "media_type", "size_bytes", "document_type", "source", "supersedes_evidence_id"],
+        "properties": {
+          "frappe_file_ref": { "type": "string", "minLength": 1, "maxLength": 255, "description": "Restricted Frappe File name; never a public or arbitrary URL." },
+          "document_sha256": { "$ref": "#/components/schemas/Sha256" },
+          "media_type": { "type": "string", "enum": ["application/pdf", "image/png", "image/jpeg", "text/csv", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"] },
+          "size_bytes": { "type": "integer", "minimum": 1, "maximum": 26214400 },
+          "document_type": { "$ref": "#/components/schemas/DocumentType" },
+          "source": { "$ref": "#/components/schemas/EvidenceSource" },
+          "supersedes_evidence_id": { "anyOf": [{ "$ref": "#/components/schemas/Uuid" }, { "type": "null" }] }
+        }
+      },
+      "DocumentType": {
+        "type": "string",
+        "enum": ["invoice", "contract", "payslip", "import_declaration", "bank_statement", "financial_statement", "other"]
+      },
+      "EvidenceSource": {
+        "type": "string",
+        "enum": ["taxpayer_portal", "officer_upload", "synthetic_fixture"]
+      },
+      "EvidenceLocator": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["page", "record"],
+        "properties": {
+          "page": { "type": ["integer", "null"], "minimum": 1 },
+          "record": { "type": ["string", "null"], "minLength": 1, "maxLength": 255 }
+        }
+      },
+      "Evidence": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["evidence_id", "case_id", "tenant_id", "version", "supersedes_evidence_id", "document_sha256", "media_type", "size_bytes", "document_type", "source", "received_at", "extraction", "service_links", "synthetic"],
+        "properties": {
+          "evidence_id": { "$ref": "#/components/schemas/Uuid" },
+          "case_id": { "$ref": "#/components/schemas/Uuid" },
+          "tenant_id": { "$ref": "#/components/schemas/Uuid" },
+          "version": { "type": "integer", "minimum": 1 },
+          "supersedes_evidence_id": { "anyOf": [{ "$ref": "#/components/schemas/Uuid" }, { "type": "null" }] },
+          "document_sha256": { "$ref": "#/components/schemas/Sha256" },
+          "media_type": { "type": "string", "minLength": 1, "maxLength": 128 },
+          "size_bytes": { "type": "integer", "minimum": 1 },
+          "document_type": { "$ref": "#/components/schemas/DocumentType" },
+          "source": { "$ref": "#/components/schemas/EvidenceSource" },
+          "received_at": { "$ref": "#/components/schemas/Timestamp" },
+          "extraction": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["status", "extractor_version", "error_code"],
+            "properties": {
+              "status": { "type": "string", "enum": ["pending", "running", "completed", "failed"] },
+              "extractor_version": { "type": ["string", "null"], "maxLength": 64 },
+              "error_code": { "type": ["string", "null"], "maxLength": 64 }
+            }
+          },
+          "service_links": { "type": "array", "items": { "$ref": "#/components/schemas/ServiceLink" } },
+          "synthetic": { "type": "boolean" }
+        }
+      },
+      "EvidenceEnvelope": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["data"],
+        "properties": { "data": { "$ref": "#/components/schemas/Evidence" } }
+      },
+      "PageMeta": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["next_cursor", "has_more"],
+        "properties": {
+          "next_cursor": { "type": ["string", "null"], "maxLength": 512 },
+          "has_more": { "type": "boolean" }
+        }
+      },
+      "EvidenceList": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["data", "meta"],
+        "properties": {
+          "data": { "type": "array", "maxItems": 100, "items": { "$ref": "#/components/schemas/Evidence" } },
+          "meta": { "$ref": "#/components/schemas/PageMeta" }
+        }
+      },
+      "MatchCandidate": {
+        "type": "object",
+        "description": "yente proposal. Score is a decimal string in [0,1]; it is never identity, wrongdoing or legal authority.",
+        "additionalProperties": false,
+        "required": ["candidate_id", "dataset", "dataset_version", "score", "review_status", "reviewed_by"],
+        "properties": {
+          "candidate_id": { "type": "string", "minLength": 1, "maxLength": 255 },
+          "dataset": { "type": "string", "minLength": 1, "maxLength": 128 },
+          "dataset_version": { "type": "string", "minLength": 1, "maxLength": 128 },
+          "score": { "type": "string", "pattern": "^(0(\\.[0-9]{1,4})?|1(\\.0{1,4})?)$" },
+          "review_status": { "type": "string", "enum": ["unreviewed", "confirmed", "rejected"] },
+          "reviewed_by": { "anyOf": [{ "$ref": "#/components/schemas/Uuid" }, { "type": "null" }] }
+        }
+      },
+      "Entity": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["entity_id", "case_id", "tenant_id", "ftm_schema", "properties", "evidence_ids", "match_candidates", "service_links", "synthetic"],
+        "properties": {
+          "entity_id": { "$ref": "#/components/schemas/Uuid" },
+          "case_id": { "$ref": "#/components/schemas/Uuid" },
+          "tenant_id": { "$ref": "#/components/schemas/Uuid" },
+          "ftm_schema": { "type": "string", "enum": ["Person", "Company", "Organization", "LegalEntity", "Ownership", "Directorship", "Employment", "Payment"], "description": "Selected FtM schema; mapping validated in TAX-036." },
+          "properties": {
+            "type": "object",
+            "description": "FtM multi-valued properties.",
+            "additionalProperties": { "type": "array", "maxItems": 50, "items": { "type": "string", "maxLength": 1024 } }
+          },
+          "evidence_ids": { "type": "array", "items": { "$ref": "#/components/schemas/Uuid" } },
+          "match_candidates": { "type": "array", "items": { "$ref": "#/components/schemas/MatchCandidate" } },
+          "service_links": { "type": "array", "items": { "$ref": "#/components/schemas/ServiceLink" } },
+          "synthetic": { "type": "boolean" }
+        }
+      },
+      "EntityList": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["data", "meta"],
+        "properties": {
+          "data": { "type": "array", "maxItems": 100, "items": { "$ref": "#/components/schemas/Entity" } },
+          "meta": { "$ref": "#/components/schemas/PageMeta" }
+        }
+      },
+      "EvidenceRef": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["evidence_id", "document_sha256", "locator"],
+        "properties": {
+          "evidence_id": { "$ref": "#/components/schemas/Uuid" },
+          "document_sha256": { "$ref": "#/components/schemas/Sha256" },
+          "locator": { "$ref": "#/components/schemas/EvidenceLocator" }
+        }
+      },
+      "LegalRoute": {
+        "type": "object",
+        "description": "Remains unverified until a qualified reviewer supplies an authoritative citation.",
+        "additionalProperties": false,
+        "required": ["status", "citation", "verified_by"],
+        "properties": {
+          "status": { "type": "string", "enum": ["unverified", "verified_by_reviewer", "no_verified_route"] },
+          "citation": { "type": ["string", "null"], "maxLength": 512 },
+          "verified_by": { "anyOf": [{ "$ref": "#/components/schemas/Uuid" }, { "type": "null" }] }
+        }
+      },
+      "ProposedAction": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["type", "requires_human_approval"],
+        "properties": {
+          "type": { "type": "string", "enum": ["none", "human_clearance", "request_evidence", "specialist_review", "policy_gap_review"] },
+          "requires_human_approval": { "const": true }
+        }
+      },
+      "Finding": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["finding_id", "case_id", "tenant_id", "kind", "category", "explanation", "evidence_refs", "unresolved_amount", "confidence", "alternative_explanations", "legal_route", "proposed_action", "producer", "producer_version", "created_at"],
+        "properties": {
+          "finding_id": { "$ref": "#/components/schemas/Uuid" },
+          "case_id": { "$ref": "#/components/schemas/Uuid" },
+          "tenant_id": { "$ref": "#/components/schemas/Uuid" },
+          "kind": { "type": "string", "enum": ["observed_fact", "inference", "missing_evidence", "unverified_evidence", "contradictory_evidence"] },
+          "category": { "type": "string", "enum": ["refund_reconciliation", "related_party", "worker_classification", "imported_services", "policy_gap", "other"] },
+          "explanation": { "type": "string", "minLength": 1, "maxLength": 4000 },
+          "evidence_refs": { "type": "array", "items": { "$ref": "#/components/schemas/EvidenceRef" } },
+          "unresolved_amount": { "anyOf": [{ "$ref": "#/components/schemas/Money" }, { "type": "null" }] },
+          "confidence": { "type": "string", "enum": ["low", "medium", "high"], "description": "Producer confidence; not legal authority." },
+          "alternative_explanations": { "type": "array", "items": { "type": "string", "minLength": 1, "maxLength": 1000 } },
+          "legal_route": { "$ref": "#/components/schemas/LegalRoute" },
+          "proposed_action": { "$ref": "#/components/schemas/ProposedAction" },
+          "producer": { "type": "string", "enum": ["jube_rule", "langgraph_run", "officer"] },
+          "producer_version": { "type": "string", "minLength": 1, "maxLength": 128 },
+          "created_at": { "$ref": "#/components/schemas/Timestamp" }
+        }
+      },
+      "FindingList": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["data", "meta"],
+        "properties": {
+          "data": { "type": "array", "maxItems": 100, "items": { "$ref": "#/components/schemas/Finding" } },
+          "meta": { "$ref": "#/components/schemas/PageMeta" }
+        }
+      },
+      "RequestedItem": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["document_type", "description"],
+        "properties": {
+          "document_type": { "$ref": "#/components/schemas/DocumentType" },
+          "description": { "type": "string", "minLength": 1, "maxLength": 1000 }
+        }
+      },
+      "RequestEvidenceRequest": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["expected_version", "finding_ids", "items", "due_date", "message_to_taxpayer"],
+        "properties": {
+          "expected_version": { "type": "integer", "minimum": 1 },
+          "finding_ids": { "type": "array", "minItems": 1, "maxItems": 50, "items": { "$ref": "#/components/schemas/Uuid" } },
+          "items": { "type": "array", "minItems": 1, "maxItems": 20, "items": { "$ref": "#/components/schemas/RequestedItem" } },
+          "due_date": { "type": "string", "format": "date" },
+          "message_to_taxpayer": { "type": "string", "minLength": 1, "maxLength": 2000 }
+        }
+      },
+      "EvidenceRequest": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["request_id", "case_id", "tenant_id", "status", "authorised_by", "finding_ids", "items", "due_date", "case_version", "service_links", "created_at"],
+        "properties": {
+          "request_id": { "$ref": "#/components/schemas/Uuid" },
+          "case_id": { "$ref": "#/components/schemas/Uuid" },
+          "tenant_id": { "$ref": "#/components/schemas/Uuid" },
+          "status": { "type": "string", "enum": ["recorded", "sent", "responded", "withdrawn"] },
+          "authorised_by": { "$ref": "#/components/schemas/Uuid" },
+          "finding_ids": { "type": "array", "minItems": 1, "items": { "$ref": "#/components/schemas/Uuid" } },
+          "items": { "type": "array", "minItems": 1, "items": { "$ref": "#/components/schemas/RequestedItem" } },
+          "due_date": { "type": "string", "format": "date" },
+          "case_version": { "type": "integer", "minimum": 1 },
+          "service_links": { "type": "array", "items": { "$ref": "#/components/schemas/ServiceLink" } },
+          "created_at": { "$ref": "#/components/schemas/Timestamp" }
+        }
+      },
+      "EvidenceRequestEnvelope": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["data"],
+        "properties": { "data": { "$ref": "#/components/schemas/EvidenceRequest" } }
+      },
+      "ErrorCode": {
+        "type": "string",
+        "enum": [
+          "invalid_request",
+          "missing_tenant_context",
+          "invalid_case_id",
+          "unauthenticated",
+          "forbidden",
+          "tenant_scope_denied",
+          "not_found",
+          "version_conflict",
+          "idempotency_conflict",
+          "idempotency_in_progress",
+          "invalid_domain_input",
+          "rate_limited",
+          "upstream_unavailable",
+          "upstream_timeout"
+        ]
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["error"],
+        "properties": {
+          "error": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["code", "message", "retryable", "correlation_id"],
+            "properties": {
+              "code": { "$ref": "#/components/schemas/ErrorCode" },
+              "message": { "type": "string", "minLength": 1, "maxLength": 500, "description": "Safe summary; never document content, credentials or stack traces." },
+              "retryable": { "type": "boolean" },
+              "correlation_id": { "$ref": "#/components/schemas/Uuid" },
+              "service": { "anyOf": [{ "$ref": "#/components/schemas/ServiceName" }, { "const": "vati" }] },
+              "current_version": { "type": "integer", "minimum": 1 },
+              "field_errors": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": ["field", "code"],
+                  "properties": {
+                    "field": { "type": "string", "minLength": 1, "maxLength": 255 },
+                    "code": { "type": "string", "minLength": 1, "maxLength": 64 }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "EventEnvelope": {
+        "type": "object",
+        "description": "Internal outbox event. Payloads reference restricted IDs; never embed full documents.",
+        "additionalProperties": false,
+        "required": ["schema_version", "event_id", "tenant_id", "case_id", "correlation_id", "type", "occurred_at", "idempotency_key", "source_service", "payload"],
+        "properties": {
+          "schema_version": { "const": "1" },
+          "event_id": { "$ref": "#/components/schemas/Uuid" },
+          "tenant_id": { "$ref": "#/components/schemas/Uuid" },
+          "case_id": { "$ref": "#/components/schemas/Uuid" },
+          "correlation_id": { "$ref": "#/components/schemas/Uuid" },
+          "type": {
+            "type": "string",
+            "enum": ["case.registered", "case.status_projected", "evidence.received", "extraction.completed", "extraction.failed", "investigation.requested", "finding.recorded", "evidence_request.recorded"]
+          },
+          "occurred_at": { "$ref": "#/components/schemas/Timestamp" },
+          "idempotency_key": { "type": "string", "minLength": 16, "maxLength": 255, "pattern": "^[A-Za-z0-9:._-]+$" },
+          "source_service": { "anyOf": [{ "$ref": "#/components/schemas/ServiceName" }, { "const": "vati" }] },
+          "payload": {
+            "type": "object",
+            "additionalProperties": { "type": ["string", "integer", "boolean", "null"], "maxLength": 255 }
+          }
+        }
+      }
+    }
+  }
+}

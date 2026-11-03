@@ -1,0 +1,43 @@
+{
+  "name": "error_idempotency_key_reused_with_changed_body",
+  "operation_id": "createCase",
+  "scenario": "SYN-001",
+  "synthetic": true,
+  "description": "The same Idempotency-Key with a different request digest is a conflict (repository API_STANDARD; see ADR-003).",
+  "request": {
+    "method": "POST",
+    "path": "/api/v1/cases",
+    "headers": {
+      "Authorization": "Bearer synthetic-dev-token-not-a-secret",
+      "X-Vati-Tenant-ID": "10000000-0000-4000-8000-000000000001",
+      "X-Correlation-ID": "c0000000-0000-4000-8000-000000000015",
+      "Idempotency-Key": "frappe:VT-SUB-0001:submit:v1"
+    },
+    "body": {
+      "taxpayer_id": "20000000-0000-4000-8000-000000000001",
+      "submission_id": "30000000-0000-4000-8000-000000000001",
+      "frappe_submission_ref": "VT-SUB-0001",
+      "submission_type": "refund_claim",
+      "period": "2026-09",
+      "refund_claim": {
+        "amount": "18000.00",
+        "currency": "LSL"
+      }
+    }
+  },
+  "response": {
+    "status": 409,
+    "headers": {
+      "X-Correlation-ID": "c0000000-0000-4000-8000-000000000015"
+    },
+    "body": {
+      "error": {
+        "code": "idempotency_conflict",
+        "message": "Idempotency-Key was already used with a different request.",
+        "retryable": false,
+        "correlation_id": "c0000000-0000-4000-8000-000000000015",
+        "service": "vati"
+      }
+    }
+  }
+}
