@@ -5,14 +5,14 @@
   "owner": "Gupta",
   "area": "ai",
   "phase": "pilot",
-  "status": "BACKLOG",
+  "status": "IN_PROGRESS",
   "priority": "P0",
   "depends_on": [
     "TAX-022",
     "TAX-024"
   ],
-  "claimed_by": null,
-  "branch": null,
+  "claimed_by": "keletso-claude-code-tax052",
+  "branch": "task/TAX-052",
   "pr": null,
   "scope": "Separate observed risk from reviewer-verified legal route, authority version and policy-gap classification",
   "inputs": [
@@ -46,5 +46,14 @@
     "finish-task"
   ],
   "evidence": [],
-  "notes": []
+  "notes": [
+    {
+      "at": "2026-11-03T19:47:49.087454+00:00",
+      "text": "Claimed by keletso-claude-code-tax052"
+    },
+    {
+      "at": "2026-11-03T19:47:49.089629+00:00",
+      "text": "Implemented by keletso-claude-code on Keletso's instruction (2026-11-03); owner Gupta unchanged as reviewer/accountable owner."
+    }
+  ]
 }
