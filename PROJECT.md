@@ -38,3 +38,5 @@ Jube owns operational cases, assignment/status/escalation/risk execution. Frappe
 Foundation and pilot tasks build the five-scenario vertical slice. Expansion and future tasks describe the broader national platform; they are deliberately not claimed as already implemented. Humans review PRs and consequential investigation actions. Agents implement, test and keep task files/issues current.
 
 Frontend implementation and review must follow [the shared design standard](docs/DESIGN_STANDARD.md). Leseli and Kananelo establish representative screen baselines; Jane checks visual consistency and accessibility.
+
+Shared implementation rules: [engineering](docs/ENGINEERING_STANDARD.md), [API](docs/API_STANDARD.md), [AI](docs/AI_STANDARD.md), [v1 acceptance](docs/V1_ACCEPTANCE.md), [tool installation](docs/TOOLCHAIN.md). GitHub Free and proportional prototype safeguards are deliberate decisions (ADR-002).

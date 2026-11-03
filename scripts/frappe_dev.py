@@ -1,19 +1,25 @@
 """Initialize/start an isolated Frappe developer site; never touches existing sites."""
+
 import argparse
 import json
 import os
-from pathlib import Path
 import secrets
 import subprocess
+from pathlib import Path
 
-ROOT=Path(__file__).resolve().parents[1]
-COMPOSE=['docker','compose','-f','docker-compose.frappe.yml']
+ROOT = Path(__file__).resolve().parents[1]
+COMPOSE = ["docker", "compose", "-f", "docker-compose.frappe.yml"]
+
 
 def run(args, **kwargs):
-    result=subprocess.run(args,cwd=ROOT,**kwargs)
-    if result.returncode: raise SystemExit('Frappe developer command failed; existing data preserved. Inspect the isolated container logs.')
+    result = subprocess.run(args, cwd=ROOT, **kwargs)
+    if result.returncode:
+        raise SystemExit(
+            "Frappe developer command failed; existing data preserved. Inspect the isolated container logs."
+        )
 
-INIT=r'''
+
+INIT = r"""
 import json, os, pathlib, subprocess, sys
 root=pathlib.Path('/workspace/frappe-bench')
 def cmd(args, cwd=root):
@@ -42,7 +48,7 @@ if 'vati_tax' not in installed:
 cmd(['bench','--site','taxathon.localhost','migrate'])
 cmd(['bench','use','taxathon.localhost'])
 print('Pinned Frappe developer site and Vati app initialized')
-'''
+"""
 
 START = r"""
 import fcntl, pathlib, subprocess
@@ -55,25 +61,53 @@ with open('/workspace/bench.log', 'a') as log:
     subprocess.run(['bench', 'start'], cwd='/workspace/frappe-bench', stdout=log, stderr=subprocess.STDOUT)
 """
 
+
 def main():
-    p=argparse.ArgumentParser();p.add_argument('command',choices=['init','start','status']);a=p.parse_args()
-    if a.command=='status':run(COMPOSE+['ps']);return
-    if a.command=='start':
-        run(COMPOSE+['exec','-d','frappe','python','-c',START])
-        print('Developer start requested; check http://127.0.0.1:58000 and container /workspace/bench.log');return
-    subprocess.check_call(['python3','scripts/dev_env.py'],cwd=ROOT)
-    envfile=ROOT/'.env';content=envfile.read_text()
-    values=dict(line.split('=',1) for line in content.splitlines() if '=' in line and not line.startswith('#'))
-    if not values.get('FRAPPE_ADMIN_PASSWORD'):
-        values['FRAPPE_ADMIN_PASSWORD']=secrets.token_urlsafe(24)
-        with envfile.open('a') as f:f.write('FRAPPE_ADMIN_PASSWORD='+values['FRAPPE_ADMIN_PASSWORD']+'\n')
-    env=os.environ.copy();env.pop('FRAPPE_DB_PASSWORD', None)
-    env.update(TAXATHON_DB_ROOT_PASSWORD=values['FRAPPE_DB_PASSWORD'], FRAPPE_ADMIN_PASSWORD=values['FRAPPE_ADMIN_PASSWORD'])
-    lock=json.loads((ROOT/'integration/frappe-framework.lock.json').read_text());env.update(FRAPPE_TAG=lock['tag'],FRAPPE_COMMIT=lock['commit'])
-    run(COMPOSE+['up','-d'])
-    run(COMPOSE+['exec','-T','-u','root','frappe','chown','frappe:frappe','/workspace'])
-    command=COMPOSE+['exec','-T']
-    for key in ['TAXATHON_DB_ROOT_PASSWORD','FRAPPE_ADMIN_PASSWORD','FRAPPE_TAG','FRAPPE_COMMIT']:command+=['-e',key]
-    run(command+['frappe','python','-c',INIT],env=env)
-    print('Local credentials are in ignored .env. Do not commit or share them.')
-if __name__=='__main__':main()
+    p = argparse.ArgumentParser()
+    p.add_argument("command", choices=["init", "start", "status"])
+    a = p.parse_args()
+    if a.command == "status":
+        run(COMPOSE + ["ps"])
+        return
+    if a.command == "start":
+        run(COMPOSE + ["exec", "-d", "frappe", "python", "-c", START])
+        print(
+            "Developer start requested; check http://127.0.0.1:58000 and container /workspace/bench.log"
+        )
+        return
+    subprocess.check_call(["python3", "scripts/dev_env.py"], cwd=ROOT)
+    envfile = ROOT / ".env"
+    content = envfile.read_text()
+    values = dict(
+        line.split("=", 1)
+        for line in content.splitlines()
+        if "=" in line and not line.startswith("#")
+    )
+    if not values.get("FRAPPE_ADMIN_PASSWORD"):
+        values["FRAPPE_ADMIN_PASSWORD"] = secrets.token_urlsafe(24)
+        with envfile.open("a") as f:
+            f.write("FRAPPE_ADMIN_PASSWORD=" + values["FRAPPE_ADMIN_PASSWORD"] + "\n")
+    env = os.environ.copy()
+    env.pop("FRAPPE_DB_PASSWORD", None)
+    env.update(
+        TAXATHON_DB_ROOT_PASSWORD=values["FRAPPE_DB_PASSWORD"],
+        FRAPPE_ADMIN_PASSWORD=values["FRAPPE_ADMIN_PASSWORD"],
+    )
+    lock = json.loads((ROOT / "integration/frappe-framework.lock.json").read_text())
+    env.update(FRAPPE_TAG=lock["tag"], FRAPPE_COMMIT=lock["commit"])
+    run(COMPOSE + ["up", "-d"])
+    run(COMPOSE + ["exec", "-T", "-u", "root", "frappe", "chown", "frappe:frappe", "/workspace"])
+    command = COMPOSE + ["exec", "-T"]
+    for key in [
+        "TAXATHON_DB_ROOT_PASSWORD",
+        "FRAPPE_ADMIN_PASSWORD",
+        "FRAPPE_TAG",
+        "FRAPPE_COMMIT",
+    ]:
+        command += ["-e", key]
+    run(command + ["frappe", "python", "-c", INIT], env=env)
+    print("Local credentials are in ignored .env. Do not commit or share them.")
+
+
+if __name__ == "__main__":
+    main()

@@ -1,5 +1,7 @@
 """Shared starting types for TAX-022; no tax decision implementation."""
+
 from typing import TypedDict
+
 
 class InvestigationState(TypedDict):
     tenant_id: str

@@ -1,6 +1,6 @@
 # Vati AI agent instructions
 
-Read PROJECT.md, PROJECT_SCOPE.md, docs/ARCHITECTURE.md, docs/API_CONTRACTS.md and the chosen task. Use the repository skills in `.agents/skills` (or `.claude/skills` aliases). Start with `start-task`; finish with `finish-task`.
+Read PROJECT.md, PROJECT_SCOPE.md, docs/ARCHITECTURE.md, docs/API_CONTRACTS.md, docs/ENGINEERING_STANDARD.md and the chosen task. Use the repository skills in `.agents/skills` (or `.claude/skills` aliases). Start with `start-task`; finish with `finish-task`.
 
 ## Ownership and task execution
 
@@ -30,3 +30,9 @@ Preserve human scope and authorization. Skills do not grant broader external-act
 ## Frontend visual quality
 
 Every UI change must follow docs/DESIGN_STANDARD.md. Reuse the shared Frappe-inspired component/token contract, supply viewport/state screenshots and record accessibility checks. First-screen baselines and later deviations need human visual review; passing functional tests alone does not establish visual approval.
+
+## Prototype v1 scope and consistent implementation
+
+GitHub Free is intentional. Do not ask for paid protection or add enterprise controls to unblock prototype coding. Follow docs/V1_ACCEPTANCE.md for essential safeguards and deferred hardening. Read docs/API_STANDARD.md for boundary work and docs/AI_STANDARD.md for AI/evaluation work. Use docs/decisions/TEMPLATE.md for material shared decisions, with official source/version and observed evidence; routine coding does not need an approval ceremony.
+
+Install the shared tools using docs/TOOLCHAIN.md. Run scripts/quality.py as well as relevant tests. Finish refreshes the task branch from origin/main, checks code, pushes only that branch and opens review. Resolve conflicts carefully and retest; never force-push to avoid a conflict. No automatic merge. On later sessions verify merged task PRs and reconcile DONE through a follow-up PR promptly.

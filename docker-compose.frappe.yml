@@ -16,7 +16,7 @@ services:
   redis-queue:
     image: redis:7-alpine
   frappe:
-    image: frappe/bench:latest
+    image: frappe/bench@sha256:aae8521f4200c8c061b1ae7c514c4e83b38c2e178b5f3bb452ac3f54296f22a9
     command: ["sleep", "infinity"]
     working_dir: /workspace
     environment:

@@ -14,16 +14,19 @@
   "scope": "Apply researched cross-stack prototype standards, free-plan workflow, automated quality checks and consistent developer onboarding",
   "inputs": [
     "PROJECT.md",
-    "AGENTS.md"
+    "AGENTS.md",
+    "docs/ENGINEERING_STANDARD.md",
+    "docs/V1_ACCEPTANCE.md",
+    "docs/API_STANDARD.md"
   ],
   "acceptance": [
     {
       "text": "Publish source-backed engineering, API, AI, testing and essential security conventions with prototype boundaries",
-      "done": false
+      "done": true
     },
     {
       "text": "Configure and verify repeatable Python and frontend quality checks in local tooling and CI",
-      "done": false
+      "done": true
     },
     {
       "text": "Update agent/task onboarding, reconcile merged setup status and open a review PR without merging",
@@ -35,7 +38,11 @@
     "implement-change",
     "finish-task"
   ],
-  "evidence": [],
+  "evidence": [
+    "Source-backed ADR-002 and cross-stack standards linked from all implementation tasks and agent guidance.",
+    "Ruff lint/format, Mypy (14 source files), ESLint/Prettier, 12 tooling tests and LangGraph smoke pass locally with isolated Node 22.",
+    "Tested Frappe development image pinned by digest; free-plan setup no longer attempts paid-only protection."
+  ],
   "notes": [
     "User explicitly chose GitHub Free and proportional v1 prototype safeguards; paid protection is not a prerequisite."
   ]
