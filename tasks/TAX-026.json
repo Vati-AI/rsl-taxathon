@@ -1,0 +1,44 @@
+{
+  "id": "TAX-026",
+  "kind": "task",
+  "title": "OpenAleph isolated development deployment",
+  "owner": "Keletso",
+  "area": "integration",
+  "phase": "foundation",
+  "status": "READY",
+  "priority": "P0",
+  "depends_on": [],
+  "claimed_by": null,
+  "branch": null,
+  "pr": null,
+  "scope": "Start pinned OpenAleph with its required search/database/worker services and restricted synthetic collection",
+  "inputs": [
+    "PROJECT.md",
+    "docs/ARCHITECTURE.md",
+    "docs/API_CONTRACTS.md",
+    "docs/REQUIREMENTS.md"
+  ],
+  "acceptance": [
+    {
+      "text": "Start pinned OpenAleph with its required search/database/worker services and restricted synthetic collection",
+      "done": false
+    },
+    {
+      "text": "Ingest and retrieve one synthetic document; prove unrelated collection access is denied",
+      "done": false
+    },
+    {
+      "text": "Record relevant tests and evidence, update task status and open a human-review PR",
+      "done": false
+    }
+  ],
+  "verification": "Ingest and retrieve one synthetic document; prove unrelated collection access is denied",
+  "skills": [
+    "start-task",
+    "implement-change",
+    "update-project-task",
+    "finish-task"
+  ],
+  "evidence": [],
+  "notes": []
+}

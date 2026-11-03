@@ -1,0 +1,46 @@
+{
+  "id": "TAX-033",
+  "kind": "task",
+  "title": "Durable outbox and idempotent workers",
+  "owner": "Edga",
+  "area": "backend",
+  "phase": "pilot",
+  "status": "BACKLOG",
+  "priority": "P0",
+  "depends_on": [
+    "TAX-030"
+  ],
+  "claimed_by": null,
+  "branch": null,
+  "pr": null,
+  "scope": "Implement persisted delivery attempts, retry limits and dead-letter/manual-retry state",
+  "inputs": [
+    "PROJECT.md",
+    "docs/ARCHITECTURE.md",
+    "docs/API_CONTRACTS.md",
+    "docs/REQUIREMENTS.md"
+  ],
+  "acceptance": [
+    {
+      "text": "Implement persisted delivery attempts, retry limits and dead-letter/manual-retry state",
+      "done": false
+    },
+    {
+      "text": "Crash/replay jobs and prove no duplicate case or outward evidence request",
+      "done": false
+    },
+    {
+      "text": "Record relevant tests and evidence, update task status and open a human-review PR",
+      "done": false
+    }
+  ],
+  "verification": "Crash/replay jobs and prove no duplicate case or outward evidence request",
+  "skills": [
+    "start-task",
+    "implement-change",
+    "update-project-task",
+    "finish-task"
+  ],
+  "evidence": [],
+  "notes": []
+}

@@ -1,0 +1,47 @@
+{
+  "id": "TAX-068",
+  "kind": "task",
+  "title": "Institutional knowledge retrieval",
+  "owner": "Gupta",
+  "area": "ai",
+  "phase": "expansion",
+  "status": "BACKLOG",
+  "priority": "P1",
+  "depends_on": [
+    "TAX-053",
+    "TAX-062"
+  ],
+  "claimed_by": null,
+  "branch": null,
+  "pr": null,
+  "scope": "Index reviewed case reasoning, accepted alternatives and legal authority versions under case permissions",
+  "inputs": [
+    "PROJECT.md",
+    "docs/ARCHITECTURE.md",
+    "docs/API_CONTRACTS.md",
+    "docs/REQUIREMENTS.md"
+  ],
+  "acceptance": [
+    {
+      "text": "Index reviewed case reasoning, accepted alternatives and legal authority versions under case permissions",
+      "done": false
+    },
+    {
+      "text": "Retrieve relevant authorized cases with citations and clearly distinguish institutional memory from binding precedent",
+      "done": false
+    },
+    {
+      "text": "Record relevant tests and evidence, update task status and open a human-review PR",
+      "done": false
+    }
+  ],
+  "verification": "Retrieve relevant authorized cases with citations and clearly distinguish institutional memory from binding precedent",
+  "skills": [
+    "start-task",
+    "implement-change",
+    "update-project-task",
+    "finish-task"
+  ],
+  "evidence": [],
+  "notes": []
+}

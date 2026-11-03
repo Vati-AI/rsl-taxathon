@@ -1,0 +1,47 @@
+{
+  "id": "TAX-069",
+  "kind": "task",
+  "title": "Objection, appeal and final-outcome records",
+  "owner": "Edga",
+  "area": "backend",
+  "phase": "expansion",
+  "status": "BACKLOG",
+  "priority": "P1",
+  "depends_on": [
+    "TAX-046",
+    "TAX-059"
+  ],
+  "claimed_by": null,
+  "branch": null,
+  "pr": null,
+  "scope": "Link investigation decision to objections, appeals and reviewed final outcomes",
+  "inputs": [
+    "PROJECT.md",
+    "docs/ARCHITECTURE.md",
+    "docs/API_CONTRACTS.md",
+    "docs/REQUIREMENTS.md"
+  ],
+  "acceptance": [
+    {
+      "text": "Link investigation decision to objections, appeals and reviewed final outcomes",
+      "done": false
+    },
+    {
+      "text": "Overturned findings remain traceable and trigger review signals without rewriting original evidence",
+      "done": false
+    },
+    {
+      "text": "Record relevant tests and evidence, update task status and open a human-review PR",
+      "done": false
+    }
+  ],
+  "verification": "Overturned findings remain traceable and trigger review signals without rewriting original evidence",
+  "skills": [
+    "start-task",
+    "implement-change",
+    "update-project-task",
+    "finish-task"
+  ],
+  "evidence": [],
+  "notes": []
+}

@@ -1,0 +1,44 @@
+{
+  "id": "TAX-027",
+  "kind": "task",
+  "title": "yente synthetic dataset deployment",
+  "owner": "Keletso",
+  "area": "integration",
+  "phase": "foundation",
+  "status": "READY",
+  "priority": "P0",
+  "depends_on": [],
+  "claimed_by": null,
+  "branch": null,
+  "pr": null,
+  "scope": "Configure local matching dataset and supported search backend, without silently downloading licensed external datasets",
+  "inputs": [
+    "PROJECT.md",
+    "docs/ARCHITECTURE.md",
+    "docs/API_CONTRACTS.md",
+    "docs/REQUIREMENTS.md"
+  ],
+  "acceptance": [
+    {
+      "text": "Configure local matching dataset and supported search backend, without silently downloading licensed external datasets",
+      "done": false
+    },
+    {
+      "text": "Match known aliases and return two ambiguous candidates with dataset version",
+      "done": false
+    },
+    {
+      "text": "Record relevant tests and evidence, update task status and open a human-review PR",
+      "done": false
+    }
+  ],
+  "verification": "Match known aliases and return two ambiguous candidates with dataset version",
+  "skills": [
+    "start-task",
+    "implement-change",
+    "update-project-task",
+    "finish-task"
+  ],
+  "evidence": [],
+  "notes": []
+}

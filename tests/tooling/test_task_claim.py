@@ -26,6 +26,7 @@ class ClaimTests(unittest.TestCase):
                 self.run_git(first, 'config', key, value)
             (first/'tasks').mkdir()
             task = json.loads((ROOT/'tasks/TAX-001.json').read_text())
+            task.update(kind='task', status='READY')
             (first/'tasks/TAX-001.json').write_text(json.dumps(task))
             self.run_git(first, 'add', '.')
             self.run_git(first, 'commit', '-m', 'seed')

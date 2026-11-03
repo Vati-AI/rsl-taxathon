@@ -1,0 +1,47 @@
+{
+  "id": "TAX-037",
+  "kind": "task",
+  "title": "yente candidate review adapter",
+  "owner": "Keletso",
+  "area": "integration",
+  "phase": "pilot",
+  "status": "BACKLOG",
+  "priority": "P0",
+  "depends_on": [
+    "TAX-027",
+    "TAX-036"
+  ],
+  "claimed_by": null,
+  "branch": null,
+  "pr": null,
+  "scope": "Normalize match candidates, dataset versions and review decisions; never merge entities solely on score",
+  "inputs": [
+    "PROJECT.md",
+    "docs/ARCHITECTURE.md",
+    "docs/API_CONTRACTS.md",
+    "docs/REQUIREMENTS.md"
+  ],
+  "acceptance": [
+    {
+      "text": "Normalize match candidates, dataset versions and review decisions; never merge entities solely on score",
+      "done": false
+    },
+    {
+      "text": "Test aliases, false matches and ambiguous candidates without overwriting original identities",
+      "done": false
+    },
+    {
+      "text": "Record relevant tests and evidence, update task status and open a human-review PR",
+      "done": false
+    }
+  ],
+  "verification": "Test aliases, false matches and ambiguous candidates without overwriting original identities",
+  "skills": [
+    "start-task",
+    "implement-change",
+    "update-project-task",
+    "finish-task"
+  ],
+  "evidence": [],
+  "notes": []
+}

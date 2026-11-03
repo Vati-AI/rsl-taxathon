@@ -1,0 +1,48 @@
+{
+  "id": "TAX-058",
+  "kind": "task",
+  "title": "Five-scenario demo and measured acceptance",
+  "owner": "Keletso",
+  "area": "docs",
+  "phase": "pilot",
+  "status": "BACKLOG",
+  "priority": "P0",
+  "depends_on": [
+    "TAX-055",
+    "TAX-056",
+    "TAX-057"
+  ],
+  "claimed_by": null,
+  "branch": null,
+  "pr": null,
+  "scope": "Publish reproducible reset/demo runbook, pinned versions, measured timings and known limitations",
+  "inputs": [
+    "PROJECT.md",
+    "docs/ARCHITECTURE.md",
+    "docs/API_CONTRACTS.md",
+    "docs/REQUIREMENTS.md"
+  ],
+  "acceptance": [
+    {
+      "text": "Publish reproducible reset/demo runbook, pinned versions, measured timings and known limitations",
+      "done": false
+    },
+    {
+      "text": "Independent replay of five scenarios with human outcomes and clear live-versus-fixture disclosure",
+      "done": false
+    },
+    {
+      "text": "Record relevant tests and evidence, update task status and open a human-review PR",
+      "done": false
+    }
+  ],
+  "verification": "Independent replay of five scenarios with human outcomes and clear live-versus-fixture disclosure",
+  "skills": [
+    "start-task",
+    "implement-change",
+    "update-project-task",
+    "finish-task"
+  ],
+  "evidence": [],
+  "notes": []
+}

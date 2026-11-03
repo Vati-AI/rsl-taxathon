@@ -1,6 +1,6 @@
 # GitHub setup and governance
 
-Target: private `Vati-AI/rsl-taxathon`. Organization creation requires a signed-in owner to accept GitHub terms and any verification. No organization or remote repository is implied by this scaffold.
+Target: private `Vati-AI/rsl-taxathon`. Organization creation requires a signed-in owner to accept GitHub terms and any verification. The live setup is recorded in `SETUP_STATUS.md`.
 
 ## Publishing
 
@@ -24,10 +24,12 @@ GitHub Free organizations cannot enforce protected branches/CODEOWNERS on privat
 
 ## Board and tasks
 
-Project title: RSL Taxathon — Team delivery. Private, linked to this repo. Create a Board view in the Project UI grouped by Status (Todo / In Progress / Done); labels preserve READY, BACKLOG, BLOCKED and IN_REVIEW distinctions. Repo-native tasks remain the source of truth. The sync tool upserts one issue per TAX ID, applies owner/status/area labels, adds it to the Project and updates the Status field. It also reopens tasks that are no longer DONE. Run it from trusted main after merges, or with `--task TAX-XXX` from that task's branch for live progress.
+Project title: RSL Taxathon — Team delivery. Private, linked to this repo. The live Board view is saved; for another deployment, create a Board view in the Project UI grouped by Status (Todo / In Progress / Done); labels preserve READY, BACKLOG, BLOCKED and IN_REVIEW distinctions. Repo-native tasks remain the source of truth. The sync tool upserts one issue per TAX ID, applies owner/status/area labels, adds it to the Project and updates the Status field. It also reopens tasks that are no longer DONE. Run it from trusted main after merges, or with `--task TAX-XXX` from that task's branch for live progress.
 
 Automation is provided as a manual workflow, using optional `PROJECT_TOKEN` and repository variable `PROJECT_NUMBER`. Do not supply broad credentials to pull_request workflows. Without that token use the local CLI. Assignments wait until the configured collaborator has accepted access. No automatic merge is configured.
 
 ## Verification
 
 Check repo visibility, organization ownership, accepted memberships, team permissions, project visibility/items, actual branch protection response, and a successful `validate` CI run. Preserve actual URLs and unresolved blockers in the setup handover; do not label untested service adapters as ready.
+
+Expanded workspace: PROJECT.md and docs/ONBOARDING.md are the developer entry points. Initial broad tasks are epics; use dependency-ready leaf tasks from task.py list. During the authorized setup only, a maintainer may run github_sync.py with --allow-branch chore/TAX-017-setup-handover to seed the reviewed backlog before merge.

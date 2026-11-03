@@ -1,0 +1,47 @@
+{
+  "id": "TAX-062",
+  "kind": "task",
+  "title": "Pilot data access, retention and export controls",
+  "owner": "Edga",
+  "area": "backend",
+  "phase": "pilot",
+  "status": "BACKLOG",
+  "priority": "P0",
+  "depends_on": [
+    "TAX-032",
+    "TAX-059"
+  ],
+  "claimed_by": null,
+  "branch": null,
+  "pr": null,
+  "scope": "Implement scoped evidence export manifest, retention metadata and access audit; require explicit human authorization for export",
+  "inputs": [
+    "PROJECT.md",
+    "docs/ARCHITECTURE.md",
+    "docs/API_CONTRACTS.md",
+    "docs/REQUIREMENTS.md"
+  ],
+  "acceptance": [
+    {
+      "text": "Implement scoped evidence export manifest, retention metadata and access audit; require explicit human authorization for export",
+      "done": false
+    },
+    {
+      "text": "Test export denies unauthorized records and includes hash/provenance manifest",
+      "done": false
+    },
+    {
+      "text": "Record relevant tests and evidence, update task status and open a human-review PR",
+      "done": false
+    }
+  ],
+  "verification": "Test export denies unauthorized records and includes hash/provenance manifest",
+  "skills": [
+    "start-task",
+    "implement-change",
+    "update-project-task",
+    "finish-task"
+  ],
+  "evidence": [],
+  "notes": []
+}

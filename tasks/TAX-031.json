@@ -1,0 +1,47 @@
+{
+  "id": "TAX-031",
+  "kind": "task",
+  "title": "Submission and tax-domain DocTypes",
+  "owner": "Edga",
+  "area": "backend",
+  "phase": "pilot",
+  "status": "BACKLOG",
+  "priority": "P0",
+  "depends_on": [
+    "TAX-029",
+    "TAX-030"
+  ],
+  "claimed_by": null,
+  "branch": null,
+  "pr": null,
+  "scope": "Add Taxpayer, Submission, VAT Return, Refund Claim and Imported Service DocTypes with decimal/currency and period validation",
+  "inputs": [
+    "PROJECT.md",
+    "docs/ARCHITECTURE.md",
+    "docs/API_CONTRACTS.md",
+    "docs/REQUIREMENTS.md"
+  ],
+  "acceptance": [
+    {
+      "text": "Add Taxpayer, Submission, VAT Return, Refund Claim and Imported Service DocTypes with decimal/currency and period validation",
+      "done": false
+    },
+    {
+      "text": "Migrate clean site and test malformed amounts, invalid periods and unauthorized writes",
+      "done": false
+    },
+    {
+      "text": "Record relevant tests and evidence, update task status and open a human-review PR",
+      "done": false
+    }
+  ],
+  "verification": "Migrate clean site and test malformed amounts, invalid periods and unauthorized writes",
+  "skills": [
+    "start-task",
+    "implement-change",
+    "update-project-task",
+    "finish-task"
+  ],
+  "evidence": [],
+  "notes": []
+}

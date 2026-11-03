@@ -32,6 +32,8 @@ def start(args):
     git('switch', 'main')
     git('pull', '--ff-only', 'origin', 'main')
     task = read(args.id)
+    if task.get('kind') == 'epic':
+        raise ValueError('Planning epics cannot be claimed; select a leaf task')
     if task['status'] not in {'READY', 'BACKLOG'}:
         raise ValueError('Task is already claimed or not eligible')
     if any(read(dep)['status'] != 'DONE' for dep in task['depends_on']):
@@ -52,6 +54,7 @@ def start(args):
     except subprocess.CalledProcessError:
         raise ValueError('Claim push failed; do not implement until the remote claim succeeds. Local commit preserved.')
     print('Claimed ' + args.id + ' on ' + branch)
+    sync_task(args.id, optional=True)
 
 def status(args):
     if git('branch', '--show-current') == 'main':
@@ -76,14 +79,66 @@ def status(args):
     save(task)
     print('Updated task file; commit and push it with your branch')
 
+def sync_task(task_id, optional=False):
+    remote = git('remote', 'get-url', 'origin')
+    if 'github.com' not in remote:
+        if not optional: raise ValueError('GitHub remote required for issue/Project sync')
+        return
+    config = json.loads((ROOT / 'config/project.json').read_text())
+    result = subprocess.run(['python3', str(ROOT / 'scripts/github_sync.py'), '--repo', config['repository'], '--project-number', str(config['project_number']), '--task', task_id], cwd=ROOT)
+    if result.returncode:
+        print('WARNING: Git task state is saved, but GitHub synchronization failed. Run task.py sync after fixing access.')
+        if not optional: raise ValueError('GitHub synchronization failed')
+
+def list_tasks(args):
+    tasks = {p.stem: json.loads(p.read_text()) for p in (ROOT / 'tasks').glob('TAX-*.json')}
+    for key, t in sorted(tasks.items()):
+        if t.get('kind') == 'epic': continue
+        if args.owner and t['owner'].casefold() != args.owner.casefold(): continue
+        eligible = t['status'] in {'READY', 'BACKLOG'} and all(tasks[d]['status']=='DONE' for d in t['depends_on'])
+        if args.ready and not eligible: continue
+        print(f"{key} | {t['owner']} | {t.get('phase','foundation')} | {'READY' if eligible else t['status']} | {t['title']}")
+
+def evidence(args):
+    if git('branch','--show-current') == 'main': raise ValueError('Use a task branch')
+    t=read(args.id)
+    if not 1 <= args.criterion <= len(t['acceptance']): raise ValueError('Criterion number is out of range (one-based)')
+    t['acceptance'][args.criterion-1]['done']=True
+    t['evidence'].append({'criterion':args.criterion,'text':args.text})
+    save(t)
+    print('Evidence recorded; commit with the task branch')
+
+def finish(args):
+    t=read(args.id)
+    branch=git('branch','--show-current')
+    if branch == 'main' or t.get('branch') != branch: raise ValueError("Use this task's claimed branch")
+    if git('status','--porcelain'): raise ValueError('Commit intended changes before finishing')
+    body=Path(args.body_file).resolve()
+    if not body.is_file(): raise ValueError('PR body file is missing')
+    subprocess.check_call(['python3',str(ROOT/'scripts/dev.py'),'check'],cwd=ROOT)
+    git('push','-u','origin',branch)
+    config=json.loads((ROOT/'config/project.json').read_text())
+    prs=json.loads(subprocess.check_output(['gh','pr','list','--repo',config['repository'],'--head',branch,'--state','open','--json','url'],text=True))
+    url=prs[0]['url'] if prs else subprocess.check_output(['gh','pr','create','--repo',config['repository'],'--base','main','--head',branch,'--title',t['id']+': '+t['title'],'--body-file',str(body)],text=True).strip()
+    t.update(status='IN_REVIEW',pr=url);note(t,'Agent finished implementation and opened human review');save(t)
+    git('add','tasks/'+args.id+'.json');git('commit','-m','chore('+args.id+'): record review PR');git('push')
+    sync_task(args.id,optional=True)
+    print('Human review required: '+url)
+
+
 def main():
     parser = argparse.ArgumentParser()
     sub = parser.add_subparsers(dest='command', required=True)
     p = sub.add_parser('start'); p.add_argument('id'); p.add_argument('--agent', required=True)
     p = sub.add_parser('status'); p.add_argument('id'); p.add_argument('status', choices=sorted(STATUSES)); p.add_argument('--pr'); p.add_argument('--note', required=True)
+    p = sub.add_parser('list'); p.add_argument('--owner'); p.add_argument('--ready', action='store_true')
+    p = sub.add_parser('sync'); p.add_argument('id')
+    p = sub.add_parser('evidence'); p.add_argument('id'); p.add_argument('--criterion', type=int, required=True); p.add_argument('--text', required=True)
+    p = sub.add_parser('finish'); p.add_argument('id'); p.add_argument('--body-file', required=True)
     args = parser.parse_args()
     try:
-        (start if args.command == 'start' else status)(args)
+        actions = {'start':start, 'status':status, 'list':list_tasks, 'evidence':evidence, 'finish':finish, 'sync':lambda a: sync_task(a.id)}
+        actions[args.command](args)
     except (ValueError, subprocess.CalledProcessError) as exc:
         parser.exit(1, str(exc) + '\n')
 

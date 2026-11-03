@@ -1,0 +1,47 @@
+{
+  "id": "TAX-057",
+  "kind": "task",
+  "title": "Tenant isolation, replay and failure matrix",
+  "owner": "Yellow",
+  "area": "tests/integration",
+  "phase": "pilot",
+  "status": "BACKLOG",
+  "priority": "P0",
+  "depends_on": [
+    "TAX-054",
+    "TAX-046"
+  ],
+  "claimed_by": null,
+  "branch": null,
+  "pr": null,
+  "scope": "Exercise repeated callbacks, interrupted jobs, cross-tenant IDs and denied service credentials",
+  "inputs": [
+    "PROJECT.md",
+    "docs/ARCHITECTURE.md",
+    "docs/API_CONTRACTS.md",
+    "docs/REQUIREMENTS.md"
+  ],
+  "acceptance": [
+    {
+      "text": "Exercise repeated callbacks, interrupted jobs, cross-tenant IDs and denied service credentials",
+      "done": false
+    },
+    {
+      "text": "Demonstrate no duplicate approved actions or cross-tenant leakage; capture reproducible failure evidence",
+      "done": false
+    },
+    {
+      "text": "Record relevant tests and evidence, update task status and open a human-review PR",
+      "done": false
+    }
+  ],
+  "verification": "Demonstrate no duplicate approved actions or cross-tenant leakage; capture reproducible failure evidence",
+  "skills": [
+    "start-task",
+    "implement-change",
+    "update-project-task",
+    "finish-task"
+  ],
+  "evidence": [],
+  "notes": []
+}

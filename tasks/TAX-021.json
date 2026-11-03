@@ -1,0 +1,44 @@
+{
+  "id": "TAX-021",
+  "kind": "task",
+  "title": "Frappe taxpayer portal shell",
+  "owner": "Kananelo",
+  "area": "apps/taxpayer-web",
+  "phase": "foundation",
+  "status": "READY",
+  "priority": "P0",
+  "depends_on": [],
+  "claimed_by": null,
+  "branch": null,
+  "pr": null,
+  "scope": "Create taxpayer portal routes and authenticated session boundary in the Frappe app, using synthetic fixtures initially",
+  "inputs": [
+    "PROJECT.md",
+    "docs/ARCHITECTURE.md",
+    "docs/API_CONTRACTS.md",
+    "docs/REQUIREMENTS.md"
+  ],
+  "acceptance": [
+    {
+      "text": "Create taxpayer portal routes and authenticated session boundary in the Frappe app, using synthetic fixtures initially",
+      "done": false
+    },
+    {
+      "text": "Verify login/logout/navigation and unauthorized route rejection",
+      "done": false
+    },
+    {
+      "text": "Record relevant tests and evidence, update task status and open a human-review PR",
+      "done": false
+    }
+  ],
+  "verification": "Verify login/logout/navigation and unauthorized route rejection",
+  "skills": [
+    "start-task",
+    "implement-change",
+    "update-project-task",
+    "finish-task"
+  ],
+  "evidence": [],
+  "notes": []
+}

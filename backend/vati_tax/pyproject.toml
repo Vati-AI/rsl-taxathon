@@ -1,0 +1,13 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+[project]
+name = "vati_tax"
+version = "0.1.0"
+description = "Vati AI RSL Taxathon Frappe application"
+requires-python = ">=3.11"
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["vati_tax*"]
+[tool.setuptools.package-data]
+vati_tax = ["*.txt", "**/*.json", "**/*.html", "public/**/*"]

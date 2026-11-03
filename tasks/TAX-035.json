@@ -1,0 +1,47 @@
+{
+  "id": "TAX-035",
+  "kind": "task",
+  "title": "Jube explainable tax-risk configuration",
+  "owner": "Keletso",
+  "area": "integration",
+  "phase": "pilot",
+  "status": "BACKLOG",
+  "priority": "P0",
+  "depends_on": [
+    "TAX-025",
+    "TAX-024"
+  ],
+  "claimed_by": null,
+  "branch": null,
+  "pr": null,
+  "scope": "Configure versioned synthetic rules for refund mismatch, related-party fees, losses and imported-service gaps",
+  "inputs": [
+    "PROJECT.md",
+    "docs/ARCHITECTURE.md",
+    "docs/API_CONTRACTS.md",
+    "docs/REQUIREMENTS.md"
+  ],
+  "acceptance": [
+    {
+      "text": "Configure versioned synthetic rules for refund mismatch, related-party fees, losses and imported-service gaps",
+      "done": false
+    },
+    {
+      "text": "All five scenarios produce expected signals/non-signals with rule versions and input evidence",
+      "done": false
+    },
+    {
+      "text": "Record relevant tests and evidence, update task status and open a human-review PR",
+      "done": false
+    }
+  ],
+  "verification": "All five scenarios produce expected signals/non-signals with rule versions and input evidence",
+  "skills": [
+    "start-task",
+    "implement-change",
+    "update-project-task",
+    "finish-task"
+  ],
+  "evidence": [],
+  "notes": []
+}

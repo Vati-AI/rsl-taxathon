@@ -1,0 +1,38 @@
+# Vati AI RSL Taxathon — project entry point
+
+Build an API-connected tax intelligence platform for RSL Challenge 2. Read this file, AGENTS.md and your task before coding. The supplied November 2026 proposal and technical summary are the scope baseline; legal claims in them require independent RSL validation before product use.
+
+## Start coding
+
+```sh
+python3 scripts/dev.py check
+python3 scripts/dev.py serve
+# in another terminal, or in your agent chat:
+python3 scripts/task.py list --owner Leseli --ready
+```
+
+The fixture server runs on http://127.0.0.1:58080 and serves both starter interfaces and synthetic contract data. It requires no API keys, paid model, upstream deployment or Python packages. It is explicitly fixture mode, not a tax system or authentication layer.
+
+For live infrastructure: `python3 scripts/dev_env.py`, then `docker compose up -d --wait`. For pinned upstream source: `python3 scripts/upstreams.py fetch --all`. Read `docs/SERVICE_SETUP.md` before starting vendor stacks.
+
+## What lives where
+
+- `apps/auditor-web`: officer-facing frontend, owned by Leseli.
+- `apps/taxpayer-web`: portal UX assets; `backend/vati_tax` supplies the Frappe application, forms and permissions. Kananelo owns portal experience, Edga owns server/domain logic.
+- `backend/vati_tax`: custom Frappe app scaffold; `backend`: shared tax-domain and gateway contracts.
+- `integration`: API adapters, service configuration, upstream lock. Keletso owns cross-service coordination.
+- `ai`: Vati LangGraph workflows, approved tools and prompts. Gupta owns AI implementation.
+- `tests/frontend`: Jane. `tests/ai`, synthetic fixtures and data evaluation: Yellow.
+- `tasks`: canonical task state. `.agents/skills`: reusable agent workflows.
+
+Jube owns operational cases, assignment/status/escalation/risk execution. Frappe owns application identity/permissions, submissions/evidence requests and approved decision records. The Vati API coordinates these authorities; it must not create a second independent operational case state machine.
+
+## Read in order
+
+1. `AGENTS.md` — agent behavior and task lifecycle.
+2. `PROJECT_SCOPE.md`, `docs/REQUIREMENTS.md` — product scope and coverage.
+3. `docs/ARCHITECTURE.md`, `docs/API_CONTRACTS.md`, `docs/DATA_MODEL.md` — boundaries.
+4. `docs/ONBOARDING.md`, `docs/DEVELOPMENT.md` — commands and verification.
+5. `tasks/TAX-XXX.json` — the assigned unit of work.
+
+Foundation and pilot tasks build the five-scenario vertical slice. Expansion and future tasks describe the broader national platform; they are deliberately not claimed as already implemented. Humans review PRs and consequential investigation actions. Agents implement, test and keep task files/issues current.

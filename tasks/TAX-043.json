@@ -1,0 +1,48 @@
+{
+  "id": "TAX-043",
+  "kind": "task",
+  "title": "Claim form and validated document upload",
+  "owner": "Kananelo",
+  "area": "apps/taxpayer-web",
+  "phase": "pilot",
+  "status": "BACKLOG",
+  "priority": "P0",
+  "depends_on": [
+    "TAX-021",
+    "TAX-031",
+    "TAX-032"
+  ],
+  "claimed_by": null,
+  "branch": null,
+  "pr": null,
+  "scope": "Connect Frappe claim form/upload to restricted storage with idempotency and clear required-field guidance",
+  "inputs": [
+    "PROJECT.md",
+    "docs/ARCHITECTURE.md",
+    "docs/API_CONTRACTS.md",
+    "docs/REQUIREMENTS.md"
+  ],
+  "acceptance": [
+    {
+      "text": "Connect Frappe claim form/upload to restricted storage with idempotency and clear required-field guidance",
+      "done": false
+    },
+    {
+      "text": "Test valid submission, duplicate retry, invalid document and cross-tenant evidence access",
+      "done": false
+    },
+    {
+      "text": "Record relevant tests and evidence, update task status and open a human-review PR",
+      "done": false
+    }
+  ],
+  "verification": "Test valid submission, duplicate retry, invalid document and cross-tenant evidence access",
+  "skills": [
+    "start-task",
+    "implement-change",
+    "update-project-task",
+    "finish-task"
+  ],
+  "evidence": [],
+  "notes": []
+}

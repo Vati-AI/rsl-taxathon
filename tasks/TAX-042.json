@@ -1,0 +1,47 @@
+{
+  "id": "TAX-042",
+  "kind": "task",
+  "title": "Human decision and specialist referral UI",
+  "owner": "Leseli",
+  "area": "apps/auditor-web",
+  "phase": "pilot",
+  "status": "BACKLOG",
+  "priority": "P0",
+  "depends_on": [
+    "TAX-040",
+    "TAX-046"
+  ],
+  "claimed_by": null,
+  "branch": null,
+  "pr": null,
+  "scope": "Present reviewed clearance, evidence request and specialist referral with rationale and stale-version checks",
+  "inputs": [
+    "PROJECT.md",
+    "docs/ARCHITECTURE.md",
+    "docs/API_CONTRACTS.md",
+    "docs/REQUIREMENTS.md"
+  ],
+  "acceptance": [
+    {
+      "text": "Present reviewed clearance, evidence request and specialist referral with rationale and stale-version checks",
+      "done": false
+    },
+    {
+      "text": "Verify keyboard confirmation, permission denial and no irreversible action from agent suggestions",
+      "done": false
+    },
+    {
+      "text": "Record relevant tests and evidence, update task status and open a human-review PR",
+      "done": false
+    }
+  ],
+  "verification": "Verify keyboard confirmation, permission denial and no irreversible action from agent suggestions",
+  "skills": [
+    "start-task",
+    "implement-change",
+    "update-project-task",
+    "finish-task"
+  ],
+  "evidence": [],
+  "notes": []
+}

@@ -1,0 +1,48 @@
+{
+  "id": "TAX-046",
+  "kind": "task",
+  "title": "Human decisions and evidence request authorization",
+  "owner": "Edga",
+  "area": "backend",
+  "phase": "pilot",
+  "status": "BACKLOG",
+  "priority": "P0",
+  "depends_on": [
+    "TAX-029",
+    "TAX-034",
+    "TAX-032"
+  ],
+  "claimed_by": null,
+  "branch": null,
+  "pr": null,
+  "scope": "Persist authorized rationale/action records and audit events; execute approved Jube transitions via the integration adapter",
+  "inputs": [
+    "PROJECT.md",
+    "docs/ARCHITECTURE.md",
+    "docs/API_CONTRACTS.md",
+    "docs/REQUIREMENTS.md"
+  ],
+  "acceptance": [
+    {
+      "text": "Persist authorized rationale/action records and audit events; execute approved Jube transitions via the integration adapter",
+      "done": false
+    },
+    {
+      "text": "Reject agent-only decisions, stale approvals and duplicate outward actions; no assessment/refund-payment endpoints",
+      "done": false
+    },
+    {
+      "text": "Record relevant tests and evidence, update task status and open a human-review PR",
+      "done": false
+    }
+  ],
+  "verification": "Reject agent-only decisions, stale approvals and duplicate outward actions; no assessment/refund-payment endpoints",
+  "skills": [
+    "start-task",
+    "implement-change",
+    "update-project-task",
+    "finish-task"
+  ],
+  "evidence": [],
+  "notes": []
+}

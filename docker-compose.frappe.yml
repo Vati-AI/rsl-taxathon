@@ -1,0 +1,37 @@
+name: rsl-taxathon-frappe-dev
+services:
+  mariadb:
+    image: mariadb:11.8
+    command: ["--character-set-server=utf8mb4", "--collation-server=utf8mb4_unicode_ci", "--skip-character-set-client-handshake", "--innodb-snapshot-isolation=OFF"]
+    environment:
+      MARIADB_ROOT_PASSWORD: ${FRAPPE_DB_PASSWORD:?Run scripts/dev_env.py}
+    volumes: ["frappe-db:/var/lib/mysql"]
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 5s
+      timeout: 3s
+      retries: 30
+  redis-cache:
+    image: redis:7-alpine
+  redis-queue:
+    image: redis:7-alpine
+  frappe:
+    image: frappe/bench:latest
+    command: ["sleep", "infinity"]
+    working_dir: /workspace
+    environment:
+      SHELL: /bin/bash
+    volumes:
+      - frappe-workspace:/workspace
+      - ./backend/vati_tax:/workspace/vati_tax
+    ports: ["127.0.0.1:58000:8000", "127.0.0.1:59000:9000"]
+    depends_on:
+      mariadb:
+        condition: service_healthy
+      redis-cache:
+        condition: service_started
+      redis-queue:
+        condition: service_started
+volumes:
+  frappe-db:
+  frappe-workspace:

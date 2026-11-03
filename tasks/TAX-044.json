@@ -1,0 +1,47 @@
+{
+  "id": "TAX-044",
+  "kind": "task",
+  "title": "Pre-submission reconciliation and correction UI",
+  "owner": "Kananelo",
+  "area": "apps/taxpayer-web",
+  "phase": "pilot",
+  "status": "BACKLOG",
+  "priority": "P0",
+  "depends_on": [
+    "TAX-043",
+    "TAX-048"
+  ],
+  "claimed_by": null,
+  "branch": null,
+  "pr": null,
+  "scope": "Show explained amounts, missing invoices and correction prompts before submission",
+  "inputs": [
+    "PROJECT.md",
+    "docs/ARCHITECTURE.md",
+    "docs/API_CONTRACTS.md",
+    "docs/REQUIREMENTS.md"
+  ],
+  "acceptance": [
+    {
+      "text": "Show explained amounts, missing invoices and correction prompts before submission",
+      "done": false
+    },
+    {
+      "text": "Test that incomplete evidence produces correction guidance rather than fraud accusations",
+      "done": false
+    },
+    {
+      "text": "Record relevant tests and evidence, update task status and open a human-review PR",
+      "done": false
+    }
+  ],
+  "verification": "Test that incomplete evidence produces correction guidance rather than fraud accusations",
+  "skills": [
+    "start-task",
+    "implement-change",
+    "update-project-task",
+    "finish-task"
+  ],
+  "evidence": [],
+  "notes": []
+}

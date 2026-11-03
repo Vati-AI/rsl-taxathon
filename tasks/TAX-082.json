@@ -1,0 +1,47 @@
+{
+  "id": "TAX-082",
+  "kind": "task",
+  "title": "User onboarding and officer usability validation",
+  "owner": "Jane",
+  "area": "tests/frontend",
+  "phase": "expansion",
+  "status": "BACKLOG",
+  "priority": "P1",
+  "depends_on": [
+    "TAX-055",
+    "TAX-060"
+  ],
+  "claimed_by": null,
+  "branch": null,
+  "pr": null,
+  "scope": "Create persona onboarding walkthroughs and measure task completion with test participants or scripted proxies",
+  "inputs": [
+    "PROJECT.md",
+    "docs/ARCHITECTURE.md",
+    "docs/API_CONTRACTS.md",
+    "docs/REQUIREMENTS.md"
+  ],
+  "acceptance": [
+    {
+      "text": "Create persona onboarding walkthroughs and measure task completion with test participants or scripted proxies",
+      "done": false
+    },
+    {
+      "text": "Record observed friction and accessibility issues with prioritized remediation tasks",
+      "done": false
+    },
+    {
+      "text": "Record relevant tests and evidence, update task status and open a human-review PR",
+      "done": false
+    }
+  ],
+  "verification": "Record observed friction and accessibility issues with prioritized remediation tasks",
+  "skills": [
+    "start-task",
+    "implement-change",
+    "update-project-task",
+    "finish-task"
+  ],
+  "evidence": [],
+  "notes": []
+}

@@ -1,0 +1,44 @@
+{
+  "id": "TAX-025",
+  "kind": "task",
+  "title": "Jube isolated development deployment",
+  "owner": "Keletso",
+  "area": "integration",
+  "phase": "foundation",
+  "status": "READY",
+  "priority": "P0",
+  "depends_on": [],
+  "claimed_by": null,
+  "branch": null,
+  "pr": null,
+  "scope": "Start the pinned Jube stack with generated credentials and isolated ports; record model API and case API from deployed Swagger",
+  "inputs": [
+    "PROJECT.md",
+    "docs/ARCHITECTURE.md",
+    "docs/API_CONTRACTS.md",
+    "docs/REQUIREMENTS.md"
+  ],
+  "acceptance": [
+    {
+      "text": "Start the pinned Jube stack with generated credentials and isolated ports; record model API and case API from deployed Swagger",
+      "done": false
+    },
+    {
+      "text": "Check health, authenticate and retrieve API specification; record version and resource use without secrets",
+      "done": false
+    },
+    {
+      "text": "Record relevant tests and evidence, update task status and open a human-review PR",
+      "done": false
+    }
+  ],
+  "verification": "Check health, authenticate and retrieve API specification; record version and resource use without secrets",
+  "skills": [
+    "start-task",
+    "implement-change",
+    "update-project-task",
+    "finish-task"
+  ],
+  "evidence": [],
+  "notes": []
+}

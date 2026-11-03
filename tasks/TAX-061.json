@@ -1,0 +1,47 @@
+{
+  "id": "TAX-061",
+  "kind": "task",
+  "title": "Approved playbook and reusable tool registry",
+  "owner": "Gupta",
+  "area": "ai",
+  "phase": "pilot",
+  "status": "BACKLOG",
+  "priority": "P0",
+  "depends_on": [
+    "TAX-047",
+    "TAX-052"
+  ],
+  "claimed_by": null,
+  "branch": null,
+  "pr": null,
+  "scope": "Version tools/playbooks with approval status, allowed operations and provenance requirements",
+  "inputs": [
+    "PROJECT.md",
+    "docs/ARCHITECTURE.md",
+    "docs/API_CONTRACTS.md",
+    "docs/REQUIREMENTS.md"
+  ],
+  "acceptance": [
+    {
+      "text": "Version tools/playbooks with approval status, allowed operations and provenance requirements",
+      "done": false
+    },
+    {
+      "text": "Reject unapproved tool/workflow versions and replay a known approved version",
+      "done": false
+    },
+    {
+      "text": "Record relevant tests and evidence, update task status and open a human-review PR",
+      "done": false
+    }
+  ],
+  "verification": "Reject unapproved tool/workflow versions and replay a known approved version",
+  "skills": [
+    "start-task",
+    "implement-change",
+    "update-project-task",
+    "finish-task"
+  ],
+  "evidence": [],
+  "notes": []
+}

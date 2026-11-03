@@ -1,0 +1,46 @@
+{
+  "id": "TAX-065",
+  "kind": "task",
+  "title": "Workflow approval, versioning and rollback",
+  "owner": "Edga",
+  "area": "backend",
+  "phase": "expansion",
+  "status": "BACKLOG",
+  "priority": "P1",
+  "depends_on": [
+    "TAX-064"
+  ],
+  "claimed_by": null,
+  "branch": null,
+  "pr": null,
+  "scope": "Store supervisor decisions, activation history and rollback references for learned workflows",
+  "inputs": [
+    "PROJECT.md",
+    "docs/ARCHITECTURE.md",
+    "docs/API_CONTRACTS.md",
+    "docs/REQUIREMENTS.md"
+  ],
+  "acceptance": [
+    {
+      "text": "Store supervisor decisions, activation history and rollback references for learned workflows",
+      "done": false
+    },
+    {
+      "text": "Reject self-approval and unapproved version execution; rollback restores previous approved version",
+      "done": false
+    },
+    {
+      "text": "Record relevant tests and evidence, update task status and open a human-review PR",
+      "done": false
+    }
+  ],
+  "verification": "Reject self-approval and unapproved version execution; rollback restores previous approved version",
+  "skills": [
+    "start-task",
+    "implement-change",
+    "update-project-task",
+    "finish-task"
+  ],
+  "evidence": [],
+  "notes": []
+}

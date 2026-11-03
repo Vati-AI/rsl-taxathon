@@ -1,0 +1,47 @@
+{
+  "id": "TAX-051",
+  "kind": "task",
+  "title": "Employment versus consultancy specialist playbook",
+  "owner": "Gupta",
+  "area": "ai",
+  "phase": "pilot",
+  "status": "BACKLOG",
+  "priority": "P0",
+  "depends_on": [
+    "TAX-047",
+    "TAX-024"
+  ],
+  "claimed_by": null,
+  "branch": null,
+  "pr": null,
+  "scope": "Structure conflicting contract/work facts and pause for specialist classification",
+  "inputs": [
+    "PROJECT.md",
+    "docs/ARCHITECTURE.md",
+    "docs/API_CONTRACTS.md",
+    "docs/REQUIREMENTS.md"
+  ],
+  "acceptance": [
+    {
+      "text": "Structure conflicting contract/work facts and pause for specialist classification",
+      "done": false
+    },
+    {
+      "text": "Ambiguous fixture remains unresolved and cannot be auto-classified or assessed",
+      "done": false
+    },
+    {
+      "text": "Record relevant tests and evidence, update task status and open a human-review PR",
+      "done": false
+    }
+  ],
+  "verification": "Ambiguous fixture remains unresolved and cannot be auto-classified or assessed",
+  "skills": [
+    "start-task",
+    "implement-change",
+    "update-project-task",
+    "finish-task"
+  ],
+  "evidence": [],
+  "notes": []
+}

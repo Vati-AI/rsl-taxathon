@@ -1,0 +1,48 @@
+{
+  "id": "TAX-034",
+  "kind": "task",
+  "title": "Jube case lifecycle adapter",
+  "owner": "Keletso",
+  "area": "integration",
+  "phase": "pilot",
+  "status": "BACKLOG",
+  "priority": "P0",
+  "depends_on": [
+    "TAX-018",
+    "TAX-025",
+    "TAX-030"
+  ],
+  "claimed_by": null,
+  "branch": null,
+  "pr": null,
+  "scope": "Map create/read/assign/status/escalation operations to verified Jube APIs; Jube is operational case authority",
+  "inputs": [
+    "PROJECT.md",
+    "docs/ARCHITECTURE.md",
+    "docs/API_CONTRACTS.md",
+    "docs/REQUIREMENTS.md"
+  ],
+  "acceptance": [
+    {
+      "text": "Map create/read/assign/status/escalation operations to verified Jube APIs; Jube is operational case authority",
+      "done": false
+    },
+    {
+      "text": "Contract tests against deployed Jube verify assignment/status and replay-safe creation",
+      "done": false
+    },
+    {
+      "text": "Record relevant tests and evidence, update task status and open a human-review PR",
+      "done": false
+    }
+  ],
+  "verification": "Contract tests against deployed Jube verify assignment/status and replay-safe creation",
+  "skills": [
+    "start-task",
+    "implement-change",
+    "update-project-task",
+    "finish-task"
+  ],
+  "evidence": [],
+  "notes": []
+}

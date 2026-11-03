@@ -1,0 +1,48 @@
+{
+  "id": "TAX-077",
+  "kind": "task",
+  "title": "Policy-gap and integrity management views",
+  "owner": "Leseli",
+  "area": "apps/auditor-web",
+  "phase": "expansion",
+  "status": "BACKLOG",
+  "priority": "P1",
+  "depends_on": [
+    "TAX-052",
+    "TAX-059",
+    "TAX-069"
+  ],
+  "claimed_by": null,
+  "branch": null,
+  "pr": null,
+  "scope": "Aggregate verified policy gaps and unusual override patterns for restricted management review",
+  "inputs": [
+    "PROJECT.md",
+    "docs/ARCHITECTURE.md",
+    "docs/API_CONTRACTS.md",
+    "docs/REQUIREMENTS.md"
+  ],
+  "acceptance": [
+    {
+      "text": "Aggregate verified policy gaps and unusual override patterns for restricted management review",
+      "done": false
+    },
+    {
+      "text": "Separate policy exposure from noncompliance and signals from accusations; validate aggregation privacy",
+      "done": false
+    },
+    {
+      "text": "Record relevant tests and evidence, update task status and open a human-review PR",
+      "done": false
+    }
+  ],
+  "verification": "Separate policy exposure from noncompliance and signals from accusations; validate aggregation privacy",
+  "skills": [
+    "start-task",
+    "implement-change",
+    "update-project-task",
+    "finish-task"
+  ],
+  "evidence": [],
+  "notes": []
+}

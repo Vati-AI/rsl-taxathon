@@ -41,6 +41,18 @@ def validate(root=ROOT):
         for key in ['refund_claim', 'supported_refund']:
             if not isinstance(case.get(key), str) or not re.fullmatch(r'\d+\.\d{2}', case[key]):
                 errors.append(f'{case.get("id")}: invalid decimal amount')
+    skills=root / '.agents/skills'
+    if skills.exists():
+        for folder in skills.iterdir():
+            text=(folder/'SKILL.md').read_text()
+            if not text.startswith('---\n') or 'name: '+folder.name not in text or 'description:' not in text:
+                errors.append(f'{folder.name}: invalid skill frontmatter')
+    for key,t in tasks.items():
+        if t.get('kind')=='epic' and t['status'] in {'IN_PROGRESS','IN_REVIEW'}:
+            errors.append(f'{key}: planning epic cannot be claimed')
+        if t.get('kind')=='task' and int(key.split('-')[1])>=18:
+            for field in ['scope','verification','phase','skills']:
+                if not t.get(field):errors.append(f'{key}: missing {field}')
     return errors
 
 if __name__ == '__main__':

@@ -1,0 +1,44 @@
+{
+  "id": "TAX-022",
+  "kind": "task",
+  "title": "LangGraph state and tool interface",
+  "owner": "Gupta",
+  "area": "ai",
+  "phase": "foundation",
+  "status": "READY",
+  "priority": "P0",
+  "depends_on": [],
+  "claimed_by": null,
+  "branch": null,
+  "pr": null,
+  "scope": "Implement typed investigation state, tool result envelope and fake-tool graph without model keys",
+  "inputs": [
+    "PROJECT.md",
+    "docs/ARCHITECTURE.md",
+    "docs/API_CONTRACTS.md",
+    "docs/REQUIREMENTS.md"
+  ],
+  "acceptance": [
+    {
+      "text": "Implement typed investigation state, tool result envelope and fake-tool graph without model keys",
+      "done": false
+    },
+    {
+      "text": "Run deterministic graph tests for case isolation, tool errors and bounded steps",
+      "done": false
+    },
+    {
+      "text": "Record relevant tests and evidence, update task status and open a human-review PR",
+      "done": false
+    }
+  ],
+  "verification": "Run deterministic graph tests for case isolation, tool errors and bounded steps",
+  "skills": [
+    "start-task",
+    "implement-change",
+    "update-project-task",
+    "finish-task"
+  ],
+  "evidence": [],
+  "notes": []
+}

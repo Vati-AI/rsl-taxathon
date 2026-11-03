@@ -1,0 +1,48 @@
+{
+  "id": "TAX-036",
+  "kind": "task",
+  "title": "OpenAleph and FtM tax entity mapping",
+  "owner": "Keletso",
+  "area": "integration",
+  "phase": "pilot",
+  "status": "BACKLOG",
+  "priority": "P0",
+  "depends_on": [
+    "TAX-026",
+    "TAX-030",
+    "TAX-032"
+  ],
+  "claimed_by": null,
+  "branch": null,
+  "pr": null,
+  "scope": "Map companies, persons, ownership, invoices, payments and evidence using supported FtM schema plus documented tax extensions",
+  "inputs": [
+    "PROJECT.md",
+    "docs/ARCHITECTURE.md",
+    "docs/API_CONTRACTS.md",
+    "docs/REQUIREMENTS.md"
+  ],
+  "acceptance": [
+    {
+      "text": "Map companies, persons, ownership, invoices, payments and evidence using supported FtM schema plus documented tax extensions",
+      "done": false
+    },
+    {
+      "text": "Validate entities and provenance; test conflicting ownership and repeated ingest",
+      "done": false
+    },
+    {
+      "text": "Record relevant tests and evidence, update task status and open a human-review PR",
+      "done": false
+    }
+  ],
+  "verification": "Validate entities and provenance; test conflicting ownership and repeated ingest",
+  "skills": [
+    "start-task",
+    "implement-change",
+    "update-project-task",
+    "finish-task"
+  ],
+  "evidence": [],
+  "notes": []
+}

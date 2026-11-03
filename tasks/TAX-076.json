@@ -1,0 +1,47 @@
+{
+  "id": "TAX-076",
+  "kind": "task",
+  "title": "Controlled serious-case referral package",
+  "owner": "Edga",
+  "area": "backend",
+  "phase": "expansion",
+  "status": "BACKLOG",
+  "priority": "P1",
+  "depends_on": [
+    "TAX-062",
+    "TAX-052"
+  ],
+  "claimed_by": null,
+  "branch": null,
+  "pr": null,
+  "scope": "Model specialist referral, authority approval, transfer manifest and chain of custody",
+  "inputs": [
+    "PROJECT.md",
+    "docs/ARCHITECTURE.md",
+    "docs/API_CONTRACTS.md",
+    "docs/REQUIREMENTS.md"
+  ],
+  "acceptance": [
+    {
+      "text": "Model specialist referral, authority approval, transfer manifest and chain of custody",
+      "done": false
+    },
+    {
+      "text": "No AI criminal-referral action; verify authorized access and immutable transfer audit",
+      "done": false
+    },
+    {
+      "text": "Record relevant tests and evidence, update task status and open a human-review PR",
+      "done": false
+    }
+  ],
+  "verification": "No AI criminal-referral action; verify authorized access and immutable transfer audit",
+  "skills": [
+    "start-task",
+    "implement-change",
+    "update-project-task",
+    "finish-task"
+  ],
+  "evidence": [],
+  "notes": []
+}

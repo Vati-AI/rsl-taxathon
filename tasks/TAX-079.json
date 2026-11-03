@@ -1,0 +1,47 @@
+{
+  "id": "TAX-079",
+  "kind": "task",
+  "title": "Lawful payment-channel extension contracts",
+  "owner": "Keletso",
+  "area": "integration",
+  "phase": "future",
+  "status": "BACKLOG",
+  "priority": "P2",
+  "depends_on": [
+    "TAX-073",
+    "TAX-074"
+  ],
+  "claimed_by": null,
+  "branch": null,
+  "pr": null,
+  "scope": "Define adapters for bank/mobile-money/foreign-payment/wallet evidence with permission and source provenance",
+  "inputs": [
+    "PROJECT.md",
+    "docs/ARCHITECTURE.md",
+    "docs/API_CONTRACTS.md",
+    "docs/REQUIREMENTS.md"
+  ],
+  "acceptance": [
+    {
+      "text": "Define adapters for bank/mobile-money/foreign-payment/wallet evidence with permission and source provenance",
+      "done": false
+    },
+    {
+      "text": "Synthetic examples map activity without equating payment method to illegality; no live scraping",
+      "done": false
+    },
+    {
+      "text": "Record relevant tests and evidence, update task status and open a human-review PR",
+      "done": false
+    }
+  ],
+  "verification": "Synthetic examples map activity without equating payment method to illegality; no live scraping",
+  "skills": [
+    "start-task",
+    "implement-change",
+    "update-project-task",
+    "finish-task"
+  ],
+  "evidence": [],
+  "notes": []
+}

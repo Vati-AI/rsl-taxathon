@@ -1,0 +1,47 @@
+{
+  "id": "TAX-040",
+  "kind": "task",
+  "title": "Auditor case queue and taxpayer profile",
+  "owner": "Leseli",
+  "area": "apps/auditor-web",
+  "phase": "pilot",
+  "status": "BACKLOG",
+  "priority": "P0",
+  "depends_on": [
+    "TAX-020",
+    "TAX-018"
+  ],
+  "claimed_by": null,
+  "branch": null,
+  "pr": null,
+  "scope": "Show filterable assigned case queue, selection reasons, taxpayer context and processing/error state",
+  "inputs": [
+    "PROJECT.md",
+    "docs/ARCHITECTURE.md",
+    "docs/API_CONTRACTS.md",
+    "docs/REQUIREMENTS.md"
+  ],
+  "acceptance": [
+    {
+      "text": "Show filterable assigned case queue, selection reasons, taxpayer context and processing/error state",
+      "done": false
+    },
+    {
+      "text": "Test fixture and API contract states, empty queue and access-denied responses",
+      "done": false
+    },
+    {
+      "text": "Record relevant tests and evidence, update task status and open a human-review PR",
+      "done": false
+    }
+  ],
+  "verification": "Test fixture and API contract states, empty queue and access-denied responses",
+  "skills": [
+    "start-task",
+    "implement-change",
+    "update-project-task",
+    "finish-task"
+  ],
+  "evidence": [],
+  "notes": []
+}

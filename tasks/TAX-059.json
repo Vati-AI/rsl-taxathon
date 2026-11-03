@@ -1,0 +1,46 @@
+{
+  "id": "TAX-059",
+  "kind": "task",
+  "title": "Audit ledger and segregation of duties",
+  "owner": "Edga",
+  "area": "backend",
+  "phase": "pilot",
+  "status": "BACKLOG",
+  "priority": "P0",
+  "depends_on": [
+    "TAX-046"
+  ],
+  "claimed_by": null,
+  "branch": null,
+  "pr": null,
+  "scope": "Record reads, writes, approvals, overrides and reviewer identity; model review-only integrity signals",
+  "inputs": [
+    "PROJECT.md",
+    "docs/ARCHITECTURE.md",
+    "docs/API_CONTRACTS.md",
+    "docs/REQUIREMENTS.md"
+  ],
+  "acceptance": [
+    {
+      "text": "Record reads, writes, approvals, overrides and reviewer identity; model review-only integrity signals",
+      "done": false
+    },
+    {
+      "text": "Test unauthorized override, immutable audit history and restricted supervisor access",
+      "done": false
+    },
+    {
+      "text": "Record relevant tests and evidence, update task status and open a human-review PR",
+      "done": false
+    }
+  ],
+  "verification": "Test unauthorized override, immutable audit history and restricted supervisor access",
+  "skills": [
+    "start-task",
+    "implement-change",
+    "update-project-task",
+    "finish-task"
+  ],
+  "evidence": [],
+  "notes": []
+}

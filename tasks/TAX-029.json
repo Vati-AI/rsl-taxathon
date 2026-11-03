@@ -1,0 +1,46 @@
+{
+  "id": "TAX-029",
+  "kind": "task",
+  "title": "Frappe identity, roles and tenant permissions",
+  "owner": "Edga",
+  "area": "backend",
+  "phase": "foundation",
+  "status": "BACKLOG",
+  "priority": "P0",
+  "depends_on": [
+    "TAX-019"
+  ],
+  "claimed_by": null,
+  "branch": null,
+  "pr": null,
+  "scope": "Define taxpayer, auditor, specialist and supervisor roles with tenant-aware permissions and service identities",
+  "inputs": [
+    "PROJECT.md",
+    "docs/ARCHITECTURE.md",
+    "docs/API_CONTRACTS.md",
+    "docs/REQUIREMENTS.md"
+  ],
+  "acceptance": [
+    {
+      "text": "Define taxpayer, auditor, specialist and supervisor roles with tenant-aware permissions and service identities",
+      "done": false
+    },
+    {
+      "text": "Negative tests prevent cross-taxpayer reads/writes and unauthorized decision actions",
+      "done": false
+    },
+    {
+      "text": "Record relevant tests and evidence, update task status and open a human-review PR",
+      "done": false
+    }
+  ],
+  "verification": "Negative tests prevent cross-taxpayer reads/writes and unauthorized decision actions",
+  "skills": [
+    "start-task",
+    "implement-change",
+    "update-project-task",
+    "finish-task"
+  ],
+  "evidence": [],
+  "notes": []
+}

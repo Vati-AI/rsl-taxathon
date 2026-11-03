@@ -2,12 +2,13 @@
   "jube": {
     "upstream": "https://github.com/jube-home/aml-fraud-transaction-monitoring",
     "docs": "https://www.jube.io/docs/GettingStarted/DeployingWithDocker/",
-    "purpose": "Risk evaluation",
+    "purpose": "Risk and operational case management",
     "base_url_env": "JUBE_BASE_URL",
     "mode": "external",
     "fork_required": false,
     "verified_on": "2026-11-03",
-    "deployment_status": "not_connected"
+    "deployment_status": "not_connected",
+    "source_status": "locked_source_fetched_on_setup_machine"
   },
   "openaleph": {
     "upstream": "https://github.com/openaleph/openaleph",
@@ -17,7 +18,8 @@
     "mode": "external",
     "fork_required": false,
     "verified_on": "2026-11-03",
-    "deployment_status": "not_connected"
+    "deployment_status": "not_connected",
+    "source_status": "locked_source_fetched_on_setup_machine"
   },
   "yente": {
     "upstream": "https://github.com/opensanctions/yente",
@@ -27,7 +29,8 @@
     "mode": "external",
     "fork_required": false,
     "verified_on": "2026-11-03",
-    "deployment_status": "not_connected"
+    "deployment_status": "not_connected",
+    "source_status": "locked_source_fetched_on_setup_machine"
   },
   "docling": {
     "upstream": "https://github.com/docling-project/docling-serve",
@@ -37,17 +40,19 @@
     "mode": "external",
     "fork_required": false,
     "verified_on": "2026-11-03",
-    "deployment_status": "not_connected"
+    "deployment_status": "not_connected",
+    "source_status": "locked_source_fetched_on_setup_machine"
   },
   "frappe": {
     "upstream": "https://github.com/frappe/frappe_docker",
     "docs": "https://docs.frappe.io/framework/user/en/api/rest",
-    "purpose": "Optional approved workflow mirror",
+    "purpose": "Application, identity, permissions and taxpayer portal",
     "base_url_env": "FRAPPE_BASE_URL",
     "mode": "external",
     "fork_required": false,
     "verified_on": "2026-11-03",
-    "deployment_status": "not_connected"
+    "deployment_status": "not_connected",
+    "source_status": "locked_source_fetched_on_setup_machine"
   },
   "langgraph": {
     "upstream": "https://github.com/langchain-ai/langgraph",
@@ -57,7 +62,8 @@
     "mode": "library",
     "fork_required": false,
     "verified_on": "2026-11-03",
-    "deployment_status": "not_connected"
+    "deployment_status": "not_connected",
+    "source_status": "locked_source_fetched_on_setup_machine"
   },
   "followthemoney": {
     "upstream": "https://github.com/opensanctions/followthemoney",
@@ -67,6 +73,7 @@
     "mode": "library",
     "fork_required": false,
     "verified_on": "2026-11-03",
-    "deployment_status": "not_connected"
+    "deployment_status": "not_connected",
+    "source_status": "locked_source_fetched_on_setup_machine"
   }
 }

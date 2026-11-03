@@ -1,0 +1,44 @@
+{
+  "id": "TAX-023",
+  "kind": "task",
+  "title": "Frontend test harness and accessibility baseline",
+  "owner": "Jane",
+  "area": "tests/frontend",
+  "phase": "foundation",
+  "status": "READY",
+  "priority": "P0",
+  "depends_on": [],
+  "claimed_by": null,
+  "branch": null,
+  "pr": null,
+  "scope": "Set up browser fixtures, role session mocks and viewport/keyboard test matrix for both frontends",
+  "inputs": [
+    "PROJECT.md",
+    "docs/ARCHITECTURE.md",
+    "docs/API_CONTRACTS.md",
+    "docs/REQUIREMENTS.md"
+  ],
+  "acceptance": [
+    {
+      "text": "Set up browser fixtures, role session mocks and viewport/keyboard test matrix for both frontends",
+      "done": false
+    },
+    {
+      "text": "Run one positive navigation test and one denied-access/keyboard test per portal",
+      "done": false
+    },
+    {
+      "text": "Record relevant tests and evidence, update task status and open a human-review PR",
+      "done": false
+    }
+  ],
+  "verification": "Run one positive navigation test and one denied-access/keyboard test per portal",
+  "skills": [
+    "start-task",
+    "implement-change",
+    "update-project-task",
+    "finish-task"
+  ],
+  "evidence": [],
+  "notes": []
+}

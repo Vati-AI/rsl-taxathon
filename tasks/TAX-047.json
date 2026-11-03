@@ -1,0 +1,47 @@
+{
+  "id": "TAX-047",
+  "kind": "task",
+  "title": "Persistent checkpoints and authenticated human resume",
+  "owner": "Gupta",
+  "area": "ai",
+  "phase": "pilot",
+  "status": "BACKLOG",
+  "priority": "P0",
+  "depends_on": [
+    "TAX-022",
+    "TAX-046"
+  ],
+  "claimed_by": null,
+  "branch": null,
+  "pr": null,
+  "scope": "Persist workflow state and interrupt at consequential actions; bind resume to actor, case version and approved payload",
+  "inputs": [
+    "PROJECT.md",
+    "docs/ARCHITECTURE.md",
+    "docs/API_CONTRACTS.md",
+    "docs/REQUIREMENTS.md"
+  ],
+  "acceptance": [
+    {
+      "text": "Persist workflow state and interrupt at consequential actions; bind resume to actor, case version and approved payload",
+      "done": false
+    },
+    {
+      "text": "Restart worker at interrupt; reject unauthorized resume; prove no duplicate side effect",
+      "done": false
+    },
+    {
+      "text": "Record relevant tests and evidence, update task status and open a human-review PR",
+      "done": false
+    }
+  ],
+  "verification": "Restart worker at interrupt; reject unauthorized resume; prove no duplicate side effect",
+  "skills": [
+    "start-task",
+    "implement-change",
+    "update-project-task",
+    "finish-task"
+  ],
+  "evidence": [],
+  "notes": []
+}

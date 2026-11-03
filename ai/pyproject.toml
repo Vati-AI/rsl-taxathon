@@ -1,0 +1,7 @@
+[project]
+name = "vati-investigation"
+version = "0.1.0"
+requires-python = ">=3.11"
+dependencies = ["langgraph>=1.0,<2"]
+[dependency-groups]
+dev = ["pytest>=8,<10"]

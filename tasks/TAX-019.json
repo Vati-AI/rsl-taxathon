@@ -1,0 +1,44 @@
+{
+  "id": "TAX-019",
+  "kind": "task",
+  "title": "Frappe custom application and site installation",
+  "owner": "Edga",
+  "area": "backend",
+  "phase": "foundation",
+  "status": "READY",
+  "priority": "P0",
+  "depends_on": [],
+  "claimed_by": null,
+  "branch": null,
+  "pr": null,
+  "scope": "Install vati_tax in an isolated Frappe bench/site; package migrations, modules and configuration with documented commands",
+  "inputs": [
+    "PROJECT.md",
+    "docs/ARCHITECTURE.md",
+    "docs/API_CONTRACTS.md",
+    "docs/REQUIREMENTS.md"
+  ],
+  "acceptance": [
+    {
+      "text": "Install vati_tax in an isolated Frappe bench/site; package migrations, modules and configuration with documented commands",
+      "done": false
+    },
+    {
+      "text": "Install on a clean site, migrate twice and import the app without manual database edits",
+      "done": false
+    },
+    {
+      "text": "Record relevant tests and evidence, update task status and open a human-review PR",
+      "done": false
+    }
+  ],
+  "verification": "Install on a clean site, migrate twice and import the app without manual database edits",
+  "skills": [
+    "start-task",
+    "implement-change",
+    "update-project-task",
+    "finish-task"
+  ],
+  "evidence": [],
+  "notes": []
+}

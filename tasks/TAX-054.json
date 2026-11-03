@@ -1,0 +1,50 @@
+{
+  "id": "TAX-054",
+  "kind": "task",
+  "title": "End-to-end pipeline and degraded-service behavior",
+  "owner": "Keletso",
+  "area": "integration",
+  "phase": "pilot",
+  "status": "BACKLOG",
+  "priority": "P0",
+  "depends_on": [
+    "TAX-039",
+    "TAX-037",
+    "TAX-038",
+    "TAX-047",
+    "TAX-053"
+  ],
+  "claimed_by": null,
+  "branch": null,
+  "pr": null,
+  "scope": "Connect submission, extraction, matching, risk, Jube case, graph and agent run with correlation tracing",
+  "inputs": [
+    "PROJECT.md",
+    "docs/ARCHITECTURE.md",
+    "docs/API_CONTRACTS.md",
+    "docs/REQUIREMENTS.md"
+  ],
+  "acceptance": [
+    {
+      "text": "Connect submission, extraction, matching, risk, Jube case, graph and agent run with correlation tracing",
+      "done": false
+    },
+    {
+      "text": "Run real adapter smoke path plus unavailable-upstream/replay tests; never label mock output as live",
+      "done": false
+    },
+    {
+      "text": "Record relevant tests and evidence, update task status and open a human-review PR",
+      "done": false
+    }
+  ],
+  "verification": "Run real adapter smoke path plus unavailable-upstream/replay tests; never label mock output as live",
+  "skills": [
+    "start-task",
+    "implement-change",
+    "update-project-task",
+    "finish-task"
+  ],
+  "evidence": [],
+  "notes": []
+}

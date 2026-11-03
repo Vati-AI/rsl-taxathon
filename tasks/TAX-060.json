@@ -1,0 +1,47 @@
+{
+  "id": "TAX-060",
+  "kind": "task",
+  "title": "Management workload and assurance dashboard",
+  "owner": "Leseli",
+  "area": "apps/auditor-web",
+  "phase": "pilot",
+  "status": "BACKLOG",
+  "priority": "P0",
+  "depends_on": [
+    "TAX-040",
+    "TAX-059"
+  ],
+  "claimed_by": null,
+  "branch": null,
+  "pr": null,
+  "scope": "Display workload, elapsed time, unresolved evidence, false positives and legal-route coverage from measured data",
+  "inputs": [
+    "PROJECT.md",
+    "docs/ARCHITECTURE.md",
+    "docs/API_CONTRACTS.md",
+    "docs/REQUIREMENTS.md"
+  ],
+  "acceptance": [
+    {
+      "text": "Display workload, elapsed time, unresolved evidence, false positives and legal-route coverage from measured data",
+      "done": false
+    },
+    {
+      "text": "Verify denominators, missing-data states and supervisor-only visibility",
+      "done": false
+    },
+    {
+      "text": "Record relevant tests and evidence, update task status and open a human-review PR",
+      "done": false
+    }
+  ],
+  "verification": "Verify denominators, missing-data states and supervisor-only visibility",
+  "skills": [
+    "start-task",
+    "implement-change",
+    "update-project-task",
+    "finish-task"
+  ],
+  "evidence": [],
+  "notes": []
+}

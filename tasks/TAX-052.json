@@ -1,0 +1,47 @@
+{
+  "id": "TAX-052",
+  "kind": "task",
+  "title": "Legal-route registry and policy-gap gate",
+  "owner": "Gupta",
+  "area": "ai",
+  "phase": "pilot",
+  "status": "BACKLOG",
+  "priority": "P0",
+  "depends_on": [
+    "TAX-022",
+    "TAX-024"
+  ],
+  "claimed_by": null,
+  "branch": null,
+  "pr": null,
+  "scope": "Separate observed risk from reviewer-verified legal route, authority version and policy-gap classification",
+  "inputs": [
+    "PROJECT.md",
+    "docs/ARCHITECTURE.md",
+    "docs/API_CONTRACTS.md",
+    "docs/REQUIREMENTS.md"
+  ],
+  "acceptance": [
+    {
+      "text": "Separate observed risk from reviewer-verified legal route, authority version and policy-gap classification",
+      "done": false
+    },
+    {
+      "text": "No-route scenario never creates an enforcement conclusion; fabricated or unverified citations are rejected",
+      "done": false
+    },
+    {
+      "text": "Record relevant tests and evidence, update task status and open a human-review PR",
+      "done": false
+    }
+  ],
+  "verification": "No-route scenario never creates an enforcement conclusion; fabricated or unverified citations are rejected",
+  "skills": [
+    "start-task",
+    "implement-change",
+    "update-project-task",
+    "finish-task"
+  ],
+  "evidence": [],
+  "notes": []
+}

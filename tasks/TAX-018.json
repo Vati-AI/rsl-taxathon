@@ -1,0 +1,44 @@
+{
+  "id": "TAX-018",
+  "kind": "task",
+  "title": "Versioned integration API and event contract",
+  "owner": "Keletso",
+  "area": "integration",
+  "phase": "foundation",
+  "status": "READY",
+  "priority": "P0",
+  "depends_on": [],
+  "claimed_by": null,
+  "branch": null,
+  "pr": null,
+  "scope": "Publish OpenAPI schemas for cases, evidence, entities, findings, investigate and request-evidence; include case mapping, tenant context, idempotency and errors",
+  "inputs": [
+    "PROJECT.md",
+    "docs/ARCHITECTURE.md",
+    "docs/API_CONTRACTS.md",
+    "docs/REQUIREMENTS.md"
+  ],
+  "acceptance": [
+    {
+      "text": "Publish OpenAPI schemas for cases, evidence, entities, findings, investigate and request-evidence; include case mapping, tenant context, idempotency and errors",
+      "done": false
+    },
+    {
+      "text": "Validate schema and five example request/response pairs; reject missing tenant and case IDs",
+      "done": false
+    },
+    {
+      "text": "Record relevant tests and evidence, update task status and open a human-review PR",
+      "done": false
+    }
+  ],
+  "verification": "Validate schema and five example request/response pairs; reject missing tenant and case IDs",
+  "skills": [
+    "start-task",
+    "implement-change",
+    "update-project-task",
+    "finish-task"
+  ],
+  "evidence": [],
+  "notes": []
+}

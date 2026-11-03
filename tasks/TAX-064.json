@@ -1,0 +1,47 @@
+{
+  "id": "TAX-064",
+  "kind": "task",
+  "title": "Auditor action observation and workflow proposals",
+  "owner": "Gupta",
+  "area": "ai",
+  "phase": "expansion",
+  "status": "BACKLOG",
+  "priority": "P1",
+  "depends_on": [
+    "TAX-061",
+    "TAX-059"
+  ],
+  "claimed_by": null,
+  "branch": null,
+  "pr": null,
+  "scope": "Detect repeated approved action sequences and propose versioned workflows for supervisor review",
+  "inputs": [
+    "PROJECT.md",
+    "docs/ARCHITECTURE.md",
+    "docs/API_CONTRACTS.md",
+    "docs/REQUIREMENTS.md"
+  ],
+  "acceptance": [
+    {
+      "text": "Detect repeated approved action sequences and propose versioned workflows for supervisor review",
+      "done": false
+    },
+    {
+      "text": "No proposal auto-activates; compare suggested workflow against held-out case traces",
+      "done": false
+    },
+    {
+      "text": "Record relevant tests and evidence, update task status and open a human-review PR",
+      "done": false
+    }
+  ],
+  "verification": "No proposal auto-activates; compare suggested workflow against held-out case traces",
+  "skills": [
+    "start-task",
+    "implement-change",
+    "update-project-task",
+    "finish-task"
+  ],
+  "evidence": [],
+  "notes": []
+}

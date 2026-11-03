@@ -13,8 +13,8 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.13'
-      - run: python3 scripts/validate.py
-      - run: python3 -m compileall -q scripts
-      - run: python3 -m unittest discover -s tests/tooling -v
+      - run: python3 scripts/dev.py check
       - run: python3 scripts/dev_env.py
       - run: docker compose config --quiet
+      - run: docker compose -f docker-compose.frappe.yml config --quiet
+      - run: docker compose -f docker-compose.docling.yml config --quiet
