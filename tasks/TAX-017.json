@@ -3,13 +3,13 @@
   "title": "Review GitHub setup and verified development handover",
   "owner": "Keletso",
   "area": "integration",
-  "status": "IN_PROGRESS",
+  "status": "IN_REVIEW",
   "priority": "P0",
   "day": 1,
   "depends_on": [],
   "claimed_by": "codex",
   "branch": "chore/TAX-017-setup-handover",
-  "pr": null,
+  "pr": "https://github.com/Vati-AI/rsl-taxathon/pull/17",
   "acceptance": [
     {
       "text": "Record verified repository, board, teams and CI evidence",
@@ -30,6 +30,10 @@
     "Six local tooling tests passed; PostgreSQL SELECT 1 and Redis PING succeeded on loopback ports."
   ],
   "notes": [
-    "Human review required. Product feature tasks remain unstarted."
+    "Human review required. Product feature tasks remain unstarted.",
+    {
+      "at": "2026-11-03T10:27:28.869697+00:00",
+      "text": "Setup verified; awaiting human review. Branch protection and six teammate identities remain external configuration prerequisites."
+    }
   ]
 }
