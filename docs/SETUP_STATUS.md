@@ -11,7 +11,7 @@ The expanded coding workspace is in PR #17 for human review. Initial scaffold is
 - AI-owned claim/status/evidence/finish/sync commands with human review before merge.
 - Both browser starter interfaces and five explicit synthetic scenario fixtures; localhost:58080.
 - Official source checkouts for Jube, OpenAleph, yente, Docling Serve, Frappe Docker, FtM and LangGraph at immutable commits, reproducible using scripts/upstreams.py. No unnecessary forks.
-- Vati PostgreSQL/Redis healthy on localhost:55433/56380. Isolated Frappe developer Compose is available; site readiness is recorded separately in docs/FRAPPE_DEV.md.
+- Vati PostgreSQL/Redis healthy on localhost:55433/56380. Isolated pinned Frappe framework/site and editable Vati app installed; migration, login and protected health checks passed (docs/FRAPPE_DEV.md).
 - Installed/locked AI dependencies and a model-free LangGraph interrupt/resume smoke.
 
 ## Verified

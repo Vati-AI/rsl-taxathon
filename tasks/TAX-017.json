@@ -13,21 +13,24 @@
   "acceptance": [
     {
       "text": "Align architecture and map supplied proposal to executable phased tasks",
-      "done": false
+      "done": true
     },
     {
       "text": "Provide discoverable skills and verified agent task/PR workflow",
-      "done": false
+      "done": true
     },
     {
       "text": "Provide reproducible development setup and upstream source lock",
-      "done": false
+      "done": true
     }
   ],
   "evidence": [
     "https://github.com/Vati-AI/rsl-taxathon/actions/runs/41617888284",
     "https://github.com/orgs/Vati-AI/projects/1",
-    "Six local tooling tests passed; PostgreSQL SELECT 1 and Redis PING succeeded on loopback ports."
+    "Six local tooling tests passed; PostgreSQL SELECT 1 and Redis PING succeeded on loopback ports.",
+    "Expanded requirements map and 65 implementation tasks TAX-018\u2013082; six validated project skills and seven role prompts.",
+    "Eleven developer tooling tests passed; all seven upstream revisions checked; model-free LangGraph interrupt/resume smoke passed.",
+    "Pinned isolated Frappe site and editable Vati app installed and migrated; HTTP ping/login/authenticated health 200; unauthenticated app health 403."
   ],
   "notes": [
     "Human review required. Product feature tasks remain unstarted.",

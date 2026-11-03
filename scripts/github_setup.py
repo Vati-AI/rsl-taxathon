@@ -32,20 +32,18 @@ def main():
     team = json.loads((ROOT / 'config/team.json').read_text())
     existing = gh('api', f'orgs/{org}/teams', '--paginate', '--slurp')
     teams = {t['slug']:t for page in existing for t in page}
-    owners = ['# Generated from verified config/team.json; never guess usernames.', '* @Kellybrackets']
+    owners = ['# Role teams have repository write access; maintainer remains a fallback reviewer.', '* @Kellybrackets']
     for person in team:
         slug = person['role']
         t = teams.get(slug) or attempt('create team ' + slug, lambda: api(f'orgs/{org}/teams','POST',{'name':slug,'privacy':'closed'}))
         if not t: continue
+        grant_error_count = len(report['errors'])
         attempt('grant team ' + slug, lambda: api(f'orgs/{org}/teams/{t["slug"]}/repos/{a.repo}', 'PUT', {'permission':'push'}))
+        if len(report['errors']) == grant_error_count:
+            owners.append('/' + person['path'] + '/ @' + org + '/' + t['slug'] + ' @Kellybrackets')
         if person['github'] and a.invite:
             result = attempt('invite ' + person['name'], lambda: api(f'orgs/{org}/teams/{t["slug"]}/memberships/{person["github"]}', 'PUT', {'role':'member'}))
             if result: report['invitations'].append({'name':person['name'],'state':result['state']})
-        if person['github']:
-            access = attempt('check access ' + person['name'], lambda: api(f'repos/{a.repo}/collaborators/{person["github"]}/permission'))
-            if access and access['permission'] in {'write','admin','maintain'}:
-                reviewers = list(dict.fromkeys([person['github'], 'Kellybrackets']))
-                owners.append('/' + person['path'] + '/ ' + ' '.join('@' + user for user in reviewers))
     (ROOT / '.github/CODEOWNERS').write_text('\n'.join(owners)+'\n')
     protection = attempt('branch protection (private repo needs supported plan)', lambda: api('repos/'+a.repo+'/branches/main/protection','PUT',json.loads((ROOT/'.github/branch-protection.json').read_text())))
     report['branch_protection_enforced'] = protection is not None
