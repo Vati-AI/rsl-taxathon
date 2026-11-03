@@ -5,11 +5,11 @@
   "owner": "Gupta",
   "area": "ai",
   "phase": "foundation",
-  "status": "READY",
+  "status": "IN_PROGRESS",
   "priority": "P0",
   "depends_on": [],
-  "claimed_by": null,
-  "branch": null,
+  "claimed_by": "codex-hlompho28-20261103-01a1a134",
+  "branch": "task/TAX-022",
   "pr": null,
   "scope": "Implement typed investigation state, tool result envelope and fake-tool graph without model keys",
   "inputs": [
@@ -40,5 +40,10 @@
     "finish-task"
   ],
   "evidence": [],
-  "notes": []
+  "notes": [
+    {
+      "at": "2026-11-03T11:47:16.584139+00:00",
+      "text": "Claimed by codex-hlompho28-20261103-01a1a134"
+    }
+  ]
 }
