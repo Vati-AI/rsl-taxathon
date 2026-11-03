@@ -7,8 +7,12 @@
     "mode": "external",
     "fork_required": false,
     "verified_on": "2026-11-03",
-    "deployment_status": "not_connected",
-    "source_status": "locked_source_fetched_on_setup_machine"
+    "deployment_status": "dev_stack_running_smoke_tested",
+    "source_status": "locked_source_fetched_on_setup_machine",
+    "local_url": "http://127.0.0.1:55501",
+    "source_commit": "01c4afdbcdb186cc36b128ed79283d544cfb9ec9",
+    "evidence": "TAX-025: integration/jube/README.md (auth, denied access, Swagger, resource use)",
+    "adapter_status": "not_implemented"
   },
   "openaleph": {
     "upstream": "https://github.com/openaleph/openaleph",
