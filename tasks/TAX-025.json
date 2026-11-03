@@ -5,11 +5,11 @@
   "owner": "Keletso",
   "area": "integration",
   "phase": "foundation",
-  "status": "READY",
+  "status": "IN_PROGRESS",
   "priority": "P0",
   "depends_on": [],
-  "claimed_by": null,
-  "branch": null,
+  "claimed_by": "keletso-claude-code-1",
+  "branch": "task/TAX-025",
   "pr": null,
   "scope": "Start the pinned Jube stack with generated credentials and isolated ports; record model API and case API from deployed Swagger",
   "inputs": [
@@ -43,5 +43,10 @@
     "finish-task"
   ],
   "evidence": [],
-  "notes": []
+  "notes": [
+    {
+      "at": "2026-11-03T12:39:17.302950+00:00",
+      "text": "Claimed by keletso-claude-code-1"
+    }
+  ]
 }
