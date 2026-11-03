@@ -24,11 +24,11 @@
   "acceptance": [
     {
       "text": "Create taxpayer portal routes and authenticated session boundary in the Frappe app, using synthetic fixtures initially",
-      "done": false
+      "done": true
     },
     {
       "text": "Verify login/logout/navigation and unauthorized route rejection",
-      "done": false
+      "done": true
     },
     {
       "text": "Record relevant tests and evidence, update task status and open a human-review PR",
@@ -36,7 +36,7 @@
     },
     {
       "text": "Follow docs/DESIGN_STANDARD.md; supply relevant viewport/state screenshots and keyboard/accessibility evidence for human visual review",
-      "done": false
+      "done": true
     }
   ],
   "verification": "Verify login/logout/navigation and unauthorized route rejection",
@@ -46,7 +46,20 @@
     "update-project-task",
     "finish-task"
   ],
-  "evidence": [],
+  "evidence": [
+    {
+      "criterion": 1,
+      "text": "Observed 2026-11-03 on local Frappe v16.54.0 site taxathon.localhost (docs/FRAPPE_DEV.md). vati_tax www/taxpayer.py guards /taxpayer and hooks.website_route_rules maps /taxpayer/<path>; guest GET /taxpayer and /taxpayer/submissions/SUB-SYN-0001 returned 301 to /login?redirect-to=<same portal path>; hostile /taxpayer/..%2F..%2Fdesk redirected with redirect-to=/taxpayer. Non-guest vati_tax.portal.api get_session/get_submissions/get_submission returned HTTP 403 to guests and explicitly synthetic fixture payloads (mode fixture, synthetic true) to a signed-in Website User; payload keys contain no risk/case/scenario fields. Vue 3/TypeScript/frappe-ui 1.1.0 app built with npm run build:taxpayer. Unit tests: backend portal 9/9 (dev.py check step), frontend 27/27 (npm run test:taxpayer)."
+    },
+    {
+      "criterion": 2,
+      "text": "Observed in Microsoft Edge 156 via Playwright against the live site (docs/evidence/TAX-021/results.json, 80/80 checks): login through Frappe /login as synthetic Website User returned to the requested deep link /taxpayer/submissions/SUB-SYN-0002; sidebar/mobile navigation and row links open list, status, new submission, account and not-found pages; unknown submission shows not-found state; Log out (POST /api/method/logout) lands on /login, after which /taxpayer/submissions redirects to login and the portal API returns 403. Router unit tests cover expired-session redirect, unreachable server (no false redirect), non-fixture payload rejection and logout failure."
+    },
+    {
+      "criterion": 4,
+      "text": "Evidence supplied for human visual review; visual approval NOT assumed. Uses the TAX-020 shared contract (apps/shared/design tokens.css + tailwind preset, system font, frappe-ui DesktopShell/Sidebar and MobileShell/MobileNav). docs/evidence/TAX-021: 38 screenshots at 1440/1024/390px of list, status, not-found, form empty/errors/review, account, loading, empty, error and denied states (Edge 156). axe-core 4.14.0 WCAG 2A/AA/2.1AA: 0 violations in 18 scans after fixing landmarks, a missing aria-labelledby target and contrast. Keyboard: skip link first, every tab stop has a visible focus outline, Enter submits form, validation focuses first invalid field and keeps values. No page-wide horizontal scroll at 1440/1024/390/320px (reflow). Deviation for review: red field-error text darkened locally (4.45:1 measured) pending a shared token."
+    }
+  ],
   "notes": [
     {
       "at": "2026-11-03T12:11:22.596157+00:00",
