@@ -1,0 +1,44 @@
+[
+  {
+    "name": "Leseli",
+    "role": "auditor-frontend",
+    "path": "apps/auditor-web",
+    "github": null
+  },
+  {
+    "name": "Kananelo",
+    "role": "taxpayer-frontend",
+    "path": "apps/taxpayer-web",
+    "github": null
+  },
+  {
+    "name": "Edga",
+    "role": "backend",
+    "path": "backend",
+    "github": null
+  },
+  {
+    "name": "Gupta",
+    "role": "ai",
+    "path": "ai",
+    "github": null
+  },
+  {
+    "name": "Jane",
+    "role": "frontend-qa",
+    "path": "tests/frontend",
+    "github": null
+  },
+  {
+    "name": "Yellow",
+    "role": "ai-data-qa",
+    "path": "tests/ai",
+    "github": null
+  },
+  {
+    "name": "Keletso",
+    "role": "integration",
+    "path": "integration",
+    "github": "Kellybrackets"
+  }
+]

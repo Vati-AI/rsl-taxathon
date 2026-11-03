@@ -1,0 +1,31 @@
+{
+  "id": "TAX-010",
+  "title": "Synthetic scenarios and expected outcomes",
+  "owner": "Yellow",
+  "area": "data",
+  "status": "BACKLOG",
+  "priority": "P0",
+  "day": 1,
+  "depends_on": [
+    "TAX-005"
+  ],
+  "claimed_by": null,
+  "branch": null,
+  "pr": null,
+  "acceptance": [
+    {
+      "text": "Expand three synthetic cases with invoices, contracts and evidence locators",
+      "done": false
+    },
+    {
+      "text": "Validate decimal amounts and referential integrity",
+      "done": false
+    },
+    {
+      "text": "Create expected findings, non-findings and ambiguity assertions",
+      "done": false
+    }
+  ],
+  "evidence": [],
+  "notes": []
+}

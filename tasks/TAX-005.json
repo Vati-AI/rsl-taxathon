@@ -1,0 +1,29 @@
+{
+  "id": "TAX-005",
+  "title": "Canonical model and API contract",
+  "owner": "Edga",
+  "area": "backend",
+  "status": "READY",
+  "priority": "P0",
+  "day": 1,
+  "depends_on": [],
+  "claimed_by": null,
+  "branch": null,
+  "pr": null,
+  "acceptance": [
+    {
+      "text": "Implement versioned model/migration plan from DATA_MODEL",
+      "done": false
+    },
+    {
+      "text": "Publish OpenAPI for submissions, cases, evidence and decisions",
+      "done": false
+    },
+    {
+      "text": "Agree error envelope, tenant context, pagination and idempotency with Keletso",
+      "done": false
+    }
+  ],
+  "evidence": [],
+  "notes": []
+}

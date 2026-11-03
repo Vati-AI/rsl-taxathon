@@ -1,0 +1,32 @@
+{
+  "id": "TAX-013",
+  "title": "Jube risk and Frappe workflow adapters",
+  "owner": "Keletso",
+  "area": "integration",
+  "status": "BACKLOG",
+  "priority": "P0",
+  "day": 2,
+  "depends_on": [
+    "TAX-011",
+    "TAX-005"
+  ],
+  "claimed_by": null,
+  "branch": null,
+  "pr": null,
+  "acceptance": [
+    {
+      "text": "Configure explainable synthetic Jube rules and normalize versioned results",
+      "done": false
+    },
+    {
+      "text": "Mirror approved case state to optional Frappe DocTypes",
+      "done": false
+    },
+    {
+      "text": "Prevent workflow loops and duplicate outward actions",
+      "done": false
+    }
+  ],
+  "evidence": [],
+  "notes": []
+}

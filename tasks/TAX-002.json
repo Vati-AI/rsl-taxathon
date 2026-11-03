@@ -1,0 +1,33 @@
+{
+  "id": "TAX-002",
+  "title": "Auditor evidence and human decisions",
+  "owner": "Leseli",
+  "area": "apps/auditor-web",
+  "status": "BACKLOG",
+  "priority": "P0",
+  "day": 3,
+  "depends_on": [
+    "TAX-001",
+    "TAX-006",
+    "TAX-008"
+  ],
+  "claimed_by": null,
+  "branch": null,
+  "pr": null,
+  "acceptance": [
+    {
+      "text": "Link findings to evidence pages and source records",
+      "done": false
+    },
+    {
+      "text": "Support authorized review, evidence request and specialist referral",
+      "done": false
+    },
+    {
+      "text": "Show stale-state conflicts and decision audit history",
+      "done": false
+    }
+  ],
+  "evidence": [],
+  "notes": []
+}

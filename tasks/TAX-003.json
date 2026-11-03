@@ -1,0 +1,29 @@
+{
+  "id": "TAX-003",
+  "title": "Taxpayer portal and submission shell",
+  "owner": "Kananelo",
+  "area": "apps/taxpayer-web",
+  "status": "READY",
+  "priority": "P0",
+  "day": 1,
+  "depends_on": [],
+  "claimed_by": null,
+  "branch": null,
+  "pr": null,
+  "acceptance": [
+    {
+      "text": "Build submission form and document upload UI with fixtures",
+      "done": false
+    },
+    {
+      "text": "Validate required fields and missing evidence without accusations",
+      "done": false
+    },
+    {
+      "text": "Show only taxpayer-safe submission and case states",
+      "done": false
+    }
+  ],
+  "evidence": [],
+  "notes": []
+}

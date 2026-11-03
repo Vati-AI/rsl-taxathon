@@ -1,0 +1,33 @@
+{
+  "id": "TAX-014",
+  "title": "End-to-end frontend regression and bug fixes",
+  "owner": "Jane",
+  "area": "tests/frontend",
+  "status": "BACKLOG",
+  "priority": "P0",
+  "day": 4,
+  "depends_on": [
+    "TAX-002",
+    "TAX-004",
+    "TAX-009"
+  ],
+  "claimed_by": null,
+  "branch": null,
+  "pr": null,
+  "acceptance": [
+    {
+      "text": "Run taxpayer-to-auditor flow in supported browsers and mobile widths",
+      "done": false
+    },
+    {
+      "text": "Fix critical interaction/accessibility bugs with regression evidence",
+      "done": false
+    },
+    {
+      "text": "Record remaining UI limitations and demo screenshots",
+      "done": false
+    }
+  ],
+  "evidence": [],
+  "notes": []
+}

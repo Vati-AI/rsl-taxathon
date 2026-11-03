@@ -1,0 +1,33 @@
+{
+  "id": "TAX-015",
+  "title": "AI safety, data and integration regression",
+  "owner": "Yellow",
+  "area": "tests/ai",
+  "status": "BACKLOG",
+  "priority": "P0",
+  "day": 3,
+  "depends_on": [
+    "TAX-008",
+    "TAX-010",
+    "TAX-013"
+  ],
+  "claimed_by": null,
+  "branch": null,
+  "pr": null,
+  "acceptance": [
+    {
+      "text": "Verify citation accuracy, legitimate-case non-escalation and ambiguous-case pause",
+      "done": false
+    },
+    {
+      "text": "Test malicious document instructions, timeout and replay behavior",
+      "done": false
+    },
+    {
+      "text": "Record scenario outcomes, failures and reproducible run evidence",
+      "done": false
+    }
+  ],
+  "evidence": [],
+  "notes": []
+}

@@ -1,0 +1,31 @@
+{
+  "id": "TAX-006",
+  "title": "Case lifecycle and access-controlled APIs",
+  "owner": "Edga",
+  "area": "backend",
+  "status": "BACKLOG",
+  "priority": "P0",
+  "day": 2,
+  "depends_on": [
+    "TAX-005"
+  ],
+  "claimed_by": null,
+  "branch": null,
+  "pr": null,
+  "acceptance": [
+    {
+      "text": "Persist submissions/cases/evidence with tenant boundaries",
+      "done": false
+    },
+    {
+      "text": "Enforce human authorization and optimistic version checks for decisions",
+      "done": false
+    },
+    {
+      "text": "Test duplicate submissions, cross-tenant access and outbox replay",
+      "done": false
+    }
+  ],
+  "evidence": [],
+  "notes": []
+}

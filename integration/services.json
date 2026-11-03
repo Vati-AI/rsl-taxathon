@@ -1,0 +1,72 @@
+{
+  "jube": {
+    "upstream": "https://github.com/jube-home/aml-fraud-transaction-monitoring",
+    "docs": "https://www.jube.io/docs/GettingStarted/DeployingWithDocker/",
+    "purpose": "Risk evaluation",
+    "base_url_env": "JUBE_BASE_URL",
+    "mode": "external",
+    "fork_required": false,
+    "verified_on": "2026-11-03",
+    "deployment_status": "not_connected"
+  },
+  "openaleph": {
+    "upstream": "https://github.com/openaleph/openaleph",
+    "docs": "https://openaleph.org/docs/",
+    "purpose": "Evidence search and entity graph",
+    "base_url_env": "OPENALEPH_BASE_URL",
+    "mode": "external",
+    "fork_required": false,
+    "verified_on": "2026-11-03",
+    "deployment_status": "not_connected"
+  },
+  "yente": {
+    "upstream": "https://github.com/opensanctions/yente",
+    "docs": "https://yente.followthemoney.tech/",
+    "purpose": "Candidate entity matching",
+    "base_url_env": "YENTE_BASE_URL",
+    "mode": "external",
+    "fork_required": false,
+    "verified_on": "2026-11-03",
+    "deployment_status": "not_connected"
+  },
+  "docling": {
+    "upstream": "https://github.com/docling-project/docling-serve",
+    "docs": "https://github.com/docling-project/docling-serve/blob/main/docs/usage.md",
+    "purpose": "Document extraction API",
+    "base_url_env": "DOCLING_BASE_URL",
+    "mode": "external",
+    "fork_required": false,
+    "verified_on": "2026-11-03",
+    "deployment_status": "not_connected"
+  },
+  "frappe": {
+    "upstream": "https://github.com/frappe/frappe_docker",
+    "docs": "https://docs.frappe.io/framework/user/en/api/rest",
+    "purpose": "Optional approved workflow mirror",
+    "base_url_env": "FRAPPE_BASE_URL",
+    "mode": "external",
+    "fork_required": false,
+    "verified_on": "2026-11-03",
+    "deployment_status": "not_connected"
+  },
+  "langgraph": {
+    "upstream": "https://github.com/langchain-ai/langgraph",
+    "docs": "https://docs.langchain.com/oss/python/langgraph/interrupts",
+    "purpose": "Embedded workflow worker",
+    "base_url_env": null,
+    "mode": "library",
+    "fork_required": false,
+    "verified_on": "2026-11-03",
+    "deployment_status": "not_connected"
+  },
+  "followthemoney": {
+    "upstream": "https://github.com/opensanctions/followthemoney",
+    "docs": "https://followthemoney.tech/",
+    "purpose": "Entity schema and mapping library",
+    "base_url_env": null,
+    "mode": "library",
+    "fork_required": false,
+    "verified_on": "2026-11-03",
+    "deployment_status": "not_connected"
+  }
+}

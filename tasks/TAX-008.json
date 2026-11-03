@@ -1,0 +1,33 @@
+{
+  "id": "TAX-008",
+  "title": "VAT and related-party investigations",
+  "owner": "Gupta",
+  "area": "ai",
+  "status": "BACKLOG",
+  "priority": "P0",
+  "day": 2,
+  "depends_on": [
+    "TAX-007",
+    "TAX-010",
+    "TAX-012"
+  ],
+  "claimed_by": null,
+  "branch": null,
+  "pr": null,
+  "acceptance": [
+    {
+      "text": "Investigate all three synthetic scenarios with evidence citations",
+      "done": false
+    },
+    {
+      "text": "Treat missing evidence and uncertain matches as uncertainty",
+      "done": false
+    },
+    {
+      "text": "Test restart/resume without repeating approved side effects",
+      "done": false
+    }
+  ],
+  "evidence": [],
+  "notes": []
+}

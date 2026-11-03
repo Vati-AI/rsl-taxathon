@@ -1,0 +1,29 @@
+{
+  "id": "TAX-009",
+  "title": "Frontend QA plan and browser fixtures",
+  "owner": "Jane",
+  "area": "tests/frontend",
+  "status": "READY",
+  "priority": "P0",
+  "day": 1,
+  "depends_on": [],
+  "claimed_by": null,
+  "branch": null,
+  "pr": null,
+  "acceptance": [
+    {
+      "text": "Create test matrix for both portals including mobile and keyboard access",
+      "done": false
+    },
+    {
+      "text": "Document expected loading, error, empty and permission states",
+      "done": false
+    },
+    {
+      "text": "Agree accessible labels, focus handling and readable evidence layout",
+      "done": false
+    }
+  ],
+  "evidence": [],
+  "notes": []
+}

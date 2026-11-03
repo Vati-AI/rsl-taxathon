@@ -1,0 +1,29 @@
+{
+  "id": "TAX-007",
+  "title": "LangGraph workflow and tool contracts",
+  "owner": "Gupta",
+  "area": "ai",
+  "status": "READY",
+  "priority": "P0",
+  "day": 1,
+  "depends_on": [],
+  "claimed_by": null,
+  "branch": null,
+  "pr": null,
+  "acceptance": [
+    {
+      "text": "Define workflow state with case_id, evidence_ids and workflow version",
+      "done": false
+    },
+    {
+      "text": "Implement fixture-backed bounded tools and structured finding output",
+      "done": false
+    },
+    {
+      "text": "Persist checkpoints and interrupt before human actions",
+      "done": false
+    }
+  ],
+  "evidence": [],
+  "notes": []
+}

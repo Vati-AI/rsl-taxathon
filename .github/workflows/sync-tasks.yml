@@ -1,0 +1,26 @@
+name: Sync repo tasks to Project
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  sync:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: Sync trusted task files
+        env:
+          GH_TOKEN: ${{ secrets.PROJECT_TOKEN }}
+          REPO: ${{ github.repository }}
+          PROJECT_NUMBER: ${{ vars.PROJECT_NUMBER }}
+        run: |
+          test -n "$GH_TOKEN" || { echo 'Set PROJECT_TOKEN or sync locally with gh'; exit 1; }
+          test -n "$PROJECT_NUMBER" || { echo 'Set PROJECT_NUMBER'; exit 1; }
+          python3 scripts/validate.py
+          python3 scripts/github_sync.py --repo "$REPO" --project-number "$PROJECT_NUMBER"

@@ -1,0 +1,32 @@
+[
+  {
+    "id": "SYN-001",
+    "name": "Synthetic Mountain Wholesale",
+    "scenario": "legitimate_refund",
+    "currency": "LSL",
+    "refund_claim": "15000.00",
+    "supported_refund": "15000.00",
+    "expected": "human_clearance",
+    "synthetic": true
+  },
+  {
+    "id": "SYN-002",
+    "name": "Synthetic Border Retail",
+    "scenario": "related_party_risk",
+    "currency": "LSL",
+    "refund_claim": "25000.00",
+    "supported_refund": "10000.00",
+    "expected": "targeted_evidence_request",
+    "synthetic": true
+  },
+  {
+    "id": "SYN-003",
+    "name": "Synthetic Valley Services",
+    "scenario": "ambiguous_service",
+    "currency": "LSL",
+    "refund_claim": "0.00",
+    "supported_refund": "0.00",
+    "expected": "specialist_review",
+    "synthetic": true
+  }
+]

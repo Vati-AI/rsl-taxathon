@@ -1,0 +1,7 @@
+# Verified owner only. Extend from config/team.json after usernames/access are confirmed.
+* @Kellybrackets
+/.github/ @Kellybrackets
+/integration/ @Kellybrackets
+/docs/ @Kellybrackets
+# Human area responsibilities are recorded in config/team.json and task files.
+# CODEOWNERS enforcement for a private organization repository requires a supported paid plan.

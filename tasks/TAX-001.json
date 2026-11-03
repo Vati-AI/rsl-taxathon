@@ -1,0 +1,29 @@
+{
+  "id": "TAX-001",
+  "title": "Auditor dashboard and case shell",
+  "owner": "Leseli",
+  "area": "apps/auditor-web",
+  "status": "READY",
+  "priority": "P0",
+  "day": 1,
+  "depends_on": [],
+  "claimed_by": null,
+  "branch": null,
+  "pr": null,
+  "acceptance": [
+    {
+      "text": "Render case list and case detail from agreed fixtures",
+      "done": false
+    },
+    {
+      "text": "Provide loading, empty and error states",
+      "done": false
+    },
+    {
+      "text": "Show risk reason, unresolved amount and evidence panel",
+      "done": false
+    }
+  ],
+  "evidence": [],
+  "notes": []
+}

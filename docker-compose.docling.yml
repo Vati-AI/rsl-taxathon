@@ -1,0 +1,9 @@
+name: rsl-taxathon-docling
+services:
+  docling:
+    image: ghcr.io/docling-project/docling-serve:v1.38.2
+    ports: ["127.0.0.1:55001:5001"]
+    environment:
+      DOCLING_SERVE_API_KEY: ${DOCLING_API_KEY:?Set a generated DOCLING_API_KEY in .env}
+      DOCLING_SERVE_ENABLE_UI: "false"
+      DOCLING_SERVE_ENABLE_REMOTE_SERVICES: "false"

@@ -1,0 +1,29 @@
+{
+  "id": "TAX-011",
+  "title": "Shared integration contracts and dev connectivity",
+  "owner": "Keletso",
+  "area": "integration",
+  "status": "READY",
+  "priority": "P0",
+  "day": 1,
+  "depends_on": [],
+  "claimed_by": null,
+  "branch": null,
+  "pr": null,
+  "acceptance": [
+    {
+      "text": "Finalize event envelope and canonical ID mapping with Edga",
+      "done": false
+    },
+    {
+      "text": "Implement timeout/retry/idempotency and explicit service readiness checks",
+      "done": false
+    },
+    {
+      "text": "Document deployed versions and auth without committing secrets",
+      "done": false
+    }
+  ],
+  "evidence": [],
+  "notes": []
+}

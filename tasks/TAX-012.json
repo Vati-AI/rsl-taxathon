@@ -1,0 +1,32 @@
+{
+  "id": "TAX-012",
+  "title": "Docling, FtM, yente and OpenAleph adapters",
+  "owner": "Keletso",
+  "area": "integration",
+  "status": "BACKLOG",
+  "priority": "P0",
+  "day": 2,
+  "depends_on": [
+    "TAX-011",
+    "TAX-005"
+  ],
+  "claimed_by": null,
+  "branch": null,
+  "pr": null,
+  "acceptance": [
+    {
+      "text": "Extract a synthetic document with provenance and content hash",
+      "done": false
+    },
+    {
+      "text": "Map entities to validated FtM schema and review matching candidates",
+      "done": false
+    },
+    {
+      "text": "Index/retrieve permission-scoped evidence and test duplicate processing",
+      "done": false
+    }
+  ],
+  "evidence": [],
+  "notes": []
+}

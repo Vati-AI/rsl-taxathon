@@ -1,0 +1,32 @@
+{
+  "id": "TAX-004",
+  "title": "Evidence responses and submission API integration",
+  "owner": "Kananelo",
+  "area": "apps/taxpayer-web",
+  "status": "BACKLOG",
+  "priority": "P0",
+  "day": 3,
+  "depends_on": [
+    "TAX-003",
+    "TAX-006"
+  ],
+  "claimed_by": null,
+  "branch": null,
+  "pr": null,
+  "acceptance": [
+    {
+      "text": "Submit using backend contract and idempotency key",
+      "done": false
+    },
+    {
+      "text": "Display evidence requests and structured response upload",
+      "done": false
+    },
+    {
+      "text": "Verify retry and access-denied states",
+      "done": false
+    }
+  ],
+  "evidence": [],
+  "notes": []
+}

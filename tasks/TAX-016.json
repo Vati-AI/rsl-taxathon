@@ -1,0 +1,32 @@
+{
+  "id": "TAX-016",
+  "title": "Integrated demo and release review",
+  "owner": "Keletso",
+  "area": "integration",
+  "status": "BACKLOG",
+  "priority": "P0",
+  "day": 4,
+  "depends_on": [
+    "TAX-014",
+    "TAX-015"
+  ],
+  "claimed_by": null,
+  "branch": null,
+  "pr": null,
+  "acceptance": [
+    {
+      "text": "Run three scenarios end-to-end and record versions/results",
+      "done": false
+    },
+    {
+      "text": "Verify access boundaries and human decision audit trail",
+      "done": false
+    },
+    {
+      "text": "Publish demo instructions and known gaps; obtain human go/no-go",
+      "done": false
+    }
+  ],
+  "evidence": [],
+  "notes": []
+}
