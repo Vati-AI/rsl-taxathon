@@ -5,11 +5,11 @@
   "owner": "Edga",
   "area": "backend",
   "phase": "foundation",
-  "status": "READY",
+  "status": "IN_PROGRESS",
   "priority": "P0",
   "depends_on": [],
-  "claimed_by": null,
-  "branch": null,
+  "claimed_by": "edga-claude-code-1",
+  "branch": "task/TAX-019",
   "pr": null,
   "scope": "Install vati_tax in an isolated Frappe bench/site; package migrations, modules and configuration with documented commands",
   "inputs": [
@@ -44,6 +44,10 @@
   ],
   "evidence": [],
   "notes": [
-    "TAX-017 supplies the pinned developer bench/site and installed app scaffold. Reuse scripts/frappe_dev.py and docs/FRAPPE_DEV.md; this task still owns a fresh-site installation without manual database edits and its repeat-migration acceptance evidence."
+    "TAX-017 supplies the pinned developer bench/site and installed app scaffold. Reuse scripts/frappe_dev.py and docs/FRAPPE_DEV.md; this task still owns a fresh-site installation without manual database edits and its repeat-migration acceptance evidence.",
+    {
+      "at": "2026-11-03T13:43:02.841898+00:00",
+      "text": "Claimed by edga-claude-code-1"
+    }
   ]
 }
