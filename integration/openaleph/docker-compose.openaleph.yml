@@ -1,0 +1,120 @@
+# Isolated OpenAleph development stack (TAX-026), pinned to the locked source version 5.4.0-rc1.
+# Use scripts/openaleph_dev.py; configuration and secrets live in the ignored .local/openaleph.env.
+# Differences from upstream docker-compose.example.yml are documented in README.md: unique project
+# name, password login with multiple users (not single-user mode), generated database password,
+# version-pinned/digest-pinned images instead of :latest, loopback-only UI port, healthchecks and
+# memory limits for a shared developer machine.
+name: rsl-taxathon-openaleph
+
+x-aleph: &aleph
+  env_file: ../../.local/openaleph.env
+  restart: unless-stopped
+  tmpfs:
+    - /tmp:mode=777
+
+services:
+  postgres:
+    image: postgres:17
+    environment:
+      POSTGRES_USER: aleph
+      POSTGRES_DB: aleph
+      POSTGRES_PASSWORD: ${OA_POSTGRES_PASSWORD:?Run python3 scripts/openaleph_dev.py env first}
+    volumes: ["oa-postgres:/var/lib/postgresql/data"]
+    mem_limit: 512m
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U aleph -d aleph"]
+      interval: 5s
+      timeout: 3s
+      retries: 30
+
+  elasticsearch:
+    # Upstream publishes only :latest for this image; pinned by registry digest (checked 2026-11-03).
+    image: ghcr.io/openaleph/elasticsearch@sha256:30ad573a1288604f520db4e1023036f259307201a6aac24694da1059be41f472
+    hostname: elasticsearch
+    environment:
+      discovery.type: single-node
+      xpack.security.enabled: "false"
+      ES_JAVA_OPTS: -Xms512m -Xmx512m
+    volumes: ["oa-elasticsearch:/usr/share/elasticsearch/data"]
+    mem_limit: 1280m
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS 'http://localhost:9200/_cluster/health?wait_for_status=yellow&timeout=2s' >/dev/null"]
+      interval: 10s
+      timeout: 5s
+      retries: 60
+
+  redis:
+    image: redis:7-alpine
+    command: ["redis-server", "--save", "3600", "10", "--maxmemory", "128mb"]
+    volumes: ["oa-redis:/data"]
+    mem_limit: 192m
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 30
+
+  ingest:
+    <<: *aleph
+    # ingest-file:5.4.0-rc1 (built 2026-10-01) cannot read jobs from the locked openaleph image
+    # (AttributeError in followthemoney from_dict). 5.4.0-rc4 (built 2026-11-02) uses the same
+    # openaleph-procrastinate commit a9c0ef12 and followthemoney 4.11.2 as openaleph 5.4.0-rc1.
+    image: ghcr.io/openaleph/ingest-file:5.4.0-rc4@sha256:daa60370d9ece3333bbfc87869b6813bc2cef2f7e7941ddb2498335adce07dc2
+    command: procrastinate worker -q ingest
+    volumes: ["oa-archive:/data"]
+    mem_limit: 1536m
+    depends_on:
+      postgres: {condition: service_healthy}
+      redis: {condition: service_healthy}
+
+  analyze:
+    <<: *aleph
+    # Published only as :latest and only for amd64 (runs under emulation on Apple silicon);
+    # pinned by registry digest (checked 2026-11-03).
+    image: ghcr.io/openaleph/ftm-analyze@sha256:6cd6b5ad8dba24f04730a3f92a497aaa14fd6058d5de5ca950ea9eed9c8720af
+    platform: linux/amd64
+    command: procrastinate worker -q analyze
+    mem_limit: 1536m
+    depends_on:
+      postgres: {condition: service_healthy}
+      redis: {condition: service_healthy}
+
+  worker:
+    <<: *aleph
+    image: ghcr.io/openaleph/openaleph:${OPENALEPH_TAG:?missing}
+    command: procrastinate worker -q openaleph,openaleph-management
+    volumes: ["oa-archive:/data"]
+    mem_limit: 1g
+    depends_on:
+      postgres: {condition: service_healthy}
+      redis: {condition: service_healthy}
+      elasticsearch: {condition: service_healthy}
+
+  api:
+    <<: *aleph
+    image: ghcr.io/openaleph/openaleph:${OPENALEPH_TAG:?missing}
+    # Upstream image CMD starts 6 gunicorn workers (OOM-killed under 1 GB); 2 suffice for one developer.
+    command: ["gunicorn", "--config", "/aleph/gunicorn.conf.py", "--workers", "2", "--log-level", "info", "--log-file", "-"]
+    expose: ["8000"]
+    volumes: ["oa-archive:/data"]
+    mem_limit: 1536m
+    depends_on:
+      postgres: {condition: service_healthy}
+      redis: {condition: service_healthy}
+      elasticsearch: {condition: service_healthy}
+
+  ui:
+    image: ghcr.io/openaleph/aleph-ui:${OPENALEPH_TAG:?missing}
+    depends_on: [api]
+    ports: ["127.0.0.1:${OPENALEPH_PORT:-55580}:8080"]
+    mem_limit: 128m
+    restart: unless-stopped
+
+volumes:
+  oa-postgres:
+  oa-elasticsearch:
+  oa-redis:
+  oa-archive:
