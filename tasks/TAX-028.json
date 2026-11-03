@@ -5,12 +5,12 @@
   "owner": "Keletso",
   "area": "integration",
   "phase": "foundation",
-  "status": "IN_PROGRESS",
+  "status": "IN_REVIEW",
   "priority": "P0",
   "depends_on": [],
   "claimed_by": "keletso-claude-code-1",
   "branch": "task/TAX-028",
-  "pr": null,
+  "pr": "https://github.com/Vati-AI/rsl-taxathon/pull/101",
   "scope": "Start optional authenticated Docling service with bounded document sizes and local model artifacts",
   "inputs": [
     "PROJECT.md",
@@ -56,6 +56,10 @@
     {
       "at": "2026-11-03T14:30:50.198125+00:00",
       "text": "Claimed by keletso-claude-code-1"
+    },
+    {
+      "at": "2026-11-03T14:41:45.761115+00:00",
+      "text": "Agent finished implementation and opened human review"
     }
   ]
 }
