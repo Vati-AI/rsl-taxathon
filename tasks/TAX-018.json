@@ -32,7 +32,7 @@
     },
     {
       "text": "Record relevant tests and evidence, update task status and open a human-review PR",
-      "done": false
+      "done": true
     }
   ],
   "verification": "Validate schema and five example request/response pairs; reject missing tenant and case IDs",
@@ -50,6 +50,10 @@
     {
       "criterion": 2,
       "text": "Validated 10 success request/response pairs covering SYN-001..SYN-005 and all 8 operations, plus 6 error contracts (missing tenant 400, empty case_id 400, tenant scope 403, stale version 409, idempotency conflict 409, upstream timeout 503) and 2 events. Observed: python3 -m unittest discover -s tests/contracts -> Ran 25 tests OK, including missing tenant header rejected on every operation (missing_tenant_context), malformed tenant rejected, empty/non-UUID case_id rejected (invalid_case_id), events without tenant_id/case_id rejected. python3 scripts/dev.py check -> Workspace checks passed; python3 scripts/quality.py -> First-party quality checks passed."
+    },
+    {
+      "criterion": 3,
+      "text": "Tests and evidence recorded for criteria 1-2; task.py finish refreshed from origin/main, reran dev.py check and quality.py (both passed), pushed task/TAX-018, opened human-review PR https://github.com/Vati-AI/rsl-taxathon/pull/88 and synced issue #19 to IN_REVIEW. Not merged by the agent."
     }
   ],
   "notes": [
