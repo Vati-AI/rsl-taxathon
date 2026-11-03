@@ -5,11 +5,11 @@
   "owner": "Yellow",
   "area": "data",
   "phase": "foundation",
-  "status": "READY",
+  "status": "IN_PROGRESS",
   "priority": "P0",
   "depends_on": [],
-  "claimed_by": null,
-  "branch": null,
+  "claimed_by": "codex-gupta-20261103-tax024",
+  "branch": "task/TAX-024",
   "pr": null,
   "scope": "Add linked synthetic returns, invoices, payments and contracts for legitimate refund, related parties, employment ambiguity, imported services and policy gap",
   "inputs": [
@@ -43,5 +43,10 @@
     "finish-task"
   ],
   "evidence": [],
-  "notes": []
+  "notes": [
+    {
+      "at": "2026-11-03T14:45:18.454493+00:00",
+      "text": "Claimed by codex-gupta-20261103-tax024"
+    }
+  ]
 }
