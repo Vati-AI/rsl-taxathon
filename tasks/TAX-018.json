@@ -5,12 +5,12 @@
   "owner": "Keletso",
   "area": "integration",
   "phase": "foundation",
-  "status": "IN_PROGRESS",
+  "status": "IN_REVIEW",
   "priority": "P0",
   "depends_on": [],
   "claimed_by": "keletso-claude-code-1",
   "branch": "task/TAX-018",
-  "pr": null,
+  "pr": "https://github.com/Vati-AI/rsl-taxathon/pull/88",
   "scope": "Publish OpenAPI schemas for cases, evidence, entities, findings, investigate and request-evidence; include case mapping, tenant context, idempotency and errors",
   "inputs": [
     "PROJECT.md",
@@ -56,6 +56,10 @@
     {
       "at": "2026-11-03T12:11:33.352196+00:00",
       "text": "Claimed by keletso-claude-code-1"
+    },
+    {
+      "at": "2026-11-03T12:20:57.477809+00:00",
+      "text": "Agent finished implementation and opened human review"
     }
   ]
 }
