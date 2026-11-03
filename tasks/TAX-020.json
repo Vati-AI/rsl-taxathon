@@ -5,12 +5,12 @@
   "owner": "Leseli",
   "area": "apps/auditor-web",
   "phase": "foundation",
-  "status": "IN_PROGRESS",
+  "status": "IN_REVIEW",
   "priority": "P0",
   "depends_on": [],
   "claimed_by": "leseli-claude-20261103-1",
   "branch": "task/TAX-020",
-  "pr": null,
+  "pr": "https://github.com/Vati-AI/rsl-taxathon/pull/91",
   "scope": "Build officer navigation, dashboard shell and case page skeleton against the fixture contract; establish shared Frappe-inspired tokens/component showcase and first auditor queue/detail visual baseline",
   "inputs": [
     "PROJECT.md",
@@ -32,7 +32,7 @@
     },
     {
       "text": "Record relevant tests and evidence, update task status and open a human-review PR",
-      "done": false
+      "done": true
     },
     {
       "text": "Follow docs/DESIGN_STANDARD.md; supply relevant viewport/state screenshots and keyboard/accessibility evidence for human visual review",
@@ -58,12 +58,20 @@
     {
       "criterion": 4,
       "text": "Follows docs/DESIGN_STANDARD.md via shared apps/shared/design tokens + preset (ADR-004). Screenshots in docs/evidence/TAX-020: overview/queue/case-detail/showcase at 1440, 1024, 390px; loading, empty, no-matches, error, denied, not-found and unavailable-tab states at 1440 and 390px; skip-link and table-sort focus, button hover/focus, form validation and dialog at 1440px (Edge 156). Accessibility: axe (wcag2a/aa, wcag21aa) reports no serious/critical violations on overview, queue, case detail and showcase; no page-wide horizontal scroll at 320px width (reflow); keyboard checks as in criterion 2. Supplied for human visual review; visual approval NOT assumed and remains with the human reviewer."
+    },
+    {
+      "criterion": 3,
+      "text": "Tests and evidence recorded in this task file; status set to IN_REVIEW with PR https://github.com/Vati-AI/rsl-taxathon/pull/91 (opened 2026-11-03, human review requested, not merged by the agent). Branch refreshed from main 629071e before review; all checks rerun after the merge."
     }
   ],
   "notes": [
     {
       "at": "2026-11-03T12:18:56.159277+00:00",
       "text": "Claimed by leseli-claude-20261103-1"
+    },
+    {
+      "at": "2026-11-03T13:10:06.744446+00:00",
+      "text": "Agent leseli-claude-20261103-1 finished implementation and opened human review (https://github.com/Vati-AI/rsl-taxathon/pull/91). quality.py steps run individually because Windows Smart App Control blocks mypy's compiled extension locally; mypy passed in a python:3.13-slim container."
     }
   ]
 }
