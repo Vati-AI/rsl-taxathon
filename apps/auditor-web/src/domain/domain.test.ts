@@ -118,7 +118,7 @@ describe('labels', () => {
     }
   });
 
-  it('humanizes unknown keys instead of failing', () => {
+  it('formats unknown keys as readable labels instead of failing', () => {
     expect(scenarioLabel('new_scenario_type')).toBe('New scenario type');
     expect(reviewLane('future_lane')).toEqual({ label: 'Future lane', theme: 'gray' });
   });

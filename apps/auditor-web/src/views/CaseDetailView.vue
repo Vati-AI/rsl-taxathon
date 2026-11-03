@@ -42,7 +42,7 @@ const pending = [
         icon-left="lucide-file-question"
         disabled
         aria-describedby="request-evidence-reason"
-        tooltip="Evidence requests need the Frappe portal and human approval flow (later tasks). Fixture mode is read-only."
+        tooltip="Evidence requests need the Frappe portal and officer approval flow (later tasks). Fixture mode is read-only."
       />
     </template>
 

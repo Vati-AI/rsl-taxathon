@@ -178,7 +178,7 @@ function showLoading() {
             placeholder="Choose a review lane"
             :error="errors.lane"
             :options="[
-              { label: 'Human clearance', value: 'human_clearance' },
+              { label: 'Officer clearance', value: 'human_clearance' },
               { label: 'Targeted evidence request', value: 'targeted_evidence_request' },
               { label: 'Specialist review', value: 'specialist_review' },
             ]"
@@ -264,7 +264,7 @@ function showLoading() {
       <section aria-labelledby="sc-dialogs" class="showcase-section">
         <h2 id="sc-dialogs" class="showcase-heading">Dialogs</h2>
         <p class="showcase-note">
-          Consequential actions show the exact proposed action and require explicit human
+          Consequential actions show the exact proposed action and require explicit officer
           confirmation.
         </p>
         <Button label="Open confirmation dialog" @click="dialogOpen = true" />
