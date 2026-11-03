@@ -5,12 +5,12 @@
   "owner": "Keletso",
   "area": "integration",
   "phase": "foundation",
-  "status": "IN_PROGRESS",
+  "status": "IN_REVIEW",
   "priority": "P0",
   "depends_on": [],
   "claimed_by": "keletso-claude-code-1",
   "branch": "task/TAX-025",
-  "pr": null,
+  "pr": "https://github.com/Vati-AI/rsl-taxathon/pull/90",
   "scope": "Start the pinned Jube stack with generated credentials and isolated ports; record model API and case API from deployed Swagger",
   "inputs": [
     "PROJECT.md",
@@ -56,6 +56,10 @@
     {
       "at": "2026-11-03T12:39:17.302950+00:00",
       "text": "Claimed by keletso-claude-code-1"
+    },
+    {
+      "at": "2026-11-03T13:01:57.389875+00:00",
+      "text": "Agent finished implementation and opened human review"
     }
   ]
 }
