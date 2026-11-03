@@ -38,8 +38,14 @@
     "mode": "external",
     "fork_required": false,
     "verified_on": "2026-11-03",
-    "deployment_status": "not_connected",
-    "source_status": "locked_source_fetched_on_setup_machine"
+    "deployment_status": "dev_stack_running_smoke_tested",
+    "source_status": "locked_source_fetched_on_setup_machine",
+    "local_url": "http://127.0.0.1:55800",
+    "source_commit": "6580a2aae2b662559d75301f06820bb0b8f7a122",
+    "version": "5.5.0",
+    "dataset": "vati_synthetic 2026110301 (local synthetic only; no OpenSanctions data)",
+    "evidence": "TAX-027: integration/yente/README.md (alias match, two ambiguous candidates with dataset version, negative checks)",
+    "adapter_status": "not_implemented"
   },
   "docling": {
     "upstream": "https://github.com/docling-project/docling-serve",

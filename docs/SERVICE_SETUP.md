@@ -13,6 +13,8 @@ This fetches official source at immutable commits from `integration/upstreams.lo
 | Name | Source purpose | Local entrypoint / next step |
 |---|---|---|
 | jube | Risk and operational case engine | `python3 scripts/jube_dev.py up` (isolated compose in integration/jube, not upstream's file); runbook integration/jube/README.md; TAX-034/035 next |
+| openaleph | Evidence search/graph | external/openaleph/docker-compose.example.yml and contrib/start-local.sh; TAX-026 |
+| yente | Matching API | `python3 scripts/yente_dev.py up` (isolated compose, synthetic-only manifest in integration/yente; no OpenSanctions data); runbook integration/yente/README.md; TAX-037 next |
 | openaleph | Evidence search/graph | `python3 scripts/openaleph_dev.py up` (isolated multi-user compose in integration/openaleph, not upstream's single-user start-local.sh); runbook integration/openaleph/README.md; TAX-036 next |
 | yente | Matching API | external/yente/docker-compose.yml; replace commercial manifest with synthetic data in TAX-027 |
 | docling | Extraction server | docker-compose.docling.yml; TAX-028 |
