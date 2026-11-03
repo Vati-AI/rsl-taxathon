@@ -1,0 +1,77 @@
+{
+  "name": "create_case_legitimate_refund",
+  "operation_id": "createCase",
+  "scenario": "SYN-001",
+  "synthetic": true,
+  "description": "Frappe registers a validated refund submission. Jube case creation is pending; the refund lane is not assigned yet and nothing is paid or denied.",
+  "request": {
+    "method": "POST",
+    "path": "/api/v1/cases",
+    "headers": {
+      "Authorization": "Bearer synthetic-dev-token-not-a-secret",
+      "X-Vati-Tenant-ID": "10000000-0000-4000-8000-000000000001",
+      "X-Correlation-ID": "c0000000-0000-4000-8000-000000000001",
+      "Idempotency-Key": "frappe:VT-SUB-0001:submit:v1"
+    },
+    "body": {
+      "taxpayer_id": "20000000-0000-4000-8000-000000000001",
+      "submission_id": "30000000-0000-4000-8000-000000000001",
+      "frappe_submission_ref": "VT-SUB-0001",
+      "submission_type": "refund_claim",
+      "period": "2026-09",
+      "refund_claim": {
+        "amount": "15000.00",
+        "currency": "LSL"
+      }
+    }
+  },
+  "response": {
+    "status": 201,
+    "headers": {
+      "X-Correlation-ID": "c0000000-0000-4000-8000-000000000001"
+    },
+    "body": {
+      "data": {
+        "case_id": "40000000-0000-4000-8000-000000000001",
+        "tenant_id": "10000000-0000-4000-8000-000000000001",
+        "display_id": "SYN-001",
+        "taxpayer_id": "20000000-0000-4000-8000-000000000001",
+        "submission_id": "30000000-0000-4000-8000-000000000001",
+        "status": "RECEIVED",
+        "status_authority": "jube",
+        "version": 1,
+        "refund_claim": {
+          "amount": "15000.00",
+          "currency": "LSL"
+        },
+        "refund_lane": null,
+        "assigned_officer_id": null,
+        "service_links": [
+          {
+            "service": "frappe",
+            "external_type": "Tax Submission",
+            "external_id": "VT-SUB-0001",
+            "sync": {
+              "state": "synced",
+              "last_attempt_at": "2026-11-03T10:00:01Z",
+              "error_code": null
+            }
+          },
+          {
+            "service": "jube",
+            "external_type": "case",
+            "external_id": null,
+            "sync": {
+              "state": "pending",
+              "last_attempt_at": null,
+              "error_code": null
+            }
+          }
+        ],
+        "created_at": "2026-11-03T10:00:00Z",
+        "updated_at": "2026-11-03T10:00:00Z",
+        "synthetic": true
+      }
+    }
+  }
+}

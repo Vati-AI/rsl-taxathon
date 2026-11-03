@@ -7,7 +7,14 @@ import subprocess
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-SOURCES = ["scripts", "tests/tooling", "backend/vati_tax/vati_tax", "ai"]
+SOURCES = [
+    "scripts",
+    "tests/tooling",
+    "tests/contracts",
+    "backend/vati_tax/vati_tax",
+    "ai",
+    "integration/api",
+]
 
 
 def main():
