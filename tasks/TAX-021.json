@@ -5,12 +5,12 @@
   "owner": "Kananelo",
   "area": "apps/taxpayer-web",
   "phase": "foundation",
-  "status": "IN_PROGRESS",
+  "status": "IN_REVIEW",
   "priority": "P0",
   "depends_on": [],
   "claimed_by": "kananelo-claude-20261103-1",
   "branch": "task/TAX-021",
-  "pr": null,
+  "pr": "https://github.com/Vati-AI/rsl-taxathon/pull/98",
   "scope": "Create taxpayer portal routes and authenticated session boundary in the Frappe app, using synthetic fixtures initially; reuse shared design contract and provide submission form/status screens for the first visual baseline",
   "inputs": [
     "PROJECT.md",
@@ -64,6 +64,10 @@
     {
       "at": "2026-11-03T12:11:22.596157+00:00",
       "text": "Claimed by kananelo-claude-20261103-1"
+    },
+    {
+      "at": "2026-11-03T14:27:03.160537+00:00",
+      "text": "Agent finished implementation and opened human review"
     }
   ]
 }
