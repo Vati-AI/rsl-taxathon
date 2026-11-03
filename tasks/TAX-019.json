@@ -5,12 +5,12 @@
   "owner": "Edga",
   "area": "backend",
   "phase": "foundation",
-  "status": "IN_PROGRESS",
+  "status": "IN_REVIEW",
   "priority": "P0",
   "depends_on": [],
   "claimed_by": "keletso-claude-code-1",
   "branch": "task/TAX-019",
-  "pr": null,
+  "pr": "https://github.com/Vati-AI/rsl-taxathon/pull/109",
   "scope": "Install vati_tax in an isolated Frappe bench/site; package migrations, modules and configuration with documented commands",
   "inputs": [
     "PROJECT.md",
@@ -65,6 +65,10 @@
     {
       "at": "2026-11-03T15:24:56.367688+00:00",
       "text": "Reassigned at Keletso's request (team lead): claim by edga-claude-code-1 had no pushed work after ~2 h and dependent tasks TAX-029..033 were blocked. Continued on the same branch by keletso-claude-code-1; owner/reviewer remains Edga. Edga should not continue a separate copy of this task."
+    },
+    {
+      "at": "2026-11-03T20:06:29.226307+00:00",
+      "text": "Agent finished implementation and opened human review"
     }
   ]
 }
