@@ -5,11 +5,11 @@
   "owner": "Keletso",
   "area": "integration",
   "phase": "foundation",
-  "status": "READY",
+  "status": "IN_PROGRESS",
   "priority": "P0",
   "depends_on": [],
-  "claimed_by": null,
-  "branch": null,
+  "claimed_by": "keletso-claude-code-1",
+  "branch": "task/TAX-018",
   "pr": null,
   "scope": "Publish OpenAPI schemas for cases, evidence, entities, findings, investigate and request-evidence; include case mapping, tenant context, idempotency and errors",
   "inputs": [
@@ -43,5 +43,10 @@
     "finish-task"
   ],
   "evidence": [],
-  "notes": []
+  "notes": [
+    {
+      "at": "2026-11-03T12:11:33.352196+00:00",
+      "text": "Claimed by keletso-claude-code-1"
+    }
+  ]
 }
