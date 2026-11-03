@@ -24,6 +24,11 @@
         "tenant_id": "10000000-0000-4000-8000-000000000001",
         "display_id": "SYN-003",
         "taxpayer_id": "20000000-0000-4000-8000-000000000003",
+        "taxpayer": {
+          "taxpayer_id": "20000000-0000-4000-8000-000000000003",
+          "display_name": "Synthetic Valley Services",
+          "taxpayer_type": "company"
+        },
         "submission_id": "30000000-0000-4000-8000-000000000003",
         "status": "AWAITING_HUMAN",
         "status_authority": "jube",
@@ -34,6 +39,13 @@
         },
         "refund_lane": null,
         "assigned_officer_id": "80000000-0000-4000-8000-000000000001",
+        "selection_reasons": [
+          {
+            "code": "worker_classification_ambiguity",
+            "summary": "Regular payments to individuals resemble both employment and consultancy arrangements.",
+            "source": "jube"
+          }
+        ],
         "service_links": [
           {
             "service": "frappe",

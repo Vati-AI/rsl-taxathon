@@ -6,6 +6,8 @@ defineProps<{
   title: string;
   description?: string;
   breadcrumbs: { label: string; route?: RouteLocationRaw }[];
+  /** Officer lists use the available width so wide tables only scroll on small screens. */
+  wide?: boolean;
 }>();
 </script>
 
@@ -18,7 +20,7 @@ defineProps<{
       <slot name="actions" />
     </div>
   </PageHeader>
-  <div class="w-full max-w-6xl px-4 py-5 sm:px-6">
+  <div :class="['w-full px-4 py-5 sm:px-6', wide ? 'max-w-[1600px]' : 'max-w-6xl']">
     <header class="mb-5">
       <h1 class="break-words text-2xl font-semibold leading-tight text-ink-gray-9">{{ title }}</h1>
       <p v-if="description" class="mt-1 max-w-3xl text-base text-ink-gray-5">{{ description }}</p>

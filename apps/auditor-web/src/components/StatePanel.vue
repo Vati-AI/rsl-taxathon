@@ -9,6 +9,8 @@ const props = defineProps<{
   title: string;
   message?: string;
   retryable?: boolean;
+  /** Correlation ID to quote when reporting a problem. */
+  reference?: string | null;
 }>();
 defineEmits<{ retry: [] }>();
 
@@ -38,11 +40,14 @@ const role = computed(() =>
     <Spinner v-if="kind === 'loading'" size="lg" class="text-ink-gray-5" />
     <span
       v-else
-      :class="[icon, 'size-6', kind === 'error' ? 'text-ink-red-4' : 'text-ink-gray-5']"
+      :class="[icon, 'size-6', kind === 'error' ? 'text-ink-red-6' : 'text-ink-gray-5']"
       aria-hidden="true"
     />
     <p class="text-base font-medium text-ink-gray-8">{{ title }}</p>
     <p v-if="message" class="max-w-prose text-ink-gray-5">{{ message }}</p>
+    <p v-if="reference" class="text-sm text-ink-gray-5">
+      Reference: <span class="break-all font-mono">{{ reference }}</span>
+    </p>
     <div v-if="retryable || $slots.default" class="mt-2 flex flex-wrap justify-center gap-2">
       <Button
         v-if="retryable"

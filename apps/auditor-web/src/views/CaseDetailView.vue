@@ -1,37 +1,45 @@
 <script setup lang="ts">
-import { ref } from 'vue';
-import { Button, Skeleton, TabList, TabPanel, TabTrigger, Tabs } from 'frappe-ui';
-import { getCase } from '../api/fixtures';
+import { computed, ref } from 'vue';
+import { Alert, Button, Skeleton, TabList, TabPanel, TabTrigger, Tabs } from 'frappe-ui';
+import { getCase } from '../api/vati';
 import AmountText from '../components/AmountText.vue';
+import CaseStatusBadge from '../components/CaseStatusBadge.vue';
 import PageLayout from '../components/PageLayout.vue';
-import ReviewLaneBadge from '../components/ReviewLaneBadge.vue';
+import SelectionReasons from '../components/SelectionReasons.vue';
 import StatePanel from '../components/StatePanel.vue';
 import { errorPanel } from '../components/errorPanel';
 import { useLoader } from '../composables/useLoader';
-import { scenarioLabel } from '../domain/cases';
+import { laneLabel, processingState, serviceLabel, taxpayerTypeLabel } from '../domain/cases';
+import { formatTimestamp } from '../domain/dates';
 
-const props = defineProps<{ id: string }>();
+const props = defineProps<{ caseId: string }>();
 const { state, reload } = useLoader(
-  (signal) => getCase(props.id, fetch, signal),
-  () => props.id,
+  (signal) => getCase(props.caseId, fetch, signal),
+  () => props.caseId,
 );
 const tab = ref('overview');
+const item = computed(() => (state.value.status === 'ready' ? state.value.data : null));
+const processing = computed(() => (item.value ? processingState(item.value) : null));
 
-// These sections map to operations in integration/api/openapi.json (TAX-018),
-// which the read-only fixture server does not serve. Say so rather than invent data.
+// These sections map to operations in integration/api/openapi.json that the read-only
+// fixture server does not serve. Say so rather than invent data.
 const pending = [
   { value: 'evidence', label: 'Evidence', endpoint: '/api/v1/cases/{case_id}/evidence' },
   { value: 'entities', label: 'Entities', endpoint: '/api/v1/cases/{case_id}/entities' },
   { value: 'findings', label: 'Findings', endpoint: '/api/v1/cases/{case_id}/findings' },
 ];
+const SYNC_LABELS = { synced: 'Up to date', pending: 'Waiting', failed: 'Failed' } as const;
 </script>
 
 <template>
   <PageLayout
-    :title="state.status === 'ready' ? `${state.data.id} · ${state.data.name}` : `Case ${id}`"
-    :breadcrumbs="[{ label: 'Case queue', route: { name: 'queue' } }, { label: id }]"
+    :title="item ? `${item.display_id} · ${item.taxpayer.display_name}` : 'Case'"
+    :breadcrumbs="[
+      { label: 'My case queue', route: { name: 'queue' } },
+      { label: item ? item.display_id : 'Case' },
+    ]"
   >
-    <template v-if="state.status === 'ready'" #actions>
+    <template v-if="item" #actions>
       <span id="request-evidence-reason" class="hidden text-sm text-ink-gray-5 md:inline">
         Not available in fixture mode
       </span>
@@ -46,7 +54,7 @@ const pending = [
       />
     </template>
 
-    <p v-if="state.status === 'ready'" class="mb-3 text-sm text-ink-gray-5 md:hidden">
+    <p v-if="item" class="mb-3 text-sm text-ink-gray-5 md:hidden">
       Request evidence is not available in fixture mode.
     </p>
     <div
@@ -60,84 +68,179 @@ const pending = [
     </div>
     <div v-else-if="state.status === 'error'">
       <StatePanel v-bind="errorPanel(state.error)" @retry="reload">
-        <Button label="Back to case queue" :route="{ name: 'queue' }" />
+        <Button label="Back to my case queue" :route="{ name: 'queue' }" />
       </StatePanel>
     </div>
-    <template v-else>
+    <template v-else-if="item && processing">
       <div class="mb-4 flex flex-wrap items-center gap-2">
-        <ReviewLaneBadge :lane="state.data.expected" />
-        <span class="text-ink-gray-5">{{ scenarioLabel(state.data.scenario) }}</span>
+        <CaseStatusBadge :status="item.status" />
+        <span class="text-ink-gray-5">Refund lane: {{ laneLabel(item.refund_lane) }}</span>
       </div>
+      <Alert
+        v-if="processing.kind === 'failed'"
+        theme="red"
+        class="mb-4"
+        title="Processing failed"
+        :description="`${processing.text}. The service retries automatically; this case has no findings until processing succeeds.`"
+      />
       <Tabs v-model="tab">
         <TabList>
           <TabTrigger value="overview" label="Overview" />
           <TabTrigger
-            v-for="item in pending"
-            :key="item.value"
-            :value="item.value"
-            :label="item.label"
+            v-for="entry in pending"
+            :key="entry.value"
+            :value="entry.value"
+            :label="entry.label"
           />
         </TabList>
         <TabPanel value="overview" class="pt-4">
-          <section
-            aria-labelledby="summary-heading"
-            class="rounded-surface border border-outline-gray-1 bg-surface-base"
+          <!-- minmax(0, …) lets wide children (the service table) scroll instead of widening the column. -->
+          <div
+            class="grid grid-cols-[minmax(0,1fr)] gap-4 lg:grid-cols-[minmax(0,3fr)_minmax(0,2fr)]"
           >
-            <h2
-              id="summary-heading"
-              class="border-b border-outline-gray-1 px-4 py-3 text-lg font-semibold text-ink-gray-9"
+            <section
+              aria-labelledby="reasons-heading"
+              class="rounded-surface border border-outline-gray-1 bg-surface-base"
             >
-              Case summary
-            </h2>
-            <dl class="grid gap-x-6 gap-y-3 px-4 py-4 sm:grid-cols-2">
-              <div>
-                <dt class="text-sm text-ink-gray-5">Case reference</dt>
-                <dd class="text-ink-gray-8">{{ state.data.id }}</dd>
+              <h2
+                id="reasons-heading"
+                class="border-b border-outline-gray-1 px-4 py-3 text-lg font-semibold text-ink-gray-9"
+              >
+                Why this case was selected
+              </h2>
+              <div class="px-4 py-4">
+                <SelectionReasons :reasons="item.selection_reasons" />
+                <p class="mt-3 text-sm text-ink-gray-5">
+                  Selection signals route work for review. They are not findings, assessments or
+                  decisions.
+                </p>
               </div>
-              <div>
-                <dt class="text-sm text-ink-gray-5">Taxpayer (synthetic)</dt>
-                <dd class="break-words text-ink-gray-8">{{ state.data.name }}</dd>
+            </section>
+            <section
+              aria-labelledby="taxpayer-heading"
+              class="rounded-surface border border-outline-gray-1 bg-surface-base"
+            >
+              <h2
+                id="taxpayer-heading"
+                class="border-b border-outline-gray-1 px-4 py-3 text-lg font-semibold text-ink-gray-9"
+              >
+                Taxpayer
+              </h2>
+              <div class="space-y-2 px-4 py-4">
+                <p class="break-words text-ink-gray-8">{{ item.taxpayer.display_name }}</p>
+                <p class="text-sm text-ink-gray-5">
+                  {{ taxpayerTypeLabel(item.taxpayer.taxpayer_type) }} · synthetic record
+                </p>
+                <RouterLink
+                  :to="{ name: 'taxpayer', params: { taxpayerId: item.taxpayer_id } }"
+                  class="inline-flex items-center gap-1 text-ink-blue-link underline-offset-2 hover:underline"
+                >
+                  View taxpayer profile
+                  <span class="lucide-arrow-right size-4" aria-hidden="true" />
+                </RouterLink>
               </div>
-              <div>
-                <dt class="text-sm text-ink-gray-5">Scenario</dt>
-                <dd class="text-ink-gray-8">{{ scenarioLabel(state.data.scenario) }}</dd>
+            </section>
+            <section
+              aria-labelledby="summary-heading"
+              class="rounded-surface border border-outline-gray-1 bg-surface-base lg:col-span-2"
+            >
+              <h2
+                id="summary-heading"
+                class="border-b border-outline-gray-1 px-4 py-3 text-lg font-semibold text-ink-gray-9"
+              >
+                Case summary
+              </h2>
+              <dl class="grid gap-x-6 gap-y-3 px-4 py-4 sm:grid-cols-2 lg:grid-cols-3">
+                <div>
+                  <dt class="text-sm text-ink-gray-5">Case reference</dt>
+                  <dd class="text-ink-gray-8">{{ item.display_id }}</dd>
+                </div>
+                <div>
+                  <dt class="text-sm text-ink-gray-5">Refund claimed</dt>
+                  <dd class="text-ink-gray-8">
+                    <AmountText
+                      :value="item.refund_claim?.amount ?? null"
+                      :currency="item.refund_claim?.currency ?? ''"
+                    />
+                  </dd>
+                </div>
+                <div>
+                  <dt class="text-sm text-ink-gray-5">Assigned officer</dt>
+                  <dd class="text-ink-gray-8">
+                    {{ item.assigned_officer_id ? 'Assigned' : 'Unassigned' }}
+                  </dd>
+                </div>
+                <div>
+                  <dt class="text-sm text-ink-gray-5">Opened</dt>
+                  <dd class="text-ink-gray-8">{{ formatTimestamp(item.created_at) }}</dd>
+                </div>
+                <div>
+                  <dt class="text-sm text-ink-gray-5">Last updated</dt>
+                  <dd class="text-ink-gray-8">{{ formatTimestamp(item.updated_at) }}</dd>
+                </div>
+                <div>
+                  <dt class="text-sm text-ink-gray-5">Case version</dt>
+                  <dd class="text-ink-gray-8">{{ item.version }}</dd>
+                </div>
+              </dl>
+            </section>
+            <section aria-labelledby="processing-heading" class="lg:col-span-2">
+              <h2 id="processing-heading" class="mb-2 text-lg font-semibold text-ink-gray-9">
+                Processing by service
+              </h2>
+              <div
+                role="region"
+                aria-label="Service processing table"
+                tabindex="0"
+                class="overflow-x-auto rounded-surface border border-outline-gray-1 bg-surface-base"
+              >
+                <table class="w-full min-w-[560px] border-collapse text-left">
+                  <thead
+                    class="border-b border-outline-gray-1 bg-surface-gray-1 text-sm text-ink-gray-6"
+                  >
+                    <tr>
+                      <th scope="col" class="px-3 py-2 font-medium">Service</th>
+                      <th scope="col" class="px-3 py-2 font-medium">Record</th>
+                      <th scope="col" class="px-3 py-2 font-medium">State</th>
+                      <th scope="col" class="px-3 py-2 font-medium">Last attempt</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr
+                      v-for="link in item.service_links"
+                      :key="link.service + link.external_type"
+                      class="border-b border-outline-gray-1 last:border-b-0"
+                    >
+                      <td class="px-3 py-2 text-ink-gray-8">{{ serviceLabel(link.service) }}</td>
+                      <td class="px-3 py-2 text-ink-gray-6">
+                        {{ link.external_id ?? 'Not created yet' }}
+                      </td>
+                      <td
+                        :class="[
+                          'px-3 py-2',
+                          link.sync.state === 'failed' ? 'text-ink-red-7' : 'text-ink-gray-7',
+                        ]"
+                      >
+                        {{ SYNC_LABELS[link.sync.state] }}
+                        <span v-if="link.sync.error_code" class="text-sm">
+                          ({{ link.sync.error_code }})
+                        </span>
+                      </td>
+                      <td class="px-3 py-2 text-ink-gray-6">
+                        {{ formatTimestamp(link.sync.last_attempt_at) ?? 'Not attempted' }}
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
               </div>
-              <div>
-                <dt class="text-sm text-ink-gray-5">Currency</dt>
-                <dd class="text-ink-gray-8">{{ state.data.currency }}</dd>
-              </div>
-              <div>
-                <dt class="text-sm text-ink-gray-5">Refund claimed</dt>
-                <dd class="text-ink-gray-8">
-                  <AmountText :value="state.data.refund_claim" :currency="state.data.currency" />
-                </dd>
-              </div>
-              <div>
-                <dt class="text-sm text-ink-gray-5">Supported refund (fixture)</dt>
-                <dd class="text-ink-gray-8">
-                  <AmountText
-                    :value="state.data.supported_refund"
-                    :currency="state.data.currency"
-                  />
-                </dd>
-              </div>
-              <div class="sm:col-span-2">
-                <dt class="text-sm text-ink-gray-5">Proposed review lane</dt>
-                <dd class="flex flex-wrap items-center gap-2 text-ink-gray-8">
-                  <ReviewLaneBadge :lane="state.data.expected" />
-                  <span class="text-sm text-ink-gray-5">
-                    Fixture expectation for routing — an officer decides the outcome.
-                  </span>
-                </dd>
-              </div>
-            </dl>
-          </section>
+            </section>
+          </div>
         </TabPanel>
-        <TabPanel v-for="item in pending" :key="item.value" :value="item.value" class="pt-4">
+        <TabPanel v-for="entry in pending" :key="entry.value" :value="entry.value" class="pt-4">
           <StatePanel
             kind="unavailable"
-            :title="`${item.label} are not available in fixture mode`"
-            :message="`This section will load from ${item.endpoint} (Vati API contract) when that service runs; the fixture server does not provide it. No ${item.label.toLowerCase()} are shown rather than invented.`"
+            :title="`${entry.label} are not available in fixture mode`"
+            :message="`This section will load from ${entry.endpoint} (Vati API contract) when that service runs; the fixture server does not provide it. No ${entry.label.toLowerCase()} are shown rather than invented.`"
           />
         </TabPanel>
       </Tabs>
