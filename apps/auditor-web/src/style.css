@@ -1,0 +1,7 @@
+/* Tailwind layers for frappe-ui. frappe-ui/style.css is not imported: it loads the
+   Inter web font, while the design standard specifies the system sans-serif font.
+   Shared tokens are imported after this file (main.ts) so they override the
+   frappe-ui base-layer variables. */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;

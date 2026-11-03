@@ -1,0 +1,51 @@
+import { createRouter, createWebHistory, type RouteRecordRaw } from 'vue-router';
+
+declare module 'vue-router' {
+  interface RouteMeta {
+    section: 'overview' | 'cases' | 'showcase' | 'none';
+    title: string;
+  }
+}
+
+export const routes: RouteRecordRaw[] = [
+  {
+    path: '/',
+    name: 'overview',
+    component: () => import('./views/OverviewView.vue'),
+    meta: { section: 'overview', title: 'Overview' },
+  },
+  {
+    path: '/cases',
+    name: 'queue',
+    component: () => import('./views/CaseQueueView.vue'),
+    meta: { section: 'cases', title: 'Case queue' },
+  },
+  {
+    path: '/cases/:id',
+    name: 'case',
+    component: () => import('./views/CaseDetailView.vue'),
+    props: true,
+    meta: { section: 'cases', title: 'Case' },
+  },
+  {
+    path: '/showcase',
+    name: 'showcase',
+    component: () => import('./views/ShowcaseView.vue'),
+    meta: { section: 'showcase', title: 'Component showcase' },
+  },
+  {
+    path: '/:pathMatch(.*)*',
+    name: 'not-found',
+    component: () => import('./views/NotFoundView.vue'),
+    meta: { section: 'none', title: 'Page not found' },
+  },
+];
+
+export const router = createRouter({
+  history: createWebHistory('/auditor/'),
+  routes,
+});
+
+router.afterEach((to) => {
+  document.title = `${to.meta.title} · Vati AI auditor workspace`;
+});
