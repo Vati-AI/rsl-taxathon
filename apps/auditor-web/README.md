@@ -2,7 +2,7 @@
 
 Owner: Leseli. See `tasks/README.md` for work and `docs/ARCHITECTURE.md` for boundaries.
 
-Officer-facing Vue 3 + TypeScript + Frappe UI app (ADR-003). It reads the
+Officer-facing Vue 3 + TypeScript + Frappe UI app (ADR-004). It reads the
 synthetic fixture contract only (docs/API_CONTRACTS.md); live services and
 investigation actions arrive with later tasks.
 

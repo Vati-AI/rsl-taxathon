@@ -17,12 +17,12 @@ const { state, reload } = useLoader(
 );
 const tab = ref('overview');
 
-// These sections depend on endpoints defined in docs/API_CONTRACTS.md but not
-// yet served by the fixture environment (TAX-018). Say so rather than invent data.
+// These sections map to operations in integration/api/openapi.json (TAX-018),
+// which the read-only fixture server does not serve. Say so rather than invent data.
 const pending = [
-  { value: 'evidence', label: 'Evidence', endpoint: '/cases/{case_id}/evidence' },
-  { value: 'entities', label: 'Entities', endpoint: '/cases/{case_id}/entities' },
-  { value: 'findings', label: 'Findings', endpoint: '/cases/{case_id}/findings' },
+  { value: 'evidence', label: 'Evidence', endpoint: '/api/v1/cases/{case_id}/evidence' },
+  { value: 'entities', label: 'Entities', endpoint: '/api/v1/cases/{case_id}/entities' },
+  { value: 'findings', label: 'Findings', endpoint: '/api/v1/cases/{case_id}/findings' },
 ];
 </script>
 
@@ -137,7 +137,7 @@ const pending = [
           <StatePanel
             kind="unavailable"
             :title="`${item.label} are not available in fixture mode`"
-            :message="`This section will load from ${item.endpoint} once the Vati API contract (TAX-018) is implemented. No ${item.label.toLowerCase()} are shown rather than invented.`"
+            :message="`This section will load from ${item.endpoint} (Vati API contract) when that service runs; the fixture server does not provide it. No ${item.label.toLowerCase()} are shown rather than invented.`"
           />
         </TabPanel>
       </Tabs>

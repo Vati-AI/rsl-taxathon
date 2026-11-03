@@ -103,6 +103,17 @@ class BuiltAuditorServingTests(unittest.TestCase):
         self.assertEqual("starter.css", dev.static_target("/starter.css").name)
 
 
+class TaskFileFormatTests(unittest.TestCase):
+    def test_saved_task_files_use_lf_line_endings_on_every_platform(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            (Path(tmp) / "tasks").mkdir()
+            with mock.patch.object(task, "ROOT", Path(tmp)):
+                task.save({"id": "TAX-999", "notes": [], "status": "READY"})
+            data = (Path(tmp) / "tasks" / "TAX-999.json").read_bytes()
+        self.assertNotIn(b"\r\n", data)
+        self.assertTrue(data.endswith(b"}\n"))
+
+
 class TaskReadinessTests(unittest.TestCase):
     def test_ready_list_excludes_epics_and_unmet_dependencies(self):
         # Use a synthetic task set: real tasks change status when claimed, so

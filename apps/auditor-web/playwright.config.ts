@@ -6,7 +6,7 @@ import { defineConfig, devices } from '@playwright/test';
 // server a developer already has running on 58080.
 // Playwright loads this config as CommonJS, so __dirname is available.
 const root = path.resolve(__dirname, '../..');
-const port = Number(process.env.AUDITOR_E2E_PORT ?? 58090);
+const port = Number(process.env.AUDITOR_E2E_PORT ?? 58091);
 const python = process.env.PYTHON ?? 'python3';
 
 export default defineConfig({

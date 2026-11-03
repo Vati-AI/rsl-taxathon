@@ -1,4 +1,4 @@
-# ADR-003: Auditor frontend stack and shared visual contract
+# ADR-004: Auditor frontend stack and shared visual contract
 
 Status: proposed (accepted on merge of the TAX-020 PR)
 Owner and task: Leseli (auditor-frontend); TAX-020. Coordinate shared-token changes with Kananelo (TAX-021) and Jane (TAX-023).

@@ -1,5 +1,5 @@
 /*
- * Vati shared visual contract (docs/DESIGN_STANDARD.md, ADR-003).
+ * Vati shared visual contract (docs/DESIGN_STANDARD.md, ADR-004).
  *
  * Vati defaults inspired by Frappe UI, not asserted Frappe token values. Both
  * custom frontends import this file after the Tailwind layers. It defines the
