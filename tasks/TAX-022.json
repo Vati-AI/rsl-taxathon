@@ -50,6 +50,14 @@
     {
       "criterion": 2,
       "text": "python3 -m pytest tests/ai/test_fake_graph.py -q: 10 passed, covering case isolation, safe tool errors, cross-case output rejection, sanitized error messages, and configured step limits."
+    },
+    {
+      "criterion": 1,
+      "text": "After merge of origin/main c430777, python3 scripts/quality.py passed Ruff, Mypy, ESLint and Prettier on Python 3.13.17 / Node 24.20.0."
+    },
+    {
+      "criterion": 2,
+      "text": "After main refresh: .venv-ai Python 3.13.17 ran python3 -m pytest tests/ai/test_fake_graph.py -q (10 passed) and ai/smoke.py (passed); python3 scripts/dev.py check passed with 12 tooling tests."
     }
   ],
   "notes": [
@@ -60,6 +68,10 @@
     {
       "at": "2026-11-03T11:57:44.360503+00:00",
       "text": "Implementation and verification are complete, but the official GitHub CLI web login is not configured. PR creation and GitHub board synchronization are pending gh auth login; the task branch and local PR body are ready."
+    },
+    {
+      "at": "2026-11-03T12:13:43.965244+00:00",
+      "text": "GitHub CLI is installed and the official device login is pending, but gh auth status still reports no logged-in account. PR creation and board sync must wait for the GitHub browser authorization."
     }
   ]
 }

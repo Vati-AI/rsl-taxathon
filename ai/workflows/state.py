@@ -4,6 +4,7 @@ from typing import TypedDict
 
 from ai.tools.contracts import ToolResultEnvelope
 
+
 class InvestigationState(TypedDict):
     tenant_id: str
     case_id: str

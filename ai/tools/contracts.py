@@ -1,6 +1,6 @@
 """Typed, case-scoped contracts shared by investigation tools and workflows."""
 
-from typing import Literal, TypedDict, TypeAlias
+from typing import Literal, TypeAlias, TypedDict
 
 
 class ToolInvocationContext(TypedDict):

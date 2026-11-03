@@ -1,10 +1,11 @@
 """A bounded LangGraph harness that uses only explicitly synthetic tools."""
 
-from collections.abc import Sequence
 import re
+from collections.abc import Sequence
 from typing import Protocol
 
 from langgraph.graph import END, START, StateGraph
+from langgraph.graph.state import CompiledStateGraph
 
 from ai.tools.contracts import (
     ToolInvocationContext,
@@ -98,8 +99,13 @@ def _validate_result(
             retryable=False,
         )
 
-    scope = ("tenant_id", "case_id", "run_id", "correlation_id")
-    if any(result.get(key) != state[key] for key in scope):
+    scope_matches = (
+        result.get("tenant_id") == state["tenant_id"]
+        and result.get("case_id") == state["case_id"]
+        and result.get("run_id") == state["run_id"]
+        and result.get("correlation_id") == state["correlation_id"]
+    )
+    if not scope_matches:
         return tool_failure(
             tool_name=tool_name,
             tenant_id=state["tenant_id"],
@@ -158,7 +164,7 @@ def _validate_result(
 
 def build_fake_tool_graph(
     tool: InvestigationTool = synthetic_evidence_tool,
-):
+) -> CompiledStateGraph[InvestigationState, None, InvestigationState, InvestigationState]:
     """Compile an injectable fake-tool loop; failures stop and request review."""
 
     def invoke_tool(state: InvestigationState) -> dict[str, object]:
@@ -203,7 +209,5 @@ def build_fake_tool_graph(
     builder = StateGraph(InvestigationState)
     builder.add_node("tool", invoke_tool)
     builder.add_edge(START, "tool")
-    builder.add_conditional_edges(
-        "tool", route, {"continue": "tool", "stop": END}
-    )
+    builder.add_conditional_edges("tool", route, {"continue": "tool", "stop": END})
     return builder.compile()
