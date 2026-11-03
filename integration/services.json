@@ -44,8 +44,13 @@
     "mode": "external",
     "fork_required": false,
     "verified_on": "2026-11-03",
-    "deployment_status": "not_connected",
-    "source_status": "locked_source_fetched_on_setup_machine"
+    "deployment_status": "dev_service_running_smoke_tested",
+    "source_status": "locked_source_fetched_on_setup_machine",
+    "local_url": "http://127.0.0.1:55001",
+    "source_commit": "9c058dbb58f61021e3a16e37edb8a7527b2cb2d4",
+    "version": "1.38.2 (cpu image)",
+    "evidence": "TAX-028: integration/docling/README.md (auth 401, scanned OCR, table, page provenance, size policy)",
+    "adapter_status": "not_implemented"
   },
   "frappe": {
     "upstream": "https://github.com/frappe/frappe_docker",

@@ -15,7 +15,7 @@ This fetches official source at immutable commits from `integration/upstreams.lo
 | jube | Risk and operational case engine | `python3 scripts/jube_dev.py up` (isolated compose in integration/jube, not upstream's file); runbook integration/jube/README.md; TAX-034/035 next |
 | openaleph | Evidence search/graph | external/openaleph/docker-compose.example.yml and contrib/start-local.sh; TAX-026 |
 | yente | Matching API | external/yente/docker-compose.yml; replace commercial manifest with synthetic data in TAX-027 |
-| docling | Extraction server | docker-compose.docling.yml; TAX-028 |
+| docling | Extraction server | `python3 scripts/docling_dev.py up` (docker-compose.docling.yml: CPU image, API key, size/page/time bounds, offline models); runbook integration/docling/README.md; TAX-038 next |
 | frappe | Vendor development tooling | docker-compose.frappe.yml and external/frappe/docs/05-development; TAX-019 |
 | followthemoney | Entity library source | Validate selected schema mappings in TAX-036 |
 | langgraph | Workflow library source | AI package dependencies and TAX-022/047 |
@@ -47,7 +47,7 @@ This provisions the pinned framework, isolated MariaDB/Redis, `taxathon.localhos
 
 ## Docling
 
-`docker compose -f docker-compose.docling.yml up -d` exposes localhost:55001, requires generated DOCLING_API_KEY and disables remote model services. Initial models can require substantial disk/RAM. Record authenticated extraction and denied-access tests in TAX-028 before marking connected.
+`python3 scripts/docling_dev.py up` starts docker-compose.docling.yml on localhost:55001 with the generated DOCLING_API_KEY, 25 MiB / 50-page / 300 s bounds, remote services disabled and the image's own model artifacts (offline). The CPU image is a 2.1 GB download. `smoke` verifies authentication, OCR, tables, page provenance and the size policy; see integration/docling/README.md. Record authenticated extraction and denied-access tests in TAX-028 before marking connected.
 
 ## AI environment
 
