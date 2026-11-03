@@ -32,7 +32,7 @@
     },
     {
       "text": "Record relevant tests and evidence, update task status and open a human-review PR",
-      "done": false
+      "done": true
     }
   ],
   "verification": "Extract a synthetic scanned/table document; verify unauthorized request rejection and page provenance",
@@ -50,6 +50,10 @@
     {
       "criterion": 2,
       "text": "Observed via python3 scripts/docling_dev.py smoke (twice): two-page image-only synthetic invoice converted (HTTP 200, status success, ~10-12 s, 2 pages); OCR found invoice number in text with prov.page_no 1; one table with prov.page_no 2, bboxes present, 4x3 cells exact (Item/Qty/Amount LSL, Consulting services/1/3000.00, Freight/2/450.00, Total/3450.00). Unauthorized: no key 401, wrong key 401. Size bound: 25 MiB+1 file -> status failure, error category policy, no content. tests/tooling/test_docling_dev.py 4 tests OK; dev.py check, quality.py and docker compose config passed; .env secrets not in staged diff."
+    },
+    {
+      "criterion": 3,
+      "text": "Tests and evidence recorded for criteria 1-2; task.py finish refreshed from origin/main, reran dev.py check and quality.py (Node 24.20.0), pushed task/TAX-028, opened human-review PR https://github.com/Vati-AI/rsl-taxathon/pull/101 and synced issue #29 to IN_REVIEW. Not merged by the agent."
     }
   ],
   "notes": [
