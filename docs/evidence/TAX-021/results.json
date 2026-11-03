@@ -1,0 +1,652 @@
+{
+  "checks": [
+    {
+      "name": "guest GET /taxpayer redirected to login",
+      "pass": true,
+      "detail": "301 -> /login?redirect-to=%2Ftaxpayer"
+    },
+    {
+      "name": "guest GET /taxpayer/submissions/SUB-SYN-0001 redirected to login",
+      "pass": true,
+      "detail": "301 -> /login?redirect-to=%2Ftaxpayer%2Fsubmissions%2FSUB-SYN-0001"
+    },
+    {
+      "name": "guest hostile path stays inside portal",
+      "pass": true,
+      "detail": "301 -> /login?redirect-to=%2Ftaxpayer"
+    },
+    {
+      "name": "guest API get_session rejected",
+      "pass": true,
+      "detail": "HTTP 403"
+    },
+    {
+      "name": "guest API get_submissions rejected",
+      "pass": true,
+      "detail": "HTTP 403"
+    },
+    {
+      "name": "guest API get_submission rejected",
+      "pass": true,
+      "detail": "HTTP 403"
+    },
+    {
+      "name": "guest browser shown login page",
+      "pass": true,
+      "detail": "http://127.0.0.1:58000/login?redirect-to=%2Ftaxpayer%2Fsubmissions%2FSUB-SYN-0002"
+    },
+    {
+      "name": "login returns to requested deep link",
+      "pass": true,
+      "detail": "http://127.0.0.1:58000/taxpayer/submissions/SUB-SYN-0002"
+    },
+    {
+      "name": "API marks data as synthetic fixture",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "API exposes no risk/case fields",
+      "pass": true,
+      "detail": "id,reference,taxpayer_name,tax_type,period,amount,currency,status,submitted_at,next_step,steps"
+    },
+    {
+      "name": "UI shows no risk/case wording",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "[390] submissions list shows 4 fixture rows",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "[390] list has no page-wide horizontal scroll",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "[390] clicking a row opens its status page",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "[390] status page shows long name, amount and next step",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "[390] status page no horizontal scroll",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "[390] status page keeps Submissions nav active",
+      "pass": true,
+      "detail": "VAT-2026-08-000921 | Submissions"
+    },
+    {
+      "name": "[390] missing amount shown as Not provided",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "[390] unknown submission shows not-found state",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "[390] validation focuses first invalid field",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "[390] validation keeps entered values",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "[390] validation messages are actionable",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "[390] form with errors no horizontal scroll",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "[390] review step shows normalised answers",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "[390] send is disabled with a visible reason",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "[390] change answers keeps values",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "[390] account shows signed-in user",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "[390] unknown portal route shows not-found page",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "[390] empty state shown",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "[390] error state offers retry",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "[390] denied state shown without data",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "[320 reflow] /taxpayer/submissions no horizontal scroll",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "[320 reflow] /taxpayer/submissions/SUB-SYN-0002 no horizontal scroll",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "[320 reflow] /taxpayer/submissions/new no horizontal scroll",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "[1024] submissions list shows 4 fixture rows",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "[1024] list has no page-wide horizontal scroll",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "[1024] clicking a row opens its status page",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "[1024] status page shows long name, amount and next step",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "[1024] status page no horizontal scroll",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "[1024] status page keeps Submissions nav active",
+      "pass": true,
+      "detail": "Submissions | Submissions | VAT-2026-08-000921"
+    },
+    {
+      "name": "[1024] missing amount shown as Not provided",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "[1024] unknown submission shows not-found state",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "[1024] validation focuses first invalid field",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "[1024] validation keeps entered values",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "[1024] validation messages are actionable",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "[1024] form with errors no horizontal scroll",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "[1024] review step shows normalised answers",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "[1024] send is disabled with a visible reason",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "[1024] change answers keeps values",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "[1024] account shows signed-in user",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "[1024] unknown portal route shows not-found page",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "[1024] empty state shown",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "[1024] error state offers retry",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "[1024] denied state shown without data",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "[1440] submissions list shows 4 fixture rows",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "[1440] list has no page-wide horizontal scroll",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "[1440] clicking a row opens its status page",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "[1440] status page shows long name, amount and next step",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "[1440] status page no horizontal scroll",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "[1440] status page keeps Submissions nav active",
+      "pass": true,
+      "detail": "Submissions | Submissions | VAT-2026-08-000921"
+    },
+    {
+      "name": "[1440] missing amount shown as Not provided",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "[1440] unknown submission shows not-found state",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "[1440] validation focuses first invalid field",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "[1440] validation keeps entered values",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "[1440] validation messages are actionable",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "[1440] form with errors no horizontal scroll",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "[1440] review step shows normalised answers",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "[1440] send is disabled with a visible reason",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "[1440] change answers keeps values",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "[1440] account shows signed-in user",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "[1440] unknown portal route shows not-found page",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "[1440] empty state shown",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "[1440] error state offers retry",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "[1440] denied state shown without data",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "first Tab reaches skip link",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "every tab stop shows a visible focus indicator",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "Enter submits form from keyboard and shows errors",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "logout lands on login page",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "after logout portal requires login again",
+      "pass": true,
+      "detail": "http://127.0.0.1:58000/login?redirect-to=%2Ftaxpayer%2Fsubmissions"
+    },
+    {
+      "name": "after logout API rejected",
+      "pass": true,
+      "detail": "HTTP 403"
+    }
+  ],
+  "axe": [
+    {
+      "label": "list-390",
+      "violations": []
+    },
+    {
+      "label": "detail-390",
+      "violations": []
+    },
+    {
+      "label": "form-empty-390",
+      "violations": []
+    },
+    {
+      "label": "form-errors-390",
+      "violations": []
+    },
+    {
+      "label": "form-review-390",
+      "violations": []
+    },
+    {
+      "label": "account-390",
+      "violations": []
+    },
+    {
+      "label": "list-1024",
+      "violations": []
+    },
+    {
+      "label": "detail-1024",
+      "violations": []
+    },
+    {
+      "label": "form-empty-1024",
+      "violations": []
+    },
+    {
+      "label": "form-errors-1024",
+      "violations": []
+    },
+    {
+      "label": "form-review-1024",
+      "violations": []
+    },
+    {
+      "label": "account-1024",
+      "violations": []
+    },
+    {
+      "label": "list-1440",
+      "violations": []
+    },
+    {
+      "label": "detail-1440",
+      "violations": []
+    },
+    {
+      "label": "form-empty-1440",
+      "violations": []
+    },
+    {
+      "label": "form-errors-1440",
+      "violations": []
+    },
+    {
+      "label": "form-review-1440",
+      "violations": []
+    },
+    {
+      "label": "account-1440",
+      "violations": []
+    }
+  ],
+  "keyboard": {
+    "listTabOrder": [
+      {
+        "tag": "a",
+        "name": "Skip to main content",
+        "focusVisible": true
+      },
+      {
+        "tag": "a",
+        "name": "Submissions",
+        "focusVisible": true
+      },
+      {
+        "tag": "a",
+        "name": "New submission",
+        "focusVisible": true
+      },
+      {
+        "tag": "a",
+        "name": "Account",
+        "focusVisible": true
+      },
+      {
+        "tag": "button",
+        "name": "Log out",
+        "focusVisible": true
+      },
+      {
+        "tag": "div",
+        "name": "Synthetic fixture data This portal shell shows made-up recor",
+        "focusVisible": true
+      },
+      {
+        "tag": "a",
+        "name": "New submission",
+        "focusVisible": true
+      },
+      {
+        "tag": "a",
+        "name": "PAYE return · September 2026 PAYE-2026-09-000057 · Sent 30 O",
+        "focusVisible": true
+      },
+      {
+        "tag": "a",
+        "name": "VAT refund claim · September 2026 VAT-2026-09-000184 · Sent ",
+        "focusVisible": true
+      },
+      {
+        "tag": "a",
+        "name": "VAT return · August 2026 VAT-2026-08-000921 · Sent 19 Sept 2",
+        "focusVisible": true
+      },
+      {
+        "tag": "a",
+        "name": "VAT return · July 2026 VAT-2026-07-000410 · Sent 14 Aug 2026",
+        "focusVisible": true
+      }
+    ]
+  },
+  "overflow": [
+    {
+      "label": "list-390",
+      "sw": 390,
+      "cw": 390,
+      "ok": true
+    },
+    {
+      "label": "detail-390",
+      "sw": 390,
+      "cw": 390,
+      "ok": true
+    },
+    {
+      "label": "form-errors-390",
+      "sw": 390,
+      "cw": 390,
+      "ok": true
+    },
+    {
+      "label": "reflow-320/taxpayer/submissions",
+      "sw": 320,
+      "cw": 320,
+      "ok": true
+    },
+    {
+      "label": "reflow-320/taxpayer/submissions/SUB-SYN-0002",
+      "sw": 320,
+      "cw": 320,
+      "ok": true
+    },
+    {
+      "label": "reflow-320/taxpayer/submissions/new",
+      "sw": 320,
+      "cw": 320,
+      "ok": true
+    },
+    {
+      "label": "list-1024",
+      "sw": 1024,
+      "cw": 1024,
+      "ok": true
+    },
+    {
+      "label": "detail-1024",
+      "sw": 1024,
+      "cw": 1024,
+      "ok": true
+    },
+    {
+      "label": "form-errors-1024",
+      "sw": 1024,
+      "cw": 1024,
+      "ok": true
+    },
+    {
+      "label": "list-1440",
+      "sw": 1440,
+      "cw": 1440,
+      "ok": true
+    },
+    {
+      "label": "detail-1440",
+      "sw": 1440,
+      "cw": 1440,
+      "ok": true
+    },
+    {
+      "label": "form-errors-1440",
+      "sw": 1440,
+      "cw": 1440,
+      "ok": true
+    }
+  ],
+  "screenshots": [
+    "list-390.png",
+    "detail-390.png",
+    "detail-notfound-390.png",
+    "form-empty-390.png",
+    "form-errors-390.png",
+    "form-review-390.png",
+    "account-390.png",
+    "notfound-390.png",
+    "state-loading-390.png",
+    "state-empty-390.png",
+    "state-error-390.png",
+    "state-denied-390.png",
+    "list-1024.png",
+    "detail-1024.png",
+    "detail-notfound-1024.png",
+    "form-empty-1024.png",
+    "form-errors-1024.png",
+    "form-review-1024.png",
+    "account-1024.png",
+    "notfound-1024.png",
+    "state-loading-1024.png",
+    "state-empty-1024.png",
+    "state-error-1024.png",
+    "state-denied-1024.png",
+    "list-1440.png",
+    "detail-1440.png",
+    "detail-notfound-1440.png",
+    "form-empty-1440.png",
+    "form-errors-1440.png",
+    "form-review-1440.png",
+    "account-1440.png",
+    "notfound-1440.png",
+    "state-loading-1440.png",
+    "state-empty-1440.png",
+    "state-error-1440.png",
+    "state-denied-1440.png",
+    "keyboard-skip-link-1440.png",
+    "keyboard-focus-1440.png"
+  ],
+  "browser": "Microsoft Edge 156.0.4314.50 (Playwright Chromium driver)"
+}

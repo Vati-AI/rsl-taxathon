@@ -1,0 +1,104 @@
+/*
+ * Vati shared visual contract (docs/DESIGN_STANDARD.md, ADR-004).
+ *
+ * Vati defaults inspired by Frappe UI, not asserted Frappe token values. Both
+ * custom frontends import this file after the Tailwind layers. It defines the
+ * --vati-* tokens and maps them onto the frappe-ui 1.1.0 semantic variables
+ * (surface/ink/outline) so library components and app screens share one look.
+ * Change a value here once; the auditor app, taxpayer app and showcase follow.
+ */
+:root {
+  /* Colour */
+  --vati-canvas: #f8fafc;
+  --vati-surface: #ffffff;
+  --vati-border: #e2e8f0;
+  --vati-border-strong: #cbd5e1;
+  --vati-text: #0f172a;
+  --vati-text-muted: #475569;
+  --vati-accent: #1d4ed8;
+  --vati-accent-hover: #1e40af;
+  --vati-accent-active: #1e3a8a;
+  --vati-fixture-bg: #fef3c7;
+  --vati-fixture-text: #78350f;
+
+  /* Typography: small documented scale */
+  --vati-font-family:
+    system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --vati-text-ui: 14px;
+  --vati-text-form: 16px;
+  --vati-text-small: 13px;
+  --vati-text-title: 20px;
+  --vati-text-title-lg: 24px;
+  --vati-line-height: 1.5;
+
+  /* Spacing scale: 4, 8, 12, 16, 24, 32px */
+  --vati-space-1: 4px;
+  --vati-space-2: 8px;
+  --vati-space-3: 12px;
+  --vati-space-4: 16px;
+  --vati-space-5: 24px;
+  --vati-space-6: 32px;
+
+  /* Radii: controls 6px, surfaces 8px */
+  --vati-radius-control: 6px;
+  --vati-radius-surface: 8px;
+
+  /* frappe-ui semantic variable mapping */
+  --ink-gray-8: var(--vati-text);
+  --ink-gray-9: var(--vati-text);
+  --ink-gray-7: #1e293b;
+  --ink-gray-6: #334155;
+  --ink-gray-5: var(--vati-text-muted);
+  --outline-gray-1: var(--vati-border);
+  --outline-gray-2: var(--vati-border-strong);
+  --surface-blue-6: var(--vati-accent);
+  --surface-blue-7: var(--vati-accent-hover);
+  --surface-blue-8: var(--vati-accent-active);
+  --ink-blue-5: var(--vati-accent);
+  --ink-blue-link: var(--vati-accent);
+  /* frappe-ui subtle badges use ink-*-7 text on surface-*-2. Amber and blue -7
+     fall below WCAG AA 4.5:1 for small text (axe color-contrast), so use the
+     darker -8 step; green follows for a consistent margin. */
+  --ink-amber-7: var(--ink-amber-8);
+  --ink-blue-7: var(--ink-blue-8);
+  --ink-green-7: var(--ink-green-8);
+}
+
+html {
+  font-family: var(--vati-font-family);
+  font-size: var(--vati-text-ui);
+  line-height: var(--vati-line-height);
+  color: var(--vati-text);
+  background: var(--vati-canvas);
+}
+
+/* Visible keyboard focus everywhere, including custom table controls. */
+:focus-visible {
+  outline: 2px solid var(--vati-accent);
+  outline-offset: 2px;
+}
+
+.vati-skip-link {
+  position: absolute;
+  left: var(--vati-space-2);
+  top: -48px;
+  z-index: 50;
+  padding: var(--vati-space-2) var(--vati-space-3);
+  border-radius: var(--vati-radius-control);
+  background: var(--vati-surface);
+  color: var(--vati-accent);
+  border: 1px solid var(--vati-border-strong);
+}
+
+.vati-skip-link:focus {
+  top: var(--vati-space-2);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

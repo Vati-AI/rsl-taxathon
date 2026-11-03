@@ -1,0 +1,48 @@
+# Isolated yente development stack (TAX-027) using only the committed synthetic dataset.
+# Use scripts/yente_dev.py; the update token lives in the ignored .local/yente.env.
+# Differences from upstream docker-compose.yml are documented in README.md: synthetic-only
+# manifest (no OpenSanctions catalog, no delivery token), unique project name, no fixed container
+# name, Elasticsearch not published to the host, smaller heap, digest-pinned images.
+name: rsl-taxathon-yente
+services:
+  index:
+    image: docker.elastic.co/elasticsearch/elasticsearch:9.4.2@sha256:be5f49784ff5ec8a5b5d7ba17f944d9d6b10c067f596ee93e6b6cb82d2dd874c
+    environment:
+      node.name: index
+      cluster.name: vati-yente-index
+      discovery.type: single-node
+      xpack.security.enabled: "false"
+      ES_JAVA_OPTS: -Xms768m -Xmx768m
+    volumes: ["yente-index:/usr/share/elasticsearch/data"]
+    mem_limit: 1536m
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS 'http://localhost:9200/_cluster/health?wait_for_status=yellow&timeout=2s' >/dev/null"]
+      interval: 10s
+      timeout: 5s
+      retries: 60
+
+  app:
+    image: ghcr.io/opensanctions/yente:5.5.0@sha256:4e46bda3fc0552725b695e5f4691c168e4241f14766405fe3c1b8d959315c137
+    depends_on:
+      index: {condition: service_healthy}
+    environment:
+      YENTE_INDEX_TYPE: elasticsearch
+      YENTE_INDEX_URL: http://index:9200
+      YENTE_MANIFEST: /manifest/manifest.yml
+      YENTE_UPDATE_TOKEN: ${YENTE_UPDATE_TOKEN:?Run python3 scripts/yente_dev.py env first}
+    volumes:
+      - ./manifest.yml:/manifest/manifest.yml:ro
+      - ./data:/data:ro
+    ports: ["127.0.0.1:${YENTE_PORT:-55800}:8000"]
+    mem_limit: 768m
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/healthz"]
+      interval: 15s
+      timeout: 10s
+      retries: 10
+      start_period: 10s
+
+volumes:
+  yente-index:

@@ -5,14 +5,14 @@
   "owner": "Leseli",
   "area": "apps/auditor-web",
   "phase": "pilot",
-  "status": "BACKLOG",
+  "status": "IN_PROGRESS",
   "priority": "P0",
   "depends_on": [
     "TAX-020",
     "TAX-018"
   ],
-  "claimed_by": null,
-  "branch": null,
+  "claimed_by": "leseli-claude-20261103-2",
+  "branch": "task/TAX-040",
   "pr": null,
   "scope": "Show filterable assigned case queue, selection reasons, taxpayer context and processing/error state",
   "inputs": [
@@ -50,5 +50,10 @@
     "finish-task"
   ],
   "evidence": [],
-  "notes": []
+  "notes": [
+    {
+      "at": "2026-11-03T14:20:44.115865+00:00",
+      "text": "Claimed by leseli-claude-20261103-2"
+    }
+  ]
 }

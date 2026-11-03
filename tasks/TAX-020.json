@@ -5,12 +5,12 @@
   "owner": "Leseli",
   "area": "apps/auditor-web",
   "phase": "foundation",
-  "status": "READY",
+  "status": "DONE",
   "priority": "P0",
   "depends_on": [],
-  "claimed_by": null,
-  "branch": null,
-  "pr": null,
+  "claimed_by": "leseli-claude-20261103-1",
+  "branch": "task/TAX-020",
+  "pr": "https://github.com/Vati-AI/rsl-taxathon/pull/91",
   "scope": "Build officer navigation, dashboard shell and case page skeleton against the fixture contract; establish shared Frappe-inspired tokens/component showcase and first auditor queue/detail visual baseline",
   "inputs": [
     "PROJECT.md",
@@ -24,19 +24,19 @@
   "acceptance": [
     {
       "text": "Build officer navigation, dashboard shell and case page skeleton against the fixture contract",
-      "done": false
+      "done": true
     },
     {
       "text": "Run browser smoke checks for navigation, keyboard focus and loading/error/empty states",
-      "done": false
+      "done": true
     },
     {
       "text": "Record relevant tests and evidence, update task status and open a human-review PR",
-      "done": false
+      "done": true
     },
     {
       "text": "Follow docs/DESIGN_STANDARD.md; supply relevant viewport/state screenshots and keyboard/accessibility evidence for human visual review",
-      "done": false
+      "done": true
     }
   ],
   "verification": "Run browser smoke checks for navigation, keyboard focus and loading/error/empty states",
@@ -46,6 +46,36 @@
     "update-project-task",
     "finish-task"
   ],
-  "evidence": [],
-  "notes": []
+  "evidence": [
+    {
+      "criterion": 1,
+      "text": "apps/auditor-web Vue 3 + TS + frappe-ui 1.1.0 app: sidebar navigation (Overview, Case queue, Component showcase), overview shell grouping fixture cases by review lane, case queue with search/scenario/lane filters, numeric decimal sorting and pagination, case detail skeleton (summary; Evidence/Entities/Findings tabs state 'not available in fixture mode' and cite the /api/v1 operations in integration/api/openapi.json (TAX-018), which the fixture server does not serve, rather than inventing data). Reads GET /api/cases and /api/cases/{id}; client rejects responses not marked mode=fixture/synthetic=true. Observed 2026-11-03: npm run typecheck:auditor exit 0; npm run test:auditor 28/28 passed; npm run build:auditor succeeded; served by scripts/dev.py at http://127.0.0.1:58080/auditor/."
+    },
+    {
+      "criterion": 2,
+      "text": "npm run test:auditor:browser (Playwright 1.64.1, Microsoft Edge 156 channel, Windows 11): 17 tests passed, rerun with --repeat-each=2 -> 34/34 passed. Covers sidebar/breadcrumb navigation and back, lane link to filtered queue, keyboard skip link, visible focus outline and Enter-to-sort, keyboard sidebar activation, loading -> ready, unavailable service with retry recovery, non-fixture data refused, empty queue and empty filter results, 403 denied, unknown case/page, failed page chunk recovery. CI job auditor-browser added (Chromium)."
+    },
+    {
+      "criterion": 4,
+      "text": "Follows docs/DESIGN_STANDARD.md via shared apps/shared/design tokens + preset (ADR-004). Screenshots in docs/evidence/TAX-020: overview/queue/case-detail/showcase at 1440, 1024, 390px; loading, empty, no-matches, error, denied, not-found and unavailable-tab states at 1440 and 390px; skip-link and table-sort focus, button hover/focus, form validation and dialog at 1440px (Edge 156). Accessibility: axe (wcag2a/aa, wcag21aa) reports no serious/critical violations on overview, queue, case detail and showcase; no page-wide horizontal scroll at 320px width (reflow); keyboard checks as in criterion 2. CI (Linux Chromium) found badge color-contrast failures that the Edge run did not report; fixed by mapping badge text to the darker ink-*-8 tokens and re-verified: all 4 axe scans pass in mcr.microsoft.com/playwright:v1.64.1-noble and in Edge. Supplied for the reviewer's visual review; visual approval NOT assumed and remains with the reviewer."
+    },
+    {
+      "criterion": 3,
+      "text": "Tests and evidence recorded in this task file; status set to IN_REVIEW with PR https://github.com/Vati-AI/rsl-taxathon/pull/91 (opened 2026-11-03, review requested from the area owner, not merged by the agent). Branch refreshed from main 629071e before review; all checks rerun after the merge."
+    }
+  ],
+  "notes": [
+    {
+      "at": "2026-11-03T12:18:56.159277+00:00",
+      "text": "Claimed by leseli-claude-20261103-1"
+    },
+    {
+      "at": "2026-11-03T13:10:06.744446+00:00",
+      "text": "Agent leseli-claude-20261103-1 finished implementation and opened review (https://github.com/Vati-AI/rsl-taxathon/pull/91). quality.py steps run individually because Windows Smart App Control blocks mypy's compiled extension locally; mypy passed in a python:3.13-slim container."
+    },
+    {
+      "at": "2026-11-03T14:03:22.982292+00:00",
+      "text": "Verified PR https://github.com/Vati-AI/rsl-taxathon/pull/91 merged into main as dc54d14 (2026-11-03T13:44:01Z, by Kellybrackets); all 4 acceptance criteria have recorded evidence. Follow-up also rewords auditor UI copy and recorded evidence neutrally and fixes github_sync.py on Windows."
+    }
+  ]
 }
