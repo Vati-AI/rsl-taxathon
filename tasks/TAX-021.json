@@ -32,7 +32,7 @@
     },
     {
       "text": "Record relevant tests and evidence, update task status and open a human-review PR",
-      "done": false
+      "done": true
     },
     {
       "text": "Follow docs/DESIGN_STANDARD.md; supply relevant viewport/state screenshots and keyboard/accessibility evidence for human visual review",
@@ -58,6 +58,10 @@
     {
       "criterion": 4,
       "text": "Evidence supplied for human visual review; visual approval NOT assumed. Uses the TAX-020 shared contract (apps/shared/design tokens.css + tailwind preset, system font, frappe-ui DesktopShell/Sidebar and MobileShell/MobileNav). docs/evidence/TAX-021: 38 screenshots at 1440/1024/390px of list, status, not-found, form empty/errors/review, account, loading, empty, error and denied states (Edge 156). axe-core 4.14.0 WCAG 2A/AA/2.1AA: 0 violations in 18 scans after fixing landmarks, a missing aria-labelledby target and contrast. Keyboard: skip link first, every tab stop has a visible focus outline, Enter submits form, validation focuses first invalid field and keeps values. No page-wide horizontal scroll at 1440/1024/390/320px (reflow). Deviation for review: red field-error text darkened locally (4.45:1 measured) pending a shared token."
+    },
+    {
+      "criterion": 3,
+      "text": "Observed: tests recorded in criteria 1/2/4 and docs/evidence/TAX-021/results.json. scripts/task.py finish ran unmodified in a Linux node:22-bookworm container (Windows dev.py check is blocked only by the pre-existing tests/tooling/test_jube_dev.py file-mode failure that also fails on untouched main): refreshed from main, dev.py check passed (tooling 21/21, contracts 28/28, portal 9/9), quality.py passed (Ruff, Mypy, ESLint, Prettier, auditor 28/28 + taxpayer 27/27 tests, both builds), pushed task/TAX-021, opened human-review PR https://github.com/Vati-AI/rsl-taxathon/pull/98 and recorded IN_REVIEW. Board sync failed: account kaylow62 cannot see Vati-AI project 1 (GraphQL could not resolve ProjectV2 number 1); task file remains authoritative."
     }
   ],
   "notes": [
