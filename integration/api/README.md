@@ -4,8 +4,10 @@
 
 | Operation | Route |
 |---|---|
+| listCases | `GET /api/v1/cases` |
 | createCase | `POST /api/v1/cases` |
 | getCase | `GET /api/v1/cases/{case_id}` |
+| getTaxpayer | `GET /api/v1/taxpayers/{taxpayer_id}` |
 | startInvestigation | `POST /api/v1/cases/{case_id}/investigate` |
 | listEvidence | `GET /api/v1/cases/{case_id}/evidence` |
 | registerDocument | `POST /api/v1/cases/{case_id}/documents` |
@@ -21,6 +23,12 @@ Rules every implementation must keep (see [ADR-003](../../docs/decisions/ADR-003
 - `service_links` maps a case, evidence item or entity to upstream IDs with sync state. The case status is a Jube projection.
 - Money and scores are decimal strings. Findings separate facts, inference and evidence gaps; legal routes stay `unverified` until a reviewer cites authority; proposed actions always require human approval.
 - `EventEnvelope` (in `components/schemas`) is the internal outbox event format.
+
+`listCases`, `getTaxpayer`, `selection_reasons` and the embedded taxpayer summary were added for the auditor queue (TAX-040, [ADR-005](../../docs/decisions/ADR-005-case-queue-contract.md)). Selection reasons are routing signals, never findings.
+
+## Fixture server
+
+`python3 scripts/dev.py serve` serves `listCases`, `getCase` and `getTaxpayer` from the synthetic `fixtures/auditor_queue.json` (`scripts/fixture_api.py`). Requests are checked with `contract.check_request`; the fixture principal sees one tenant (any other is `403 tenant_scope_denied`). Responses carry `X-Vati-Mode: fixture`. Other operations return `404` "This operation has no fixture data." rather than invented data.
 
 ## Examples and checks
 

@@ -1,6 +1,15 @@
 import { describe, expect, it } from 'vitest';
-import type { FixtureCase } from '../api/fixtures';
-import { laneCounts, queuePage, reviewLane, scenarioLabel, type QueueQuery } from './cases';
+import { makeCase } from '../testing/makeCase';
+import {
+  formatKey,
+  laneLabel,
+  processingState,
+  queuePage,
+  statusCounts,
+  statusInfo,
+  type QueueQuery,
+} from './cases';
+import { formatDate, formatTimestamp } from './dates';
 import { compareDecimal, formatAmount } from './money';
 
 describe('formatAmount', () => {
@@ -27,103 +36,138 @@ describe('compareDecimal', () => {
   });
 });
 
-function item(
-  id: string,
-  name: string,
-  claim: string | null,
-  expected: string,
-  scenario = 'legitimate_refund',
-): FixtureCase {
-  return {
-    id,
-    name,
-    scenario,
-    currency: 'LSL',
-    refund_claim: claim,
-    supported_refund: claim,
-    expected,
-    synthetic: true,
-  };
-}
+describe('dates', () => {
+  it('shows timestamps in UTC and plain dates without timezone shifts', () => {
+    expect(formatTimestamp('2026-11-03T09:45:00Z')).toBe('3 Nov 2026, 09:45 UTC');
+    expect(formatTimestamp(null)).toBeNull();
+    expect(formatDate('2015-03-02')).toBe('2 Mar 2015');
+    expect(formatDate('2015-13-02')).toBeNull();
+  });
+});
+
+describe('processingState', () => {
+  it('reports a failed service with a readable reason', () => {
+    const item = makeCase(6, {
+      status: 'FAILED_PROCESSING',
+      service_links: [
+        {
+          service: 'docling',
+          external_type: 'extraction',
+          external_id: null,
+          sync: { state: 'failed', last_attempt_at: null, error_code: 'upstream_timeout' },
+        },
+      ],
+    });
+    expect(processingState(item)).toMatchObject({
+      kind: 'failed',
+      text: 'Document extraction (Docling) timed out',
+    });
+  });
+
+  it('treats a failed status without sync detail as failed', () => {
+    expect(
+      processingState(makeCase(1, { status: 'FAILED_PROCESSING', service_links: [] })).kind,
+    ).toBe('failed');
+  });
+
+  it('reports pending services and early statuses as in progress', () => {
+    const pending = makeCase(7, {
+      service_links: [
+        {
+          service: 'jube',
+          external_type: 'case',
+          external_id: null,
+          sync: { state: 'pending', last_attempt_at: null, error_code: null },
+        },
+      ],
+    });
+    expect(processingState(pending)).toMatchObject({
+      kind: 'pending',
+      text: 'Waiting for Case management (Jube)',
+    });
+    expect(processingState(makeCase(1, { status: 'VALIDATING', service_links: [] })).kind).toBe(
+      'pending',
+    );
+    expect(processingState(makeCase(1)).kind).toBe('ok');
+  });
+});
 
 const cases = [
-  item('SYN-001', 'Mountain Wholesale', '15000.00', 'human_clearance'),
-  item('SYN-002', 'Border Retail', '9000.00', 'targeted_evidence_request', 'related_party_risk'),
-  item('SYN-010', 'Valley Services', null, 'specialist_review'),
-  item('SYN-003', 'Highland Imports', '100000.00', 'targeted_evidence_request'),
+  makeCase(1, { refund_claim: { amount: '15000.00', currency: 'LSL' }, refund_lane: 'fast' }),
+  makeCase(2, {
+    status: 'INVESTIGATING',
+    refund_claim: { amount: '9000.00', currency: 'LSL' },
+    taxpayer: {
+      taxpayer_id: makeCase(2).taxpayer_id,
+      display_name: 'Synthetic Border Retail',
+      taxpayer_type: 'company',
+    },
+  }),
+  makeCase(10, { refund_claim: null, refund_lane: null }),
+  makeCase(3, { refund_claim: { amount: '100000.00', currency: 'LSL' }, refund_lane: 'targeted' }),
 ];
 
 const base: QueueQuery = {
   search: '',
-  scenario: '',
+  status: '',
   lane: '',
-  sort: 'id',
+  sort: 'display_id',
   direction: 'asc',
   page: 1,
   pageSize: 2,
 };
 
-describe('queuePage', () => {
-  it('sorts IDs naturally and paginates', () => {
-    const first = queuePage(cases, base);
-    expect(first.rows.map((x) => x.id)).toEqual(['SYN-001', 'SYN-002']);
-    expect(first.pageCount).toBe(2);
-    expect(queuePage(cases, { ...base, page: 2 }).rows.map((x) => x.id)).toEqual([
-      'SYN-003',
-      'SYN-010',
-    ]);
-  });
+const ids = (rows: { display_id: string }[]) => rows.map((x) => x.display_id);
 
-  it('clamps an out-of-range page', () => {
+describe('queuePage', () => {
+  it('sorts case references naturally and paginates', () => {
+    expect(ids(queuePage(cases, base).rows)).toEqual(['SYN-001', 'SYN-002']);
+    expect(ids(queuePage(cases, { ...base, page: 2 }).rows)).toEqual(['SYN-003', 'SYN-010']);
     expect(queuePage(cases, { ...base, page: 99 }).page).toBe(2);
   });
 
   it('sorts amounts numerically with missing values last in both directions', () => {
     const asc = queuePage(cases, { ...base, sort: 'refund_claim', pageSize: 10 });
-    expect(asc.rows.map((x) => x.id)).toEqual(['SYN-002', 'SYN-001', 'SYN-003', 'SYN-010']);
+    expect(ids(asc.rows)).toEqual(['SYN-002', 'SYN-001', 'SYN-003', 'SYN-010']);
     const desc = queuePage(cases, {
       ...base,
       sort: 'refund_claim',
       direction: 'desc',
       pageSize: 10,
     });
-    expect(desc.rows.map((x) => x.id)).toEqual(['SYN-003', 'SYN-001', 'SYN-002', 'SYN-010']);
+    expect(ids(desc.rows)).toEqual(['SYN-003', 'SYN-001', 'SYN-002', 'SYN-010']);
   });
 
-  it('filters by search text, scenario and review lane', () => {
-    expect(queuePage(cases, { ...base, search: 'border' }).rows.map((x) => x.id)).toEqual([
-      'SYN-002',
-    ]);
+  it('filters by taxpayer name, case reference, status and lane', () => {
+    expect(ids(queuePage(cases, { ...base, search: 'border' }).rows)).toEqual(['SYN-002']);
     expect(queuePage(cases, { ...base, search: 'syn-010' }).total).toBe(1);
-    expect(queuePage(cases, { ...base, scenario: 'related_party_risk' }).total).toBe(1);
-    expect(queuePage(cases, { ...base, lane: 'targeted_evidence_request' }).total).toBe(2);
+    expect(queuePage(cases, { ...base, status: 'INVESTIGATING' }).total).toBe(1);
+    expect(queuePage(cases, { ...base, lane: 'targeted' }).total).toBe(1);
+    expect(ids(queuePage(cases, { ...base, lane: 'none' }).rows)).toEqual(['SYN-010']);
   });
 
   it('returns an empty first page when nothing matches', () => {
-    const page = queuePage(cases, { ...base, search: 'no such taxpayer' });
-    expect(page).toEqual({ rows: [], total: 0, page: 1, pageCount: 1 });
+    expect(queuePage(cases, { ...base, search: 'no such taxpayer' })).toEqual({
+      rows: [],
+      total: 0,
+      page: 1,
+      pageCount: 1,
+    });
   });
 });
 
 describe('labels', () => {
-  it('labels known scenarios and lanes and never uses a verdict colour', () => {
-    expect(scenarioLabel('imported_services_gap')).toBe('Imported services evidence gap');
-    for (const lane of [
-      'human_clearance',
-      'targeted_evidence_request',
-      'specialist_review',
-      'policy_gap_review',
-    ]) {
-      expect(reviewLane(lane).theme).not.toBe('red');
-    }
+  it('labels statuses without verdict wording', () => {
+    expect(statusInfo('AWAITING_HUMAN').label).toBe('Awaiting officer review');
+    expect(statusInfo('FAILED_PROCESSING')).toEqual({ label: 'Processing failed', theme: 'red' });
+    expect(laneLabel(null)).toBe('Not set');
+    expect(formatKey('new_status_type')).toBe('New status type');
   });
 
-  it('formats unknown keys as readable labels instead of failing', () => {
-    expect(scenarioLabel('new_scenario_type')).toBe('New scenario type');
-    expect(reviewLane('future_lane')).toEqual({ label: 'Future lane', theme: 'gray' });
-  });
-
-  it('counts cases per review lane', () => {
-    expect(laneCounts(cases)[0]).toMatchObject({ key: 'targeted_evidence_request', count: 2 });
+  it('counts cases per status in workflow order', () => {
+    expect(statusCounts(cases).map((c) => [c.status, c.count])).toEqual([
+      ['INVESTIGATING', 1],
+      ['AWAITING_HUMAN', 3],
+    ]);
   });
 });

@@ -1,27 +1,40 @@
 import path from 'node:path';
-import { expect, test, type Page } from '@playwright/test';
+import { expect, test, type Page, type Route } from '@playwright/test';
 
 // Review evidence for the reviewer's visual approval (docs/DESIGN_STANDARD.md). Not a
 // baseline comparison: Jane captures approved baselines after acceptance.
-// Run with CAPTURE_SCREENSHOTS=1; output goes to docs/evidence/TAX-020.
+// Run with CAPTURE_SCREENSHOTS=1; output goes to docs/evidence/TAX-040.
 test.skip(
   !process.env.CAPTURE_SCREENSHOTS,
   'Set CAPTURE_SCREENSHOTS=1 to capture review screenshots',
 );
 
-const out = path.resolve(__dirname, '../../../docs/evidence/TAX-020');
+const out = path.resolve(__dirname, '../../../docs/evidence/TAX-040');
+const CASE_2 = '40000000-0000-4000-8000-000000000002';
+const CASE_6 = '40000000-0000-4000-8000-000000000006';
+const TAXPAYER_2 = '20000000-0000-4000-8000-000000000002';
+const QUEUE = /\/api\/v1\/cases\?/;
 const widths = [1440, 1024, 390];
 const pages = [
   { name: 'overview', path: '/auditor/' },
   { name: 'queue', path: '/auditor/cases' },
-  { name: 'case-detail', path: '/auditor/cases/SYN-002' },
-  { name: 'showcase', path: '/auditor/showcase' },
+  { name: 'case-detail', path: `/auditor/cases/${CASE_2}` },
+  { name: 'case-failed-processing', path: `/auditor/cases/${CASE_6}` },
+  { name: 'taxpayer-profile', path: `/auditor/taxpayers/${TAXPAYER_2}` },
 ];
 
 async function ready(page: Page) {
   await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
   await page.waitForLoadState('networkidle');
 }
+
+const asOtherTenant = (route: Route) =>
+  route.continue({
+    headers: {
+      ...route.request().headers(),
+      'x-vati-tenant-id': '10000000-0000-4000-8000-000000000002',
+    },
+  });
 
 for (const width of widths) {
   test(`screens at ${width}px`, async ({ page }) => {
@@ -41,50 +54,48 @@ for (const width of [1440, 390]) {
 
     let release: () => void = () => {};
     const gate = new Promise<void>((resolve) => (release = resolve));
-    await page.route('**/api/cases', async (route) => {
+    await page.route(QUEUE, async (route) => {
       await gate;
       await route.continue();
     });
     await page.goto('/auditor/cases');
-    await expect(page.getByText('Loading cases…').first()).toBeVisible();
+    await expect(page.getByText('Loading your cases…').first()).toBeVisible();
     await shot('loading');
     release();
-    await expect(page.getByRole('row')).toHaveCount(6);
-    await page.unroute('**/api/cases');
+    await expect(page.getByRole('row')).toHaveCount(8);
+    await page.unroute(QUEUE);
 
-    await page.route('**/api/cases', (route) =>
-      route.fulfill({ json: { mode: 'fixture', synthetic: true, items: [] } }),
+    await page.route(QUEUE, (route) =>
+      route.fulfill({ json: { data: [], meta: { next_cursor: null, has_more: false } } }),
     );
     await page.goto('/auditor/cases');
-    await expect(page.getByText('No cases waiting for review')).toBeVisible();
-    await shot('empty');
-    await page.unroute('**/api/cases');
+    await expect(page.getByText('No cases are assigned to you')).toBeVisible();
+    await shot('empty-queue');
+    await page.unroute(QUEUE);
 
-    await page.goto('/auditor/cases?q=no-such-taxpayer');
+    await page.goto('/auditor/cases?status=RESOLVED');
     await expect(page.getByText('No cases match these filters')).toBeVisible();
     await shot('no-matches');
 
-    await page.route('**/api/cases', (route) => route.abort('connectionrefused'));
+    await page.goto('/auditor/cases?status=FAILED_PROCESSING');
+    await expect(page.getByRole('row')).toHaveCount(2);
+    await shot('queue-failed-filter');
+
+    await page.route(QUEUE, (route) => route.abort('connectionrefused'));
     await page.goto('/auditor/cases');
     await expect(page.getByText('Case data is temporarily unavailable')).toBeVisible();
-    await shot('error');
-    await page.unroute('**/api/cases');
+    await shot('unavailable');
+    await page.unroute(QUEUE);
 
-    await page.route('**/api/cases/SYN-001', (route) =>
-      route.fulfill({ status: 403, json: { error: 'forbidden' } }),
-    );
-    await page.goto('/auditor/cases/SYN-001');
+    await page.route(/\/api\/v1\//, asOtherTenant);
+    await page.goto('/auditor/cases');
     await expect(page.getByText('You do not have access')).toBeVisible();
     await shot('denied');
+    await page.unroute(/\/api\/v1\//);
 
-    await page.goto('/auditor/cases/SYN-999');
-    await expect(page.getByText('Case not found')).toBeVisible();
-    await shot('not-found');
-
-    await page.goto('/auditor/cases/SYN-002');
-    await page.getByRole('tab', { name: 'Findings' }).click();
-    await expect(page.getByText('Findings are not available in fixture mode')).toBeVisible();
-    await shot('detail-unavailable-tab');
+    await page.goto('/auditor/taxpayers/20000000-0000-4000-8000-000000000099');
+    await expect(page.getByText('Taxpayer not found')).toBeVisible();
+    await shot('taxpayer-not-found');
   });
 }
 
@@ -92,28 +103,13 @@ test('interaction states at 1440px', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto('/auditor/cases');
   await ready(page);
-  await page.keyboard.press('Tab');
-  await page.screenshot({ path: `${out}/focus-skip-link-1440.png` });
   await page.getByRole('columnheader', { name: 'Case' }).getByRole('button').focus();
   await page.screenshot({ path: `${out}/focus-table-sort-1440.png` });
-
-  await page.goto('/auditor/showcase');
-  await ready(page);
-  const buttons = page
-    .getByRole('region', { name: 'Buttons' })
-    .or(page.locator('section[aria-labelledby="sc-buttons"]'));
-  await page.getByRole('button', { name: 'Primary action' }).hover();
-  await buttons.first().screenshot({ path: `${out}/showcase-hover-1440.png` });
-  await page.getByRole('button', { name: 'Secondary' }).focus();
-  await buttons.first().screenshot({ path: `${out}/showcase-focus-1440.png` });
-
-  await page.getByRole('button', { name: 'Validate example' }).click();
-  await expect(page.getByText('Enter a case reference in the format SYN-001.')).toBeVisible();
+  await page.getByRole('link', { name: 'SYN-002' }).focus();
+  await page.screenshot({ path: `${out}/focus-case-link-1440.png` });
   await page
-    .locator('section[aria-labelledby="sc-form"]')
-    .screenshot({ path: `${out}/showcase-validation-1440.png` });
-
-  await page.getByRole('button', { name: 'Open confirmation dialog' }).click();
-  await expect(page.getByRole('dialog')).toBeVisible();
-  await page.screenshot({ path: `${out}/showcase-dialog-1440.png` });
+    .getByRole('button', { name: /Status/ })
+    .first()
+    .click();
+  await page.screenshot({ path: `${out}/status-filter-open-1440.png` });
 });

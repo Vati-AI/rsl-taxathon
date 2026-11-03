@@ -2,7 +2,7 @@
 import { computed } from 'vue';
 import { useRoute, useRouter, type LocationQueryValue } from 'vue-router';
 import { Button, Select, TextInput } from 'frappe-ui';
-import { listCases } from '../api/fixtures';
+import { CASE_STATUSES, listAssignedCases } from '../api/vati';
 import CaseTable from '../components/CaseTable.vue';
 import PageLayout from '../components/PageLayout.vue';
 import StatePanel from '../components/StatePanel.vue';
@@ -10,8 +10,7 @@ import { errorPanel } from '../components/errorPanel';
 import { useLoader } from '../composables/useLoader';
 import {
   queuePage,
-  reviewLane,
-  scenarioLabel,
+  statusInfo,
   type QueueQuery,
   type SortDirection,
   type SortKey,
@@ -19,17 +18,17 @@ import {
 
 const PAGE_SIZE = 25;
 const SORT_KEYS: SortKey[] = [
-  'id',
-  'name',
-  'scenario',
+  'display_id',
+  'taxpayer',
+  'status',
+  'refund_lane',
   'refund_claim',
-  'supported_refund',
-  'expected',
+  'updated_at',
 ];
 
 const route = useRoute();
 const router = useRouter();
-const { state, reload } = useLoader((signal) => listCases(fetch, signal));
+const { state, reload } = useLoader((signal) => listAssignedCases(fetch, signal));
 
 function text(value: LocationQueryValue | LocationQueryValue[] | undefined) {
   return typeof value === 'string' ? value : '';
@@ -40,9 +39,9 @@ const query = computed<QueueQuery>(() => {
   const sort = text(route.query.sort) as SortKey;
   return {
     search: text(route.query.q),
-    scenario: text(route.query.scenario),
+    status: text(route.query.status),
     lane: text(route.query.lane),
-    sort: SORT_KEYS.includes(sort) ? sort : 'id',
+    sort: SORT_KEYS.includes(sort) ? sort : 'display_id',
     direction: (text(route.query.dir) === 'desc' ? 'desc' : 'asc') as SortDirection,
     page: Number.parseInt(text(route.query.page), 10) || 1,
     pageSize: PAGE_SIZE,
@@ -59,23 +58,21 @@ function update(changes: Record<string, string | number | null>) {
 
 const cases = computed(() => (state.value.status === 'ready' ? state.value.data : []));
 const page = computed(() => queuePage(cases.value, query.value));
-const scenarioOptions = computed(() => [
-  { label: 'All scenarios', value: '' },
-  ...[...new Set(cases.value.map((x) => x.scenario))].map((value) => ({
-    value,
-    label: scenarioLabel(value),
-  })),
-]);
-const laneOptions = computed(() => [
-  { label: 'All review lanes', value: '' },
-  ...[...new Set(cases.value.map((x) => x.expected))].map((value) => ({
-    value,
-    label: reviewLane(value).label,
-  })),
-]);
+const statusOptions = [
+  { label: 'All statuses', value: '' },
+  ...CASE_STATUSES.map((value) => ({ value, label: statusInfo(value).label })),
+];
+const laneOptions = [
+  { label: 'All refund lanes', value: '' },
+  { label: 'Fast', value: 'fast' },
+  { label: 'Standard', value: 'standard' },
+  { label: 'Targeted', value: 'targeted' },
+  { label: 'Not set', value: 'none' },
+];
 const filtered = computed(() =>
-  Boolean(query.value.search || query.value.scenario || query.value.lane),
+  Boolean(query.value.search || query.value.status || query.value.lane),
 );
+const clearFilters = { q: null, status: null, lane: null, page: null };
 
 function sortBy(key: SortKey) {
   const dir = query.value.sort === key && query.value.direction === 'asc' ? 'desc' : 'asc';
@@ -85,9 +82,10 @@ function sortBy(key: SortKey) {
 
 <template>
   <PageLayout
-    title="Case queue"
-    description="Synthetic cases routed for officer review. Select a case to open its detail page."
-    :breadcrumbs="[{ label: 'Case queue' }]"
+    title="My case queue"
+    description="Cases assigned to you for review, with the signals that selected them. Select a case to open it."
+    :breadcrumbs="[{ label: 'My case queue' }]"
+    wide
   >
     <form
       role="search"
@@ -106,25 +104,21 @@ function sortBy(key: SortKey) {
         <template #prefix><span class="lucide-search size-4" aria-hidden="true" /></template>
       </TextInput>
       <Select
-        label="Scenario"
-        :options="scenarioOptions"
-        :model-value="query.scenario"
-        @update:model-value="(value) => update({ scenario: (value as string) ?? '', page: null })"
+        label="Status"
+        :options="statusOptions"
+        :model-value="query.status"
+        @update:model-value="(value) => update({ status: (value as string) ?? '', page: null })"
       />
       <Select
-        label="Review lane"
+        label="Refund lane"
         :options="laneOptions"
         :model-value="query.lane"
         @update:model-value="(value) => update({ lane: (value as string) ?? '', page: null })"
       />
-      <Button
-        label="Clear filters"
-        :disabled="!filtered"
-        @click="update({ q: null, scenario: null, lane: null, page: null })"
-      />
+      <Button label="Clear filters" :disabled="!filtered" @click="update(clearFilters)" />
     </form>
 
-    <StatePanel v-if="state.status === 'loading'" kind="loading" title="Loading cases…" />
+    <StatePanel v-if="state.status === 'loading'" kind="loading" title="Loading your cases…" />
     <StatePanel
       v-else-if="state.status === 'error'"
       v-bind="errorPanel(state.error)"
@@ -133,23 +127,19 @@ function sortBy(key: SortKey) {
     <StatePanel
       v-else-if="page.total === 0"
       kind="empty"
-      :title="filtered ? 'No cases match these filters' : 'No cases waiting for review'"
+      :title="filtered ? 'No cases match these filters' : 'No cases are assigned to you'"
       :message="
         filtered
-          ? 'Change the search text or clear the filters to see all cases.'
-          : 'New cases appear here when submissions are routed for officer review.'
+          ? 'Change the search text or clear the filters to see all your cases.'
+          : 'Cases appear here when they are assigned to you for review.'
       "
     >
-      <Button
-        v-if="filtered"
-        label="Clear filters"
-        @click="update({ q: null, scenario: null, lane: null, page: null })"
-      />
+      <Button v-if="filtered" label="Clear filters" @click="update(clearFilters)" />
     </StatePanel>
     <template v-else>
       <CaseTable
         :rows="page.rows"
-        caption="Cases waiting for review"
+        caption="Cases assigned to you"
         :sort="query.sort"
         :direction="query.direction"
         @sort="sortBy"

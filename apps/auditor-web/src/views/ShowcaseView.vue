@@ -15,76 +15,91 @@ import {
   Textarea,
   toast,
 } from 'frappe-ui';
-import type { FixtureCase } from '../api/fixtures';
+import { CASE_STATUSES, type Case, type CaseStatus, type RefundLane } from '../api/vati';
+import CaseStatusBadge from '../components/CaseStatusBadge.vue';
 import CaseTable from '../components/CaseTable.vue';
 import PageLayout from '../components/PageLayout.vue';
-import ReviewLaneBadge from '../components/ReviewLaneBadge.vue';
 import StatePanel from '../components/StatePanel.vue';
 import { queuePage, type SortDirection, type SortKey } from '../domain/cases';
 
-// Showcase-only synthetic rows: long names, large amounts and missing values
-// exercise layout limits. They are not part of the fixture scenario set.
+// Showcase-only synthetic rows: long names, large amounts, missing values and a
+// failed service exercise layout limits. They are not part of the fixture data.
 function sample(
-  id: string,
+  n: number,
   name: string,
-  scenario: string,
-  claim: string | null,
-  supported: string | null,
-  expected: string,
-): FixtureCase {
+  status: CaseStatus,
+  amount: string | null,
+  lane: RefundLane | null,
+  reasons: string[],
+  failed = false,
+): Case {
+  const id = `90000000-0000-4000-8000-00000000010${n}`;
   return {
-    id,
-    name,
-    scenario,
-    currency: 'LSL',
-    refund_claim: claim,
-    supported_refund: supported,
-    expected,
+    case_id: id,
+    tenant_id: '10000000-0000-4000-8000-000000000001',
+    display_id: `DEMO-10${n}`,
+    taxpayer_id: id,
+    taxpayer: { taxpayer_id: id, display_name: name, taxpayer_type: 'company' },
+    status,
+    version: 1,
+    refund_claim: amount === null ? null : { amount, currency: 'LSL' },
+    refund_lane: lane,
+    assigned_officer_id: null,
+    selection_reasons: reasons.map((summary, i) => ({
+      code: `demo_reason_${i}`,
+      summary,
+      source: 'jube',
+    })),
+    service_links: failed
+      ? [
+          {
+            service: 'docling',
+            external_type: 'extraction',
+            external_id: null,
+            sync: {
+              state: 'failed',
+              last_attempt_at: '2026-11-03T09:45:00Z',
+              error_code: 'upstream_timeout',
+            },
+          },
+        ]
+      : [],
+    created_at: '2026-11-03T09:00:00Z',
+    updated_at: '2026-11-03T09:00:00Z',
     synthetic: true,
   };
 }
 const sampleRows = [
   sample(
-    'DEMO-101',
+    1,
     'Synthetic Maloti Mountains Agricultural Cooperative and Rural Transport Services (Proprietary) Limited',
-    'legitimate_refund',
+    'AWAITING_HUMAN',
     '1250000.00',
-    '1250000.00',
-    'human_clearance',
+    'fast',
+    ['Refund claim is larger than previous claims.'],
   ),
+  sample(2, 'Synthetic Quthing Border Retail', 'INVESTIGATING', '98500.50', 'targeted', [
+    'Management fees paid to a company sharing a director.',
+    'Losses reported for several periods.',
+  ]),
+  sample(3, 'Synthetic Senqu Valley Consulting', 'FAILED_PROCESSING', null, null, [], true),
   sample(
-    'DEMO-102',
-    'Synthetic Quthing Border Retail',
-    'related_party_risk',
-    '98500.50',
-    null,
-    'targeted_evidence_request',
-  ),
-  sample(
-    'DEMO-103',
-    'Synthetic Senqu Valley Consulting',
-    'ambiguous_service',
-    null,
-    null,
-    'specialist_review',
-  ),
-  sample(
-    'DEMO-104',
+    4,
     'Synthetic Highlands Import & Export Holdings',
-    'unverified_legal_route',
+    'AWAITING_EVIDENCE',
     '7.25',
-    '7.25',
-    'policy_gap_review',
+    'standard',
+    ['Imported service invoices lack withholding evidence.'],
   ),
 ];
-const tableSort = ref<SortKey>('id');
+const tableSort = ref<SortKey>('display_id');
 const tableDirection = ref<SortDirection>('asc');
 const tableSearch = ref('');
 const tableRows = computed(
   () =>
     queuePage(sampleRows, {
       search: tableSearch.value,
-      scenario: '',
+      status: '',
       lane: '',
       sort: tableSort.value,
       direction: tableDirection.value,
@@ -105,7 +120,7 @@ function validate() {
   errors.reference = /^SYN-\d{3}$/.test(form.reference.trim())
     ? ''
     : 'Enter a case reference in the format SYN-001.';
-  errors.lane = form.lane ? '' : 'Choose a review lane.';
+  errors.lane = form.lane ? '' : 'Choose a refund lane.';
   errors.confirmed = form.confirmed ? '' : 'Confirm that this example uses synthetic data only.';
   return !errors.reference && !errors.lane && !errors.confirmed;
 }
@@ -173,14 +188,14 @@ function showLoading() {
           />
           <Select
             v-model="form.lane"
-            label="Review lane"
+            label="Refund lane"
             required
-            placeholder="Choose a review lane"
+            placeholder="Choose a refund lane"
             :error="errors.lane"
             :options="[
-              { label: 'Officer clearance', value: 'human_clearance' },
-              { label: 'Targeted evidence request', value: 'targeted_evidence_request' },
-              { label: 'Specialist review', value: 'specialist_review' },
+              { label: 'Fast', value: 'fast' },
+              { label: 'Standard', value: 'standard' },
+              { label: 'Targeted', value: 'targeted' },
             ]"
           />
           <Textarea v-model="form.note" label="Officer note (optional)" :rows="3" />
@@ -250,13 +265,10 @@ function showLoading() {
       <section aria-labelledby="sc-badges" class="showcase-section">
         <h2 id="sc-badges" class="showcase-heading">Badges</h2>
         <p class="showcase-note">
-          Status uses text plus colour. A review lane is a signal, never a verdict.
+          Case status uses text plus colour. Status describes processing, never a verdict.
         </p>
         <div class="flex flex-wrap gap-2">
-          <ReviewLaneBadge lane="human_clearance" />
-          <ReviewLaneBadge lane="targeted_evidence_request" />
-          <ReviewLaneBadge lane="specialist_review" />
-          <ReviewLaneBadge lane="policy_gap_review" />
+          <CaseStatusBadge v-for="status in CASE_STATUSES" :key="status" :status="status" />
           <Badge theme="blue" label="Fixture" />
         </div>
       </section>
