@@ -54,6 +54,10 @@
     {
       "criterion": 3,
       "text": "Tests and evidence recorded for criteria 1-2; task.py finish refreshed from origin/main, reran dev.py check and quality.py (both passed), pushed task/TAX-018, opened human-review PR https://github.com/Vati-AI/rsl-taxathon/pull/88 and synced issue #19 to IN_REVIEW. Not merged by the agent."
+    },
+    {
+      "criterion": 2,
+      "text": "Review update: Idempotency-Key reuse with a changed body now 422 idempotency_conflict; in-progress retry 409 idempotency_in_progress (new example 17); checker enforces one status per error code and that ErrorCode matches the mapping. API_STANDARD.md updated to match. Observed: python3 integration/api/contract.py -> 'Vati OpenAPI contract valid: 17 HTTP examples, 2 events'; python3 -m unittest discover -s tests/contracts -> Ran 28 tests OK; dev.py check and quality.py passed."
     }
   ],
   "notes": [
@@ -64,6 +68,10 @@
     {
       "at": "2026-11-03T12:20:57.477809+00:00",
       "text": "Agent finished implementation and opened human review"
+    },
+    {
+      "at": "2026-11-03T12:26:40.781319+00:00",
+      "text": "Owner review: switched mismatched-payload idempotency reuse to 422 (API_STANDARD + contract). Follow-up, not a blocker: standardise development on Node 24 via the repo's .nvmrc (currently 22) and a version manager, without changing machine-wide installs; this machine has Node 23.5."
     }
   ]
 }
