@@ -5,12 +5,12 @@
   "owner": "Keletso",
   "area": "integration",
   "phase": "foundation",
-  "status": "IN_PROGRESS",
+  "status": "DONE",
   "priority": "P0",
   "depends_on": [],
   "claimed_by": "keletso-claude-code-1",
   "branch": "task/TAX-026",
-  "pr": null,
+  "pr": "https://github.com/Vati-AI/rsl-taxathon/pull/97",
   "scope": "Start pinned OpenAleph with its required search/database/worker services and restricted synthetic collection",
   "inputs": [
     "PROJECT.md",
@@ -24,15 +24,15 @@
   "acceptance": [
     {
       "text": "Start pinned OpenAleph with its required search/database/worker services and restricted synthetic collection",
-      "done": false
+      "done": true
     },
     {
       "text": "Ingest and retrieve one synthetic document; prove unrelated collection access is denied",
-      "done": false
+      "done": true
     },
     {
       "text": "Record relevant tests and evidence, update task status and open a human-review PR",
-      "done": false
+      "done": true
     }
   ],
   "verification": "Ingest and retrieve one synthetic document; prove unrelated collection access is denied",
@@ -42,11 +42,32 @@
     "update-project-task",
     "finish-task"
   ],
-  "evidence": [],
+  "evidence": [
+    {
+      "criterion": 1,
+      "text": "Started pinned OpenAleph 5.4.0-rc1 (image revision label = locked commit f89ff18) with required postgres, elasticsearch, redis, ingest, analyze, worker, api and ui services via python3 scripts/openaleph_dev.py up; isolated project rsl-taxathon-openaleph, multi-user password login (ALEPH_SINGLE_USER=false), generated DB password, loopback-only UI 127.0.0.1:55580. Synthetic user A created restricted collection 1 (tax026_synthetic_restricted_a). Fixes recorded in integration/openaleph/README.md: explicit OPENALEPH_DB_URI/PROCRASTINATE_DB_URI, ingest-file 5.4.0-rc4 (same openaleph-procrastinate commit a9c0ef12 as the API; rc1 crashed on every job), 2 gunicorn workers (6 were OOM-killed)."
+    },
+    {
+      "criterion": 2,
+      "text": "Observed via python3 scripts/openaleph_dev.py smoke (run twice, same result): synthetic text invoice ingested (201), searchable after ~21 s, user A retrieved PlainText entity 200 with contentHash and marker text. Denied: user B collection 403, entity 403, search 0 hits; anonymous collection 403, search 0 hits, create collection 403; invalid API key 403. Idle memory ~3.9 GiB total. tests/tooling/test_openaleph_dev.py 5 tests OK; dev.py check and quality.py passed; staged diff scanned for generated secrets: none."
+    },
+    {
+      "criterion": 3,
+      "text": "Tests and evidence recorded for criteria 1-2; task.py finish merged current main (resolved tasks/TAX-026.json conflict from early-merged claim PR #94 by keeping the evidence; files otherwise identical), reran dev.py check and quality.py under Node 24.20.0 (Node 23.5 cannot run the new Vitest suite), pushed task/TAX-026, opened human-review PR https://github.com/Vati-AI/rsl-taxathon/pull/97 and synced issue #27 to IN_REVIEW. Not merged by the agent."
+    }
+  ],
   "notes": [
     {
       "at": "2026-11-03T13:28:53.198300+00:00",
       "text": "Claimed by keletso-claude-code-1"
+    },
+    {
+      "at": "2026-11-03T14:15:18.858593+00:00",
+      "text": "Agent finished implementation and opened human review"
+    },
+    {
+      "at": "2026-11-03T15:20:56.724424+00:00",
+      "text": "Verified PR #97 merged at 2026-11-03T15:00:47Z; all three acceptance criteria have recorded evidence."
     }
   ]
 }

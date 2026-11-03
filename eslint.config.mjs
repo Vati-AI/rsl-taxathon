@@ -33,6 +33,11 @@ export default [
         DOMException: "readonly",
         Response: "readonly",
         URL: "readonly",
+        URLSearchParams: "readonly",
+        HTMLElement: "readonly",
+        HTMLFormElement: "readonly",
+        MediaQueryListEvent: "readonly",
+        Intl: "readonly",
         process: "readonly"
       }
     },

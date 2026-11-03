@@ -1,0 +1,10 @@
+# Vati synthetic-only yente manifest (TAX-027).
+# No `catalogs` and no `entities_url`: yente indexes only the local, committed synthetic file and
+# never downloads OpenSanctions or other licensed datasets. Bump `version` when the file changes;
+# it forces a re-index and is reported by /catalog and recorded with match results.
+catalogs: []
+datasets:
+  - name: vati_synthetic
+    title: Vati synthetic taxpayer entities (test data only)
+    path: /data/vati_synthetic.ftm.json
+    version: "2026110301"

@@ -5,12 +5,12 @@
   "owner": "Keletso",
   "area": "integration",
   "phase": "foundation",
-  "status": "READY",
+  "status": "DONE",
   "priority": "P0",
   "depends_on": [],
-  "claimed_by": null,
-  "branch": null,
-  "pr": null,
+  "claimed_by": "keletso-claude-code-1",
+  "branch": "task/TAX-028",
+  "pr": "https://github.com/Vati-AI/rsl-taxathon/pull/101",
   "scope": "Start optional authenticated Docling service with bounded document sizes and local model artifacts",
   "inputs": [
     "PROJECT.md",
@@ -24,15 +24,15 @@
   "acceptance": [
     {
       "text": "Start optional authenticated Docling service with bounded document sizes and local model artifacts",
-      "done": false
+      "done": true
     },
     {
       "text": "Extract a synthetic scanned/table document; verify unauthorized request rejection and page provenance",
-      "done": false
+      "done": true
     },
     {
       "text": "Record relevant tests and evidence, update task status and open a human-review PR",
-      "done": false
+      "done": true
     }
   ],
   "verification": "Extract a synthetic scanned/table document; verify unauthorized request rejection and page provenance",
@@ -42,6 +42,32 @@
     "update-project-task",
     "finish-task"
   ],
-  "evidence": [],
-  "notes": []
+  "evidence": [
+    {
+      "criterion": 1,
+      "text": "Started docling-serve-cpu v1.38.2 (digest-pinned; equals locked source 9c058db) via python3 scripts/docling_dev.py up: X-Api-Key required (generated DOCLING_API_KEY in ignored .env), loopback 127.0.0.1:55001, MAX_FILE_SIZE 25 MiB (= contract), MAX_NUM_PAGES 50, MAX_DOCUMENT_TIMEOUT 300 s, remote services/plugins/custom model configs disabled, HF_HUB_OFFLINE=1. Local model artifacts: image's default set (871 MB: layout heron, TableFormer, figure classifier, EasyOCR, RapidOCR); every conversion logged 'No model weights will be downloaded at runtime'."
+    },
+    {
+      "criterion": 2,
+      "text": "Observed via python3 scripts/docling_dev.py smoke (twice): two-page image-only synthetic invoice converted (HTTP 200, status success, ~10-12 s, 2 pages); OCR found invoice number in text with prov.page_no 1; one table with prov.page_no 2, bboxes present, 4x3 cells exact (Item/Qty/Amount LSL, Consulting services/1/3000.00, Freight/2/450.00, Total/3450.00). Unauthorized: no key 401, wrong key 401. Size bound: 25 MiB+1 file -> status failure, error category policy, no content. tests/tooling/test_docling_dev.py 4 tests OK; dev.py check, quality.py and docker compose config passed; .env secrets not in staged diff."
+    },
+    {
+      "criterion": 3,
+      "text": "Tests and evidence recorded for criteria 1-2; task.py finish refreshed from origin/main, reran dev.py check and quality.py (Node 24.20.0), pushed task/TAX-028, opened human-review PR https://github.com/Vati-AI/rsl-taxathon/pull/101 and synced issue #29 to IN_REVIEW. Not merged by the agent."
+    }
+  ],
+  "notes": [
+    {
+      "at": "2026-11-03T14:30:50.198125+00:00",
+      "text": "Claimed by keletso-claude-code-1"
+    },
+    {
+      "at": "2026-11-03T14:41:45.761115+00:00",
+      "text": "Agent finished implementation and opened human review"
+    },
+    {
+      "at": "2026-11-03T15:20:58.036838+00:00",
+      "text": "Verified PR #101 merged at 2026-11-03T15:02:11Z; all three acceptance criteria have recorded evidence."
+    }
+  ]
 }
