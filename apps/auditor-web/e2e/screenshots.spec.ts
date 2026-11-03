@@ -4,6 +4,8 @@ import { expect, test, type Page, type Route } from '@playwright/test';
 // Review evidence for the reviewer's visual approval (docs/DESIGN_STANDARD.md). Not a
 // baseline comparison: Jane captures approved baselines after acceptance.
 // Run with CAPTURE_SCREENSHOTS=1; output goes to docs/evidence/TAX-040.
+// baseline comparison: the frontend QA owner (Kananelo) captures approved baselines after acceptance.
+// Run with CAPTURE_SCREENSHOTS=1; output goes to docs/evidence/TAX-020.
 test.skip(
   !process.env.CAPTURE_SCREENSHOTS,
   'Set CAPTURE_SCREENSHOTS=1 to capture review screenshots',

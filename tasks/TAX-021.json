@@ -5,7 +5,7 @@
   "owner": "Kananelo",
   "area": "apps/taxpayer-web",
   "phase": "foundation",
-  "status": "IN_REVIEW",
+  "status": "DONE",
   "priority": "P0",
   "depends_on": [],
   "claimed_by": "kananelo-claude-20261103-1",
@@ -72,6 +72,10 @@
     {
       "at": "2026-11-03T14:27:03.160537+00:00",
       "text": "Agent finished implementation and opened human review"
+    },
+    {
+      "at": "2026-11-03T15:54:06.559049+00:00",
+      "text": "Verified PR #98 merged at 2026-11-03T15:01:03Z (merge commit 8ad3fda, ancestor of main 52191cd); all four acceptance criteria marked done with four evidence entries. Recorded by kananelo-claude-20261103-2; owner Kananelo unchanged."
     }
   ]
 }
