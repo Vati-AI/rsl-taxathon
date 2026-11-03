@@ -1,0 +1,69 @@
+# Isolated Jube development stack (TAX-025). Builds the locked upstream source in external/jube.
+# Use scripts/jube_dev.py; secrets come from the ignored .local/jube.env it generates.
+# Differences from upstream docker-compose.yml are deliberate and documented in README.md:
+# unique project/container names, loopback-only Jube port, no published Postgres/Redis ports,
+# no Docker socket monitoring sidecar, no R/OpenTelemetry sidecars, sanctions loader and
+# Ask Jooby disabled (no outbound data loaders), pinned Redis instead of redis-stack:latest,
+# and memory limits sized for a shared developer machine.
+name: rsl-taxathon-jube
+services:
+  postgres:
+    image: pgvector/pgvector:pg17
+    environment:
+      POSTGRES_PASSWORD: ${JUBE_POSTGRES_PASSWORD:?Run python3 scripts/jube_dev.py env first}
+    command: >
+      postgres
+      -c shared_buffers=128MB
+      -c work_mem=1MB
+      -c maintenance_work_mem=64MB
+      -c max_connections=150
+      -c effective_cache_size=384MB
+      -c shared_preload_libraries=pg_stat_statements
+    volumes: ["jube-postgres:/var/lib/postgresql/data"]
+    mem_limit: 768m
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 3s
+      retries: 30
+
+  redis:
+    image: redis:7-alpine
+    command: ["redis-server", "--appendonly", "yes", "--maxmemory", "192mb", "--maxmemory-policy", "noeviction"]
+    volumes: ["jube-redis:/data"]
+    mem_limit: 256m
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 30
+
+  jube:
+    image: rsl-taxathon-jube-app:${JUBE_SOURCE_COMMIT:?Run python3 scripts/jube_dev.py env first}
+    build:
+      context: ../../external/jube
+      dockerfile: Jube.App/Dockerfile
+    depends_on:
+      postgres: {condition: service_healthy}
+      redis: {condition: service_healthy}
+    environment:
+      ASPNETCORE_URLS: http://0.0.0.0:5001
+      ConnectionString: Host=postgres;Port=5432;Database=postgres;Username=postgres;Password=${JUBE_POSTGRES_PASSWORD};Pooling=true;Minimum Pool Size=0;Maximum Pool Size=50;
+      ReportConnectionString: Host=postgres;Port=5432;Database=postgres;Username=postgres;Password=${JUBE_POSTGRES_PASSWORD};Pooling=true;Minimum Pool Size=0;Maximum Pool Size=20;
+      JWTKey: ${JUBE_JWT_KEY:?missing}
+      ApiHmacKey: ${JUBE_API_HMAC_KEY:?missing}
+      PasswordHashingKey: ${JUBE_PASSWORD_HASHING_KEY:?missing}
+      ElementSymmetricEncryptionKey: ${JUBE_ELEMENT_ENCRYPTION_KEY:?missing}
+      RedisConnectionString: redis
+      EnableSanctionLoader: "False"
+      EnableAskJooby: "False"
+      Log4NetLogLevel: ERROR
+      DOTNET_gcServer: "0"
+      DOTNET_GCConserveMemory: "7"
+      DOTNET_GCHeapHardLimit: "0x50000000"
+    ports: ["127.0.0.1:${JUBE_PORT:-55501}:5001"]
+    mem_limit: 2g
+
+volumes:
+  jube-postgres:
+  jube-redis:
