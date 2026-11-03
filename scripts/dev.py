@@ -120,6 +120,7 @@ def check():
             "ai",
             "integration/api",
         ],
+        ["python3", "-m", "unittest", "discover", "-s", "tests/data", "-v"],
         ["python3", "-m", "unittest", "discover", "-s", "tests/tooling", "-v"],
         ["python3", "integration/api/contract.py"],
         ["python3", "-m", "unittest", "discover", "-s", "tests/contracts", "-v"],

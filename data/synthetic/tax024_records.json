@@ -1,0 +1,148 @@
+[
+  {
+    "case_id": "SYN-001",
+    "synthetic": true,
+    "taxpayer_id": "SYN-TAXPAYER-001",
+    "period": "2025-Q4",
+    "expected_outcome": "human_clearance",
+    "return": {
+      "id": "RET-SYN-001",
+      "output_vat": "0.00",
+      "input_vat_claimed": "15000.00",
+      "refund_claim": "15000.00"
+    },
+    "contracts": [
+      {"id": "CTR-SYN-001-01", "counterparty_id": "SYN-SUPPLIER-001", "description": "Wholesale stock supply", "related_party": false}
+    ],
+    "invoices": [
+      {"id": "INV-SYN-001-01", "contract_id": "CTR-SYN-001-01", "counterparty_id": "SYN-SUPPLIER-001", "direction": "purchase", "net_amount": "100000.00", "vat_amount": "9000.00", "gross_amount": "109000.00"},
+      {"id": "INV-SYN-001-02", "contract_id": "CTR-SYN-001-01", "counterparty_id": "SYN-SUPPLIER-001", "direction": "purchase", "net_amount": "66666.67", "vat_amount": "6000.00", "gross_amount": "72666.67"}
+    ],
+    "payments": [
+      {"id": "PAY-SYN-001-01", "invoice_id": "INV-SYN-001-01", "amount": "109000.00"},
+      {"id": "PAY-SYN-001-02", "invoice_id": "INV-SYN-001-02", "amount": "72666.67"}
+    ],
+    "expected_findings": [
+      {"code": "refund_arithmetic_matches_documents", "evidence_ids": ["RET-SYN-001", "INV-SYN-001-01", "INV-SYN-001-02"], "note": "Claimed input VAT matches the two synthetic purchase invoices."}
+    ],
+    "expected_non_findings": ["unsupported_refund_amount", "related_party_indicator", "proven_abuse"]
+  },
+  {
+    "case_id": "SYN-002",
+    "synthetic": true,
+    "taxpayer_id": "SYN-TAXPAYER-002",
+    "period": "2025-Q4",
+    "expected_outcome": "targeted_evidence_request",
+    "return": {
+      "id": "RET-SYN-002",
+      "output_vat": "0.00",
+      "input_vat_claimed": "25000.00",
+      "refund_claim": "25000.00"
+    },
+    "contracts": [
+      {"id": "CTR-SYN-002-01", "counterparty_id": "SYN-GROUP-002", "description": "Shared logistics services", "related_party": true},
+      {"id": "CTR-SYN-002-02", "counterparty_id": "SYN-SUPPLIER-002", "description": "General operating supplies", "related_party": false}
+    ],
+    "invoices": [
+      {"id": "INV-SYN-002-01", "contract_id": "CTR-SYN-002-01", "counterparty_id": "SYN-GROUP-002", "direction": "purchase", "net_amount": "80000.00", "vat_amount": "7200.00", "gross_amount": "87200.00"},
+      {"id": "INV-SYN-002-02", "contract_id": "CTR-SYN-002-02", "counterparty_id": "SYN-SUPPLIER-002", "direction": "purchase", "net_amount": "31111.11", "vat_amount": "2800.00", "gross_amount": "33911.11"}
+    ],
+    "payments": [
+      {"id": "PAY-SYN-002-01", "invoice_id": "INV-SYN-002-01", "amount": "87200.00"},
+      {"id": "PAY-SYN-002-02", "invoice_id": "INV-SYN-002-02", "amount": "33911.11"}
+    ],
+    "loss_periods": ["2025-Q2", "2025-Q3", "2025-Q4"],
+    "expected_findings": [
+      {"code": "related_party_transaction", "evidence_ids": ["CTR-SYN-002-01", "INV-SYN-002-01"], "note": "A disclosed related-party supply is present; pricing or intent is not established."},
+      {"code": "refund_claim_exceeds_documented_input_vat", "evidence_ids": ["RET-SYN-002", "INV-SYN-002-01", "INV-SYN-002-02"], "note": "LSL 15,000.00 of claimed input VAT has no supporting invoice in this fixture."},
+      {"code": "consecutive_loss_periods", "evidence_ids": ["RET-SYN-002"], "note": "Synthetic return history shows losses in three consecutive periods."}
+    ],
+    "expected_non_findings": ["transfer_pricing_violation", "fraudulent_intent", "proven_abuse"]
+  },
+  {
+    "case_id": "SYN-003",
+    "synthetic": true,
+    "taxpayer_id": "SYN-TAXPAYER-003",
+    "period": "2025-Q4",
+    "expected_outcome": "specialist_review",
+    "return": {
+      "id": "RET-SYN-003",
+      "output_vat": "0.00",
+      "input_vat_claimed": "0.00",
+      "refund_claim": "0.00"
+    },
+    "contracts": [
+      {"id": "CTR-SYN-003-01", "counterparty_id": "SYN-CONSULTANT-003", "description": "Operations support; working arrangements require clarification", "related_party": false, "classification": "unresolved"}
+    ],
+    "invoices": [
+      {"id": "INV-SYN-003-01", "contract_id": "CTR-SYN-003-01", "counterparty_id": "SYN-CONSULTANT-003", "direction": "purchase", "net_amount": "12000.00", "vat_amount": "0.00", "gross_amount": "12000.00", "vat_status": "not_claimed"}
+    ],
+    "payments": [
+      {"id": "PAY-SYN-003-01", "invoice_id": "INV-SYN-003-01", "amount": "12000.00"}
+    ],
+    "expected_findings": [
+      {"code": "service_classification_evidence_gap", "evidence_ids": ["CTR-SYN-003-01", "INV-SYN-003-01"], "note": "The contract and invoice do not resolve the working-arrangement classification."}
+    ],
+    "expected_non_findings": ["employment_relationship_established", "consultancy_misclassification", "tax_evasion"]
+  },
+  {
+    "case_id": "SYN-004",
+    "synthetic": true,
+    "taxpayer_id": "SYN-TAXPAYER-004",
+    "period": "2025-Q4",
+    "expected_outcome": "targeted_evidence_request",
+    "return": {
+      "id": "RET-SYN-004",
+      "output_vat": "0.00",
+      "input_vat_claimed": "5000.00",
+      "refund_claim": "5000.00"
+    },
+    "contracts": [
+      {"id": "CTR-SYN-004-01", "counterparty_id": "SYN-LOCAL-004", "description": "Local equipment supply", "related_party": false},
+      {"id": "CTR-SYN-004-02", "counterparty_id": "SYN-FOREIGN-004", "description": "Remote consulting services; applicable treatment unverified", "related_party": false}
+    ],
+    "invoices": [
+      {"id": "INV-SYN-004-01", "contract_id": "CTR-SYN-004-01", "counterparty_id": "SYN-LOCAL-004", "direction": "purchase", "net_amount": "22222.22", "vat_amount": "2000.00", "gross_amount": "24222.22"},
+      {"id": "INV-SYN-004-02", "contract_id": "CTR-SYN-004-02", "counterparty_id": "SYN-FOREIGN-004", "direction": "purchase", "net_amount": "50000.00", "vat_amount": "0.00", "gross_amount": "50000.00", "vat_status": "treatment_unverified"}
+    ],
+    "payments": [
+      {"id": "PAY-SYN-004-01", "invoice_id": "INV-SYN-004-01", "amount": "24222.22"},
+      {"id": "PAY-SYN-004-02", "invoice_id": "INV-SYN-004-02", "amount": "50000.00"}
+    ],
+    "expected_findings": [
+      {"code": "refund_claim_exceeds_documented_input_vat", "evidence_ids": ["RET-SYN-004", "INV-SYN-004-01"], "note": "LSL 3,000.00 of claimed input VAT has no invoice showing VAT charged."},
+      {"code": "imported_service_treatment_unverified", "evidence_ids": ["CTR-SYN-004-02", "INV-SYN-004-02"], "note": "The supplied records do not establish the applicable VAT or withholding treatment."}
+    ],
+    "expected_non_findings": ["withholding_tax_liability_established", "noncompliance_established", "proven_abuse"]
+  },
+  {
+    "case_id": "SYN-005",
+    "synthetic": true,
+    "taxpayer_id": "SYN-TAXPAYER-005",
+    "period": "2025-Q4",
+    "expected_outcome": "policy_gap_review",
+    "return": {
+      "id": "RET-SYN-005",
+      "output_vat": "0.00",
+      "input_vat_claimed": "8000.00",
+      "refund_claim": "8000.00"
+    },
+    "contracts": [
+      {"id": "CTR-SYN-005-01", "counterparty_id": "SYN-SUPPLIER-005", "description": "Seasonal infrastructure and stock supply", "related_party": false}
+    ],
+    "invoices": [
+      {"id": "INV-SYN-005-01", "contract_id": "CTR-SYN-005-01", "counterparty_id": "SYN-SUPPLIER-005", "direction": "purchase", "net_amount": "55555.56", "vat_amount": "5000.00", "gross_amount": "60555.56"},
+      {"id": "INV-SYN-005-02", "contract_id": "CTR-SYN-005-01", "counterparty_id": "SYN-SUPPLIER-005", "direction": "purchase", "net_amount": "33333.33", "vat_amount": "3000.00", "gross_amount": "36333.33"}
+    ],
+    "payments": [
+      {"id": "PAY-SYN-005-01", "invoice_id": "INV-SYN-005-01", "amount": "60555.56"},
+      {"id": "PAY-SYN-005-02", "invoice_id": "INV-SYN-005-02", "amount": "36333.33"}
+    ],
+    "economic_context": {"indicator": "activity and input-credit timing warrant explanation", "legal_route": "unverified"},
+    "expected_findings": [
+      {"code": "economic_context_requires_human_policy_review", "evidence_ids": ["RET-SYN-005", "INV-SYN-005-01", "INV-SYN-005-02"], "note": "Records show the stated timing pattern; no legal route is verified in this fixture."},
+      {"code": "refund_arithmetic_matches_documents", "evidence_ids": ["RET-SYN-005", "INV-SYN-005-01", "INV-SYN-005-02"], "note": "Claimed input VAT matches the synthetic purchase invoices."}
+    ],
+    "expected_non_findings": ["legal_violation_established", "enforcement_recommended", "proven_abuse"]
+  }
+]

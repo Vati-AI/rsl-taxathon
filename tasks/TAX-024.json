@@ -24,11 +24,11 @@
   "acceptance": [
     {
       "text": "Add linked synthetic returns, invoices, payments and contracts for legitimate refund, related parties, employment ambiguity, imported services and policy gap",
-      "done": false
+      "done": true
     },
     {
       "text": "Validate IDs and decimal reconciliation; assert expected findings and expected non-findings for all five cases",
-      "done": false
+      "done": true
     },
     {
       "text": "Record relevant tests and evidence, update task status and open a human-review PR",
@@ -42,7 +42,16 @@
     "update-project-task",
     "finish-task"
   ],
-  "evidence": [],
+  "evidence": [
+    {
+      "criterion": 1,
+      "text": "Added five linked synthetic returns, invoices, payments and contracts in data/synthetic/tax024_records.json; each case records expected findings and explicit expected non-findings. Three focused TAX-024 tests passed."
+    },
+    {
+      "criterion": 2,
+      "text": "python -m unittest discover -s tests/data -v: 3 passed; verifies unique IDs, document links, invoice gross totals, payment bounds, Decimal refund reconciliation and expected outcome alignment across all five scenarios. scripts/validate.py passed."
+    }
+  ],
   "notes": [
     {
       "at": "2026-11-03T14:45:18.454493+00:00",
