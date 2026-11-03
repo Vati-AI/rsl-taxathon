@@ -5,11 +5,11 @@
   "owner": "Keletso",
   "area": "integration",
   "phase": "foundation",
-  "status": "READY",
+  "status": "IN_PROGRESS",
   "priority": "P0",
   "depends_on": [],
-  "claimed_by": null,
-  "branch": null,
+  "claimed_by": "keletso-claude-code-1",
+  "branch": "task/TAX-026",
   "pr": null,
   "scope": "Start pinned OpenAleph with its required search/database/worker services and restricted synthetic collection",
   "inputs": [
@@ -43,5 +43,10 @@
     "finish-task"
   ],
   "evidence": [],
-  "notes": []
+  "notes": [
+    {
+      "at": "2026-11-03T13:28:53.198300+00:00",
+      "text": "Claimed by keletso-claude-code-1"
+    }
+  ]
 }

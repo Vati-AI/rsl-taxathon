@@ -12,7 +12,7 @@ This fetches official source at immutable commits from `integration/upstreams.lo
 
 | Name | Source purpose | Local entrypoint / next step |
 |---|---|---|
-| jube | Risk and operational case engine | external/jube/docker-compose.yml; TAX-025 then TAX-034/035 |
+| jube | Risk and operational case engine | `python3 scripts/jube_dev.py up` (isolated compose in integration/jube, not upstream's file); runbook integration/jube/README.md; TAX-034/035 next |
 | openaleph | Evidence search/graph | external/openaleph/docker-compose.example.yml and contrib/start-local.sh; TAX-026 |
 | yente | Matching API | external/yente/docker-compose.yml; replace commercial manifest with synthetic data in TAX-027 |
 | docling | Extraction server | docker-compose.docling.yml; TAX-028 |

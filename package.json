@@ -1,25 +1,47 @@
 {
   "name": "vati-taxathon-workspace",
   "private": true,
-  "workspaces": [
-    "apps/taxpayer-web"
-  ],
   "scripts": {
     "lint": "eslint \"apps/**/*.{js,ts,vue}\"",
     "format:check": "prettier --check \"apps/**/*.{js,ts,vue,css,html}\"",
     "format": "prettier --write \"apps/**/*.{js,ts,vue,css,html}\"",
-    "taxpayer:check": "npm run typecheck -w @vati/taxpayer-web && npm run test -w @vati/taxpayer-web && npm run build -w @vati/taxpayer-web",
-    "check": "npm run lint && npm run format:check && npm run taxpayer:check"
+    "dev:auditor": "vite --config apps/auditor-web/vite.config.mts",
+    "build:auditor": "vite build --config apps/auditor-web/vite.config.mts",
+    "typecheck:auditor": "vue-tsc --noEmit -p apps/auditor-web/tsconfig.json",
+    "test:auditor": "vitest run --config apps/auditor-web/vite.config.mts",
+    "test:auditor:browser": "playwright test --config apps/auditor-web/playwright.config.ts",
+    "dev:taxpayer": "vite --config apps/taxpayer-web/vite.config.mts",
+    "build:taxpayer": "vite build --config apps/taxpayer-web/vite.config.mts",
+    "typecheck:taxpayer": "vue-tsc --noEmit -p apps/taxpayer-web/tsconfig.json",
+    "test:taxpayer": "vitest run --config apps/taxpayer-web/vite.config.mts",
+    "check": "npm run lint && npm run format:check && npm run typecheck:auditor && npm run test:auditor && npm run build:auditor && npm run typecheck:taxpayer && npm run test:taxpayer && npm run build:taxpayer"
   },
   "devDependencies": {
+    "@axe-core/playwright": "4.14.0",
     "@eslint/js": "10.0.1",
+    "@playwright/test": "1.64.1",
+    "@types/node": "22.20.5",
+    "@vitejs/plugin-vue": "6.0.10",
+    "@vue/test-utils": "2.5.1",
+    "autoprefixer": "10.6.2",
     "eslint": "10.14.0",
-    "eslint-plugin-vue": "10.11.1",
+    "eslint-plugin-vue": "10.12.0",
+    "jsdom": "30.1.3",
+    "postcss": "8.5.32",
     "prettier": "3.9.10",
-    "typescript-eslint": "8.72.0",
-    "vue-eslint-parser": "10.4.1"
+    "tailwindcss": "3.4.19",
+    "typescript": "5.9.3",
+    "typescript-eslint": "8.72.1",
+    "vite": "8.3.5",
+    "vitest": "5.1.0",
+    "vue-tsc": "3.3.14"
   },
   "engines": {
     "node": "^22.13.0 || >=24"
+  },
+  "dependencies": {
+    "frappe-ui": "1.1.0",
+    "vue": "3.5.44",
+    "vue-router": "4.6.4"
   }
 }

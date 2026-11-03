@@ -1,11 +1,11 @@
-/* frappe-ui's stylesheet already contains the @tailwind layers. */
-@import 'frappe-ui/style.css';
+/* Tailwind layers for frappe-ui, as in apps/auditor-web (ADR-004). frappe-ui/style.css
+   is not imported: it loads the Inter web font, while the design standard specifies
+   the system sans-serif font. Shared tokens (apps/shared/design/tokens.css) are
+   imported after this file in main.ts so they override frappe-ui base variables. */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-/*
- * Taxpayer reading size from docs/DESIGN_STANDARD.md: 16px form text with a
- * 1.5 line height. Component tokens come from frappe-ui; shared Vati tokens
- * are consolidated with the auditor showcase in TAX-020.
- */
 /* frappe-ui shells size themselves with h-full; give them the full window. */
 html,
 body,
@@ -13,28 +13,17 @@ body,
   height: 100%;
 }
 
+/* Taxpayer pages use the shared form text size (16px) for readability. */
 .taxpayer-page {
-  font-size: 1rem;
-  line-height: 1.5;
+  font-size: var(--vati-text-form);
+  line-height: var(--vati-line-height);
 }
 
 /*
- * WCAG 2.1 AA text contrast (4.5:1). axe on the live Frappe site measured these
- * frappe-ui 1.0.2 defaults below the threshold (TAX-021 evidence): subtle
- * blue/amber badges 4.17/3.54, inactive mobile-nav and breadcrumb text 4.17,
- * field error text 4.45. Use the next darker frappe-ui shade, portal-only.
- * Consolidate with the shared Vati tokens in TAX-020.
+ * WCAG AA text contrast: frappe-ui's field error text measured 4.45:1 with axe on
+ * the live Frappe site (needs 4.5:1). The shared tokens do not cover red yet, so
+ * use the darker step here and propose adding it to tokens.css (TAX-020 owner).
  */
-#app .text-ink-blue-7 {
-  color: var(--ink-blue-8);
-}
-#app .text-ink-amber-7 {
-  color: var(--ink-amber-8);
-}
-#app [data-slot='mobile-nav-item'] .text-ink-gray-5,
-#app .portal-breadcrumbs .text-ink-gray-5 {
-  color: var(--ink-gray-6);
-}
 #app [data-slot='error'] {
   color: var(--ink-red-8);
 }

@@ -45,7 +45,7 @@ function retry() {
 
 <template>
   <FrappeUIProvider>
-    <a href="#main" class="skip-link">Skip to main content</a>
+    <a href="#main" class="vati-skip-link">Skip to main content</a>
 
     <main
       v-if="state.status === 'idle' || state.status === 'loading'"
@@ -143,19 +143,3 @@ function retry() {
     </MobileShell>
   </FrappeUIProvider>
 </template>
-
-<style>
-.skip-link {
-  position: absolute;
-  left: 8px;
-  top: -48px;
-  z-index: 50;
-  padding: 8px 12px;
-  border-radius: 6px;
-  background: #fff;
-  color: #1d4ed8;
-}
-.skip-link:focus {
-  top: 8px;
-}
-</style>

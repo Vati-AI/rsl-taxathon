@@ -1,4 +1,4 @@
-import { call } from 'frappe-ui';
+import { call } from './frappe-call';
 import type { FixtureEnvelope, PortalSession, Submission } from './types';
 
 export type PortalErrorKind = 'unauthenticated' | 'denied' | 'not_found' | 'unavailable';

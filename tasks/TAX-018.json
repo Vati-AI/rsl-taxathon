@@ -5,12 +5,12 @@
   "owner": "Keletso",
   "area": "integration",
   "phase": "foundation",
-  "status": "READY",
+  "status": "DONE",
   "priority": "P0",
   "depends_on": [],
-  "claimed_by": null,
-  "branch": null,
-  "pr": null,
+  "claimed_by": "keletso-claude-code-1",
+  "branch": "task/TAX-018",
+  "pr": "https://github.com/Vati-AI/rsl-taxathon/pull/88",
   "scope": "Publish OpenAPI schemas for cases, evidence, entities, findings, investigate and request-evidence; include case mapping, tenant context, idempotency and errors",
   "inputs": [
     "PROJECT.md",
@@ -24,15 +24,15 @@
   "acceptance": [
     {
       "text": "Publish OpenAPI schemas for cases, evidence, entities, findings, investigate and request-evidence; include case mapping, tenant context, idempotency and errors",
-      "done": false
+      "done": true
     },
     {
       "text": "Validate schema and five example request/response pairs; reject missing tenant and case IDs",
-      "done": false
+      "done": true
     },
     {
       "text": "Record relevant tests and evidence, update task status and open a human-review PR",
-      "done": false
+      "done": true
     }
   ],
   "verification": "Validate schema and five example request/response pairs; reject missing tenant and case IDs",
@@ -42,6 +42,40 @@
     "update-project-task",
     "finish-task"
   ],
-  "evidence": [],
-  "notes": []
+  "evidence": [
+    {
+      "criterion": 1,
+      "text": "integration/api/openapi.json (OpenAPI 3.1.1) defines 8 /api/v1 operations: createCase, getCase, startInvestigation, listEvidence, registerDocument, listEntities, listFindings, requestEvidence; required X-Vati-Tenant-ID on every operation, service_links case mapping with sync state, Idempotency-Key on every mutation plus expected_version on state updates, ErrorResponse on all 4xx/5xx, EventEnvelope schema. Observed: python3 integration/api/contract.py -> 'Vati OpenAPI contract valid: 16 HTTP examples, 2 events' (lint_spec found 0 errors). Decisions recorded in docs/decisions/ADR-003-vati-api-contract.md."
+    },
+    {
+      "criterion": 2,
+      "text": "Validated 10 success request/response pairs covering SYN-001..SYN-005 and all 8 operations, plus 6 error contracts (missing tenant 400, empty case_id 400, tenant scope 403, stale version 409, idempotency conflict 409, upstream timeout 503) and 2 events. Observed: python3 -m unittest discover -s tests/contracts -> Ran 25 tests OK, including missing tenant header rejected on every operation (missing_tenant_context), malformed tenant rejected, empty/non-UUID case_id rejected (invalid_case_id), events without tenant_id/case_id rejected. python3 scripts/dev.py check -> Workspace checks passed; python3 scripts/quality.py -> First-party quality checks passed."
+    },
+    {
+      "criterion": 3,
+      "text": "Tests and evidence recorded for criteria 1-2; task.py finish refreshed from origin/main, reran dev.py check and quality.py (both passed), pushed task/TAX-018, opened human-review PR https://github.com/Vati-AI/rsl-taxathon/pull/88 and synced issue #19 to IN_REVIEW. Not merged by the agent."
+    },
+    {
+      "criterion": 2,
+      "text": "Review update: Idempotency-Key reuse with a changed body now 422 idempotency_conflict; in-progress retry 409 idempotency_in_progress (new example 17); checker enforces one status per error code and that ErrorCode matches the mapping. API_STANDARD.md updated to match. Observed: python3 integration/api/contract.py -> 'Vati OpenAPI contract valid: 17 HTTP examples, 2 events'; python3 -m unittest discover -s tests/contracts -> Ran 28 tests OK; dev.py check and quality.py passed."
+    }
+  ],
+  "notes": [
+    {
+      "at": "2026-11-03T12:11:33.352196+00:00",
+      "text": "Claimed by keletso-claude-code-1"
+    },
+    {
+      "at": "2026-11-03T12:20:57.477809+00:00",
+      "text": "Agent finished implementation and opened human review"
+    },
+    {
+      "at": "2026-11-03T12:26:40.781319+00:00",
+      "text": "Owner review: switched mismatched-payload idempotency reuse to 422 (API_STANDARD + contract). Follow-up, not a blocker: standardise development on Node 24 via the repo's .nvmrc (currently 22) and a version manager, without changing machine-wide installs; this machine has Node 23.5."
+    },
+    {
+      "at": "2026-11-03T12:38:38.378530+00:00",
+      "text": "Verified PR #88 merged at 2026-11-03T12:31:59Z (merge commit 330990f); all three acceptance criteria have recorded evidence."
+    }
+  ]
 }

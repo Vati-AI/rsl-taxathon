@@ -15,4 +15,4 @@ Findings distinguish facts, inference, missing/unverified/contradictory evidence
 
 `python3 scripts/dev.py serve` exposes GET /api/health, /api/scenarios and /api/cases on localhost:58080. Each returns `mode: fixture` and `synthetic: true`. GET /api/cases/{id} retrieves a fixture or 404. It has no mutations, authentication or live-service fallback. Use it for UI development only. `/auditor/` and `/taxpayer/` show starter interfaces; they are not completed product flows.
 
-TAX-018 formalizes OpenAPI and real adapter contracts. Tests must verify denied access, duplicate mutations, stale state, missing evidence and upstream timeout in addition to success.
+The versioned contract is [integration/api/openapi.json](../integration/api/openapi.json) with synthetic examples and a dependency-free checker; see [integration/api/README.md](../integration/api/README.md) and [ADR-003](decisions/ADR-003-vati-api-contract.md). Real adapter contracts follow in the service tasks. Tests must verify denied access, duplicate mutations, stale state, missing evidence and upstream timeout in addition to success.

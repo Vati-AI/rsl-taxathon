@@ -2,7 +2,7 @@ import { describe, expect, it, vi } from 'vitest';
 import { classifyError } from './api';
 
 // Pure logic only; avoid loading the whole component library.
-vi.mock('frappe-ui', () => ({ call: vi.fn() }));
+vi.mock('./frappe-call', () => ({ call: vi.fn() }));
 import { formatAmount, formatPeriod, statusDisplay } from './format';
 import { loginUrl, portalPath } from './portal-path';
 import { emptyDraft, normaliseAmount, validateDraft } from './validation';

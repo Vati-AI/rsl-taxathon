@@ -25,16 +25,20 @@ submission is disabled with a visible reason.
 
 ```sh
 npm ci
-npm run build -w @vati/taxpayer-web     # writes vati_tax/public/taxpayer and www/taxpayer.html (ignored)
-npm run test -w @vati/taxpayer-web      # vitest: routing/session/validation/format
-npm run typecheck -w @vati/taxpayer-web # vue-tsc
-npm run dev -w @vati/taxpayer-web       # http://127.0.0.1:58081/taxpayer/ proxying the Frappe site on :58000
+npm run build:taxpayer     # writes vati_tax/public/taxpayer and www/taxpayer.html (ignored)
+npm run test:taxpayer      # vitest: routing/session/validation/format
+npm run typecheck:taxpayer # vue-tsc
+npm run dev:taxpayer       # http://127.0.0.1:58082/taxpayer/ proxying the Frappe site on :58000
 ```
+
+The app follows the auditor app's stack and shared visual contract (ADR-004):
+frappe-ui 1.1.0, `apps/shared/design/tokens.css` and the shared Tailwind preset,
+system font. `npm run check` covers both apps.
 
 With the Frappe developer site running (docs/FRAPPE_DEV.md), build once and open
 http://127.0.0.1:58000/taxpayer. If `/assets/vati_tax/...` returns 404, run
 `bench build --app vati_tax` in the container once to link the app's public
 folder.
 
-`fixture-starter.html` is the dependency-free page that `scripts/dev.py serve`
-still shows at http://127.0.0.1:58080/taxpayer/.
+`starter.html` is the dependency-free page that `scripts/dev.py serve` still
+shows at http://127.0.0.1:58080/taxpayer/.

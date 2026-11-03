@@ -1,0 +1,37 @@
+{
+  "name": "error_stale_version",
+  "operation_id": "startInvestigation",
+  "scenario": "SYN-002",
+  "synthetic": true,
+  "description": "An investigation request against an outdated case version is rejected; the caller must reload.",
+  "request": {
+    "method": "POST",
+    "path": "/api/v1/cases/40000000-0000-4000-8000-000000000002/investigate",
+    "headers": {
+      "Authorization": "Bearer synthetic-dev-token-not-a-secret",
+      "X-Vati-Tenant-ID": "10000000-0000-4000-8000-000000000001",
+      "X-Correlation-ID": "c0000000-0000-4000-8000-000000000014",
+      "Idempotency-Key": "auditor:investigate:SYN-002:v2"
+    },
+    "body": {
+      "expected_version": 2,
+      "playbook_id": "related_party_review@1"
+    }
+  },
+  "response": {
+    "status": 409,
+    "headers": {
+      "X-Correlation-ID": "c0000000-0000-4000-8000-000000000014"
+    },
+    "body": {
+      "error": {
+        "code": "version_conflict",
+        "message": "The case changed; reload and review the current version.",
+        "retryable": false,
+        "correlation_id": "c0000000-0000-4000-8000-000000000014",
+        "service": "vati",
+        "current_version": 4
+      }
+    }
+  }
+}

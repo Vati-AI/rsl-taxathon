@@ -26,7 +26,8 @@ def read(task_id):
 
 
 def save(task):
-    path(task["id"]).write_text(json.dumps(task, indent=2) + "\n")
+    # Always LF: text mode on Windows would otherwise commit CRLF task files.
+    path(task["id"]).write_text(json.dumps(task, indent=2) + "\n", newline="\n")
 
 
 def note(task, message):

@@ -2,7 +2,19 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { createMemoryHistory } from 'vue-router';
 
 const call = vi.fn();
-vi.mock('frappe-ui', () => ({ call }));
+vi.mock('./lib/frappe-call', () => ({ call }));
+
+// These tests cover the session guard, not page rendering: stub the lazily loaded
+// pages so a route change does not compile the whole component library.
+// vi.mock calls are hoisted above imports, so the shared factory must be hoisted too.
+const { stubPage } = vi.hoisted(() => ({
+  stubPage: () => ({ default: { render: () => null } }),
+}));
+vi.mock('./pages/SubmissionsPage.vue', stubPage);
+vi.mock('./pages/SubmissionPage.vue', stubPage);
+vi.mock('./pages/NewSubmissionPage.vue', stubPage);
+vi.mock('./pages/AccountPage.vue', stubPage);
+vi.mock('./pages/NotFoundPage.vue', stubPage);
 
 const { createPortalRouter } = await import('./router');
 const { logout, resetSession, sessionState } = await import('./lib/session');
