@@ -12,7 +12,7 @@ Open http://127.0.0.1:58000. The local user is `Administrator`; find its generat
 
 The script creates only the `rsl-taxathon-frappe-dev` stack and `taxathon.localhost` site. It pins Frappe v16.54.0 at the revision in `integration/frappe-framework.lock.json`, installs the mounted `backend/vati_tax` package in editable mode, registers the app and runs migrations. Re-running init preserves the existing site and credentials. The start command uses a process lock to avoid duplicate developer servers. Logs are inside the container at `/workspace/bench.log`. Stop this stack with `docker compose -f docker-compose.frappe.yml stop`; no volume deletion is needed.
 
-The bench development image currently uses the vendor's `latest` tag. Framework code is pinned, but the container runtime is not fully immutable; capture a tested image digest before shared deployment. Development mode and the Administrator account are local-only. TAX-019/029/031 cover domain schemas, roles and application behavior before pilot use.
+The bench development image is pinned to the tested digest in docker-compose.frappe.yml. Framework code is also pinned. MariaDB/Redis use version tags; any runtime upgrade needs a smoke test. Development mode and the Administrator account are local-only. TAX-019/029/031 cover domain schemas, roles and application behavior before pilot use.
 
 ## Verified on the setup machine
 

@@ -16,3 +16,6 @@ Commands run, results and relevant screenshots or synthetic evidence. State what
 - [ ] Human area owner requested; agent will not merge
 - [ ] UI changes follow docs/DESIGN_STANDARD.md; screenshots/state/accessibility evidence attached (or explain why not applicable)
 - [ ] Human visual review requested for UI changes; agent has not assumed approval
+- [ ] Shared quality checks pass; material design choices cite official sources/ADR
+- [ ] Branch refreshed from main; conflicts resolved and affected checks rerun
+- [ ] Prototype scope respected; essential access/evidence/human-review controls preserved

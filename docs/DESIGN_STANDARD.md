@@ -4,7 +4,7 @@ User direction: both interfaces should feel like polished Frappe applications. T
 
 ## Reference and components
 
-Use the official [Frappe UI desktop and component examples](https://ui.frappe.io/) as the visual reference (reviewed 2026-11-03). Prefer supported Frappe UI components when compatible with the chosen frontend stack; verify and pin the package version before adoption. Native Frappe pages should reuse framework form/list patterns. A custom portal does not inherit the Desk appearance automatically. Do not switch frameworks merely to imitate a screenshot: record the component choice in TAX-020/021 and reuse one shared visual contract.
+Use the official [Frappe UI desktop and component examples](https://ui.frappe.io/) as the visual reference (reviewed 2026-11-03). Use Vue 3/TypeScript and supported Frappe UI components for custom screens per ADR-002; verify and pin the package version before adoption. Native Frappe pages should reuse framework form/list patterns. A custom portal does not inherit the Desk appearance automatically. Do not switch frameworks merely to imitate a screenshot: record the component choice in TAX-020/021 and reuse one shared visual contract.
 
 Leseli leads the shared component showcase in TAX-020; Kananelo contributes taxpayer forms and validates the same contract in TAX-021. Both can start independently from the defaults below. Jane owns visual/accessibility checks in TAX-023 and subsequent UI QA. Shared-file changes must be coordinated through a focused PR; consuming screens reuse those components and tokens.
 

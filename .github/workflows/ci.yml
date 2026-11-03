@@ -18,3 +18,29 @@ jobs:
       - run: docker compose config --quiet
       - run: docker compose -f docker-compose.frappe.yml config --quiet
       - run: docker compose -f docker-compose.docling.yml config --quiet
+  quality:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: python3 -m venv .venv-dev
+      - run: .venv-dev/bin/python -m pip install -r requirements-dev.lock
+      - run: npm ci
+      - run: python3 scripts/quality.py
+  ai-smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - run: python -m pip install -r ai/requirements.lock
+      - run: python ai/smoke.py
+        env:
+          LANGSMITH_TRACING: 'false'

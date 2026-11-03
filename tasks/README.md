@@ -69,3 +69,5 @@ Human owner = accountability. AI agent = implementer recorded in `claimed_by`. T
 | [TAX-080](TAX-080.json) | Gupta | future | Additional tax-domain playbook extension design | TAX-061, TAX-070 |
 | [TAX-081](TAX-081.json) | Yellow | expansion | Pilot operational acceptance and performance baseline | TAX-058, TAX-060, TAX-063 |
 | [TAX-082](TAX-082.json) | Jane | expansion | User onboarding and officer usability validation | TAX-055, TAX-060 |
+
+| [TAX-083](TAX-083.json) | Keletso | foundation | Prototype engineering standards and checks | none |
