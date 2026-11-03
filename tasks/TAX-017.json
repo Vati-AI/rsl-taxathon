@@ -8,8 +8,8 @@
   "day": 1,
   "depends_on": [],
   "claimed_by": "codex",
-  "branch": "chore/TAX-017-setup-handover",
-  "pr": "https://github.com/Vati-AI/rsl-taxathon/pull/17",
+  "branch": "chore/TAX-017-frappe-readiness",
+  "pr": "https://github.com/Vati-AI/rsl-taxathon/pull/73",
   "acceptance": [
     {
       "text": "Align architecture and map supplied proposal to executable phased tasks",
@@ -37,7 +37,8 @@
     {
       "at": "2026-11-03T10:27:28.869697+00:00",
       "text": "Setup verified; awaiting human review. Branch protection and six teammate identities remain external configuration prerequisites."
-    }
+    },
+    "Core workspace merged through PR #17. Final Frappe setup, verified role ownership and branch-specific push fix are under review in PR #73."
   ],
   "kind": "task",
   "phase": "foundation"
