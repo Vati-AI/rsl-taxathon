@@ -94,9 +94,7 @@ function retry() {
             />
           </div>
           <div class="border-t border-outline-gray-1 p-3">
-            <p class="mb-2 break-words text-sm text-ink-gray-6">
-              Signed in as {{ fullName }}
-            </p>
+            <p class="mb-2 break-words text-sm text-ink-gray-6">Signed in as {{ fullName }}</p>
             <Button
               label="Log out"
               icon-left="lucide-log-out"
