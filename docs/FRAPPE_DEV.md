@@ -1,3 +1,25 @@
-# Frappe developer readiness
+# Frappe developer setup
 
-Isolated development containers have been prepared. Framework/site installation is being verified during workspace setup; see the final recorded verification below before assuming the site is available. TAX-019 remains responsible for application/domain installation behavior, not merely starting a shell.
+From the repository root with Docker Compose running:
+
+```sh
+python3 scripts/frappe_dev.py init
+python3 scripts/frappe_dev.py start
+python3 scripts/frappe_dev.py status
+```
+
+Open http://127.0.0.1:58000. The local user is `Administrator`; find its generated password under `FRAPPE_ADMIN_PASSWORD` in your ignored `.env`. Never commit or share that file. Each teammate initializes their own isolated site. Initial installation downloads framework dependencies and builds assets, so allow several minutes.
+
+The script creates only the `rsl-taxathon-frappe-dev` stack and `taxathon.localhost` site. It pins Frappe v16.54.0 at the revision in `integration/frappe-framework.lock.json`, installs the mounted `backend/vati_tax` package in editable mode, registers the app and runs migrations. Re-running init preserves the existing site and credentials. The start command uses a process lock to avoid duplicate developer servers. Logs are inside the container at `/workspace/bench.log`. Stop this stack with `docker compose -f docker-compose.frappe.yml stop`; no volume deletion is needed.
+
+The bench development image currently uses the vendor's `latest` tag. Framework code is pinned, but the container runtime is not fully immutable; capture a tested image digest before shared deployment. Development mode and the Administrator account are local-only. TAX-019/029/031 cover domain schemas, roles and application behavior before pilot use.
+
+## Verified on the setup machine
+
+- Framework initialization, Vati app installation and database migration succeeded; repeating initialization also succeeded without replacing the site.
+- `GET /api/method/ping` returned HTTP 200 with pong.
+- Unauthenticated `GET /api/method/vati_tax.api.health` returned HTTP 403.
+- Local Administrator login and authenticated Vati health returned HTTP 200, explicitly reporting `status: scaffold` and `live_integrations: false`.
+- Site uses separate MariaDB/Redis volumes and loopback ports 58000/59000; existing Vati and Lekuka sites were not reused.
+
+This is a working coding environment, not a completed domain application or a production deployment. The other external-service adapters remain implementation tasks.

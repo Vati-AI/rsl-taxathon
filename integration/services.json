@@ -52,7 +52,8 @@
     "fork_required": false,
     "verified_on": "2026-11-03",
     "deployment_status": "not_connected",
-    "source_status": "locked_source_fetched_on_setup_machine"
+    "source_status": "locked_source_fetched_on_setup_machine",
+    "development_status": "local_site_app_migrated_and_authenticated_health_verified"
   },
   "langgraph": {
     "upstream": "https://github.com/langchain-ai/langgraph",
@@ -63,7 +64,8 @@
     "fork_required": false,
     "verified_on": "2026-11-03",
     "deployment_status": "not_connected",
-    "source_status": "locked_source_fetched_on_setup_machine"
+    "source_status": "locked_source_fetched_on_setup_machine",
+    "development_status": "locked_dependencies_installed_and_interrupt_resume_smoke_passed"
   },
   "followthemoney": {
     "upstream": "https://github.com/opensanctions/followthemoney",

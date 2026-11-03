@@ -39,12 +39,11 @@ PostgreSQL localhost:55433; Redis localhost:56380. Already smoke-tested on the s
 ## Frappe development container
 
 ```sh
-docker compose -f docker-compose.frappe.yml config --quiet
-docker compose -f docker-compose.frappe.yml up -d
-docker compose -f docker-compose.frappe.yml exec frappe bash
+python3 scripts/frappe_dev.py init
+python3 scripts/frappe_dev.py start
 ```
 
-This provides an isolated bench development shell, MariaDB and Redis. It does not yet provision the Frappe framework/site. Follow the pinned vendor development guide to create a version-selected bench, configure database host `mariadb` and Redis hosts `redis-cache`/`redis-queue`, create `taxathon.localhost`, then install `/workspace/vati_tax`. Use the generated local DB password from .env without committing or echoing it. TAX-019 records the framework revision and tested bench/site installation. App ports are loopback 58000/59000. The bench image currently uses the vendor's development latest tag; capture a tested digest before shared/pilot deployment. No existing Vati Frappe sites are reused.
+This provisions the pinned framework, isolated MariaDB/Redis, `taxathon.localhost` site and editable Vati app. Installation, migration, local login and access-controlled health checks passed on the setup machine. Read [FRAPPE_DEV.md](FRAPPE_DEV.md) for credentials, repeat setup, logs and runtime pinning limitations. App ports are loopback 58000/59000. TAX-019 continues with domain application behavior; no existing Vati Frappe sites are reused.
 
 ## Docling
 

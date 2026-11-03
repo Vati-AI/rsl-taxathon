@@ -1,3 +1,9 @@
-# Generated from verified config/team.json; never guess usernames.
+# Role teams have repository write access; maintainer remains a fallback reviewer.
 * @Kellybrackets
-/integration/ @Kellybrackets
+/apps/auditor-web/ @Vati-AI/auditor-frontend @Kellybrackets
+/apps/taxpayer-web/ @Vati-AI/taxpayer-frontend @Kellybrackets
+/backend/ @Vati-AI/backend @Kellybrackets
+/ai/ @Vati-AI/ai @Kellybrackets
+/tests/frontend/ @Vati-AI/frontend-qa @Kellybrackets
+/tests/ai/ @Vati-AI/ai-data-qa @Kellybrackets
+/integration/ @Vati-AI/integration @Kellybrackets

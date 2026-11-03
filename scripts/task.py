@@ -121,7 +121,7 @@ def finish(args):
     prs=json.loads(subprocess.check_output(['gh','pr','list','--repo',config['repository'],'--head',branch,'--state','open','--json','url'],text=True))
     url=prs[0]['url'] if prs else subprocess.check_output(['gh','pr','create','--repo',config['repository'],'--base','main','--head',branch,'--title',t['id']+': '+t['title'],'--body-file',str(body)],text=True).strip()
     t.update(status='IN_REVIEW',pr=url);note(t,'Agent finished implementation and opened human review');save(t)
-    git('add','tasks/'+args.id+'.json');git('commit','-m','chore('+args.id+'): record review PR');git('push')
+    git('add','tasks/'+args.id+'.json');git('commit','-m','chore('+args.id+'): record review PR');git('push','origin',branch)
     sync_task(args.id,optional=True)
     print('Human review required: '+url)
 

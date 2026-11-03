@@ -40,5 +40,7 @@
     "finish-task"
   ],
   "evidence": [],
-  "notes": []
+  "notes": [
+    "TAX-017 supplies the pinned developer bench/site and installed app scaffold. Reuse scripts/frappe_dev.py and docs/FRAPPE_DEV.md; this task still owns a fresh-site installation without manual database edits and its repeat-migration acceptance evidence."
+  ]
 }
