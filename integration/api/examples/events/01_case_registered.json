@@ -1,0 +1,15 @@
+{
+  "schema_version": "1",
+  "event_id": "e0000000-0000-4000-8000-000000000001",
+  "tenant_id": "10000000-0000-4000-8000-000000000001",
+  "case_id": "40000000-0000-4000-8000-000000000001",
+  "correlation_id": "c0000000-0000-4000-8000-000000000001",
+  "type": "case.registered",
+  "occurred_at": "2026-11-03T10:00:00Z",
+  "idempotency_key": "10000000-0000-4000-8000-000000000001:frappe:VT-SUB-0001:submit:v1",
+  "source_service": "vati",
+  "payload": {
+    "submission_id": "30000000-0000-4000-8000-000000000001",
+    "frappe_submission_ref": "VT-SUB-0001"
+  }
+}

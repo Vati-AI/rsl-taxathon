@@ -1,0 +1,31 @@
+{
+  "name": "error_tenant_scope_denied",
+  "operation_id": "getCase",
+  "scenario": "SYN-001",
+  "synthetic": true,
+  "description": "A well-formed request naming a tenant outside the principal's scope is denied without revealing whether the case exists.",
+  "request": {
+    "method": "GET",
+    "path": "/api/v1/cases/40000000-0000-4000-8000-000000000001",
+    "headers": {
+      "Authorization": "Bearer synthetic-dev-token-not-a-secret",
+      "X-Vati-Tenant-ID": "10000000-0000-4000-8000-000000000002",
+      "X-Correlation-ID": "c0000000-0000-4000-8000-000000000013"
+    }
+  },
+  "response": {
+    "status": 403,
+    "headers": {
+      "X-Correlation-ID": "c0000000-0000-4000-8000-000000000013"
+    },
+    "body": {
+      "error": {
+        "code": "tenant_scope_denied",
+        "message": "The requested tenant is outside your permitted scope.",
+        "retryable": false,
+        "correlation_id": "c0000000-0000-4000-8000-000000000013",
+        "service": "vati"
+      }
+    }
+  }
+}
