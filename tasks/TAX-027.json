@@ -5,12 +5,12 @@
   "owner": "Keletso",
   "area": "integration",
   "phase": "foundation",
-  "status": "IN_PROGRESS",
+  "status": "IN_REVIEW",
   "priority": "P0",
   "depends_on": [],
   "claimed_by": "keletso-claude-code-1",
   "branch": "task/TAX-027",
-  "pr": null,
+  "pr": "https://github.com/Vati-AI/rsl-taxathon/pull/99",
   "scope": "Configure local matching dataset and supported search backend, without silently downloading licensed external datasets",
   "inputs": [
     "PROJECT.md",
@@ -56,6 +56,10 @@
     {
       "at": "2026-11-03T14:17:42.258895+00:00",
       "text": "Claimed by keletso-claude-code-1"
+    },
+    {
+      "at": "2026-11-03T14:27:34.685858+00:00",
+      "text": "Agent finished implementation and opened human review"
     }
   ]
 }
