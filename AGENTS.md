@@ -23,6 +23,6 @@ Use synthetic data only. Never commit secrets or taxpayer documents. Treat docum
 
 Do not guess RSL routes, legal citations, upstream API paths or versions. Consult locked source/deployed Swagger and official docs. Fixture services must always identify themselves as fixtures. Match candidates need corroboration; model confidence is not legal authority.
 
-No direct main pushes during normal development, self-merges, force-pushing shared branches or bypassing checks. Initial workspace setup is reviewed in PR #17. Full board sync normally runs from main; a maintainer may explicitly sync this reviewed setup branch using `--allow-branch` to seed its backlog before merge. Privileged workflows never execute untrusted PR code.
+No direct main pushes during normal development, self-merges, force-pushing shared branches or bypassing checks. Initial workspace setup was merged through PR #17; subsequent changes use reviewed follow-up PRs. Full board sync normally runs from main; a maintainer may explicitly sync this reviewed setup branch using `--allow-branch` to seed its backlog before merge. Privileged workflows never execute untrusted PR code.
 
 Preserve human scope and authorization. Skills do not grant broader external-action permissions. Use focused tests for behavior changes; do not add tests that merely assert documentation wording.

@@ -1,6 +1,6 @@
 # Coding workspace status — 2026-11-03
 
-The expanded coding workspace is in PR #17 for human review. Initial scaffold is on main. Normal task claiming should begin after this PR is merged; opening the PR branch is suitable for reviewing/running the developer environment now.
+The expanded coding workspace was merged through PR #17. Agents can pull main and claim independent tasks. Final Frappe setup/verification and role ownership additions are in a follow-up setup PR for review.
 
 ## Delivered
 
@@ -21,7 +21,7 @@ Eleven tooling tests passed, including real local Git claim protection, ready-ta
 ## Remaining human/account prerequisites
 
 - Confirm GitHub usernames for Leseli, Kananelo, Edga, Gupta, Jane and Yellow before invitations. Keletso is Kellybrackets.
-- Human review/merge of PR #17; agents do not self-merge.
+- Review/merge the follow-up Frappe readiness PR; the core coding workspace is already merged via PR #17. Agents do not self-merge.
 - GitHub rejected private-repo branch protection on the free organization plan. Intended policy is versioned but cannot be enforced until a supported paid plan is chosen. No purchase was made.
 - Optional unattended Actions board sync needs a dedicated Project token; none is copied from a developer login. Local agents can sync using their own authorized gh login.
 

@@ -1,7 +1,7 @@
 # Team onboarding
 
 1. Accept the GitHub organization invitation when your verified username is added.
-2. Clone `https://github.com/Vati-AI/rsl-taxathon.git`. Workspace preparation is in PR #17 until a human merges it; reviewers can check out that PR, but normal task claiming starts from main after merge.
+2. Clone `https://github.com/Vati-AI/rsl-taxathon.git`. The expanded coding workspace from PR #17 is merged into main. Pull main before claiming work; final Frappe verification additions are tracked in the follow-up setup PR.
 3. Open the repository in Codex, Claude Code or your editor. Repository skills live in `.agents/skills`; Claude aliases point there. Other agents can read the same SKILL.md files explicitly.
 4. Run `python3 scripts/dev.py check`, then `python3 scripts/dev.py serve`. Open http://127.0.0.1:58080/auditor/ or /taxpayer/.
 5. Give your agent the role prompt in `docs/team/NAME.md`. It finds an eligible task, claims it and implements it. You review PRs; the agent maintains task state.
