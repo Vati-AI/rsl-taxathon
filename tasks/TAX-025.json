@@ -24,11 +24,11 @@
   "acceptance": [
     {
       "text": "Start the pinned Jube stack with generated credentials and isolated ports; record model API and case API from deployed Swagger",
-      "done": false
+      "done": true
     },
     {
       "text": "Check health, authenticate and retrieve API specification; record version and resource use without secrets",
-      "done": false
+      "done": true
     },
     {
       "text": "Record relevant tests and evidence, update task status and open a human-review PR",
@@ -42,7 +42,16 @@
     "update-project-task",
     "finish-task"
   ],
-  "evidence": [],
+  "evidence": [
+    {
+      "criterion": 1,
+      "text": "Started pinned Jube (source 01c4afdbcdb186cc36b128ed79283d544cfb9ec9, matches upstreams.lock.json) via python3 scripts/jube_dev.py up: isolated project rsl-taxathon-jube, generated secrets in ignored .local/jube.env (mode 600), only Jube published on 127.0.0.1:55501, no docker.sock/R/OTel sidecars, sanctions loader off. Model API from deployed Swagger: POST /api/Invoke/EntityAnalysisModel/{guid} (+ /{async}, GET Callback/{guid}); case API: GET/POST/PUT /api/Case/, GET /api/Case/{id}, POST /api/Case/CreateFromCaseKeyValue, CaseNote, CaseFile, CaseWorkflow routes. Recorded in integration/jube/README.md."
+    },
+    {
+      "criterion": 2,
+      "text": "Observed via python3 scripts/jube_dev.py smoke (run twice): /api/ready 200 after ~290 s first start, container healthy; wrong password -> 401; generated-password login ok (first run changed the default Administrator password, second run logged in directly); unauthenticated GET /api/Case/ -> 401; Swagger OpenAPI 3.0.1 'Jube.App.Api' document v1, 704 paths, schemes Bearer+ApiKey, normalized spec sha256 521a8398c4c5c95e37071931862254a09f8ba599dffba7a355f30534228f0f7e. Resources idle: Jube 1.11GiB/2GiB, Postgres 264MiB/768MiB, Redis 7MiB/256MiB. Image digests recorded. No secrets in repository (staged diff scanned). tests/tooling/test_jube_dev.py 5 tests OK; dev.py check and quality.py passed."
+    }
+  ],
   "notes": [
     {
       "at": "2026-11-03T12:39:17.302950+00:00",
