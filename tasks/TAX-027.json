@@ -24,11 +24,11 @@
   "acceptance": [
     {
       "text": "Configure local matching dataset and supported search backend, without silently downloading licensed external datasets",
-      "done": false
+      "done": true
     },
     {
       "text": "Match known aliases and return two ambiguous candidates with dataset version",
-      "done": false
+      "done": true
     },
     {
       "text": "Record relevant tests and evidence, update task status and open a human-review PR",
@@ -42,7 +42,16 @@
     "update-project-task",
     "finish-task"
   ],
-  "evidence": [],
+  "evidence": [
+    {
+      "criterion": 1,
+      "text": "Configured local synthetic dataset vati_synthetic (integration/yente/data/vati_synthetic.ftm.json, 5 synthetic FtM entities) via manifest with catalogs: [] and a local path dataset; supported backend Elasticsearch 9.4.2 (version pinned by upstream compose) with yente 5.5.0 (= locked source 6580a2a), both digest-pinned, project rsl-taxathon-yente, yente on 127.0.0.1:55800. scripts/yente_dev.py up refuses manifests containing URLs, entities_url or tokens. Observed /catalog lists only vati_synthetic v2026110301; app logs show catalog=None, 'Indexed 5 entities' and no requests to data/delivery.opensanctions."
+    },
+    {
+      "criterion": 2,
+      "text": "Observed via python3 scripts/yente_dev.py smoke: alias 'SBR Trading' -> top result vati-syn-co-border-retail score 1.000 match=true; 'Synthetic Highland Imports' -> two ambiguous candidates vati-syn-co-highland-imports 0.943 and vati-syn-co-highland-import-services 0.880 (both match=true) from dataset vati_synthetic version 2026110301; unrelated name no matches; /match/opensanctions 404; /updatez without token 403; healthz/readyz 200. tests/tooling/test_yente_dev.py 6 tests OK; dev.py check and quality.py passed."
+    }
+  ],
   "notes": [
     {
       "at": "2026-11-03T14:17:42.258895+00:00",
