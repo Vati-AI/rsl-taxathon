@@ -8,8 +8,8 @@
   "day": 1,
   "depends_on": [],
   "claimed_by": "codex",
-  "branch": "chore/TAX-017-frappe-readiness",
-  "pr": "https://github.com/Vati-AI/rsl-taxathon/pull/73",
+  "branch": "chore/TAX-017-frontend-design",
+  "pr": "https://github.com/Vati-AI/rsl-taxathon/pull/85",
   "acceptance": [
     {
       "text": "Align architecture and map supplied proposal to executable phased tasks",
@@ -30,7 +30,8 @@
     "Six local tooling tests passed; PostgreSQL SELECT 1 and Redis PING succeeded on loopback ports.",
     "Expanded requirements map and 65 implementation tasks TAX-018\u2013082; six validated project skills and seven role prompts.",
     "Eleven developer tooling tests passed; all seven upstream revisions checked; model-free LangGraph interrupt/resume smoke passed.",
-    "Pinned isolated Frappe site and editable Vati app installed and migrated; HTTP ping/login/authenticated health 200; unauthenticated app health 403."
+    "Pinned isolated Frappe site and editable Vati app installed and migrated; HTTP ping/login/authenticated health 200; unauthenticated app health 403.",
+    "Design standard linked from all 14 frontend/QA tasks, role prompts, agent instructions and PR template; task validation passes."
   ],
   "notes": [
     "Human review required. Product feature tasks remain unstarted.",
@@ -38,7 +39,8 @@
       "at": "2026-11-03T10:27:28.869697+00:00",
       "text": "Setup verified; awaiting human review. Branch protection and six teammate identities remain external configuration prerequisites."
     },
-    "Core workspace merged through PR #17. Final Frappe setup, verified role ownership and branch-specific push fix are under review in PR #73."
+    "Core workspace merged through PR #17. Final Frappe setup, verified role ownership and branch-specific push fix are under review in PR #73.",
+    "PR #73 merged. User-requested Frappe-inspired frontend design requirements are prepared in follow-up PR #85; implementation and human visual approval remain in frontend tasks."
   ],
   "kind": "task",
   "phase": "foundation"
