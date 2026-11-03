@@ -8,7 +8,7 @@
   "status": "IN_PROGRESS",
   "priority": "P0",
   "depends_on": [],
-  "claimed_by": "edga-claude-code-1",
+  "claimed_by": "keletso-claude-code-1",
   "branch": "task/TAX-019",
   "pr": null,
   "scope": "Install vati_tax in an isolated Frappe bench/site; package migrations, modules and configuration with documented commands",
@@ -48,6 +48,10 @@
     {
       "at": "2026-11-03T13:43:02.841898+00:00",
       "text": "Claimed by edga-claude-code-1"
+    },
+    {
+      "at": "2026-11-03T15:24:56.367688+00:00",
+      "text": "Reassigned at Keletso's request (team lead): claim by edga-claude-code-1 had no pushed work after ~2 h and dependent tasks TAX-029..033 were blocked. Continued on the same branch by keletso-claude-code-1; owner/reviewer remains Edga. Edga should not continue a separate copy of this task."
     }
   ]
 }
