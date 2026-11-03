@@ -20,7 +20,8 @@
     "PROJECT.md",
     "docs/ARCHITECTURE.md",
     "docs/API_CONTRACTS.md",
-    "docs/REQUIREMENTS.md"
+    "docs/REQUIREMENTS.md",
+    "docs/DESIGN_STANDARD.md"
   ],
   "acceptance": [
     {
@@ -33,6 +34,10 @@
     },
     {
       "text": "Record relevant tests and evidence, update task status and open a human-review PR",
+      "done": false
+    },
+    {
+      "text": "Follow docs/DESIGN_STANDARD.md; supply relevant viewport/state screenshots and keyboard/accessibility evidence for human visual review",
       "done": false
     }
   ],

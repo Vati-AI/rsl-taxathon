@@ -11,12 +11,13 @@
   "claimed_by": null,
   "branch": null,
   "pr": null,
-  "scope": "Set up browser fixtures, role session mocks and viewport/keyboard test matrix for both frontends",
+  "scope": "Set up browser fixtures, role session mocks and viewport/keyboard test matrix for both frontends; prepare visual checks at 1440/1024/390px and capture screenshot baselines only after human acceptance",
   "inputs": [
     "PROJECT.md",
     "docs/ARCHITECTURE.md",
     "docs/API_CONTRACTS.md",
-    "docs/REQUIREMENTS.md"
+    "docs/REQUIREMENTS.md",
+    "docs/DESIGN_STANDARD.md"
   ],
   "acceptance": [
     {
@@ -29,6 +30,10 @@
     },
     {
       "text": "Record relevant tests and evidence, update task status and open a human-review PR",
+      "done": false
+    },
+    {
+      "text": "Follow docs/DESIGN_STANDARD.md; supply relevant viewport/state screenshots and keyboard/accessibility evidence for human visual review",
       "done": false
     }
   ],

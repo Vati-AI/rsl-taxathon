@@ -26,3 +26,7 @@ Do not guess RSL routes, legal citations, upstream API paths or versions. Consul
 No direct main pushes during normal development, self-merges, force-pushing shared branches or bypassing checks. Initial workspace setup was merged through PR #17; subsequent changes use reviewed follow-up PRs. Full board sync normally runs from main; a maintainer may explicitly sync this reviewed setup branch using `--allow-branch` to seed its backlog before merge. Privileged workflows never execute untrusted PR code.
 
 Preserve human scope and authorization. Skills do not grant broader external-action permissions. Use focused tests for behavior changes; do not add tests that merely assert documentation wording.
+
+## Frontend visual quality
+
+Every UI change must follow docs/DESIGN_STANDARD.md. Reuse the shared Frappe-inspired component/token contract, supply viewport/state screenshots and record accessibility checks. First-screen baselines and later deviations need human visual review; passing functional tests alone does not establish visual approval.
