@@ -7,7 +7,7 @@ defineProps<{ title: string; description?: string }>();
   <header class="mb-6 flex flex-wrap items-start justify-between gap-4">
     <div class="min-w-0">
       <slot name="breadcrumbs" />
-      <h1 class="text-2xl font-semibold text-ink-gray-9">{{ title }}</h1>
+      <h1 id="page-title" class="text-2xl font-semibold text-ink-gray-9">{{ title }}</h1>
       <p v-if="description" class="mt-1 text-base text-ink-gray-6">{{ description }}</p>
     </div>
     <div class="flex shrink-0 gap-2">

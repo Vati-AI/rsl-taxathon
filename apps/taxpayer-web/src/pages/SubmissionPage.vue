@@ -72,7 +72,7 @@ const stepIcon = {
       <PortalHeader :title="`${item.tax_type} · ${formatPeriod(item.period)}`">
         <template #breadcrumbs>
           <Breadcrumbs
-            class="mb-2"
+            class="portal-breadcrumbs mb-2"
             :items="[
               { label: 'Submissions', route: { name: 'submissions' } },
               { label: item.reference, route: { name: 'submission', params: { id: item.id } } },
@@ -124,7 +124,7 @@ const stepIcon = {
                 class="mt-1 size-4 shrink-0"
                 :class="[
                   stepIcon[step.state],
-                  step.state === 'upcoming' ? 'text-ink-gray-4' : 'text-ink-blue-3',
+                  step.state === 'upcoming' ? 'text-ink-gray-6' : 'text-ink-blue-8',
                 ]"
               />
               <div>

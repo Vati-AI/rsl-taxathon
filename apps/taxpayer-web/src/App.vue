@@ -13,12 +13,20 @@ import {
   SidebarItem,
 } from 'frappe-ui';
 import { computed, ref } from 'vue';
-import { RouterView } from 'vue-router';
+import { RouterView, useRoute } from 'vue-router';
 import FixtureNotice from './components/FixtureNotice.vue';
 import { logout, sessionState } from './lib/session';
 import { useDesktop } from './lib/use-desktop';
 
 const desktop = useDesktop();
+const route = useRoute();
+// Highlight the owning section, so a submission's status page keeps "Submissions" active.
+const section = computed(() => {
+  if (route.name === 'submissions' || route.name === 'submission') return 'submissions';
+  if (route.name === 'new-submission') return 'new';
+  if (route.name === 'account') return 'account';
+  return null;
+});
 const state = computed(() => sessionState.value);
 const fullName = computed(() =>
   state.value.status === 'ready' ? state.value.session.full_name : '',
@@ -39,13 +47,14 @@ function retry() {
   <FrappeUIProvider>
     <a href="#main" class="skip-link">Skip to main content</a>
 
-    <div
+    <main
       v-if="state.status === 'idle' || state.status === 'loading'"
+      id="main"
       class="grid min-h-screen place-items-center"
       role="status"
     >
       <LoadingText text="Loading your portal…" />
-    </div>
+    </main>
 
     <main
       v-else-if="state.status === 'error'"
@@ -69,13 +78,20 @@ function retry() {
               label="Submissions"
               icon="lucide-file-text"
               :route="{ name: 'submissions' }"
+              :active="section === 'submissions'"
             />
             <SidebarItem
               label="New submission"
               icon="lucide-file-plus"
               :route="{ name: 'new-submission' }"
+              :active="section === 'new'"
             />
-            <SidebarItem label="Account" icon="lucide-user" :route="{ name: 'account' }" />
+            <SidebarItem
+              label="Account"
+              icon="lucide-user"
+              :route="{ name: 'account' }"
+              :active="section === 'account'"
+            />
           </div>
           <div class="border-t border-outline-gray-1 p-3">
             <p class="mb-2 truncate text-sm text-ink-gray-6" :title="fullName">
@@ -91,26 +107,37 @@ function retry() {
           </div>
         </Sidebar>
       </template>
-      <div id="main" class="taxpayer-page mx-auto w-full max-w-4xl px-6 py-6">
+      <main id="main" class="taxpayer-page mx-auto w-full max-w-4xl px-6 py-6">
         <FixtureNotice />
         <RouterView />
-      </div>
+      </main>
     </DesktopShell>
 
     <MobileShell v-else>
-      <div id="main" class="taxpayer-page px-4 py-4">
+      <main id="main" class="taxpayer-page px-4 py-4">
         <FixtureNotice />
         <RouterView />
-      </div>
+      </main>
       <template #nav>
         <MobileNav aria-label="Taxpayer portal">
           <MobileNavItem
             label="Submissions"
             icon="lucide-file-text"
             :route="{ name: 'submissions' }"
+            :active="section === 'submissions'"
           />
-          <MobileNavItem label="New" icon="lucide-file-plus" :route="{ name: 'new-submission' }" />
-          <MobileNavItem label="Account" icon="lucide-user" :route="{ name: 'account' }" />
+          <MobileNavItem
+            label="New"
+            icon="lucide-file-plus"
+            :route="{ name: 'new-submission' }"
+            :active="section === 'new'"
+          />
+          <MobileNavItem
+            label="Account"
+            icon="lucide-user"
+            :route="{ name: 'account' }"
+            :active="section === 'account'"
+          />
         </MobileNav>
       </template>
     </MobileShell>
