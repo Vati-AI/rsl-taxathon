@@ -20,10 +20,41 @@
     { "name": "entities" },
     { "name": "findings" },
     { "name": "investigations" },
-    { "name": "evidence-requests" }
+    { "name": "evidence-requests" },
+    { "name": "taxpayers" }
   ],
   "paths": {
     "/api/v1/cases": {
+      "get": {
+        "operationId": "listCases",
+        "tags": ["cases"],
+        "summary": "List case projections visible to the caller, such as the officer's assigned queue.",
+        "description": "Returns only cases inside the selected tenant that the authenticated principal may see (TAX-029). assigned_to=me resolves the officer from the principal, never from client input. Filters narrow the visible set; they never widen it. Each case carries its selection reasons and a taxpayer summary so a queue renders without one request per row.",
+        "parameters": [
+          { "$ref": "#/components/parameters/TenantHeader" },
+          { "$ref": "#/components/parameters/CorrelationIdHeader" },
+          { "$ref": "#/components/parameters/AssignedToQuery" },
+          { "$ref": "#/components/parameters/CaseStatusQuery" },
+          { "$ref": "#/components/parameters/RefundLaneQuery" },
+          { "$ref": "#/components/parameters/LimitQuery" },
+          { "$ref": "#/components/parameters/CursorQuery" }
+        ],
+        "responses": {
+          "200": {
+            "description": "Case page; an empty page is a valid, non-error result.",
+            "headers": { "X-Correlation-ID": { "$ref": "#/components/headers/CorrelationId" } },
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/CaseList" } }
+            }
+          },
+          "400": { "$ref": "#/components/responses/BadRequest" },
+          "401": { "$ref": "#/components/responses/Unauthenticated" },
+          "403": { "$ref": "#/components/responses/Forbidden" },
+          "404": { "$ref": "#/components/responses/NotFound" },
+          "429": { "$ref": "#/components/responses/RateLimited" },
+          "503": { "$ref": "#/components/responses/DependencyUnavailable" }
+        }
+      },
       "post": {
         "operationId": "createCase",
         "tags": ["cases"],
@@ -308,6 +339,34 @@
           "503": { "$ref": "#/components/responses/DependencyUnavailable" }
         }
       }
+    },
+    "/api/v1/taxpayers/{taxpayer_id}": {
+      "get": {
+        "operationId": "getTaxpayer",
+        "tags": ["taxpayers"],
+        "summary": "Read the taxpayer context an officer needs to review a case.",
+        "description": "Read-only projection of the Frappe taxpayer record (Frappe is the authority), limited to review context: identifiers are masked and no submission documents are returned. Visible only when the principal may see at least one of the taxpayer's cases in the selected tenant; otherwise 404, so existence is not disclosed.",
+        "parameters": [
+          { "$ref": "#/components/parameters/TenantHeader" },
+          { "$ref": "#/components/parameters/CorrelationIdHeader" },
+          { "$ref": "#/components/parameters/TaxpayerIdPath" }
+        ],
+        "responses": {
+          "200": {
+            "description": "Taxpayer profile.",
+            "headers": { "X-Correlation-ID": { "$ref": "#/components/headers/CorrelationId" } },
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/TaxpayerEnvelope" } }
+            }
+          },
+          "400": { "$ref": "#/components/responses/BadRequest" },
+          "401": { "$ref": "#/components/responses/Unauthenticated" },
+          "403": { "$ref": "#/components/responses/Forbidden" },
+          "404": { "$ref": "#/components/responses/NotFound" },
+          "429": { "$ref": "#/components/responses/RateLimited" },
+          "503": { "$ref": "#/components/responses/DependencyUnavailable" }
+        }
+      }
     }
   },
   "components": {
@@ -360,6 +419,34 @@
         "required": false,
         "schema": { "type": "string", "minLength": 1, "maxLength": 512 },
         "description": "Opaque cursor from meta.next_cursor."
+      },
+      "AssignedToQuery": {
+        "name": "assigned_to",
+        "in": "query",
+        "required": false,
+        "schema": { "type": "string", "enum": ["me", "unassigned"] },
+        "description": "me: cases assigned to the authenticated officer (resolved server-side). unassigned: cases without an officer. Omitted: every case the principal may see."
+      },
+      "CaseStatusQuery": {
+        "name": "status",
+        "in": "query",
+        "required": false,
+        "schema": { "$ref": "#/components/schemas/CaseStatus" },
+        "description": "Only cases in this status."
+      },
+      "RefundLaneQuery": {
+        "name": "refund_lane",
+        "in": "query",
+        "required": false,
+        "schema": { "type": "string", "enum": ["fast", "standard", "targeted"] },
+        "description": "Only cases in this refund lane."
+      },
+      "TaxpayerIdPath": {
+        "name": "taxpayer_id",
+        "in": "path",
+        "required": true,
+        "description": "Internal immutable taxpayer UUID. Missing or malformed: 400 invalid_request. Never sufficient for authorisation alone.",
+        "schema": { "$ref": "#/components/schemas/Uuid" }
       }
     },
     "headers": {
@@ -488,12 +575,19 @@
       "Case": {
         "type": "object",
         "additionalProperties": false,
-        "required": ["case_id", "tenant_id", "display_id", "taxpayer_id", "submission_id", "status", "status_authority", "version", "refund_claim", "refund_lane", "assigned_officer_id", "service_links", "created_at", "updated_at", "synthetic"],
+        "required": ["case_id", "tenant_id", "display_id", "taxpayer_id", "taxpayer", "submission_id", "status", "status_authority", "version", "refund_claim", "refund_lane", "assigned_officer_id", "selection_reasons", "service_links", "created_at", "updated_at", "synthetic"],
         "properties": {
           "case_id": { "$ref": "#/components/schemas/Uuid" },
           "tenant_id": { "$ref": "#/components/schemas/Uuid" },
           "display_id": { "type": "string", "pattern": "^[A-Z]{2,5}-[0-9]{3,10}$" },
           "taxpayer_id": { "$ref": "#/components/schemas/Uuid" },
+          "taxpayer": { "$ref": "#/components/schemas/TaxpayerSummary" },
+          "selection_reasons": {
+            "type": "array",
+            "maxItems": 10,
+            "description": "Why the case entered review, in priority order. Empty until risk evaluation has run.",
+            "items": { "$ref": "#/components/schemas/SelectionReason" }
+          },
           "submission_id": { "$ref": "#/components/schemas/Uuid" },
           "status": { "$ref": "#/components/schemas/CaseStatus" },
           "status_authority": { "const": "jube" },
@@ -512,6 +606,75 @@
         "additionalProperties": false,
         "required": ["data"],
         "properties": { "data": { "$ref": "#/components/schemas/Case" } }
+      },
+      "CaseList": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["data", "meta"],
+        "properties": {
+          "data": { "type": "array", "maxItems": 100, "items": { "$ref": "#/components/schemas/Case" } },
+          "meta": { "$ref": "#/components/schemas/PageMeta" }
+        }
+      },
+      "SelectionReason": {
+        "type": "object",
+        "description": "A routing signal explaining why a case was selected for officer review. Never a finding, assessment, accusation or decision.",
+        "additionalProperties": false,
+        "required": ["code", "summary", "source"],
+        "properties": {
+          "code": { "type": "string", "pattern": "^[a-z][a-z0-9_]{2,63}$" },
+          "summary": { "type": "string", "minLength": 1, "maxLength": 280 },
+          "source": { "$ref": "#/components/schemas/ServiceName" }
+        }
+      },
+      "TaxpayerType": {
+        "type": "string",
+        "enum": ["individual", "company", "partnership", "trust", "other"]
+      },
+      "TaxpayerSummary": {
+        "type": "object",
+        "description": "Minimal taxpayer context embedded in a case; taxpayer_id equals the case's taxpayer_id.",
+        "additionalProperties": false,
+        "required": ["taxpayer_id", "display_name", "taxpayer_type"],
+        "properties": {
+          "taxpayer_id": { "$ref": "#/components/schemas/Uuid" },
+          "display_name": { "type": "string", "minLength": 1, "maxLength": 200 },
+          "taxpayer_type": { "$ref": "#/components/schemas/TaxpayerType" }
+        }
+      },
+      "OpenCaseRef": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["case_id", "display_id", "status"],
+        "properties": {
+          "case_id": { "$ref": "#/components/schemas/Uuid" },
+          "display_id": { "type": "string", "pattern": "^[A-Z]{2,5}-[0-9]{3,10}$" },
+          "status": { "$ref": "#/components/schemas/CaseStatus" }
+        }
+      },
+      "TaxpayerProfile": {
+        "type": "object",
+        "description": "Read-only Frappe taxpayer projection for review context. open_cases lists only cases the principal may see.",
+        "additionalProperties": false,
+        "required": ["taxpayer_id", "tenant_id", "display_name", "taxpayer_type", "tin_masked", "registered_on", "sector", "open_cases", "service_links", "synthetic"],
+        "properties": {
+          "taxpayer_id": { "$ref": "#/components/schemas/Uuid" },
+          "tenant_id": { "$ref": "#/components/schemas/Uuid" },
+          "display_name": { "type": "string", "minLength": 1, "maxLength": 200 },
+          "taxpayer_type": { "$ref": "#/components/schemas/TaxpayerType" },
+          "tin_masked": { "type": ["string", "null"], "pattern": "^\\*{4,}[0-9]{2,4}$", "description": "Taxpayer identification number with all but the last digits masked; null when not on record." },
+          "registered_on": { "anyOf": [{ "type": "string", "format": "date" }, { "type": "null" }] },
+          "sector": { "type": ["string", "null"], "maxLength": 120 },
+          "open_cases": { "type": "array", "maxItems": 50, "items": { "$ref": "#/components/schemas/OpenCaseRef" } },
+          "service_links": { "type": "array", "items": { "$ref": "#/components/schemas/ServiceLink" } },
+          "synthetic": { "type": "boolean" }
+        }
+      },
+      "TaxpayerEnvelope": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["data"],
+        "properties": { "data": { "$ref": "#/components/schemas/TaxpayerProfile" } }
       },
       "CreateCaseRequest": {
         "type": "object",

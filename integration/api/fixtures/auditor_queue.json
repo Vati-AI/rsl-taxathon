@@ -1,0 +1,479 @@
+{
+  "description": "Synthetic, contract-shaped fixture data for listCases, getCase and getTaxpayer, served by scripts/dev.py serve. Every record is synthetic. Validated against openapi.json by tests/contracts/test_fixture_api.py.",
+  "synthetic": true,
+  "principal": {
+    "tenant_id": "10000000-0000-4000-8000-000000000001",
+    "officer_id": "80000000-0000-4000-8000-000000000001"
+  },
+  "cases": [
+    {
+      "case_id": "40000000-0000-4000-8000-000000000001",
+      "tenant_id": "10000000-0000-4000-8000-000000000001",
+      "display_id": "SYN-001",
+      "taxpayer_id": "20000000-0000-4000-8000-000000000001",
+      "taxpayer": {
+        "taxpayer_id": "20000000-0000-4000-8000-000000000001",
+        "display_name": "Synthetic Mountain Wholesale",
+        "taxpayer_type": "company"
+      },
+      "submission_id": "30000000-0000-4000-8000-000000000001",
+      "status": "AWAITING_HUMAN",
+      "status_authority": "jube",
+      "version": 5,
+      "refund_claim": { "amount": "15000.00", "currency": "LSL" },
+      "refund_lane": "fast",
+      "assigned_officer_id": "80000000-0000-4000-8000-000000000001",
+      "selection_reasons": [
+        {
+          "code": "refund_above_usual_pattern",
+          "summary": "Refund claim is larger than this taxpayer's previous claims; supporting invoices are on file.",
+          "source": "jube"
+        }
+      ],
+      "service_links": [
+        {
+          "service": "frappe",
+          "external_type": "Tax Submission",
+          "external_id": "VT-SUB-0001",
+          "sync": { "state": "synced", "last_attempt_at": "2026-11-03T10:00:01Z", "error_code": null }
+        },
+        {
+          "service": "jube",
+          "external_type": "case",
+          "external_id": "syn-jube-3001",
+          "sync": { "state": "synced", "last_attempt_at": "2026-11-03T10:00:02Z", "error_code": null }
+        }
+      ],
+      "created_at": "2026-11-03T10:00:00Z",
+      "updated_at": "2026-11-03T11:40:00Z",
+      "synthetic": true
+    },
+    {
+      "case_id": "40000000-0000-4000-8000-000000000002",
+      "tenant_id": "10000000-0000-4000-8000-000000000001",
+      "display_id": "SYN-002",
+      "taxpayer_id": "20000000-0000-4000-8000-000000000002",
+      "taxpayer": {
+        "taxpayer_id": "20000000-0000-4000-8000-000000000002",
+        "display_name": "Synthetic Border Retail",
+        "taxpayer_type": "company"
+      },
+      "submission_id": "30000000-0000-4000-8000-000000000002",
+      "status": "INVESTIGATING",
+      "status_authority": "jube",
+      "version": 4,
+      "refund_claim": { "amount": "25000.00", "currency": "LSL" },
+      "refund_lane": "targeted",
+      "assigned_officer_id": "80000000-0000-4000-8000-000000000001",
+      "selection_reasons": [
+        {
+          "code": "related_party_charges",
+          "summary": "Management fees are paid to a company that shares a director with the taxpayer.",
+          "source": "jube"
+        },
+        {
+          "code": "persistent_reported_losses",
+          "summary": "Losses have been reported for several consecutive periods.",
+          "source": "jube"
+        }
+      ],
+      "service_links": [
+        {
+          "service": "frappe",
+          "external_type": "Tax Submission",
+          "external_id": "VT-SUB-0002",
+          "sync": { "state": "synced", "last_attempt_at": "2026-11-03T10:05:01Z", "error_code": null }
+        },
+        {
+          "service": "jube",
+          "external_type": "case",
+          "external_id": "syn-jube-3002",
+          "sync": { "state": "synced", "last_attempt_at": "2026-11-03T10:05:02Z", "error_code": null }
+        },
+        {
+          "service": "langgraph",
+          "external_type": "investigation_run",
+          "external_id": "syn-run-0002",
+          "sync": { "state": "synced", "last_attempt_at": "2026-11-03T12:00:00Z", "error_code": null }
+        }
+      ],
+      "created_at": "2026-11-03T10:05:00Z",
+      "updated_at": "2026-11-03T12:00:00Z",
+      "synthetic": true
+    },
+    {
+      "case_id": "40000000-0000-4000-8000-000000000003",
+      "tenant_id": "10000000-0000-4000-8000-000000000001",
+      "display_id": "SYN-003",
+      "taxpayer_id": "20000000-0000-4000-8000-000000000003",
+      "taxpayer": {
+        "taxpayer_id": "20000000-0000-4000-8000-000000000003",
+        "display_name": "Synthetic Valley Services",
+        "taxpayer_type": "company"
+      },
+      "submission_id": "30000000-0000-4000-8000-000000000003",
+      "status": "AWAITING_HUMAN",
+      "status_authority": "jube",
+      "version": 6,
+      "refund_claim": { "amount": "0.00", "currency": "LSL" },
+      "refund_lane": null,
+      "assigned_officer_id": "80000000-0000-4000-8000-000000000001",
+      "selection_reasons": [
+        {
+          "code": "worker_classification_ambiguity",
+          "summary": "Regular payments to individuals resemble both employment and consultancy arrangements.",
+          "source": "jube"
+        }
+      ],
+      "service_links": [
+        {
+          "service": "frappe",
+          "external_type": "Tax Submission",
+          "external_id": "VT-SUB-0003",
+          "sync": { "state": "synced", "last_attempt_at": "2026-11-03T10:00:01Z", "error_code": null }
+        },
+        {
+          "service": "jube",
+          "external_type": "case",
+          "external_id": "syn-jube-3003",
+          "sync": { "state": "synced", "last_attempt_at": "2026-11-03T10:00:01Z", "error_code": null }
+        }
+      ],
+      "created_at": "2026-11-03T10:00:00Z",
+      "updated_at": "2026-11-03T12:30:00Z",
+      "synthetic": true
+    },
+    {
+      "case_id": "40000000-0000-4000-8000-000000000004",
+      "tenant_id": "10000000-0000-4000-8000-000000000001",
+      "display_id": "SYN-004",
+      "taxpayer_id": "20000000-0000-4000-8000-000000000004",
+      "taxpayer": {
+        "taxpayer_id": "20000000-0000-4000-8000-000000000004",
+        "display_name": "Synthetic Highland Imports",
+        "taxpayer_type": "company"
+      },
+      "submission_id": "30000000-0000-4000-8000-000000000004",
+      "status": "AWAITING_EVIDENCE",
+      "status_authority": "jube",
+      "version": 7,
+      "refund_claim": { "amount": "5000.00", "currency": "LSL" },
+      "refund_lane": "targeted",
+      "assigned_officer_id": "80000000-0000-4000-8000-000000000001",
+      "selection_reasons": [
+        {
+          "code": "imported_services_evidence_gap",
+          "summary": "Invoices for imported services have no matching VAT or withholding evidence yet.",
+          "source": "docling"
+        }
+      ],
+      "service_links": [
+        {
+          "service": "frappe",
+          "external_type": "Tax Submission",
+          "external_id": "VT-SUB-0004",
+          "sync": { "state": "synced", "last_attempt_at": "2026-11-03T10:10:01Z", "error_code": null }
+        },
+        {
+          "service": "jube",
+          "external_type": "case",
+          "external_id": "syn-jube-3004",
+          "sync": { "state": "synced", "last_attempt_at": "2026-11-03T10:10:02Z", "error_code": null }
+        }
+      ],
+      "created_at": "2026-11-03T10:10:00Z",
+      "updated_at": "2026-11-03T13:15:00Z",
+      "synthetic": true
+    },
+    {
+      "case_id": "40000000-0000-4000-8000-000000000005",
+      "tenant_id": "10000000-0000-4000-8000-000000000001",
+      "display_id": "SYN-005",
+      "taxpayer_id": "20000000-0000-4000-8000-000000000005",
+      "taxpayer": {
+        "taxpayer_id": "20000000-0000-4000-8000-000000000005",
+        "display_name": "Synthetic Plateau Group",
+        "taxpayer_type": "partnership"
+      },
+      "submission_id": "30000000-0000-4000-8000-000000000005",
+      "status": "AWAITING_HUMAN",
+      "status_authority": "jube",
+      "version": 3,
+      "refund_claim": { "amount": "8000.00", "currency": "LSL" },
+      "refund_lane": "standard",
+      "assigned_officer_id": "80000000-0000-4000-8000-000000000001",
+      "selection_reasons": [
+        {
+          "code": "no_verified_legal_route",
+          "summary": "An economic concern was noted but no verified legal route applies; recorded for policy-gap review.",
+          "source": "langgraph"
+        }
+      ],
+      "service_links": [
+        {
+          "service": "frappe",
+          "external_type": "Tax Submission",
+          "external_id": "VT-SUB-0005",
+          "sync": { "state": "synced", "last_attempt_at": "2026-11-03T10:15:01Z", "error_code": null }
+        },
+        {
+          "service": "jube",
+          "external_type": "case",
+          "external_id": "syn-jube-3005",
+          "sync": { "state": "synced", "last_attempt_at": "2026-11-03T10:15:02Z", "error_code": null }
+        }
+      ],
+      "created_at": "2026-11-03T10:15:00Z",
+      "updated_at": "2026-11-03T12:45:00Z",
+      "synthetic": true
+    },
+    {
+      "case_id": "40000000-0000-4000-8000-000000000006",
+      "tenant_id": "10000000-0000-4000-8000-000000000001",
+      "display_id": "SYN-006",
+      "taxpayer_id": "20000000-0000-4000-8000-000000000006",
+      "taxpayer": {
+        "taxpayer_id": "20000000-0000-4000-8000-000000000006",
+        "display_name": "Synthetic Maloti Highlands Agricultural Cooperative and Rural Transport Services (Proprietary) Limited",
+        "taxpayer_type": "other"
+      },
+      "submission_id": "30000000-0000-4000-8000-000000000006",
+      "status": "FAILED_PROCESSING",
+      "status_authority": "jube",
+      "version": 2,
+      "refund_claim": null,
+      "refund_lane": null,
+      "assigned_officer_id": "80000000-0000-4000-8000-000000000001",
+      "selection_reasons": [],
+      "service_links": [
+        {
+          "service": "frappe",
+          "external_type": "Tax Submission",
+          "external_id": "VT-SUB-0006",
+          "sync": { "state": "synced", "last_attempt_at": "2026-11-03T09:30:01Z", "error_code": null }
+        },
+        {
+          "service": "docling",
+          "external_type": "extraction",
+          "external_id": null,
+          "sync": { "state": "failed", "last_attempt_at": "2026-11-03T09:45:00Z", "error_code": "upstream_timeout" }
+        },
+        {
+          "service": "jube",
+          "external_type": "case",
+          "external_id": "syn-jube-3006",
+          "sync": { "state": "synced", "last_attempt_at": "2026-11-03T09:30:02Z", "error_code": null }
+        }
+      ],
+      "created_at": "2026-11-03T09:30:00Z",
+      "updated_at": "2026-11-03T09:45:00Z",
+      "synthetic": true
+    },
+    {
+      "case_id": "40000000-0000-4000-8000-000000000007",
+      "tenant_id": "10000000-0000-4000-8000-000000000001",
+      "display_id": "SYN-007",
+      "taxpayer_id": "20000000-0000-4000-8000-000000000007",
+      "taxpayer": {
+        "taxpayer_id": "20000000-0000-4000-8000-000000000007",
+        "display_name": "Synthetic Lowlands Transport",
+        "taxpayer_type": "individual"
+      },
+      "submission_id": "30000000-0000-4000-8000-000000000007",
+      "status": "VALIDATING",
+      "status_authority": "jube",
+      "version": 1,
+      "refund_claim": { "amount": "1250.50", "currency": "LSL" },
+      "refund_lane": null,
+      "assigned_officer_id": "80000000-0000-4000-8000-000000000001",
+      "selection_reasons": [],
+      "service_links": [
+        {
+          "service": "frappe",
+          "external_type": "Tax Submission",
+          "external_id": "VT-SUB-0007",
+          "sync": { "state": "synced", "last_attempt_at": "2026-11-03T13:50:01Z", "error_code": null }
+        },
+        {
+          "service": "jube",
+          "external_type": "case",
+          "external_id": null,
+          "sync": { "state": "pending", "last_attempt_at": null, "error_code": null }
+        }
+      ],
+      "created_at": "2026-11-03T13:50:00Z",
+      "updated_at": "2026-11-03T13:50:00Z",
+      "synthetic": true
+    },
+    {
+      "case_id": "40000000-0000-4000-8000-000000000008",
+      "tenant_id": "10000000-0000-4000-8000-000000000001",
+      "display_id": "SYN-008",
+      "taxpayer_id": "20000000-0000-4000-8000-000000000002",
+      "taxpayer": {
+        "taxpayer_id": "20000000-0000-4000-8000-000000000002",
+        "display_name": "Synthetic Border Retail",
+        "taxpayer_type": "company"
+      },
+      "submission_id": "30000000-0000-4000-8000-000000000008",
+      "status": "INVESTIGATING",
+      "status_authority": "jube",
+      "version": 2,
+      "refund_claim": { "amount": "3100.00", "currency": "LSL" },
+      "refund_lane": "standard",
+      "assigned_officer_id": "80000000-0000-4000-8000-000000000002",
+      "selection_reasons": [
+        {
+          "code": "refund_above_usual_pattern",
+          "summary": "Second refund claim in the same period.",
+          "source": "jube"
+        }
+      ],
+      "service_links": [
+        {
+          "service": "jube",
+          "external_type": "case",
+          "external_id": "syn-jube-3008",
+          "sync": { "state": "synced", "last_attempt_at": "2026-11-03T11:00:02Z", "error_code": null }
+        }
+      ],
+      "created_at": "2026-11-03T11:00:00Z",
+      "updated_at": "2026-11-03T11:30:00Z",
+      "synthetic": true
+    },
+    {
+      "case_id": "40000000-0000-4000-8000-000000000009",
+      "tenant_id": "10000000-0000-4000-8000-000000000001",
+      "display_id": "SYN-009",
+      "taxpayer_id": "20000000-0000-4000-8000-000000000009",
+      "taxpayer": {
+        "taxpayer_id": "20000000-0000-4000-8000-000000000009",
+        "display_name": "Synthetic Senqu Consulting",
+        "taxpayer_type": "company"
+      },
+      "submission_id": "30000000-0000-4000-8000-000000000009",
+      "status": "RECEIVED",
+      "status_authority": "jube",
+      "version": 1,
+      "refund_claim": { "amount": "640.00", "currency": "LSL" },
+      "refund_lane": null,
+      "assigned_officer_id": null,
+      "selection_reasons": [],
+      "service_links": [
+        {
+          "service": "jube",
+          "external_type": "case",
+          "external_id": null,
+          "sync": { "state": "pending", "last_attempt_at": null, "error_code": null }
+        }
+      ],
+      "created_at": "2026-11-03T14:00:00Z",
+      "updated_at": "2026-11-03T14:00:00Z",
+      "synthetic": true
+    }
+  ],
+  "taxpayers": [
+    {
+      "taxpayer_id": "20000000-0000-4000-8000-000000000001",
+      "tenant_id": "10000000-0000-4000-8000-000000000001",
+      "display_name": "Synthetic Mountain Wholesale",
+      "taxpayer_type": "company",
+      "tin_masked": "******4101",
+      "registered_on": "2015-03-02",
+      "sector": "Wholesale trade",
+      "service_links": [
+        {
+          "service": "frappe",
+          "external_type": "Taxpayer",
+          "external_id": "VT-TP-0001",
+          "sync": { "state": "synced", "last_attempt_at": "2026-11-03T09:00:00Z", "error_code": null }
+        }
+      ],
+      "synthetic": true
+    },
+    {
+      "taxpayer_id": "20000000-0000-4000-8000-000000000002",
+      "tenant_id": "10000000-0000-4000-8000-000000000001",
+      "display_name": "Synthetic Border Retail",
+      "taxpayer_type": "company",
+      "tin_masked": "******4102",
+      "registered_on": "2018-07-16",
+      "sector": "Retail trade",
+      "service_links": [
+        {
+          "service": "frappe",
+          "external_type": "Taxpayer",
+          "external_id": "VT-TP-0002",
+          "sync": { "state": "synced", "last_attempt_at": "2026-11-03T09:00:00Z", "error_code": null }
+        }
+      ],
+      "synthetic": true
+    },
+    {
+      "taxpayer_id": "20000000-0000-4000-8000-000000000003",
+      "tenant_id": "10000000-0000-4000-8000-000000000001",
+      "display_name": "Synthetic Valley Services",
+      "taxpayer_type": "company",
+      "tin_masked": "******4103",
+      "registered_on": "2020-01-10",
+      "sector": "Professional services",
+      "service_links": [],
+      "synthetic": true
+    },
+    {
+      "taxpayer_id": "20000000-0000-4000-8000-000000000004",
+      "tenant_id": "10000000-0000-4000-8000-000000000001",
+      "display_name": "Synthetic Highland Imports",
+      "taxpayer_type": "company",
+      "tin_masked": "******4104",
+      "registered_on": "2012-11-05",
+      "sector": "Import and distribution",
+      "service_links": [],
+      "synthetic": true
+    },
+    {
+      "taxpayer_id": "20000000-0000-4000-8000-000000000005",
+      "tenant_id": "10000000-0000-4000-8000-000000000001",
+      "display_name": "Synthetic Plateau Group",
+      "taxpayer_type": "partnership",
+      "tin_masked": "******4105",
+      "registered_on": "2009-06-22",
+      "sector": "Holding activities",
+      "service_links": [],
+      "synthetic": true
+    },
+    {
+      "taxpayer_id": "20000000-0000-4000-8000-000000000006",
+      "tenant_id": "10000000-0000-4000-8000-000000000001",
+      "display_name": "Synthetic Maloti Highlands Agricultural Cooperative and Rural Transport Services (Proprietary) Limited",
+      "taxpayer_type": "other",
+      "tin_masked": null,
+      "registered_on": null,
+      "sector": null,
+      "service_links": [],
+      "synthetic": true
+    },
+    {
+      "taxpayer_id": "20000000-0000-4000-8000-000000000007",
+      "tenant_id": "10000000-0000-4000-8000-000000000001",
+      "display_name": "Synthetic Lowlands Transport",
+      "taxpayer_type": "individual",
+      "tin_masked": "******4107",
+      "registered_on": "2023-04-01",
+      "sector": "Road transport",
+      "service_links": [],
+      "synthetic": true
+    },
+    {
+      "taxpayer_id": "20000000-0000-4000-8000-000000000009",
+      "tenant_id": "10000000-0000-4000-8000-000000000001",
+      "display_name": "Synthetic Senqu Consulting",
+      "taxpayer_type": "company",
+      "tin_masked": "******4109",
+      "registered_on": "2021-09-14",
+      "sector": "Professional services",
+      "service_links": [],
+      "synthetic": true
+    }
+  ]
+}
