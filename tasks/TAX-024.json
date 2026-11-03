@@ -5,12 +5,12 @@
   "owner": "Yellow",
   "area": "data",
   "phase": "foundation",
-  "status": "IN_PROGRESS",
+  "status": "IN_REVIEW",
   "priority": "P0",
   "depends_on": [],
   "claimed_by": "codex-gupta-20261103-tax024",
   "branch": "task/TAX-024",
-  "pr": null,
+  "pr": "https://github.com/Vati-AI/rsl-taxathon/pull/102",
   "scope": "Add linked synthetic returns, invoices, payments and contracts for legitimate refund, related parties, employment ambiguity, imported services and policy gap",
   "inputs": [
     "PROJECT.md",
@@ -32,7 +32,7 @@
     },
     {
       "text": "Record relevant tests and evidence, update task status and open a human-review PR",
-      "done": false
+      "done": true
     }
   ],
   "verification": "Validate IDs and decimal reconciliation; assert expected findings and expected non-findings for all five cases",
@@ -50,12 +50,20 @@
     {
       "criterion": 2,
       "text": "python -m unittest discover -s tests/data -v: 3 passed; verifies unique IDs, document links, invoice gross totals, payment bounds, Decimal refund reconciliation and expected outcome alignment across all five scenarios. scripts/validate.py passed."
+    },
+    {
+      "criterion": 3,
+      "text": "PR #102 opened for human review: https://github.com/Vati-AI/rsl-taxathon/pull/102. Branch refreshed from main and checks/evidence summarized in PR description."
     }
   ],
   "notes": [
     {
       "at": "2026-11-03T14:45:18.454493+00:00",
       "text": "Claimed by codex-gupta-20261103-tax024"
+    },
+    {
+      "at": "2026-11-03T14:58:22.573926+00:00",
+      "text": "Implementation submitted for human review. Focused tests and validation pass; full check has an unrelated Windows file-mode failure; shared quality tooling is unavailable without Python 3.13/npm."
     }
   ]
 }
