@@ -5,15 +5,15 @@
   "owner": "Gupta",
   "area": "ai",
   "phase": "pilot",
-  "status": "BACKLOG",
+  "status": "IN_PROGRESS",
   "priority": "P0",
   "depends_on": [
     "TAX-022",
     "TAX-024",
     "TAX-018"
   ],
-  "claimed_by": null,
-  "branch": null,
+  "claimed_by": "keletso-claude-code",
+  "branch": "task/TAX-048",
   "pr": null,
   "scope": "Calculate explained/unresolved amounts using deterministic tools and propose fast, standard or targeted lane",
   "inputs": [
@@ -47,5 +47,10 @@
     "finish-task"
   ],
   "evidence": [],
-  "notes": []
+  "notes": [
+    {
+      "at": "2026-11-03T19:39:13.435440+00:00",
+      "text": "Claimed by keletso-claude-code"
+    }
+  ]
 }
