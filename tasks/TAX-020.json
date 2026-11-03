@@ -11,12 +11,13 @@
   "claimed_by": null,
   "branch": null,
   "pr": null,
-  "scope": "Build officer navigation, dashboard shell and case page skeleton against the fixture contract",
+  "scope": "Build officer navigation, dashboard shell and case page skeleton against the fixture contract; establish shared Frappe-inspired tokens/component showcase and first auditor queue/detail visual baseline",
   "inputs": [
     "PROJECT.md",
     "docs/ARCHITECTURE.md",
     "docs/API_CONTRACTS.md",
-    "docs/REQUIREMENTS.md"
+    "docs/REQUIREMENTS.md",
+    "docs/DESIGN_STANDARD.md"
   ],
   "acceptance": [
     {
@@ -29,6 +30,10 @@
     },
     {
       "text": "Record relevant tests and evidence, update task status and open a human-review PR",
+      "done": false
+    },
+    {
+      "text": "Follow docs/DESIGN_STANDARD.md; supply relevant viewport/state screenshots and keyboard/accessibility evidence for human visual review",
       "done": false
     }
   ],

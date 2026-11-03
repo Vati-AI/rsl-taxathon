@@ -14,3 +14,5 @@ Commands run, results and relevant screenshots or synthetic evidence. State what
 - [ ] Tenant access, provenance and human approvals preserved
 - [ ] Relevant tests and `python3 scripts/validate.py` pass
 - [ ] Human area owner requested; agent will not merge
+- [ ] UI changes follow docs/DESIGN_STANDARD.md; screenshots/state/accessibility evidence attached (or explain why not applicable)
+- [ ] Human visual review requested for UI changes; agent has not assumed approval

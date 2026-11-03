@@ -36,3 +36,5 @@ Jube owns operational cases, assignment/status/escalation/risk execution. Frappe
 5. `tasks/TAX-XXX.json` — the assigned unit of work.
 
 Foundation and pilot tasks build the five-scenario vertical slice. Expansion and future tasks describe the broader national platform; they are deliberately not claimed as already implemented. Humans review PRs and consequential investigation actions. Agents implement, test and keep task files/issues current.
+
+Frontend implementation and review must follow [the shared design standard](docs/DESIGN_STANDARD.md). Leseli and Kananelo establish representative screen baselines; Jane checks visual consistency and accessibility.
