@@ -21,11 +21,11 @@
   "acceptance": [
     {
       "text": "Implement typed investigation state, tool result envelope and fake-tool graph without model keys",
-      "done": false
+      "done": true
     },
     {
       "text": "Run deterministic graph tests for case isolation, tool errors and bounded steps",
-      "done": false
+      "done": true
     },
     {
       "text": "Record relevant tests and evidence, update task status and open a human-review PR",
@@ -39,7 +39,16 @@
     "update-project-task",
     "finish-task"
   ],
-  "evidence": [],
+  "evidence": [
+    {
+      "criterion": 1,
+      "text": "Typed state, case-scoped success/error envelopes, synthetic fake-tool graph and eight-call ceiling implemented in ai/tools/contracts.py and ai/workflows/*.py; 10 focused tests and model-free smoke passed."
+    },
+    {
+      "criterion": 2,
+      "text": "python3 -m pytest tests/ai/test_fake_graph.py -q: 10 passed, covering case isolation, safe tool errors, cross-case output rejection, sanitized error messages, and configured step limits."
+    }
+  ],
   "notes": [
     {
       "at": "2026-11-03T11:47:16.584139+00:00",
