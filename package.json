@@ -10,7 +10,11 @@
     "typecheck:auditor": "vue-tsc --noEmit -p apps/auditor-web/tsconfig.json",
     "test:auditor": "vitest run --config apps/auditor-web/vite.config.mts",
     "test:auditor:browser": "playwright test --config apps/auditor-web/playwright.config.ts",
-    "check": "npm run lint && npm run format:check && npm run typecheck:auditor && npm run test:auditor && npm run build:auditor"
+    "dev:taxpayer": "vite --config apps/taxpayer-web/vite.config.mts",
+    "build:taxpayer": "vite build --config apps/taxpayer-web/vite.config.mts",
+    "typecheck:taxpayer": "vue-tsc --noEmit -p apps/taxpayer-web/tsconfig.json",
+    "test:taxpayer": "vitest run --config apps/taxpayer-web/vite.config.mts",
+    "check": "npm run lint && npm run format:check && npm run typecheck:auditor && npm run test:auditor && npm run build:auditor && npm run typecheck:taxpayer && npm run test:taxpayer && npm run build:taxpayer"
   },
   "devDependencies": {
     "@axe-core/playwright": "4.14.0",
