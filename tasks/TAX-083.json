@@ -1,0 +1,42 @@
+{
+  "id": "TAX-083",
+  "kind": "task",
+  "title": "Prototype v1 engineering standards and practical quality checks",
+  "owner": "Keletso",
+  "area": "integration",
+  "phase": "foundation",
+  "status": "IN_PROGRESS",
+  "priority": "P0",
+  "depends_on": [],
+  "claimed_by": "codex-standards",
+  "branch": "task/TAX-083",
+  "pr": null,
+  "scope": "Apply researched cross-stack prototype standards, free-plan workflow, automated quality checks and consistent developer onboarding",
+  "inputs": [
+    "PROJECT.md",
+    "AGENTS.md"
+  ],
+  "acceptance": [
+    {
+      "text": "Publish source-backed engineering, API, AI, testing and essential security conventions with prototype boundaries",
+      "done": false
+    },
+    {
+      "text": "Configure and verify repeatable Python and frontend quality checks in local tooling and CI",
+      "done": false
+    },
+    {
+      "text": "Update agent/task onboarding, reconcile merged setup status and open a review PR without merging",
+      "done": false
+    }
+  ],
+  "verification": "Run lint/format/type checks, tooling tests, AI smoke and CI; inspect task and documentation consistency",
+  "skills": [
+    "implement-change",
+    "finish-task"
+  ],
+  "evidence": [],
+  "notes": [
+    "User explicitly chose GitHub Free and proportional v1 prototype safeguards; paid protection is not a prerequisite."
+  ]
+}
