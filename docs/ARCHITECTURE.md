@@ -1,41 +1,43 @@
-# Architecture
+# Service architecture
 
 ```mermaid
 flowchart LR
-  T[Taxpayer portal] --> B[Canonical backend API]
-  A[Auditor workspace] --> B
-  B --> DB[(PostgreSQL)]
-  B --> Q[Jobs / Redis]
-  Q --> I[Integration adapters]
-  I --> D[Docling extraction]
-  I --> Y[yente matching]
-  I --> J[Jube risk evaluation]
-  I --> O[OpenAleph evidence index]
-  I --> G[LangGraph worker]
-  I --> F[Frappe workflow mirror]
-  G --> H[Human review checkpoint]
-  H --> B
+  A[Auditor UI] --> V[Vati Integration API]
+  T[Frappe taxpayer portal] --> V
+  V --> J[Jube risk and operational case management]
+  V --> F[Frappe users submissions evidence requests decisions]
+  V --> L[LangGraph workers and human checkpoints]
+  V --> O[OpenAleph evidence and entity index]
+  O --- M[FollowTheMoney schema]
+  V --> Y[yente candidate matching]
+  V --> D[Docling extraction]
+  V --> X[Approved RSL sources or explicit fixtures]
 ```
 
-## Authority and ownership
+## One authority per responsibility
 
-The backend is the only writer of authoritative case state, decisions, permissions and the audit ledger. It validates identity and tenant membership on every request. Browsers never receive service credentials. Internal service results are validated before storage. Case ID is assigned once by the backend and mapped to each upstream identifier.
+| Responsibility | Authority | Other components |
+|---|---|---|
+| Operational investigation case, assignment/status/escalation, risk execution | Jube | Vati maps IDs and exposes a stable API; Frappe keeps a read projection |
+| Application users, roles, taxpayer submissions, portal forms | Frappe custom app `vati_tax` | Browser sessions and Vati calls are checked against role/tenant permissions |
+| Approved human decision rationale and evidence requests | Frappe custom DocTypes | Authorized actions request matching Jube transitions through Vati |
+| Cross-service IDs, idempotency/outbox and normalized contracts | Vati integration layer | No competing operational case lifecycle |
+| Original evidence provenance and restricted reference | Frappe/evidence store | OpenAleph search index is derived and rebuildable |
+| Entity representation / relationships | FtM mappings with documented tax extensions | yente proposes candidate identity links, reviewed where ambiguous |
+| AI run/checkpoint/playbook state | LangGraph worker | No direct authority to assess tax or perform enforcement |
 
-Jube returns versioned risk signals, not final tax decisions. OpenAleph holds a permission-scoped, rebuildable search/relationship projection, not the authoritative case database. FollowTheMoney is a schema/library for entities, not another server. yente similarity is a candidate match requiring corroboration. Docling extracts content with provenance. LangGraph runs approved tools with durable checkpoints and a human interrupt before decisions or outward requests. Frappe is optional case workflow/desk projection; do not create a second competing case lifecycle.
+Shared `case_id` follows every component; upstream native IDs are stored in a mapping with tenant/service uniqueness. Display IDs may be human-readable; internal UUIDs remain immutable. Updates use source/version markers and transactional delivery to prevent synchronization loops.
 
-## Data flow
+The first coding environment uses explicit synthetic fixtures. Live integrations graduate only after a recorded smoke test against the pinned/deployed version. A live service failure remains visible; it never silently falls back to an invented finding.
 
-1. Backend validates a submission and stores the original document hash and restricted object reference.
-2. Transactional outbox schedules processing; workers use an idempotency key for each service step.
-3. Docling extracts, adapter maps entities into FollowTheMoney, yente produces candidates and OpenAleph indexes approved records.
-4. Jube evaluates configured synthetic risk rules. Backend normalizes findings and records model/rule version.
-5. LangGraph gathers evidence and drafts cited findings. Missing/contradictory evidence routes to review.
-6. Authorized auditor records a decision and reasons; backend emits an audit event and synchronizes optional Frappe state.
+## Workflows
 
-## Failure and security design
+A submission is validated in Frappe, original evidence is hashed, and an outbox job triggers extraction/matching/risk. Jube creates or updates the operational case. LangGraph retrieves permission-scoped evidence and drafts findings, alternatives and evidence gaps. An authorized officer reviews the exact proposed action. Frappe records the decision and Vati applies the approved Jube transition idempotently.
 
-Bound every outbound request, retry only safe/idempotent operations with backoff, and retain failed jobs for visible manual retry. Deduplicate on tenant + source + event ID. A retry cannot repeat an approved outward action. Use tenant-scoped credentials/collections and authenticated worker calls. Store extracted document content and model context as sensitive; never embed secrets in traces. Uploads require size/type checks and malware scanning before production. Keep provider processing local by default; external models require an approved data policy.
+OpenAleph native search/graph and Jube native investigation interfaces remain available to advanced analysts. Our UI presents the common workflow; do not rebuild all upstream features.
 
-## Stack choices
+## Runtime and data separation
 
-PostgreSQL + Redis form the runnable local infrastructure. Frontend framework and backend implementation are left to TAX-001/003/005 rather than imposing a conflicting stack. LangGraph is an embedded Python workflow library served by the AI worker, not an assumed hosted service. Each heavyweight upstream runs its own supported deployment stack; adapter configuration connects it. No forks are currently needed.
+Use independent vendor stacks and databases. Root PostgreSQL/Redis support Vati integration development only; Frappe uses its documented database/cache configuration. Keep tenant/case access checks at the Vati boundary and in underlying Frappe/OpenAleph permissions. Deploy behind private networking/TLS; local fixture servers are loopback-only and unsuitable for production.
+
+Approved learnings can propose a new playbook/risk version. Supervisor review, holdout evaluation and rollback are required before activation. EOI and referral packages are drafts until authorized officials act through approved channels.

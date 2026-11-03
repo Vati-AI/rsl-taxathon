@@ -31,3 +31,5 @@ Automation is provided as a manual workflow, using optional `PROJECT_TOKEN` and 
 ## Verification
 
 Check repo visibility, organization ownership, accepted memberships, team permissions, project visibility/items, actual branch protection response, and a successful `validate` CI run. Preserve actual URLs and unresolved blockers in the setup handover; do not label untested service adapters as ready.
+
+Expanded workspace: PROJECT.md and docs/ONBOARDING.md are the developer entry points. Initial broad tasks are epics; use dependency-ready leaf tasks from task.py list. During the authorized setup only, a maintainer may run github_sync.py with --allow-branch chore/TAX-017-setup-handover to seed the reviewed backlog before merge.

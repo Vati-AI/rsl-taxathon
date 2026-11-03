@@ -10,7 +10,7 @@ The following endpoints describe upstream contracts or proposed Vati contracts; 
 | yente | `POST /match/{dataset}`; query entities with FtM schema/properties | Return candidates, scores and dataset version. Review ambiguous matches; never equate similarity with identity or wrongdoing. Use a synthetic/local dataset first. |
 | Docling Serve | `POST /v1/convert/file`, multipart files; `X-Api-Key` when configured | Extract uploaded documents, retain original SHA-256 and page locators. Restrict formats/size, handle async jobs for long documents. Disable arbitrary URL fetching in Vati. |
 | LangGraph | Embedded graph in AI worker; Vati job API to be implemented | Use persistent checkpointer, `thread_id` derived from tenant/case/run, and `interrupt()` at human approval. Authenticated resume must validate reviewer, case version and exact proposed action. |
-| Frappe | `/api/resource/{DocType}`; `Authorization: token api_key:api_secret` | Custom case/evidence-request DocTypes mirror backend state. Use least-privilege service user, explicit correlation mapping and origin marker to prevent webhook loops. |
+| Frappe | `/api/resource/{DocType}`; `Authorization: token api_key:api_secret` | Frappe owns submissions, permissions, evidence requests and approved decisions; operational case state is projected from Jube. Use least-privilege service user, explicit correlation mapping and origin marker to prevent webhook loops. |
 
 ## Proposed internal event envelope
 
@@ -38,7 +38,7 @@ The root Compose stack starts only shared local infrastructure. Jube, OpenAleph,
 - OpenAleph: use the selected release's documented deployment and its search/worker/storage services. Confirm collection permissions before loading anything beyond synthetic records.
 - yente: use its documented index/database dependencies and a custom synthetic dataset manifest. Code and data licensing are separate; do not assume OpenSanctions datasets are unrestricted.
 - Docling: optional `docker compose -f docker-compose.docling.yml up -d` after setting `DOCLING_API_KEY` in `.env`. First use downloads models; allow sufficient RAM/disk. The root project never sends documents to it automatically.
-- Frappe: use frappe_docker and provision a site plus custom DocTypes. It is optional for the first end-to-end demo, not a prerequisite for case persistence.
+- Frappe: use frappe_docker and provision a site plus custom DocTypes. It is a required application/portal component. See ADR-001 and SERVICE_SETUP.md.
 - LangGraph / FtM: add reviewed, locked versions in the AI/adapter environments when implementing TAX-007/012.
 
 Services running in containers cannot reach host services through `localhost`; use the appropriate private network hostname or `host.docker.internal` on Docker Desktop. Only loopback ports are suitable for this unauthenticated dev environment. Production requires private networking, TLS, secret management and access controls.

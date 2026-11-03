@@ -1,0 +1,47 @@
+{
+  "id": "TAX-071",
+  "kind": "task",
+  "title": "EOI evidence-gap and request drafting agent",
+  "owner": "Gupta",
+  "area": "ai",
+  "phase": "expansion",
+  "status": "BACKLOG",
+  "priority": "P1",
+  "depends_on": [
+    "TAX-053",
+    "TAX-052"
+  ],
+  "claimed_by": null,
+  "branch": null,
+  "pr": null,
+  "scope": "Prepare foreign entity/jurisdiction/evidence-gap package for competent-authority review",
+  "inputs": [
+    "PROJECT.md",
+    "docs/ARCHITECTURE.md",
+    "docs/API_CONTRACTS.md",
+    "docs/REQUIREMENTS.md"
+  ],
+  "acceptance": [
+    {
+      "text": "Prepare foreign entity/jurisdiction/evidence-gap package for competent-authority review",
+      "done": false
+    },
+    {
+      "text": "No transmission tool is enabled; outputs cite domestic evidence and identify missing foreign facts",
+      "done": false
+    },
+    {
+      "text": "Record relevant tests and evidence, update task status and open a human-review PR",
+      "done": false
+    }
+  ],
+  "verification": "No transmission tool is enabled; outputs cite domestic evidence and identify missing foreign facts",
+  "skills": [
+    "start-task",
+    "implement-change",
+    "update-project-task",
+    "finish-task"
+  ],
+  "evidence": [],
+  "notes": []
+}

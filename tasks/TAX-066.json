@@ -1,0 +1,47 @@
+{
+  "id": "TAX-066",
+  "kind": "task",
+  "title": "Risk calibration and drift evaluation",
+  "owner": "Yellow",
+  "area": "tests/ai",
+  "phase": "expansion",
+  "status": "BACKLOG",
+  "priority": "P1",
+  "depends_on": [
+    "TAX-056",
+    "TAX-059"
+  ],
+  "claimed_by": null,
+  "branch": null,
+  "pr": null,
+  "scope": "Evaluate reviewed outcomes with temporal holdout, false-positive metrics and drift reporting",
+  "inputs": [
+    "PROJECT.md",
+    "docs/ARCHITECTURE.md",
+    "docs/API_CONTRACTS.md",
+    "docs/REQUIREMENTS.md"
+  ],
+  "acceptance": [
+    {
+      "text": "Evaluate reviewed outcomes with temporal holdout, false-positive metrics and drift reporting",
+      "done": false
+    },
+    {
+      "text": "New calibration cannot replace approved model without review; measure legitimate-case regressions",
+      "done": false
+    },
+    {
+      "text": "Record relevant tests and evidence, update task status and open a human-review PR",
+      "done": false
+    }
+  ],
+  "verification": "New calibration cannot replace approved model without review; measure legitimate-case regressions",
+  "skills": [
+    "start-task",
+    "implement-change",
+    "update-project-task",
+    "finish-task"
+  ],
+  "evidence": [],
+  "notes": []
+}

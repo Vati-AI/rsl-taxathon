@@ -1,6 +1,6 @@
 {
   "id": "TAX-017",
-  "title": "Review GitHub setup and verified development handover",
+  "title": "Prepare complete coding workspace, project skills and phased backlog",
   "owner": "Keletso",
   "area": "integration",
   "status": "IN_REVIEW",
@@ -12,16 +12,16 @@
   "pr": "https://github.com/Vati-AI/rsl-taxathon/pull/17",
   "acceptance": [
     {
-      "text": "Record verified repository, board, teams and CI evidence",
-      "done": true
+      "text": "Align architecture and map supplied proposal to executable phased tasks",
+      "done": false
     },
     {
-      "text": "Document branch-protection and collaborator blockers honestly",
-      "done": true
+      "text": "Provide discoverable skills and verified agent task/PR workflow",
+      "done": false
     },
     {
-      "text": "Keep provisioning rerunnable with unique CODEOWNERS entries",
-      "done": true
+      "text": "Provide reproducible development setup and upstream source lock",
+      "done": false
     }
   ],
   "evidence": [
@@ -35,5 +35,7 @@
       "at": "2026-11-03T10:27:28.869697+00:00",
       "text": "Setup verified; awaiting human review. Branch protection and six teammate identities remain external configuration prerequisites."
     }
-  ]
+  ],
+  "kind": "task",
+  "phase": "foundation"
 }

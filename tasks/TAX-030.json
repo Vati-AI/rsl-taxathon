@@ -1,0 +1,47 @@
+{
+  "id": "TAX-030",
+  "kind": "task",
+  "title": "Canonical IDs and external service mapping",
+  "owner": "Edga",
+  "area": "backend",
+  "phase": "foundation",
+  "status": "BACKLOG",
+  "priority": "P0",
+  "depends_on": [
+    "TAX-018",
+    "TAX-019"
+  ],
+  "claimed_by": null,
+  "branch": null,
+  "pr": null,
+  "scope": "Persist shared case identifier and unique mappings to Jube cases, Frappe records and OpenAleph collections/entities",
+  "inputs": [
+    "PROJECT.md",
+    "docs/ARCHITECTURE.md",
+    "docs/API_CONTRACTS.md",
+    "docs/REQUIREMENTS.md"
+  ],
+  "acceptance": [
+    {
+      "text": "Persist shared case identifier and unique mappings to Jube cases, Frappe records and OpenAleph collections/entities",
+      "done": false
+    },
+    {
+      "text": "Replay same external event and test conflicting mapping and tenant-boundary rejection",
+      "done": false
+    },
+    {
+      "text": "Record relevant tests and evidence, update task status and open a human-review PR",
+      "done": false
+    }
+  ],
+  "verification": "Replay same external event and test conflicting mapping and tenant-boundary rejection",
+  "skills": [
+    "start-task",
+    "implement-change",
+    "update-project-task",
+    "finish-task"
+  ],
+  "evidence": [],
+  "notes": []
+}

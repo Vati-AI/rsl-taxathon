@@ -1,0 +1,47 @@
+{
+  "id": "TAX-032",
+  "kind": "task",
+  "title": "Evidence storage, extraction records and provenance",
+  "owner": "Edga",
+  "area": "backend",
+  "phase": "pilot",
+  "status": "BACKLOG",
+  "priority": "P0",
+  "depends_on": [
+    "TAX-029",
+    "TAX-030"
+  ],
+  "claimed_by": null,
+  "branch": null,
+  "pr": null,
+  "scope": "Add restricted evidence upload/reference, SHA-256, source/page locator and append-only extraction revisions",
+  "inputs": [
+    "PROJECT.md",
+    "docs/ARCHITECTURE.md",
+    "docs/API_CONTRACTS.md",
+    "docs/REQUIREMENTS.md"
+  ],
+  "acceptance": [
+    {
+      "text": "Add restricted evidence upload/reference, SHA-256, source/page locator and append-only extraction revisions",
+      "done": false
+    },
+    {
+      "text": "Reject oversized/disallowed uploads; test permission checks and unchanged original hash across revisions",
+      "done": false
+    },
+    {
+      "text": "Record relevant tests and evidence, update task status and open a human-review PR",
+      "done": false
+    }
+  ],
+  "verification": "Reject oversized/disallowed uploads; test permission checks and unchanged original hash across revisions",
+  "skills": [
+    "start-task",
+    "implement-change",
+    "update-project-task",
+    "finish-task"
+  ],
+  "evidence": [],
+  "notes": []
+}

@@ -1,0 +1,47 @@
+{
+  "id": "TAX-067",
+  "kind": "task",
+  "title": "Taxpayer baselines and peer-group intelligence",
+  "owner": "Gupta",
+  "area": "ai",
+  "phase": "expansion",
+  "status": "BACKLOG",
+  "priority": "P1",
+  "depends_on": [
+    "TAX-066",
+    "TAX-024"
+  ],
+  "claimed_by": null,
+  "branch": null,
+  "pr": null,
+  "scope": "Generate explainable baseline/peer comparisons with minimum sample and data-quality guards",
+  "inputs": [
+    "PROJECT.md",
+    "docs/ARCHITECTURE.md",
+    "docs/API_CONTRACTS.md",
+    "docs/REQUIREMENTS.md"
+  ],
+  "acceptance": [
+    {
+      "text": "Generate explainable baseline/peer comparisons with minimum sample and data-quality guards",
+      "done": false
+    },
+    {
+      "text": "Small or biased samples yield insufficient-evidence state; unusual behavior is not a fraud conclusion",
+      "done": false
+    },
+    {
+      "text": "Record relevant tests and evidence, update task status and open a human-review PR",
+      "done": false
+    }
+  ],
+  "verification": "Small or biased samples yield insufficient-evidence state; unusual behavior is not a fraud conclusion",
+  "skills": [
+    "start-task",
+    "implement-change",
+    "update-project-task",
+    "finish-task"
+  ],
+  "evidence": [],
+  "notes": []
+}

@@ -1,0 +1,47 @@
+{
+  "id": "TAX-080",
+  "kind": "task",
+  "title": "Additional tax-domain playbook extension design",
+  "owner": "Gupta",
+  "area": "ai",
+  "phase": "future",
+  "status": "BACKLOG",
+  "priority": "P2",
+  "depends_on": [
+    "TAX-061",
+    "TAX-070"
+  ],
+  "claimed_by": null,
+  "branch": null,
+  "pr": null,
+  "scope": "Define governed extension contracts for PAYE, withholding, treaty/permanent-establishment and digital-services playbooks",
+  "inputs": [
+    "PROJECT.md",
+    "docs/ARCHITECTURE.md",
+    "docs/API_CONTRACTS.md",
+    "docs/REQUIREMENTS.md"
+  ],
+  "acceptance": [
+    {
+      "text": "Define governed extension contracts for PAYE, withholding, treaty/permanent-establishment and digital-services playbooks",
+      "done": false
+    },
+    {
+      "text": "Each proposed domain names required sources, legal-review gate and evaluation fixtures before implementation",
+      "done": false
+    },
+    {
+      "text": "Record relevant tests and evidence, update task status and open a human-review PR",
+      "done": false
+    }
+  ],
+  "verification": "Each proposed domain names required sources, legal-review gate and evaluation fixtures before implementation",
+  "skills": [
+    "start-task",
+    "implement-change",
+    "update-project-task",
+    "finish-task"
+  ],
+  "evidence": [],
+  "notes": []
+}

@@ -1,31 +1,24 @@
 # Vati AI — RSL Taxathon
 
-Private team monorepo for Challenge 2: evidence-backed tax investigations with human decisions.
+[Start here: PROJECT.md](PROJECT.md) · [Team onboarding](docs/ONBOARDING.md) · [Task backlog](tasks/README.md) · [Agent skills](.agents/skills) · [Architecture](docs/ARCHITECTURE.md)
 
-**Status:** project scaffold and developer tooling. Product UI, case APIs and live integrations are assigned tasks, not completed features. No real taxpayer data belongs in this repository.
+A shared coding workspace for the RSL Challenge 2 platform: Jube risk/case management, Frappe application/taxpayer portal, OpenAleph/FtM evidence and relationships, yente matching, Docling extraction and LangGraph investigation workflows.
 
-## Start here
+```sh
+python3 scripts/dev.py check
+python3 scripts/dev.py serve
+```
 
-1. Read [scope](PROJECT_SCOPE.md), [architecture](docs/ARCHITECTURE.md) and [agent instructions](AGENTS.md).
-2. Find your task in [the task index](tasks/README.md).
-3. Run `python3 scripts/validate.py` (Python 3.11+; no packages required).
-4. Run `python3 scripts/dev_env.py`, then `docker compose up -d --wait` for local PostgreSQL and Redis.
-5. Read [development](docs/DEVELOPMENT.md) and [integration contracts](docs/INTEGRATIONS.md).
+Open localhost:58080/auditor/ or /taxpayer/. This dependency-free environment serves synthetic fixtures and starter UIs so all seven roles can begin without model keys or live RSL access. It is not a completed investigation product.
 
-| Area | Owner |
-|---|---|
-| Auditor frontend | Leseli |
-| Taxpayer frontend | Kananelo |
-| Backend | Edga |
-| AI / LangGraph | Gupta |
-| Frontend QA and fixes | Jane |
-| AI/data QA and testing | Yellow |
-| APIs / integrations | Keletso |
+## AI-managed development
 
-Folders: `apps/auditor-web`, `apps/taxpayer-web`, `backend`, `ai`, `integration`, `data`, `tests`, `docs`, `tasks`.
+Use the role prompt in `docs/team/NAME.md`. The AI reads the project documents and skills, selects and claims an eligible task, implements/tests, updates task evidence/status and opens a PR. Humans review and merge. Original TAX-001–016 are planning epics; 65 implementation tasks TAX-018–082 cover foundation, pilot, expansion and future phases.
 
-One task → one branch → one PR → human review. `main` is read-only for normal agent work.
+## Services and repository layout
 
-[GitHub setup](docs/GITHUB_SETUP.md) explains publishing, teams, board sync and enforcement limits.
+Our code stays in this monorepo. Official upstream source is reproducibly fetched into ignored `external/` using `python3 scripts/upstreams.py fetch --all`; immutable revisions live in `integration/upstreams.lock.json`. No unnecessary forks. See [service setup](docs/SERVICE_SETUP.md).
 
-[Verified setup and remaining configuration](docs/SETUP_STATUS.md).
+Root Compose runs Vati PostgreSQL/Redis on separate loopback ports. Optional Docling Compose is provided. Vendor services use their supported stacks; live deployments and adapters must pass their assigned tasks before being called connected.
+
+[Private task board](https://github.com/orgs/Vati-AI/projects/1) · [Setup PR](https://github.com/Vati-AI/rsl-taxathon/pull/17) · [Verified setup and blockers](docs/SETUP_STATUS.md)

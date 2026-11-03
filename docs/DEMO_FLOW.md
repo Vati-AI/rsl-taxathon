@@ -1,19 +1,13 @@
-# Reproducible demo
+# Five-scenario demo acceptance
 
-Use only `data/scenarios/cases.json`; all identities are invented. These are expected outcomes, not a working investigation engine.
+`python3 scripts/dev.py serve` presents five synthetic scenario fixtures to unblock UI/contract coding. It does not run the investigation pipeline. The live end-to-end demo is TAX-058, after the preceding implementation tasks.
 
-1. Kananelo demonstrates submission and a missing-document check.
-2. Keletso shows processing stages and shared case/correlation IDs.
-3. Leseli opens the auditor case with rule explanation, reconciled and unresolved amounts, and source evidence.
-4. Gupta shows the investigation trace and pause at the human checkpoint.
-5. An auditor records an outcome. Show the audit trail and taxpayer-safe status.
-
-| Scenario | Required behavior |
+| Scenario | Required outcome |
 |---|---|
-| SYN-001 legitimate refund | Records reconcile; recommend clearance; human confirms. No automatic payment. |
-| SYN-002 related-party risk | Unsupported fee and refund discrepancy remain explicit; request targeted evidence after officer approval. No automatic fraud label. |
-| SYN-003 ambiguous service | Conflicting consultancy/employment evidence; pause and refer to specialist. No forced classification. |
+| SYN-001 legitimate unusual refund | Reconcile; prepare clearance for officer approval; no automatic payment |
+| SYN-002 related-party fees/losses | Test risk and legitimate alternatives; targeted evidence questions |
+| SYN-003 employment/consultancy ambiguity | Pause for specialist judgement; no forced classification |
+| SYN-004 imported-service trail gap | Explain missing VAT/withholding evidence and request specific records |
+| SYN-005 no verified legal route | Record policy-gap review; no invented enforcement conclusion |
 
-Yellow owns expected outcomes, traceability and replay checks. Jane owns browser flow, empty/error/loading states, mobile layout and accessibility. Repeat a submission and a processing callback to prove idempotency; simulate one unavailable upstream and show a visible processing failure, not a fabricated result.
-
-Record environment versions, fixture revision, duration, passed/failed assertions and limitations in `docs/demo-results.md` when the implementation exists. Reset only disposable demo data. The scaffold itself cannot yet run this product demo.
+TAX-024 expands the minimal fixture summaries into linked documents and expected findings/non-findings. Test duplicate submissions, denied tenant access, unavailable services and malicious document instructions. Record measured timings, citation coverage, false positives and legal-route coverage. Clearly label fixture-only vs live stages.

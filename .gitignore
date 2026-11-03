@@ -12,3 +12,7 @@ coverage/
 external/
 *.pem
 *.key
+
+.venv*/
+*.egg-info/
+build/

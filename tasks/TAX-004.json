@@ -28,5 +28,16 @@
     }
   ],
   "evidence": [],
-  "notes": []
+  "notes": [
+    "Expanded into implementation tasks TAX-018 onward; do not claim this planning epic."
+  ],
+  "kind": "epic",
+  "phase": "planning",
+  "children": [
+    "TAX-021",
+    "TAX-043",
+    "TAX-044",
+    "TAX-045",
+    "TAX-078"
+  ]
 }

@@ -1,0 +1,47 @@
+{
+  "id": "TAX-049",
+  "kind": "task",
+  "title": "Related-party service and persistent-loss playbook",
+  "owner": "Gupta",
+  "area": "ai",
+  "phase": "pilot",
+  "status": "BACKLOG",
+  "priority": "P0",
+  "depends_on": [
+    "TAX-048",
+    "TAX-036"
+  ],
+  "claimed_by": null,
+  "branch": null,
+  "pr": null,
+  "scope": "Test service delivery, benefit, duplication, payments, relationships and documented alternative loss explanations",
+  "inputs": [
+    "PROJECT.md",
+    "docs/ARCHITECTURE.md",
+    "docs/API_CONTRACTS.md",
+    "docs/REQUIREMENTS.md"
+  ],
+  "acceptance": [
+    {
+      "text": "Test service delivery, benefit, duplication, payments, relationships and documented alternative loss explanations",
+      "done": false
+    },
+    {
+      "text": "Assert evidence citations and counter-evidence; unsupported service is an evidence gap rather than a legal conclusion",
+      "done": false
+    },
+    {
+      "text": "Record relevant tests and evidence, update task status and open a human-review PR",
+      "done": false
+    }
+  ],
+  "verification": "Assert evidence citations and counter-evidence; unsupported service is an evidence gap rather than a legal conclusion",
+  "skills": [
+    "start-task",
+    "implement-change",
+    "update-project-task",
+    "finish-task"
+  ],
+  "evidence": [],
+  "notes": []
+}

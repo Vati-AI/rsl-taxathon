@@ -3,7 +3,7 @@
   "title": "Shared integration contracts and dev connectivity",
   "owner": "Keletso",
   "area": "integration",
-  "status": "READY",
+  "status": "BACKLOG",
   "priority": "P0",
   "day": 1,
   "depends_on": [],
@@ -25,5 +25,28 @@
     }
   ],
   "evidence": [],
-  "notes": []
+  "notes": [
+    "Expanded into implementation tasks TAX-018 onward; do not claim this planning epic."
+  ],
+  "kind": "epic",
+  "phase": "planning",
+  "children": [
+    "TAX-018",
+    "TAX-025",
+    "TAX-026",
+    "TAX-027",
+    "TAX-028",
+    "TAX-034",
+    "TAX-035",
+    "TAX-036",
+    "TAX-037",
+    "TAX-038",
+    "TAX-039",
+    "TAX-054",
+    "TAX-058",
+    "TAX-063",
+    "TAX-073",
+    "TAX-074",
+    "TAX-079"
+  ]
 }

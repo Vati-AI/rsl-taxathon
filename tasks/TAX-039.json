@@ -1,0 +1,49 @@
+{
+  "id": "TAX-039",
+  "kind": "task",
+  "title": "Frappe to Jube submission and state bridge",
+  "owner": "Keletso",
+  "area": "integration",
+  "phase": "pilot",
+  "status": "BACKLOG",
+  "priority": "P0",
+  "depends_on": [
+    "TAX-031",
+    "TAX-033",
+    "TAX-034",
+    "TAX-035"
+  ],
+  "claimed_by": null,
+  "branch": null,
+  "pr": null,
+  "scope": "Submit validated claims to risk/case services and mirror operational Jube state into taxpayer-safe Frappe status",
+  "inputs": [
+    "PROJECT.md",
+    "docs/ARCHITECTURE.md",
+    "docs/API_CONTRACTS.md",
+    "docs/REQUIREMENTS.md"
+  ],
+  "acceptance": [
+    {
+      "text": "Submit validated claims to risk/case services and mirror operational Jube state into taxpayer-safe Frappe status",
+      "done": false
+    },
+    {
+      "text": "Replay webhook, reject stale update, prevent synchronization loop and hide internal risk details from taxpayer",
+      "done": false
+    },
+    {
+      "text": "Record relevant tests and evidence, update task status and open a human-review PR",
+      "done": false
+    }
+  ],
+  "verification": "Replay webhook, reject stale update, prevent synchronization loop and hide internal risk details from taxpayer",
+  "skills": [
+    "start-task",
+    "implement-change",
+    "update-project-task",
+    "finish-task"
+  ],
+  "evidence": [],
+  "notes": []
+}

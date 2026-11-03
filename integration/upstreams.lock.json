@@ -1,0 +1,51 @@
+{
+  "jube": {
+    "repository": "https://github.com/jube-home/aml-fraud-transaction-monitoring.git",
+    "commit": "01c4afdbcdb186cc36b128ed79283d544cfb9ec9",
+    "ref": "master",
+    "mode": "service",
+    "fork": false
+  },
+  "openaleph": {
+    "repository": "https://github.com/openaleph/openaleph.git",
+    "commit": "f89ff18d83fcfebdadc6b2db83fb9e2fbb5397c2",
+    "ref": "main",
+    "mode": "service",
+    "fork": false
+  },
+  "yente": {
+    "repository": "https://github.com/opensanctions/yente.git",
+    "commit": "6580a2aae2b662559d75301f06820bb0b8f7a122",
+    "ref": "main",
+    "mode": "service",
+    "fork": false
+  },
+  "docling": {
+    "repository": "https://github.com/docling-project/docling-serve.git",
+    "commit": "9c058dbb58f61021e3a16e37edb8a7527b2cb2d4",
+    "ref": "main",
+    "mode": "service",
+    "fork": false
+  },
+  "frappe": {
+    "repository": "https://github.com/frappe/frappe_docker.git",
+    "commit": "d6cc2e0d054e69d6c9288134080fa933be564d13",
+    "ref": "main",
+    "mode": "service",
+    "fork": false
+  },
+  "followthemoney": {
+    "repository": "https://github.com/opensanctions/followthemoney.git",
+    "commit": "c8c457a5c80fcf3ebe134f49b8dc60b417f0b860",
+    "ref": "main",
+    "mode": "library",
+    "fork": false
+  },
+  "langgraph": {
+    "repository": "https://github.com/langchain-ai/langgraph.git",
+    "commit": "3c916d750575b22c464790e9774494d810ccd322",
+    "ref": "main",
+    "mode": "library",
+    "fork": false
+  }
+}

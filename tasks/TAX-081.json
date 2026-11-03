@@ -1,0 +1,48 @@
+{
+  "id": "TAX-081",
+  "kind": "task",
+  "title": "Pilot operational acceptance and performance baseline",
+  "owner": "Yellow",
+  "area": "tests/integration",
+  "phase": "expansion",
+  "status": "BACKLOG",
+  "priority": "P1",
+  "depends_on": [
+    "TAX-058",
+    "TAX-060",
+    "TAX-063"
+  ],
+  "claimed_by": null,
+  "branch": null,
+  "pr": null,
+  "scope": "Run agreed pilot volume/concurrency and restore tests with evidence completeness and workflow metrics",
+  "inputs": [
+    "PROJECT.md",
+    "docs/ARCHITECTURE.md",
+    "docs/API_CONTRACTS.md",
+    "docs/REQUIREMENTS.md"
+  ],
+  "acceptance": [
+    {
+      "text": "Run agreed pilot volume/concurrency and restore tests with evidence completeness and workflow metrics",
+      "done": false
+    },
+    {
+      "text": "Publish actual p50/p95 latency, resource use, error rate and unresolved limitations",
+      "done": false
+    },
+    {
+      "text": "Record relevant tests and evidence, update task status and open a human-review PR",
+      "done": false
+    }
+  ],
+  "verification": "Publish actual p50/p95 latency, resource use, error rate and unresolved limitations",
+  "skills": [
+    "start-task",
+    "implement-change",
+    "update-project-task",
+    "finish-task"
+  ],
+  "evidence": [],
+  "notes": []
+}

@@ -1,0 +1,47 @@
+{
+  "id": "TAX-072",
+  "kind": "task",
+  "title": "EOI approval and response evidence lifecycle",
+  "owner": "Edga",
+  "area": "backend",
+  "phase": "expansion",
+  "status": "BACKLOG",
+  "priority": "P1",
+  "depends_on": [
+    "TAX-071",
+    "TAX-062"
+  ],
+  "claimed_by": null,
+  "branch": null,
+  "pr": null,
+  "scope": "Track approved requests, lawful channel references, returned evidence and restricted access",
+  "inputs": [
+    "PROJECT.md",
+    "docs/ARCHITECTURE.md",
+    "docs/API_CONTRACTS.md",
+    "docs/REQUIREMENTS.md"
+  ],
+  "acceptance": [
+    {
+      "text": "Track approved requests, lawful channel references, returned evidence and restricted access",
+      "done": false
+    },
+    {
+      "text": "Returned evidence links to original request/case and retains source restrictions",
+      "done": false
+    },
+    {
+      "text": "Record relevant tests and evidence, update task status and open a human-review PR",
+      "done": false
+    }
+  ],
+  "verification": "Returned evidence links to original request/case and retains source restrictions",
+  "skills": [
+    "start-task",
+    "implement-change",
+    "update-project-task",
+    "finish-task"
+  ],
+  "evidence": [],
+  "notes": []
+}

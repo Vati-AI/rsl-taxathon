@@ -1,0 +1,47 @@
+{
+  "id": "TAX-050",
+  "kind": "task",
+  "title": "Imported-services VAT and withholding evidence playbook",
+  "owner": "Gupta",
+  "area": "ai",
+  "phase": "pilot",
+  "status": "BACKLOG",
+  "priority": "P0",
+  "depends_on": [
+    "TAX-048",
+    "TAX-024"
+  ],
+  "claimed_by": null,
+  "branch": null,
+  "pr": null,
+  "scope": "Reconcile foreign charges/contracts/payments with declared tax treatment and flag unresolved trail",
+  "inputs": [
+    "PROJECT.md",
+    "docs/ARCHITECTURE.md",
+    "docs/API_CONTRACTS.md",
+    "docs/REQUIREMENTS.md"
+  ],
+  "acceptance": [
+    {
+      "text": "Reconcile foreign charges/contracts/payments with declared tax treatment and flag unresolved trail",
+      "done": false
+    },
+    {
+      "text": "Known synthetic gap produces targeted evidence questions; statutory treatment remains unverified pending expert review",
+      "done": false
+    },
+    {
+      "text": "Record relevant tests and evidence, update task status and open a human-review PR",
+      "done": false
+    }
+  ],
+  "verification": "Known synthetic gap produces targeted evidence questions; statutory treatment remains unverified pending expert review",
+  "skills": [
+    "start-task",
+    "implement-change",
+    "update-project-task",
+    "finish-task"
+  ],
+  "evidence": [],
+  "notes": []
+}

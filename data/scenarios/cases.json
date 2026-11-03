@@ -28,5 +28,25 @@
     "supported_refund": "0.00",
     "expected": "specialist_review",
     "synthetic": true
+  },
+  {
+    "id": "SYN-004",
+    "name": "Synthetic Highland Imports",
+    "scenario": "imported_services_gap",
+    "currency": "LSL",
+    "refund_claim": "5000.00",
+    "supported_refund": "2000.00",
+    "expected": "targeted_evidence_request",
+    "synthetic": true
+  },
+  {
+    "id": "SYN-005",
+    "name": "Synthetic Plateau Group",
+    "scenario": "unverified_legal_route",
+    "currency": "LSL",
+    "refund_claim": "8000.00",
+    "supported_refund": "8000.00",
+    "expected": "policy_gap_review",
+    "synthetic": true
   }
 ]

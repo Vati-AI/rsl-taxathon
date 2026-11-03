@@ -1,27 +1,30 @@
-# Setup handover — 2026-11-03
+# Coding workspace status — 2026-11-03
 
-## Live GitHub resources
+The expanded coding workspace is in PR #17 for human review. Initial scaffold is on main. Normal task claiming should begin after this PR is merged; opening the PR branch is suitable for reviewing/running the developer environment now.
 
-- Organization: https://github.com/Vati-AI — free plan; Kellybrackets is owner.
-- Private repository: https://github.com/Vati-AI/rsl-taxathon
-- Private Project: https://github.com/orgs/Vati-AI/projects/1 — saved Board view grouped by Status.
-- TAX-001 through TAX-016 have issue mirrors and Project items. TAX-017 tracks this handover review.
-- Seven role teams exist with write access to this repository: auditor-frontend, taxpayer-frontend, backend, ai, frontend-qa, ai-data-qa, integration.
-- Squash-only merges and merged-branch cleanup configured.
-- Initial CI passed: https://github.com/Vati-AI/rsl-taxathon/actions/runs/41617888284
+## Delivered
 
-## Verified local setup
+- Private Vati-AI/rsl-taxathon repository; seven role teams with write access; private Project 1.
+- PROJECT.md, scope/architecture/API/data-model/requirements/decision docs, supplied product references and seven role onboarding prompts.
+- Six canonical .agents skills plus Claude aliases: start-task, implement-change, fix-bug, update-project-task, finish-task, integrate-service.
+- Original 16 planning epics, setup task TAX-017 and 65 executable tasks TAX-018–082 across foundation/pilot/expansion/future.
+- AI-owned claim/status/evidence/finish/sync commands with human review before merge.
+- Both browser starter interfaces and five explicit synthetic scenario fixtures; localhost:58080.
+- Official source checkouts for Jube, OpenAleph, yente, Docling Serve, Frappe Docker, FtM and LangGraph at immutable commits, reproducible using scripts/upstreams.py. No unnecessary forks.
+- Vati PostgreSQL/Redis healthy on localhost:55433/56380. Isolated Frappe developer Compose is available; site readiness is recorded separately in docs/FRAPPE_DEV.md.
+- Installed/locked AI dependencies and a model-free LangGraph interrupt/resume smoke.
 
-Python task validation, syntax checks and all six tooling tests passed. The claim test verifies a second agent cannot take an existing remote claim. PostgreSQL and Redis are healthy; SELECT 1 and PING succeeded. Host ports are localhost:55433 and localhost:56380 to avoid the existing Lekuka containers. Generated secrets stay in ignored .env.
+## Verified
 
-## Outstanding configuration
+Eleven tooling tests passed, including real local Git claim protection, ready-task filtering, five synthetic HTTP scenarios, denied file exposure and rejected fixture mutations. All six skills pass the skill-creator validator. All seven upstream checkout SHAs match the lock. Python compilation and Compose configurations pass. LangGraph smoke passed. Relevant checks also run in GitHub Actions.
 
-1. GitHub rejected main branch protection with HTTP 403 because this organization has a free plan and the repository is private. The intended policy is stored in .github/branch-protection.json. A supported paid plan is required to enforce it; no purchase was made. CODEOWNERS remains useful documentation but is not enforced under this plan.
-2. Only Keletso/Kellybrackets is a verified identity. Provide usernames for Leseli, Kananelo, Edga, Gupta, Jane and Yellow; then populate config/team.json and run setup with --invite. No invitations to guessed accounts were sent.
-3. Local CLI Project synchronization is authorized and was run. The optional workflow requires a dedicated PROJECT_TOKEN secret; none has been created or copied into GitHub Actions. PROJECT_NUMBER is set to 1. Until a narrowly scoped credential is configured, sync with the authenticated local CLI.
-4. Jube, OpenAleph/FtM, yente, Docling, LangGraph and Frappe have integration documentation/configuration. Their live adapters are implementation tasks; they are not connected. No upstream forks were necessary. Optional Docling configuration was not started or smoke-tested.
-5. The taxpayer/auditor apps and case/AI APIs are scaffolds. This is the team development foundation, not a working tax investigation product.
+## Remaining human/account prerequisites
 
-## First work
+- Confirm GitHub usernames for Leseli, Kananelo, Edga, Gupta, Jane and Yellow before invitations. Keletso is Kellybrackets.
+- Human review/merge of PR #17; agents do not self-merge.
+- GitHub rejected private-repo branch protection on the free organization plan. Intended policy is versioned but cannot be enforced until a supported paid plan is chosen. No purchase was made.
+- Optional unattended Actions board sync needs a dedicated Project token; none is copied from a developer login. Local agents can sync using their own authorized gh login.
 
-Each member reads AGENTS.md and tasks/README.md, selects their READY task, claims the branch, implements and verifies, updates the task file and pushes a PR. Human review and merge remain mandatory team policy even while GitHub cannot enforce branch protection. Never mark a task DONE merely because its issue exists.
+## Implementation boundaries
+
+Source checkout and a developer environment are not live integration completion. Service deployment/adapter tasks TAX-025–028 and TAX-034–039 still need their acceptance evidence. No real RSL credentials, model keys, taxpayer data or licensed watchlist data are required to start fixture coding. Do not claim that the whole tax investigation product is built.

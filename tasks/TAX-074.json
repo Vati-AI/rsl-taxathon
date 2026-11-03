@@ -1,0 +1,47 @@
+{
+  "id": "TAX-074",
+  "kind": "task",
+  "title": "Scheme, beneficial ownership and intermediary graph",
+  "owner": "Keletso",
+  "area": "integration",
+  "phase": "expansion",
+  "status": "BACKLOG",
+  "priority": "P1",
+  "depends_on": [
+    "TAX-036",
+    "TAX-037"
+  ],
+  "claimed_by": null,
+  "branch": null,
+  "pr": null,
+  "scope": "Link taxpayer cases to schemes and model legal/beneficial ownership, advisers and conflicting sources",
+  "inputs": [
+    "PROJECT.md",
+    "docs/ARCHITECTURE.md",
+    "docs/API_CONTRACTS.md",
+    "docs/REQUIREMENTS.md"
+  ],
+  "acceptance": [
+    {
+      "text": "Link taxpayer cases to schemes and model legal/beneficial ownership, advisers and conflicting sources",
+      "done": false
+    },
+    {
+      "text": "Graph preserves contradictions and avoids guilt-by-association labels; access remains tenant/case scoped",
+      "done": false
+    },
+    {
+      "text": "Record relevant tests and evidence, update task status and open a human-review PR",
+      "done": false
+    }
+  ],
+  "verification": "Graph preserves contradictions and avoids guilt-by-association labels; access remains tenant/case scoped",
+  "skills": [
+    "start-task",
+    "implement-change",
+    "update-project-task",
+    "finish-task"
+  ],
+  "evidence": [],
+  "notes": []
+}

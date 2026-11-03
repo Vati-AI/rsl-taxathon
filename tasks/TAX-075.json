@@ -1,0 +1,47 @@
+{
+  "id": "TAX-075",
+  "kind": "task",
+  "title": "Emerging network pattern review",
+  "owner": "Gupta",
+  "area": "ai",
+  "phase": "expansion",
+  "status": "BACKLOG",
+  "priority": "P1",
+  "depends_on": [
+    "TAX-074",
+    "TAX-067"
+  ],
+  "claimed_by": null,
+  "branch": null,
+  "pr": null,
+  "scope": "Detect unexplained network patterns with explainable evidence and analyst review queue",
+  "inputs": [
+    "PROJECT.md",
+    "docs/ARCHITECTURE.md",
+    "docs/API_CONTRACTS.md",
+    "docs/REQUIREMENTS.md"
+  ],
+  "acceptance": [
+    {
+      "text": "Detect unexplained network patterns with explainable evidence and analyst review queue",
+      "done": false
+    },
+    {
+      "text": "Novelty alone cannot trigger enforcement; evaluate false positives and source gaps",
+      "done": false
+    },
+    {
+      "text": "Record relevant tests and evidence, update task status and open a human-review PR",
+      "done": false
+    }
+  ],
+  "verification": "Novelty alone cannot trigger enforcement; evaluate false positives and source gaps",
+  "skills": [
+    "start-task",
+    "implement-change",
+    "update-project-task",
+    "finish-task"
+  ],
+  "evidence": [],
+  "notes": []
+}

@@ -1,0 +1,48 @@
+{
+  "id": "TAX-053",
+  "kind": "task",
+  "title": "Evidence search and cited case briefing agents",
+  "owner": "Gupta",
+  "area": "ai",
+  "phase": "pilot",
+  "status": "BACKLOG",
+  "priority": "P0",
+  "depends_on": [
+    "TAX-036",
+    "TAX-038",
+    "TAX-047"
+  ],
+  "claimed_by": null,
+  "branch": null,
+  "pr": null,
+  "scope": "Generate structured what-happened/checked/explained/unresolved/next-action briefing with source references",
+  "inputs": [
+    "PROJECT.md",
+    "docs/ARCHITECTURE.md",
+    "docs/API_CONTRACTS.md",
+    "docs/REQUIREMENTS.md"
+  ],
+  "acceptance": [
+    {
+      "text": "Generate structured what-happened/checked/explained/unresolved/next-action briefing with source references",
+      "done": false
+    },
+    {
+      "text": "Validate citation IDs exist, source permissions are enforced and tool/document prompt injection is ignored",
+      "done": false
+    },
+    {
+      "text": "Record relevant tests and evidence, update task status and open a human-review PR",
+      "done": false
+    }
+  ],
+  "verification": "Validate citation IDs exist, source permissions are enforced and tool/document prompt injection is ignored",
+  "skills": [
+    "start-task",
+    "implement-change",
+    "update-project-task",
+    "finish-task"
+  ],
+  "evidence": [],
+  "notes": []
+}

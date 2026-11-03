@@ -1,0 +1,47 @@
+{
+  "id": "TAX-041",
+  "kind": "task",
+  "title": "Evidence viewer and economic relationship view",
+  "owner": "Leseli",
+  "area": "apps/auditor-web",
+  "phase": "pilot",
+  "status": "BACKLOG",
+  "priority": "P0",
+  "depends_on": [
+    "TAX-040",
+    "TAX-036"
+  ],
+  "claimed_by": null,
+  "branch": null,
+  "pr": null,
+  "scope": "Display evidence citations, page/record references, relationships and clearly marked disputed matches",
+  "inputs": [
+    "PROJECT.md",
+    "docs/ARCHITECTURE.md",
+    "docs/API_CONTRACTS.md",
+    "docs/REQUIREMENTS.md"
+  ],
+  "acceptance": [
+    {
+      "text": "Display evidence citations, page/record references, relationships and clearly marked disputed matches",
+      "done": false
+    },
+    {
+      "text": "Browser tests navigate finding-to-source and show uncertain ownership without implying guilt",
+      "done": false
+    },
+    {
+      "text": "Record relevant tests and evidence, update task status and open a human-review PR",
+      "done": false
+    }
+  ],
+  "verification": "Browser tests navigate finding-to-source and show uncertain ownership without implying guilt",
+  "skills": [
+    "start-task",
+    "implement-change",
+    "update-project-task",
+    "finish-task"
+  ],
+  "evidence": [],
+  "notes": []
+}

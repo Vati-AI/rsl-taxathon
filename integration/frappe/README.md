@@ -1,6 +1,6 @@
 # frappe
 
-Optional approved workflow mirror. Owner: Keletso; LangGraph implementation is owned by Gupta.
+Application, permissions and taxpayer portal foundation. Owner: Keletso; LangGraph implementation is owned by Gupta.
 
 - Upstream: https://github.com/frappe/frappe_docker
 - Official documentation: https://docs.frappe.io/framework/user/en/api/rest

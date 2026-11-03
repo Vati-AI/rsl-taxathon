@@ -1,0 +1,47 @@
+{
+  "id": "TAX-045",
+  "kind": "task",
+  "title": "Evidence request responses and safe tracking",
+  "owner": "Kananelo",
+  "area": "apps/taxpayer-web",
+  "phase": "pilot",
+  "status": "BACKLOG",
+  "priority": "P0",
+  "depends_on": [
+    "TAX-043",
+    "TAX-046"
+  ],
+  "claimed_by": null,
+  "branch": null,
+  "pr": null,
+  "scope": "Allow structured responses against exact requests and show only approved taxpayer-facing statuses",
+  "inputs": [
+    "PROJECT.md",
+    "docs/ARCHITECTURE.md",
+    "docs/API_CONTRACTS.md",
+    "docs/REQUIREMENTS.md"
+  ],
+  "acceptance": [
+    {
+      "text": "Allow structured responses against exact requests and show only approved taxpayer-facing statuses",
+      "done": false
+    },
+    {
+      "text": "Verify response attachments link to the right request and internal notes never appear",
+      "done": false
+    },
+    {
+      "text": "Record relevant tests and evidence, update task status and open a human-review PR",
+      "done": false
+    }
+  ],
+  "verification": "Verify response attachments link to the right request and internal notes never appear",
+  "skills": [
+    "start-task",
+    "implement-change",
+    "update-project-task",
+    "finish-task"
+  ],
+  "evidence": [],
+  "notes": []
+}

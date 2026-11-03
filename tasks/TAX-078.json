@@ -1,0 +1,47 @@
+{
+  "id": "TAX-078",
+  "kind": "task",
+  "title": "Recurring submission-error guidance",
+  "owner": "Kananelo",
+  "area": "apps/taxpayer-web",
+  "phase": "expansion",
+  "status": "BACKLOG",
+  "priority": "P1",
+  "depends_on": [
+    "TAX-044",
+    "TAX-069"
+  ],
+  "claimed_by": null,
+  "branch": null,
+  "pr": null,
+  "scope": "Offer taxpayer-specific correction reminders from reviewed prior omissions with clear explanation",
+  "inputs": [
+    "PROJECT.md",
+    "docs/ARCHITECTURE.md",
+    "docs/API_CONTRACTS.md",
+    "docs/REQUIREMENTS.md"
+  ],
+  "acceptance": [
+    {
+      "text": "Offer taxpayer-specific correction reminders from reviewed prior omissions with clear explanation",
+      "done": false
+    },
+    {
+      "text": "No cross-taxpayer history leakage; withdrawn/incorrect reminders can be corrected",
+      "done": false
+    },
+    {
+      "text": "Record relevant tests and evidence, update task status and open a human-review PR",
+      "done": false
+    }
+  ],
+  "verification": "No cross-taxpayer history leakage; withdrawn/incorrect reminders can be corrected",
+  "skills": [
+    "start-task",
+    "implement-change",
+    "update-project-task",
+    "finish-task"
+  ],
+  "evidence": [],
+  "notes": []
+}

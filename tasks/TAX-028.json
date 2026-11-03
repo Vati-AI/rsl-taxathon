@@ -1,0 +1,44 @@
+{
+  "id": "TAX-028",
+  "kind": "task",
+  "title": "Docling extraction deployment",
+  "owner": "Keletso",
+  "area": "integration",
+  "phase": "foundation",
+  "status": "READY",
+  "priority": "P0",
+  "depends_on": [],
+  "claimed_by": null,
+  "branch": null,
+  "pr": null,
+  "scope": "Start optional authenticated Docling service with bounded document sizes and local model artifacts",
+  "inputs": [
+    "PROJECT.md",
+    "docs/ARCHITECTURE.md",
+    "docs/API_CONTRACTS.md",
+    "docs/REQUIREMENTS.md"
+  ],
+  "acceptance": [
+    {
+      "text": "Start optional authenticated Docling service with bounded document sizes and local model artifacts",
+      "done": false
+    },
+    {
+      "text": "Extract a synthetic scanned/table document; verify unauthorized request rejection and page provenance",
+      "done": false
+    },
+    {
+      "text": "Record relevant tests and evidence, update task status and open a human-review PR",
+      "done": false
+    }
+  ],
+  "verification": "Extract a synthetic scanned/table document; verify unauthorized request rejection and page provenance",
+  "skills": [
+    "start-task",
+    "implement-change",
+    "update-project-task",
+    "finish-task"
+  ],
+  "evidence": [],
+  "notes": []
+}

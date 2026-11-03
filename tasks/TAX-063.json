@@ -1,0 +1,47 @@
+{
+  "id": "TAX-063",
+  "kind": "task",
+  "title": "Deployment configuration, backup and restore rehearsal",
+  "owner": "Keletso",
+  "area": "integration",
+  "phase": "pilot",
+  "status": "BACKLOG",
+  "priority": "P0",
+  "depends_on": [
+    "TAX-054",
+    "TAX-062"
+  ],
+  "claimed_by": null,
+  "branch": null,
+  "pr": null,
+  "scope": "Prepare private-network deployment configuration, secret references and isolated backup/restore procedure",
+  "inputs": [
+    "PROJECT.md",
+    "docs/ARCHITECTURE.md",
+    "docs/API_CONTRACTS.md",
+    "docs/REQUIREMENTS.md"
+  ],
+  "acceptance": [
+    {
+      "text": "Prepare private-network deployment configuration, secret references and isolated backup/restore procedure",
+      "done": false
+    },
+    {
+      "text": "Restore synthetic cases and evidence in disposable environment; verify health and document actual resource needs",
+      "done": false
+    },
+    {
+      "text": "Record relevant tests and evidence, update task status and open a human-review PR",
+      "done": false
+    }
+  ],
+  "verification": "Restore synthetic cases and evidence in disposable environment; verify health and document actual resource needs",
+  "skills": [
+    "start-task",
+    "implement-change",
+    "update-project-task",
+    "finish-task"
+  ],
+  "evidence": [],
+  "notes": []
+}

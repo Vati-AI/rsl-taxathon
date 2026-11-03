@@ -1,0 +1,50 @@
+{
+  "id": "TAX-056",
+  "kind": "task",
+  "title": "Agent evaluation and injection regression",
+  "owner": "Yellow",
+  "area": "tests/ai",
+  "phase": "pilot",
+  "status": "BACKLOG",
+  "priority": "P0",
+  "depends_on": [
+    "TAX-049",
+    "TAX-050",
+    "TAX-051",
+    "TAX-052",
+    "TAX-053"
+  ],
+  "claimed_by": null,
+  "branch": null,
+  "pr": null,
+  "scope": "Create expected output/citation checks and hostile-document fixtures for every playbook",
+  "inputs": [
+    "PROJECT.md",
+    "docs/ARCHITECTURE.md",
+    "docs/API_CONTRACTS.md",
+    "docs/REQUIREMENTS.md"
+  ],
+  "acceptance": [
+    {
+      "text": "Create expected output/citation checks and hostile-document fixtures for every playbook",
+      "done": false
+    },
+    {
+      "text": "Measure false positives, citation coverage and human-interrupt compliance; report failures without hand-waving",
+      "done": false
+    },
+    {
+      "text": "Record relevant tests and evidence, update task status and open a human-review PR",
+      "done": false
+    }
+  ],
+  "verification": "Measure false positives, citation coverage and human-interrupt compliance; report failures without hand-waving",
+  "skills": [
+    "start-task",
+    "implement-change",
+    "update-project-task",
+    "finish-task"
+  ],
+  "evidence": [],
+  "notes": []
+}

@@ -1,0 +1,48 @@
+{
+  "id": "TAX-038",
+  "kind": "task",
+  "title": "Docling extraction adapter",
+  "owner": "Keletso",
+  "area": "integration",
+  "phase": "pilot",
+  "status": "BACKLOG",
+  "priority": "P0",
+  "depends_on": [
+    "TAX-028",
+    "TAX-032",
+    "TAX-033"
+  ],
+  "claimed_by": null,
+  "branch": null,
+  "pr": null,
+  "scope": "Handle authenticated file conversion, async polling, extraction provenance and retry-safe persistence",
+  "inputs": [
+    "PROJECT.md",
+    "docs/ARCHITECTURE.md",
+    "docs/API_CONTRACTS.md",
+    "docs/REQUIREMENTS.md"
+  ],
+  "acceptance": [
+    {
+      "text": "Handle authenticated file conversion, async polling, extraction provenance and retry-safe persistence",
+      "done": false
+    },
+    {
+      "text": "Test timeout, malformed document and one table/OCR fixture with source page references",
+      "done": false
+    },
+    {
+      "text": "Record relevant tests and evidence, update task status and open a human-review PR",
+      "done": false
+    }
+  ],
+  "verification": "Test timeout, malformed document and one table/OCR fixture with source page references",
+  "skills": [
+    "start-task",
+    "implement-change",
+    "update-project-task",
+    "finish-task"
+  ],
+  "evidence": [],
+  "notes": []
+}

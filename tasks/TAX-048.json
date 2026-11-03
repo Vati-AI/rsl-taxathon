@@ -1,0 +1,48 @@
+{
+  "id": "TAX-048",
+  "kind": "task",
+  "title": "VAT refund reconciliation and three lanes",
+  "owner": "Gupta",
+  "area": "ai",
+  "phase": "pilot",
+  "status": "BACKLOG",
+  "priority": "P0",
+  "depends_on": [
+    "TAX-022",
+    "TAX-024",
+    "TAX-018"
+  ],
+  "claimed_by": null,
+  "branch": null,
+  "pr": null,
+  "scope": "Calculate explained/unresolved amounts using deterministic tools and propose fast, standard or targeted lane",
+  "inputs": [
+    "PROJECT.md",
+    "docs/ARCHITECTURE.md",
+    "docs/API_CONTRACTS.md",
+    "docs/REQUIREMENTS.md"
+  ],
+  "acceptance": [
+    {
+      "text": "Calculate explained/unresolved amounts using deterministic tools and propose fast, standard or targeted lane",
+      "done": false
+    },
+    {
+      "text": "Check decimal totals and all relevant legitimate/missing-evidence cases; lane is advisory until officer approval",
+      "done": false
+    },
+    {
+      "text": "Record relevant tests and evidence, update task status and open a human-review PR",
+      "done": false
+    }
+  ],
+  "verification": "Check decimal totals and all relevant legitimate/missing-evidence cases; lane is advisory until officer approval",
+  "skills": [
+    "start-task",
+    "implement-change",
+    "update-project-task",
+    "finish-task"
+  ],
+  "evidence": [],
+  "notes": []
+}

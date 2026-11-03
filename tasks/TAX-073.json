@@ -1,0 +1,47 @@
+{
+  "id": "TAX-073",
+  "kind": "task",
+  "title": "Tax/customs multi-value reconciliation",
+  "owner": "Keletso",
+  "area": "integration",
+  "phase": "expansion",
+  "status": "BACKLOG",
+  "priority": "P1",
+  "depends_on": [
+    "TAX-048",
+    "TAX-018"
+  ],
+  "claimed_by": null,
+  "branch": null,
+  "pr": null,
+  "scope": "Map customs, invoice, accounting and payment values with currency/date context",
+  "inputs": [
+    "PROJECT.md",
+    "docs/ARCHITECTURE.md",
+    "docs/API_CONTRACTS.md",
+    "docs/REQUIREMENTS.md"
+  ],
+  "acceptance": [
+    {
+      "text": "Map customs, invoice, accounting and payment values with currency/date context",
+      "done": false
+    },
+    {
+      "text": "Different legitimate bases remain distinguishable; missing source does not imply false declaration",
+      "done": false
+    },
+    {
+      "text": "Record relevant tests and evidence, update task status and open a human-review PR",
+      "done": false
+    }
+  ],
+  "verification": "Different legitimate bases remain distinguishable; missing source does not imply false declaration",
+  "skills": [
+    "start-task",
+    "implement-change",
+    "update-project-task",
+    "finish-task"
+  ],
+  "evidence": [],
+  "notes": []
+}

@@ -1,0 +1,44 @@
+{
+  "id": "TAX-020",
+  "kind": "task",
+  "title": "Auditor shell and shared visual components",
+  "owner": "Leseli",
+  "area": "apps/auditor-web",
+  "phase": "foundation",
+  "status": "READY",
+  "priority": "P0",
+  "depends_on": [],
+  "claimed_by": null,
+  "branch": null,
+  "pr": null,
+  "scope": "Build officer navigation, dashboard shell and case page skeleton against the fixture contract",
+  "inputs": [
+    "PROJECT.md",
+    "docs/ARCHITECTURE.md",
+    "docs/API_CONTRACTS.md",
+    "docs/REQUIREMENTS.md"
+  ],
+  "acceptance": [
+    {
+      "text": "Build officer navigation, dashboard shell and case page skeleton against the fixture contract",
+      "done": false
+    },
+    {
+      "text": "Run browser smoke checks for navigation, keyboard focus and loading/error/empty states",
+      "done": false
+    },
+    {
+      "text": "Record relevant tests and evidence, update task status and open a human-review PR",
+      "done": false
+    }
+  ],
+  "verification": "Run browser smoke checks for navigation, keyboard focus and loading/error/empty states",
+  "skills": [
+    "start-task",
+    "implement-change",
+    "update-project-task",
+    "finish-task"
+  ],
+  "evidence": [],
+  "notes": []
+}

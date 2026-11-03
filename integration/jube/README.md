@@ -1,6 +1,6 @@
 # jube
 
-Risk evaluation. Owner: Keletso; LangGraph implementation is owned by Gupta.
+Risk evaluation and operational investigation case management. Owner: Keletso; LangGraph implementation is owned by Gupta.
 
 - Upstream: https://github.com/jube-home/aml-fraud-transaction-monitoring
 - Official documentation: https://www.jube.io/docs/GettingStarted/DeployingWithDocker/

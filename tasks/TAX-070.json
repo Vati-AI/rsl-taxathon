@@ -1,0 +1,48 @@
+{
+  "id": "TAX-070",
+  "kind": "task",
+  "title": "Outcome and appeal feedback loop",
+  "owner": "Gupta",
+  "area": "ai",
+  "phase": "expansion",
+  "status": "BACKLOG",
+  "priority": "P1",
+  "depends_on": [
+    "TAX-068",
+    "TAX-069",
+    "TAX-066"
+  ],
+  "claimed_by": null,
+  "branch": null,
+  "pr": null,
+  "scope": "Propose review of weak playbooks/rules from upheld/overturned outcomes",
+  "inputs": [
+    "PROJECT.md",
+    "docs/ARCHITECTURE.md",
+    "docs/API_CONTRACTS.md",
+    "docs/REQUIREMENTS.md"
+  ],
+  "acceptance": [
+    {
+      "text": "Propose review of weak playbooks/rules from upheld/overturned outcomes",
+      "done": false
+    },
+    {
+      "text": "Prevent automatic legal-interpretation changes and preserve evaluation lineage",
+      "done": false
+    },
+    {
+      "text": "Record relevant tests and evidence, update task status and open a human-review PR",
+      "done": false
+    }
+  ],
+  "verification": "Prevent automatic legal-interpretation changes and preserve evaluation lineage",
+  "skills": [
+    "start-task",
+    "implement-change",
+    "update-project-task",
+    "finish-task"
+  ],
+  "evidence": [],
+  "notes": []
+}

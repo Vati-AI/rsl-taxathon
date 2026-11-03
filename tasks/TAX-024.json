@@ -1,0 +1,44 @@
+{
+  "id": "TAX-024",
+  "kind": "task",
+  "title": "Five pilot scenarios and expected outcomes",
+  "owner": "Yellow",
+  "area": "data",
+  "phase": "foundation",
+  "status": "READY",
+  "priority": "P0",
+  "depends_on": [],
+  "claimed_by": null,
+  "branch": null,
+  "pr": null,
+  "scope": "Add linked synthetic returns, invoices, payments and contracts for legitimate refund, related parties, employment ambiguity, imported services and policy gap",
+  "inputs": [
+    "PROJECT.md",
+    "docs/ARCHITECTURE.md",
+    "docs/API_CONTRACTS.md",
+    "docs/REQUIREMENTS.md"
+  ],
+  "acceptance": [
+    {
+      "text": "Add linked synthetic returns, invoices, payments and contracts for legitimate refund, related parties, employment ambiguity, imported services and policy gap",
+      "done": false
+    },
+    {
+      "text": "Validate IDs and decimal reconciliation; assert expected findings and expected non-findings for all five cases",
+      "done": false
+    },
+    {
+      "text": "Record relevant tests and evidence, update task status and open a human-review PR",
+      "done": false
+    }
+  ],
+  "verification": "Validate IDs and decimal reconciliation; assert expected findings and expected non-findings for all five cases",
+  "skills": [
+    "start-task",
+    "implement-change",
+    "update-project-task",
+    "finish-task"
+  ],
+  "evidence": [],
+  "notes": []
+}
