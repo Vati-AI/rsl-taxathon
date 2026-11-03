@@ -84,6 +84,10 @@
     {
       "at": "2026-11-03T13:30:27.824730+00:00",
       "text": "Opened human-review PR #93; all acceptance criteria have recorded evidence. Windows tooling test has one unrelated POSIX file-mode failure, disclosed in the PR."
+    },
+    {
+      "at": "2026-11-03T13:34:35.691074+00:00",
+      "text": "Issue #23 synchronized with IN_REVIEW and PR URL. Project board sync failed: configured Vati-AI ProjectV2 #1 cannot be resolved or listed by the authorized account, even with project scope; board status remains unsynced."
     }
   ]
 }
