@@ -1,0 +1,276 @@
+{
+ "actions": [],
+ "autoname": "field:event_id",
+ "creation": "2026-11-04 12:00:00.000000",
+ "description": "Durable outbox event written with its domain change and delivered at least once (TAX-033).",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "tenant_id",
+  "case_id",
+  "event_type",
+  "event_id",
+  "correlation_id",
+  "source_service",
+  "occurred_at",
+  "idempotency_key",
+  "payload_json",
+  "column_break_delivery",
+  "status",
+  "attempts",
+  "max_attempts",
+  "next_attempt_at",
+  "last_error_code",
+  "delivered_at",
+  "dead_lettered_at",
+  "manual_retries",
+  "last_manual_retry_by",
+  "lease_section",
+  "lease_token",
+  "lease_until",
+  "locked_by",
+  "ordering_key",
+  "sequence",
+  "sequence_key",
+  "dedupe_key",
+  "request_digest"
+ ],
+ "fields": [
+  {
+   "fieldname": "tenant_id",
+   "fieldtype": "Data",
+   "label": "Tenant ID",
+   "length": 36,
+   "reqd": 1,
+   "search_index": 1,
+   "set_only_once": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1
+  },
+  {
+   "fieldname": "case_id",
+   "fieldtype": "Link",
+   "label": "Case",
+   "options": "Vati Case Identity",
+   "reqd": 1,
+   "search_index": 1,
+   "set_only_once": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1
+  },
+  {
+   "fieldname": "event_type",
+   "fieldtype": "Select",
+   "label": "Event Type",
+   "reqd": 1,
+   "set_only_once": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "options": "case.registered\ncase.status_projected\nevidence.received\nextraction.completed\nextraction.failed\ninvestigation.requested\nfinding.recorded\nevidence_request.recorded"
+  },
+  {
+   "fieldname": "event_id",
+   "fieldtype": "Data",
+   "label": "Event ID",
+   "length": 36,
+   "reqd": 1,
+   "unique": 1,
+   "set_only_once": 1
+  },
+  {
+   "fieldname": "correlation_id",
+   "fieldtype": "Data",
+   "label": "Correlation ID",
+   "length": 36,
+   "reqd": 1,
+   "set_only_once": 1
+  },
+  {
+   "fieldname": "source_service",
+   "fieldtype": "Select",
+   "label": "Source Service",
+   "reqd": 1,
+   "set_only_once": 1,
+   "options": "vati\njube\nfrappe\nopenaleph\nyente\ndocling\nlanggraph"
+  },
+  {
+   "fieldname": "occurred_at",
+   "fieldtype": "Datetime",
+   "label": "Occurred At (UTC)",
+   "reqd": 1,
+   "set_only_once": 1
+  },
+  {
+   "fieldname": "idempotency_key",
+   "fieldtype": "Data",
+   "label": "Idempotency Key",
+   "length": 255,
+   "reqd": 1,
+   "set_only_once": 1
+  },
+  {
+   "fieldname": "payload_json",
+   "fieldtype": "Code",
+   "label": "Payload",
+   "options": "JSON",
+   "reqd": 1,
+   "set_only_once": 1,
+   "description": "References only (IDs, hashes); never document content."
+  },
+  {
+   "fieldname": "column_break_delivery",
+   "fieldtype": "Column Break",
+   "label": ""
+  },
+  {
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "label": "Status",
+   "reqd": 1,
+   "default": "pending",
+   "search_index": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "options": "pending\nin_progress\nretry\ndelivered\ndead_letter"
+  },
+  {
+   "fieldname": "attempts",
+   "fieldtype": "Int",
+   "label": "Attempts",
+   "default": "0",
+   "non_negative": 1
+  },
+  {
+   "fieldname": "max_attempts",
+   "fieldtype": "Int",
+   "label": "Max Attempts",
+   "default": "5",
+   "non_negative": 1
+  },
+  {
+   "fieldname": "next_attempt_at",
+   "fieldtype": "Datetime",
+   "label": "Next Attempt At (UTC)",
+   "search_index": 1
+  },
+  {
+   "fieldname": "last_error_code",
+   "fieldtype": "Data",
+   "label": "Last Error Code",
+   "length": 64
+  },
+  {
+   "fieldname": "delivered_at",
+   "fieldtype": "Datetime",
+   "label": "Delivered At (UTC)"
+  },
+  {
+   "fieldname": "dead_lettered_at",
+   "fieldtype": "Datetime",
+   "label": "Dead-lettered At (UTC)"
+  },
+  {
+   "fieldname": "manual_retries",
+   "fieldtype": "Int",
+   "label": "Manual Retries",
+   "default": "0",
+   "non_negative": 1
+  },
+  {
+   "fieldname": "last_manual_retry_by",
+   "fieldtype": "Data",
+   "label": "Last Manual Retry By",
+   "length": 140
+  },
+  {
+   "fieldname": "lease_section",
+   "fieldtype": "Section Break",
+   "label": "Lease and ordering",
+   "collapsible": 1
+  },
+  {
+   "fieldname": "lease_token",
+   "fieldtype": "Data",
+   "label": "Lease Token",
+   "length": 36
+  },
+  {
+   "fieldname": "lease_until",
+   "fieldtype": "Datetime",
+   "label": "Lease Until (UTC)"
+  },
+  {
+   "fieldname": "locked_by",
+   "fieldtype": "Data",
+   "label": "Locked By",
+   "length": 140
+  },
+  {
+   "fieldname": "ordering_key",
+   "fieldtype": "Data",
+   "label": "Ordering Key",
+   "length": 64,
+   "read_only": 1,
+   "search_index": 1,
+   "description": "SHA-256 of tenant and case: events of one case deliver in order."
+  },
+  {
+   "fieldname": "sequence",
+   "fieldtype": "Int",
+   "label": "Sequence",
+   "read_only": 1
+  },
+  {
+   "fieldname": "sequence_key",
+   "fieldtype": "Data",
+   "label": "Sequence Key",
+   "length": 80,
+   "read_only": 1,
+   "unique": 1
+  },
+  {
+   "fieldname": "dedupe_key",
+   "fieldtype": "Data",
+   "label": "Dedupe Key",
+   "length": 64,
+   "read_only": 1,
+   "unique": 1,
+   "description": "SHA-256 of tenant and idempotency key."
+  },
+  {
+   "fieldname": "request_digest",
+   "fieldtype": "Data",
+   "label": "Request Digest",
+   "length": 64,
+   "read_only": 1
+  }
+ ],
+ "in_create": 1,
+ "index_web_pages_for_search": 0,
+ "links": [],
+ "modified": "2026-11-04 12:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Vati Tax",
+ "name": "Vati Outbox Event",
+ "naming_rule": "By fieldname",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "export": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager"
+  },
+  {
+   "read": 1,
+   "report": 1,
+   "role": "Vati Supervisor"
+  }
+ ],
+ "search_fields": "case_id,event_type,status",
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "event_type",
+ "track_changes": 1
+}

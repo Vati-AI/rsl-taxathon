@@ -5,7 +5,7 @@
   "owner": "Gupta",
   "area": "ai",
   "phase": "pilot",
-  "status": "IN_REVIEW",
+  "status": "DONE",
   "priority": "P0",
   "depends_on": [
     "TAX-048",
@@ -67,6 +67,10 @@
     {
       "at": "2026-11-04T09:23:12.346670+00:00",
       "text": "Agent finished implementation and opened human review. task.py finish steps run individually: its dev.py check/quality.py gate fails on this Windows checkout only (POSIX file-mode tooling tests; CRLF vs Prettier), documented in the PR."
+    },
+    {
+      "at": "2026-11-04T09:47:47.794885+00:00",
+      "text": "Verified PR #128 merged by Kellybrackets at 2026-11-04T09:29:44Z (merge commit 2529fd5); all three acceptance criteria recorded with evidence; CI ai-smoke/quality/validate/auditor-browser passed."
     }
   ]
 }
