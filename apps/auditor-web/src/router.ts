@@ -28,6 +28,13 @@ export const routes: RouteRecordRaw[] = [
     meta: { section: 'cases', title: 'Case' },
   },
   {
+    path: '/cases/:caseId/evidence/:evidenceId',
+    name: 'evidence',
+    component: () => import('./views/EvidenceView.vue'),
+    props: true,
+    meta: { section: 'cases', title: 'Evidence' },
+  },
+  {
     path: '/taxpayers/:taxpayerId',
     name: 'taxpayer',
     component: () => import('./views/TaxpayerView.vue'),

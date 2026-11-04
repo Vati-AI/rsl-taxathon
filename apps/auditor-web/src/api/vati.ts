@@ -95,11 +95,11 @@ const UNAVAILABLE = new Set([
   'idempotency_in_progress',
 ]);
 
-function isRecord(value: unknown): value is Json {
+export function isRecord(value: unknown): value is Json {
   return typeof value === 'object' && value !== null && !Array.isArray(value);
 }
 
-function invalid(what: string): never {
+export function invalid(what: string): never {
   throw new ApiError('invalid', `The service returned ${what} that cannot be shown safely.`);
 }
 
@@ -132,7 +132,7 @@ function errorFrom(status: number, body: unknown, fallbackReference: string): Ap
   return new ApiError('invalid', 'The request was not accepted by the case service.', options);
 }
 
-async function request(
+export async function request(
   path: string,
   query: Record<string, string>,
   fetchImpl: Fetch,
@@ -167,7 +167,7 @@ async function request(
   return body;
 }
 
-function money(value: unknown): Money | null {
+export function money(value: unknown): Money | null {
   if (value === null) return null;
   if (isRecord(value) && typeof value.amount === 'string' && DECIMAL.test(value.amount)) {
     if (typeof value.currency === 'string' && /^[A-Z]{3}$/.test(value.currency)) {
@@ -182,7 +182,7 @@ function strings(value: Json, keys: string[]) {
     if (typeof value[key] !== 'string' || value[key] === '') invalid('a record');
 }
 
-function serviceLinks(value: unknown): ServiceLink[] {
+export function serviceLinks(value: unknown): ServiceLink[] {
   if (!Array.isArray(value)) invalid('service links');
   return value.map((link) => {
     if (!isRecord(link) || !isRecord(link.sync)) invalid('a service link');
@@ -248,7 +248,7 @@ export async function listAssignedCases(fetchImpl: Fetch = fetch, signal?: Abort
 }
 
 /** A malformed ID in a link can never match a record; say "not found" without a request. */
-function requireId(id: string, what: string) {
+export function requireId(id: string, what: string) {
   if (!UUID.test(id)) throw new ApiError('not_found', `No ${what} exists with this reference.`);
 }
 

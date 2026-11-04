@@ -189,17 +189,128 @@ class ReadTests(unittest.TestCase):
         status, _, body = call("/api/v1/taxpayers/not-a-uuid")
         self.assertEqual((status, body["error"]["code"]), (400, "invalid_request"))
 
-    def test_operations_without_fixture_data_are_not_invented(self):
-        status, headers, body = call("/api/v1/cases/40000000-0000-4000-8000-000000000002/findings")
+    def test_case_without_fixture_records_is_not_invented(self):
+        data = copy.deepcopy(DATA)
+        del data["case_records"]["40000000-0000-4000-8000-000000000002"]
+        headers = {"X-Vati-Tenant-ID": TENANT}
+        status, out_headers, body = fixture_api.handle(
+            "GET", f"/api/v1/cases/{CASE_2}/findings", headers, {}, data, SPEC
+        )
         self.assertEqual((status, body["error"]["code"]), (404, "not_found"))
-        self.assertEqual(body["error"]["message"], "This operation has no fixture data.")
-        self.assertEqual(headers["X-Vati-Mode"], "fixture")
+        self.assertNotIn("data", body)
+        self.assertEqual(out_headers["X-Vati-Mode"], "fixture")
 
     def test_correlation_id_is_echoed_or_generated(self):
         _, headers, _ = call("/api/v1/cases")
         self.assertEqual(headers["X-Correlation-ID"], CORRELATION)
         _, headers, _ = call("/api/v1/cases", correlation=None)
         self.assertRegex(headers["X-Correlation-ID"], contract.UUID_RE)
+
+
+CASE_2 = "40000000-0000-4000-8000-000000000002"
+RECORD_OPERATIONS = [
+    ("evidence", "listEvidence", "Evidence"),
+    ("entities", "listEntities", "Entity"),
+    ("findings", "listFindings", "Finding"),
+]
+
+
+class CaseRecordTests(unittest.TestCase):
+    """listEvidence, listEntities and listFindings fixtures (TAX-041)."""
+
+    def test_every_record_matches_its_schema_and_case(self):
+        for case_id, records in DATA["case_records"].items():
+            for key, _, schema_name in RECORD_OPERATIONS:
+                schema = {"$ref": f"#/components/schemas/{schema_name}"}
+                for item in records[key]:
+                    with self.subTest(case=case_id, kind=key):
+                        self.assertEqual(contract.validate(item, schema, SPEC), [])
+                        self.assertEqual(item["case_id"], case_id)
+                        self.assertEqual(item["tenant_id"], TENANT)
+
+    def test_every_fixture_case_has_a_record_entry(self):
+        self.assertEqual(sorted(DATA["case_records"]), sorted(c["case_id"] for c in DATA["cases"]))
+
+    def test_finding_citations_resolve_to_stored_evidence_hashes(self):
+        for case_id, records in DATA["case_records"].items():
+            hashes = {e["evidence_id"]: e["document_sha256"] for e in records["evidence"]}
+            for finding in records["findings"]:
+                for ref in finding["evidence_refs"]:
+                    with self.subTest(finding=finding["finding_id"]):
+                        self.assertEqual(hashes.get(ref["evidence_id"]), ref["document_sha256"])
+                        locator = ref["locator"]
+                        self.assertTrue(locator["page"] or locator["record"])
+
+    def test_ownership_and_payment_references_name_case_entities(self):
+        for records in DATA["case_records"].values():
+            ids = {e["entity_id"] for e in records["entities"]}
+            for entity in records["entities"]:
+                for prop in ("owner", "asset", "payer", "beneficiary"):
+                    for value in entity["properties"].get(prop, []):
+                        with self.subTest(entity=entity["entity_id"], prop=prop):
+                            self.assertIn(value, ids)
+
+    def test_disputed_ownership_case_has_the_records_the_view_needs(self):
+        records = DATA["case_records"][CASE_2]
+        kinds = {f["kind"] for f in records["findings"]}
+        self.assertTrue({"contradictory_evidence", "missing_evidence"} <= kinds)
+        statuses = {c["review_status"] for e in records["entities"] for c in e["match_candidates"]}
+        self.assertEqual(statuses, {"unreviewed", "confirmed", "rejected"})
+        on_file = {e["evidence_id"] for e in records["evidence"]}
+        cited = {i for e in records["entities"] for i in e["evidence_ids"]}
+        self.assertTrue(cited - on_file, "SYN-002 keeps one entity citing evidence not on file")
+        superseded = [e for e in records["evidence"] if e["supersedes_evidence_id"]]
+        self.assertEqual(len(superseded), 1)
+        self.assertIn(superseded[0]["supersedes_evidence_id"], on_file)
+
+    def test_list_operations_conform_and_page(self):
+        for key, operation, _ in RECORD_OPERATIONS:
+            path = f"/api/v1/cases/{CASE_2}/{key}"
+            with self.subTest(operation=operation):
+                status, headers, body = call(path)
+                self.assertEqual(status, 200)
+                self.assertEqual(headers["X-Vati-Mode"], "fixture")
+                self.assertEqual(conforms(path, {}, status, headers, body, operation), [])
+                self.assertEqual(body["data"], DATA["case_records"][CASE_2][key])
+                seen, cursor = [], None
+                for _ in range(20):
+                    query = {"limit": "2", **({"cursor": cursor} if cursor else {})}
+                    status, headers, body = call(path, query)
+                    self.assertEqual(conforms(path, query, status, headers, body, operation), [])
+                    seen += body["data"]
+                    cursor = body["meta"]["next_cursor"]
+                    if not body["meta"]["has_more"]:
+                        break
+                self.assertEqual(seen, DATA["case_records"][CASE_2][key])
+
+    def test_case_without_records_is_an_empty_page(self):
+        path = "/api/v1/cases/40000000-0000-4000-8000-000000000007/findings"
+        status, _, body = call(path)
+        self.assertEqual(
+            (status, body), (200, {"data": [], "meta": {"next_cursor": None, "has_more": False}})
+        )
+
+    def test_unknown_case_other_tenant_and_bad_cursor_are_refused(self):
+        status, _, body = call("/api/v1/cases/40000000-0000-4000-8000-000000000099/evidence")
+        self.assertEqual((status, body["error"]["code"]), (404, "not_found"))
+        status, _, body = call(f"/api/v1/cases/{CASE_2}/entities", tenant=OTHER_TENANT)
+        self.assertEqual((status, body["error"]["code"]), (403, "tenant_scope_denied"))
+        self.assertNotIn("data", body)
+        status, _, body = call(f"/api/v1/cases/{CASE_2}/findings", {"cursor": "abc"})
+        self.assertEqual((status, body["error"]["code"]), (400, "invalid_request"))
+        status, _, body = call("/api/v1/cases/SYN-002/evidence")
+        self.assertEqual((status, body["error"]["code"]), (400, "invalid_case_id"))
+
+    def test_unsynthetic_records_file_is_refused(self):
+        path = ROOT / "integration" / "api" / "fixtures" / "case_records.json"
+        text = path.read_text(encoding="utf-8").replace(
+            '"synthetic": true,\n  "cases"', '"synthetic": false,\n  "cases"', 1
+        )
+        with tempfile.TemporaryDirectory() as folder:
+            tmp = Path(folder) / "records.json"
+            tmp.write_text(text, encoding="utf-8")
+            with self.assertRaises(ValueError):
+                fixture_api.load_fixture(records=tmp)
 
 
 if __name__ == "__main__":

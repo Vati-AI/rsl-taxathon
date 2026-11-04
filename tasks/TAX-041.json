@@ -27,19 +27,19 @@
   "acceptance": [
     {
       "text": "Display evidence citations, page/record references, relationships and clearly marked disputed matches",
-      "done": false
+      "done": true
     },
     {
       "text": "Browser tests navigate finding-to-source and show uncertain ownership without implying guilt",
-      "done": false
+      "done": true
     },
     {
       "text": "Record relevant tests and evidence, update task status and open a human-review PR",
-      "done": false
+      "done": true
     },
     {
       "text": "Follow docs/DESIGN_STANDARD.md; supply relevant viewport/state screenshots and keyboard/accessibility evidence for human visual review",
-      "done": false
+      "done": true
     }
   ],
   "verification": "Browser tests navigate finding-to-source and show uncertain ownership without implying guilt",
@@ -49,7 +49,24 @@
     "update-project-task",
     "finish-task"
   ],
-  "evidence": [],
+  "evidence": [
+    {
+      "criterion": 1,
+      "text": "Case detail gains Evidence, Relationships and Findings tabs and a record page (/auditor/cases/:caseId/evidence/:evidenceId) reading listEvidence/listEntities/listFindings (src/api/caseRecords.ts, strict parsing; non-synthetic, other-case, malformed-hash and approval-less records refused). Citations show document, version and page/record locator and link only when the cited SHA-256 matches the stored original (otherwise 'not on file' or 'does not match'). Relationships show parties, ownership and payments from FtM entities; yente candidates are labelled unreviewed/confirmed/rejected with 'A similarity score is not identity'; ownership cited by an unresolved finding is marked 'Uncertain: records disagree' with every stake shown as recorded. Discrepancies (records disagree) and missing evidence are separate groups. Fixture server serves the three operations from integration/api/fixtures/case_records.json (synthetic). 62 vitest tests pass (24 new in caseRecords.test.ts and evidence.test.ts); 25 fixture contract tests pass (10 new)."
+    },
+    {
+      "criterion": 2,
+      "text": "apps/auditor-web/e2e/evidence.spec.ts (Playwright, Edge, fixture server): a finding citation opens the record page at 'Cited location: Page 3' with the full SHA-256, and 'Back to the finding' returns focus to that finding; a record locator (row 4) is followed by keyboard only; three ownership rows are marked 'Uncertain: records disagree' with 60%, 55% and 40% shown as recorded, and the page contains none of fraud/guilt/evasion/suspicious/offence/wrongdoing/abuse; discrepancies and missing evidence are separate groups; superseded version, failed extraction, empty, unknown and denied states. Full browser suite: 32 passed (6 screenshot captures skipped by default)."
+    },
+    {
+      "criterion": 3,
+      "text": "npm run check passes (lint, format, typecheck, 62 auditor + 27 taxpayer unit tests, both builds, frontend-test typecheck). dev.py check steps run with the venv Python: validate, data, integration, ai, contract.py, contracts (25), backend pass; tests/tooling has 2 existing Windows-only file-permission failures (0o666 vs 0o600) unrelated to this change. ruff check and mypy (130 files) pass. Review PR opened by this task."
+    },
+    {
+      "criterion": 4,
+      "text": "docs/evidence/TAX-041: evidence, relationships and findings tabs and two record pages at 1440/1024/390 px; loading, empty, denied, unavailable and not-found states at 1440/390 px; focus on a citation link and focus returned to a finding (Edge, Windows). axe WCAG 2 A/AA and 2.1 AA: no serious or critical violations on the three tabs and two record pages. Wide tables scroll inside labelled focusable regions. Visual approval is left to the reviewer."
+    }
+  ],
   "notes": [
     {
       "at": "2026-11-04T11:20:21.316310+00:00",

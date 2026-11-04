@@ -1,0 +1,1339 @@
+{
+  "description": "Synthetic, contract-shaped fixture data for listEvidence, listEntities and listFindings (TAX-041), served by scripts/dev.py serve. Keys are case IDs from auditor_queue.json; a case with empty lists has no records yet. Every record is synthetic. Validated against openapi.json by tests/contracts/test_fixture_api.py.",
+  "synthetic": true,
+  "cases": {
+    "40000000-0000-4000-8000-000000000001": {
+      "evidence": [
+        {
+          "evidence_id": "50000000-0000-4000-8000-000000000001",
+          "case_id": "40000000-0000-4000-8000-000000000001",
+          "tenant_id": "10000000-0000-4000-8000-000000000001",
+          "version": 1,
+          "supersedes_evidence_id": null,
+          "document_sha256": "1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f",
+          "media_type": "application/pdf",
+          "size_bytes": 48213,
+          "document_type": "invoice",
+          "source": "synthetic_fixture",
+          "received_at": "2026-11-03T10:02:00Z",
+          "extraction": {
+            "status": "completed",
+            "extractor_version": "docling-serve@locked",
+            "error_code": null
+          },
+          "service_links": [
+            {
+              "service": "frappe",
+              "external_type": "File",
+              "external_id": "synthetic-invoice-0001.pdf",
+              "sync": {
+                "state": "synced",
+                "last_attempt_at": "2026-11-03T10:00:01Z",
+                "error_code": null
+              }
+            },
+            {
+              "service": "openaleph",
+              "external_type": "document",
+              "external_id": "syn-doc-0001",
+              "sync": {
+                "state": "synced",
+                "last_attempt_at": "2026-11-03T10:00:01Z",
+                "error_code": null
+              }
+            }
+          ],
+          "synthetic": true
+        },
+        {
+          "evidence_id": "50000000-0000-4000-8000-000000000002",
+          "case_id": "40000000-0000-4000-8000-000000000001",
+          "tenant_id": "10000000-0000-4000-8000-000000000001",
+          "version": 1,
+          "supersedes_evidence_id": null,
+          "document_sha256": "1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e",
+          "media_type": "application/pdf",
+          "size_bytes": 51007,
+          "document_type": "invoice",
+          "source": "synthetic_fixture",
+          "received_at": "2026-11-03T10:02:30Z",
+          "extraction": {
+            "status": "completed",
+            "extractor_version": "docling-serve@locked",
+            "error_code": null
+          },
+          "service_links": [
+            {
+              "service": "frappe",
+              "external_type": "File",
+              "external_id": "synthetic-invoice-0002.pdf",
+              "sync": {
+                "state": "synced",
+                "last_attempt_at": "2026-11-03T10:00:01Z",
+                "error_code": null
+              }
+            },
+            {
+              "service": "openaleph",
+              "external_type": "document",
+              "external_id": "syn-doc-0002",
+              "sync": {
+                "state": "synced",
+                "last_attempt_at": "2026-11-03T10:00:01Z",
+                "error_code": null
+              }
+            }
+          ],
+          "synthetic": true
+        }
+      ],
+      "entities": [
+        {
+          "entity_id": "60000000-0000-4000-8000-000000000001",
+          "case_id": "40000000-0000-4000-8000-000000000001",
+          "tenant_id": "10000000-0000-4000-8000-000000000001",
+          "ftm_schema": "Company",
+          "properties": {
+            "name": [
+              "Synthetic Mountain Wholesale"
+            ],
+            "jurisdiction": [
+              "ls"
+            ]
+          },
+          "evidence_ids": [
+            "50000000-0000-4000-8000-000000000001",
+            "50000000-0000-4000-8000-000000000002"
+          ],
+          "match_candidates": [],
+          "service_links": [
+            {
+              "service": "openaleph",
+              "external_type": "entity",
+              "external_id": "syn-ent-0001",
+              "sync": {
+                "state": "synced",
+                "last_attempt_at": "2026-11-03T10:00:01Z",
+                "error_code": null
+              }
+            }
+          ],
+          "synthetic": true
+        },
+        {
+          "entity_id": "60000000-0000-4000-8000-000000000002",
+          "case_id": "40000000-0000-4000-8000-000000000001",
+          "tenant_id": "10000000-0000-4000-8000-000000000001",
+          "ftm_schema": "Company",
+          "properties": {
+            "name": [
+              "Synthetic Lesotho Packaging Supplies"
+            ],
+            "jurisdiction": [
+              "ls"
+            ]
+          },
+          "evidence_ids": [
+            "50000000-0000-4000-8000-000000000001",
+            "50000000-0000-4000-8000-000000000002"
+          ],
+          "match_candidates": [],
+          "service_links": [
+            {
+              "service": "openaleph",
+              "external_type": "entity",
+              "external_id": "syn-ent-0002",
+              "sync": {
+                "state": "synced",
+                "last_attempt_at": "2026-11-03T10:00:01Z",
+                "error_code": null
+              }
+            }
+          ],
+          "synthetic": true
+        },
+        {
+          "entity_id": "60000000-0000-4000-8000-000000000003",
+          "case_id": "40000000-0000-4000-8000-000000000001",
+          "tenant_id": "10000000-0000-4000-8000-000000000001",
+          "ftm_schema": "Payment",
+          "properties": {
+            "payer": [
+              "60000000-0000-4000-8000-000000000001"
+            ],
+            "beneficiary": [
+              "60000000-0000-4000-8000-000000000002"
+            ],
+            "amount": [
+              "56500.00"
+            ],
+            "currency": [
+              "LSL"
+            ],
+            "date": [
+              "2025-11-12"
+            ],
+            "purpose": [
+              "Settles synthetic purchase invoice INV-SYN-001-01"
+            ]
+          },
+          "evidence_ids": [
+            "50000000-0000-4000-8000-000000000001"
+          ],
+          "match_candidates": [],
+          "service_links": [
+            {
+              "service": "openaleph",
+              "external_type": "entity",
+              "external_id": "syn-ent-0003",
+              "sync": {
+                "state": "synced",
+                "last_attempt_at": "2026-11-03T10:00:01Z",
+                "error_code": null
+              }
+            }
+          ],
+          "synthetic": true
+        }
+      ],
+      "findings": [
+        {
+          "finding_id": "70000000-0000-4000-8000-000000000010",
+          "case_id": "40000000-0000-4000-8000-000000000001",
+          "tenant_id": "10000000-0000-4000-8000-000000000001",
+          "kind": "observed_fact",
+          "category": "refund_reconciliation",
+          "explanation": "Claimed input VAT matches the two synthetic purchase invoices on file.",
+          "evidence_refs": [
+            {
+              "evidence_id": "50000000-0000-4000-8000-000000000001",
+              "document_sha256": "1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f",
+              "locator": {
+                "page": 1,
+                "record": null
+              }
+            },
+            {
+              "evidence_id": "50000000-0000-4000-8000-000000000002",
+              "document_sha256": "1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e",
+              "locator": {
+                "page": 1,
+                "record": null
+              }
+            }
+          ],
+          "unresolved_amount": null,
+          "confidence": "high",
+          "alternative_explanations": [],
+          "legal_route": {
+            "status": "unverified",
+            "citation": null,
+            "verified_by": null
+          },
+          "proposed_action": {
+            "type": "none",
+            "requires_human_approval": true
+          },
+          "producer": "langgraph_run",
+          "producer_version": "refund_reconciliation@1",
+          "created_at": "2026-11-03T13:00:00Z"
+        }
+      ]
+    },
+    "40000000-0000-4000-8000-000000000002": {
+      "evidence": [
+        {
+          "evidence_id": "50000000-0000-4000-8000-000000000021",
+          "case_id": "40000000-0000-4000-8000-000000000002",
+          "tenant_id": "10000000-0000-4000-8000-000000000001",
+          "version": 1,
+          "supersedes_evidence_id": null,
+          "document_sha256": "2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a",
+          "media_type": "application/pdf",
+          "size_bytes": 120412,
+          "document_type": "contract",
+          "source": "synthetic_fixture",
+          "received_at": "2026-11-03T10:05:00Z",
+          "extraction": {
+            "status": "completed",
+            "extractor_version": "docling-serve@locked",
+            "error_code": null
+          },
+          "service_links": [
+            {
+              "service": "frappe",
+              "external_type": "File",
+              "external_id": "synthetic-contract-0021",
+              "sync": {
+                "state": "synced",
+                "last_attempt_at": "2026-11-03T10:00:01Z",
+                "error_code": null
+              }
+            },
+            {
+              "service": "openaleph",
+              "external_type": "document",
+              "external_id": "syn-doc-0021",
+              "sync": {
+                "state": "synced",
+                "last_attempt_at": "2026-11-03T10:00:01Z",
+                "error_code": null
+              }
+            }
+          ],
+          "synthetic": true
+        },
+        {
+          "evidence_id": "50000000-0000-4000-8000-000000000022",
+          "case_id": "40000000-0000-4000-8000-000000000002",
+          "tenant_id": "10000000-0000-4000-8000-000000000001",
+          "version": 1,
+          "supersedes_evidence_id": null,
+          "document_sha256": "2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b",
+          "media_type": "application/pdf",
+          "size_bytes": 61230,
+          "document_type": "invoice",
+          "source": "synthetic_fixture",
+          "received_at": "2026-11-03T10:05:20Z",
+          "extraction": {
+            "status": "completed",
+            "extractor_version": "docling-serve@locked",
+            "error_code": null
+          },
+          "service_links": [
+            {
+              "service": "frappe",
+              "external_type": "File",
+              "external_id": "synthetic-invoice-0022",
+              "sync": {
+                "state": "synced",
+                "last_attempt_at": "2026-11-03T10:00:01Z",
+                "error_code": null
+              }
+            },
+            {
+              "service": "openaleph",
+              "external_type": "document",
+              "external_id": "syn-doc-0022",
+              "sync": {
+                "state": "synced",
+                "last_attempt_at": "2026-11-03T10:00:01Z",
+                "error_code": null
+              }
+            }
+          ],
+          "synthetic": true
+        },
+        {
+          "evidence_id": "50000000-0000-4000-8000-000000000024",
+          "case_id": "40000000-0000-4000-8000-000000000002",
+          "tenant_id": "10000000-0000-4000-8000-000000000001",
+          "version": 1,
+          "supersedes_evidence_id": null,
+          "document_sha256": "2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d",
+          "media_type": "image/jpeg",
+          "size_bytes": 840221,
+          "document_type": "invoice",
+          "source": "synthetic_fixture",
+          "received_at": "2026-11-03T10:05:40Z",
+          "extraction": {
+            "status": "failed",
+            "extractor_version": "docling-serve@locked",
+            "error_code": "unreadable_scan"
+          },
+          "service_links": [
+            {
+              "service": "frappe",
+              "external_type": "File",
+              "external_id": "synthetic-invoice-0024",
+              "sync": {
+                "state": "synced",
+                "last_attempt_at": "2026-11-03T10:00:01Z",
+                "error_code": null
+              }
+            }
+          ],
+          "synthetic": true
+        },
+        {
+          "evidence_id": "50000000-0000-4000-8000-000000000023",
+          "case_id": "40000000-0000-4000-8000-000000000002",
+          "tenant_id": "10000000-0000-4000-8000-000000000001",
+          "version": 2,
+          "supersedes_evidence_id": "50000000-0000-4000-8000-000000000024",
+          "document_sha256": "2c2c2c2c2c2c2c2c2c2c2c2c2c2c2c2c2c2c2c2c2c2c2c2c2c2c2c2c2c2c2c2c",
+          "media_type": "application/pdf",
+          "size_bytes": 58004,
+          "document_type": "invoice",
+          "source": "synthetic_fixture",
+          "received_at": "2026-11-03T11:20:00Z",
+          "extraction": {
+            "status": "completed",
+            "extractor_version": "docling-serve@locked",
+            "error_code": null
+          },
+          "service_links": [
+            {
+              "service": "frappe",
+              "external_type": "File",
+              "external_id": "synthetic-invoice-0023",
+              "sync": {
+                "state": "synced",
+                "last_attempt_at": "2026-11-03T10:00:01Z",
+                "error_code": null
+              }
+            },
+            {
+              "service": "openaleph",
+              "external_type": "document",
+              "external_id": "syn-doc-0023",
+              "sync": {
+                "state": "synced",
+                "last_attempt_at": "2026-11-03T10:00:01Z",
+                "error_code": null
+              }
+            }
+          ],
+          "synthetic": true
+        },
+        {
+          "evidence_id": "50000000-0000-4000-8000-000000000025",
+          "case_id": "40000000-0000-4000-8000-000000000002",
+          "tenant_id": "10000000-0000-4000-8000-000000000001",
+          "version": 1,
+          "supersedes_evidence_id": null,
+          "document_sha256": "2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e",
+          "media_type": "text/csv",
+          "size_bytes": 2310,
+          "document_type": "other",
+          "source": "synthetic_fixture",
+          "received_at": "2026-11-03T10:06:00Z",
+          "extraction": {
+            "status": "completed",
+            "extractor_version": "docling-serve@locked",
+            "error_code": null
+          },
+          "service_links": [
+            {
+              "service": "frappe",
+              "external_type": "File",
+              "external_id": "synthetic-other-0025",
+              "sync": {
+                "state": "synced",
+                "last_attempt_at": "2026-11-03T10:00:01Z",
+                "error_code": null
+              }
+            },
+            {
+              "service": "openaleph",
+              "external_type": "document",
+              "external_id": "syn-doc-0025",
+              "sync": {
+                "state": "synced",
+                "last_attempt_at": "2026-11-03T10:00:01Z",
+                "error_code": null
+              }
+            }
+          ],
+          "synthetic": true
+        },
+        {
+          "evidence_id": "50000000-0000-4000-8000-000000000026",
+          "case_id": "40000000-0000-4000-8000-000000000002",
+          "tenant_id": "10000000-0000-4000-8000-000000000001",
+          "version": 1,
+          "supersedes_evidence_id": null,
+          "document_sha256": "2f2f2f2f2f2f2f2f2f2f2f2f2f2f2f2f2f2f2f2f2f2f2f2f2f2f2f2f2f2f2f2f",
+          "media_type": "application/pdf",
+          "size_bytes": 402117,
+          "document_type": "financial_statement",
+          "source": "synthetic_fixture",
+          "received_at": "2026-11-03T10:06:30Z",
+          "extraction": {
+            "status": "completed",
+            "extractor_version": "docling-serve@locked",
+            "error_code": null
+          },
+          "service_links": [
+            {
+              "service": "frappe",
+              "external_type": "File",
+              "external_id": "synthetic-financial_statement-0026",
+              "sync": {
+                "state": "synced",
+                "last_attempt_at": "2026-11-03T10:00:01Z",
+                "error_code": null
+              }
+            },
+            {
+              "service": "openaleph",
+              "external_type": "document",
+              "external_id": "syn-doc-0026",
+              "sync": {
+                "state": "synced",
+                "last_attempt_at": "2026-11-03T10:00:01Z",
+                "error_code": null
+              }
+            }
+          ],
+          "synthetic": true
+        },
+        {
+          "evidence_id": "50000000-0000-4000-8000-000000000027",
+          "case_id": "40000000-0000-4000-8000-000000000002",
+          "tenant_id": "10000000-0000-4000-8000-000000000001",
+          "version": 1,
+          "supersedes_evidence_id": null,
+          "document_sha256": "3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a",
+          "media_type": "text/csv",
+          "size_bytes": 9822,
+          "document_type": "bank_statement",
+          "source": "synthetic_fixture",
+          "received_at": "2026-11-03T10:07:00Z",
+          "extraction": {
+            "status": "completed",
+            "extractor_version": "docling-serve@locked",
+            "error_code": null
+          },
+          "service_links": [
+            {
+              "service": "frappe",
+              "external_type": "File",
+              "external_id": "synthetic-bank_statement-0027",
+              "sync": {
+                "state": "synced",
+                "last_attempt_at": "2026-11-03T10:00:01Z",
+                "error_code": null
+              }
+            },
+            {
+              "service": "openaleph",
+              "external_type": "document",
+              "external_id": "syn-doc-0027",
+              "sync": {
+                "state": "synced",
+                "last_attempt_at": "2026-11-03T10:00:01Z",
+                "error_code": null
+              }
+            }
+          ],
+          "synthetic": true
+        }
+      ],
+      "entities": [
+        {
+          "entity_id": "60000000-0000-4000-8000-000000000021",
+          "case_id": "40000000-0000-4000-8000-000000000002",
+          "tenant_id": "10000000-0000-4000-8000-000000000001",
+          "ftm_schema": "Company",
+          "properties": {
+            "name": [
+              "Synthetic Border Retail"
+            ],
+            "jurisdiction": [
+              "ls"
+            ],
+            "registrationNumber": [
+              "SYN-REG-2002"
+            ]
+          },
+          "evidence_ids": [
+            "50000000-0000-4000-8000-000000000025",
+            "50000000-0000-4000-8000-000000000026"
+          ],
+          "match_candidates": [
+            {
+              "candidate_id": "syn-yente-0042",
+              "dataset": "vati_synthetic",
+              "dataset_version": "20261103",
+              "score": "0.71",
+              "review_status": "unreviewed",
+              "reviewed_by": null
+            }
+          ],
+          "service_links": [
+            {
+              "service": "openaleph",
+              "external_type": "entity",
+              "external_id": "syn-ent-0021",
+              "sync": {
+                "state": "synced",
+                "last_attempt_at": "2026-11-03T10:00:01Z",
+                "error_code": null
+              }
+            }
+          ],
+          "synthetic": true
+        },
+        {
+          "entity_id": "60000000-0000-4000-8000-000000000023",
+          "case_id": "40000000-0000-4000-8000-000000000002",
+          "tenant_id": "10000000-0000-4000-8000-000000000001",
+          "ftm_schema": "Company",
+          "properties": {
+            "name": [
+              "Synthetic Group Holdings"
+            ],
+            "jurisdiction": [
+              "za"
+            ]
+          },
+          "evidence_ids": [
+            "50000000-0000-4000-8000-000000000021",
+            "50000000-0000-4000-8000-000000000025",
+            "50000000-0000-4000-8000-000000000026"
+          ],
+          "match_candidates": [
+            {
+              "candidate_id": "syn-yente-0107",
+              "dataset": "vati_synthetic",
+              "dataset_version": "20261103",
+              "score": "0.93",
+              "review_status": "confirmed",
+              "reviewed_by": "80000000-0000-4000-8000-000000000001"
+            },
+            {
+              "candidate_id": "syn-yente-0108",
+              "dataset": "vati_synthetic",
+              "dataset_version": "20261103",
+              "score": "0.64",
+              "review_status": "rejected",
+              "reviewed_by": "80000000-0000-4000-8000-000000000001"
+            }
+          ],
+          "service_links": [
+            {
+              "service": "openaleph",
+              "external_type": "entity",
+              "external_id": "syn-ent-0023",
+              "sync": {
+                "state": "synced",
+                "last_attempt_at": "2026-11-03T10:00:01Z",
+                "error_code": null
+              }
+            }
+          ],
+          "synthetic": true
+        },
+        {
+          "entity_id": "60000000-0000-4000-8000-000000000024",
+          "case_id": "40000000-0000-4000-8000-000000000002",
+          "tenant_id": "10000000-0000-4000-8000-000000000001",
+          "ftm_schema": "Person",
+          "properties": {
+            "name": [
+              "Synthetic Director Palesa Example"
+            ],
+            "nationality": [
+              "ls"
+            ]
+          },
+          "evidence_ids": [
+            "50000000-0000-4000-8000-000000000026"
+          ],
+          "match_candidates": [],
+          "service_links": [
+            {
+              "service": "openaleph",
+              "external_type": "entity",
+              "external_id": "syn-ent-0024",
+              "sync": {
+                "state": "synced",
+                "last_attempt_at": "2026-11-03T10:00:01Z",
+                "error_code": null
+              }
+            }
+          ],
+          "synthetic": true
+        },
+        {
+          "entity_id": "60000000-0000-4000-8000-000000000025",
+          "case_id": "40000000-0000-4000-8000-000000000002",
+          "tenant_id": "10000000-0000-4000-8000-000000000001",
+          "ftm_schema": "Company",
+          "properties": {
+            "name": [
+              "Synthetic Office Supplies"
+            ],
+            "jurisdiction": [
+              "ls"
+            ]
+          },
+          "evidence_ids": [
+            "50000000-0000-4000-8000-000000000023"
+          ],
+          "match_candidates": [],
+          "service_links": [
+            {
+              "service": "openaleph",
+              "external_type": "entity",
+              "external_id": "syn-ent-0025",
+              "sync": {
+                "state": "synced",
+                "last_attempt_at": "2026-11-03T10:00:01Z",
+                "error_code": null
+              }
+            }
+          ],
+          "synthetic": true
+        },
+        {
+          "entity_id": "60000000-0000-4000-8000-000000000022",
+          "case_id": "40000000-0000-4000-8000-000000000002",
+          "tenant_id": "10000000-0000-4000-8000-000000000001",
+          "ftm_schema": "Ownership",
+          "properties": {
+            "owner": [
+              "60000000-0000-4000-8000-000000000023"
+            ],
+            "asset": [
+              "60000000-0000-4000-8000-000000000021"
+            ],
+            "percentage": [
+              "60"
+            ],
+            "role": [
+              "shareholder"
+            ],
+            "startDate": [
+              "2019-01-01"
+            ]
+          },
+          "evidence_ids": [
+            "50000000-0000-4000-8000-000000000025"
+          ],
+          "match_candidates": [],
+          "service_links": [
+            {
+              "service": "openaleph",
+              "external_type": "entity",
+              "external_id": "syn-ent-0022",
+              "sync": {
+                "state": "synced",
+                "last_attempt_at": "2026-11-03T10:00:01Z",
+                "error_code": null
+              }
+            }
+          ],
+          "synthetic": true
+        },
+        {
+          "entity_id": "60000000-0000-4000-8000-000000000026",
+          "case_id": "40000000-0000-4000-8000-000000000002",
+          "tenant_id": "10000000-0000-4000-8000-000000000001",
+          "ftm_schema": "Ownership",
+          "properties": {
+            "owner": [
+              "60000000-0000-4000-8000-000000000023"
+            ],
+            "asset": [
+              "60000000-0000-4000-8000-000000000021"
+            ],
+            "percentage": [
+              "55"
+            ],
+            "role": [
+              "shareholder"
+            ],
+            "startDate": [
+              "2024-07-01"
+            ]
+          },
+          "evidence_ids": [
+            "50000000-0000-4000-8000-000000000026"
+          ],
+          "match_candidates": [],
+          "service_links": [
+            {
+              "service": "openaleph",
+              "external_type": "entity",
+              "external_id": "syn-ent-0026",
+              "sync": {
+                "state": "synced",
+                "last_attempt_at": "2026-11-03T10:00:01Z",
+                "error_code": null
+              }
+            }
+          ],
+          "synthetic": true
+        },
+        {
+          "entity_id": "60000000-0000-4000-8000-000000000027",
+          "case_id": "40000000-0000-4000-8000-000000000002",
+          "tenant_id": "10000000-0000-4000-8000-000000000001",
+          "ftm_schema": "Ownership",
+          "properties": {
+            "owner": [
+              "60000000-0000-4000-8000-000000000024"
+            ],
+            "asset": [
+              "60000000-0000-4000-8000-000000000021"
+            ],
+            "percentage": [
+              "40"
+            ],
+            "role": [
+              "shareholder"
+            ],
+            "startDate": [
+              "2024-07-01"
+            ]
+          },
+          "evidence_ids": [
+            "50000000-0000-4000-8000-000000000026"
+          ],
+          "match_candidates": [],
+          "service_links": [
+            {
+              "service": "openaleph",
+              "external_type": "entity",
+              "external_id": "syn-ent-0027",
+              "sync": {
+                "state": "synced",
+                "last_attempt_at": "2026-11-03T10:00:01Z",
+                "error_code": null
+              }
+            }
+          ],
+          "synthetic": true
+        },
+        {
+          "entity_id": "60000000-0000-4000-8000-000000000028",
+          "case_id": "40000000-0000-4000-8000-000000000002",
+          "tenant_id": "10000000-0000-4000-8000-000000000001",
+          "ftm_schema": "Payment",
+          "properties": {
+            "payer": [
+              "60000000-0000-4000-8000-000000000021"
+            ],
+            "beneficiary": [
+              "60000000-0000-4000-8000-000000000023"
+            ],
+            "amount": [
+              "87200.00"
+            ],
+            "currency": [
+              "LSL"
+            ],
+            "date": [
+              "2025-11-20"
+            ],
+            "purpose": [
+              "Settles synthetic invoice INV-SYN-002-01 (shared logistics)"
+            ]
+          },
+          "evidence_ids": [
+            "50000000-0000-4000-8000-000000000027",
+            "50000000-0000-4000-8000-000000000022"
+          ],
+          "match_candidates": [],
+          "service_links": [
+            {
+              "service": "openaleph",
+              "external_type": "entity",
+              "external_id": "syn-ent-0028",
+              "sync": {
+                "state": "synced",
+                "last_attempt_at": "2026-11-03T10:00:01Z",
+                "error_code": null
+              }
+            }
+          ],
+          "synthetic": true
+        },
+        {
+          "entity_id": "60000000-0000-4000-8000-000000000029",
+          "case_id": "40000000-0000-4000-8000-000000000002",
+          "tenant_id": "10000000-0000-4000-8000-000000000001",
+          "ftm_schema": "Payment",
+          "properties": {
+            "payer": [
+              "60000000-0000-4000-8000-000000000021"
+            ],
+            "beneficiary": [
+              "60000000-0000-4000-8000-000000000025"
+            ],
+            "amount": [
+              "33911.11"
+            ],
+            "currency": [
+              "LSL"
+            ],
+            "date": [
+              "2025-11-28"
+            ],
+            "purpose": [
+              "Settles synthetic invoice INV-SYN-002-02 (operating supplies)"
+            ]
+          },
+          "evidence_ids": [
+            "50000000-0000-4000-8000-000000000027",
+            "50000000-0000-4000-8000-000000000023"
+          ],
+          "match_candidates": [],
+          "service_links": [
+            {
+              "service": "openaleph",
+              "external_type": "entity",
+              "external_id": "syn-ent-0029",
+              "sync": {
+                "state": "synced",
+                "last_attempt_at": "2026-11-03T10:00:01Z",
+                "error_code": null
+              }
+            }
+          ],
+          "synthetic": true
+        },
+        {
+          "entity_id": "60000000-0000-4000-8000-000000000030",
+          "case_id": "40000000-0000-4000-8000-000000000002",
+          "tenant_id": "10000000-0000-4000-8000-000000000001",
+          "ftm_schema": "Payment",
+          "properties": {
+            "payer": [
+              "60000000-0000-4000-8000-000000000021"
+            ],
+            "beneficiary": [
+              "60000000-0000-4000-8000-000000000023"
+            ],
+            "amount": [
+              "15000.00"
+            ],
+            "currency": [
+              "LSL"
+            ],
+            "date": [
+              "2025-12-15"
+            ],
+            "purpose": [
+              "Described as a management fee; no invoice supplied"
+            ]
+          },
+          "evidence_ids": [
+            "50000000-0000-4000-8000-000000000027",
+            "50000000-0000-4000-8000-000000000029"
+          ],
+          "match_candidates": [],
+          "service_links": [
+            {
+              "service": "openaleph",
+              "external_type": "entity",
+              "external_id": "syn-ent-0030",
+              "sync": {
+                "state": "synced",
+                "last_attempt_at": "2026-11-03T10:00:01Z",
+                "error_code": null
+              }
+            }
+          ],
+          "synthetic": true
+        }
+      ],
+      "findings": [
+        {
+          "finding_id": "70000000-0000-4000-8000-000000000021",
+          "case_id": "40000000-0000-4000-8000-000000000002",
+          "tenant_id": "10000000-0000-4000-8000-000000000001",
+          "kind": "observed_fact",
+          "category": "related_party",
+          "explanation": "Contract CTR-SYN-002-01 records a disclosed related-party supply of shared logistics services from Synthetic Group Holdings, invoiced at LSL 87,200.00.",
+          "evidence_refs": [
+            {
+              "evidence_id": "50000000-0000-4000-8000-000000000021",
+              "document_sha256": "2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a",
+              "locator": {
+                "page": 1,
+                "record": null
+              }
+            },
+            {
+              "evidence_id": "50000000-0000-4000-8000-000000000022",
+              "document_sha256": "2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b",
+              "locator": {
+                "page": 1,
+                "record": null
+              }
+            }
+          ],
+          "unresolved_amount": null,
+          "confidence": "high",
+          "alternative_explanations": [],
+          "legal_route": {
+            "status": "unverified",
+            "citation": null,
+            "verified_by": null
+          },
+          "proposed_action": {
+            "type": "none",
+            "requires_human_approval": true
+          },
+          "producer": "langgraph_run",
+          "producer_version": "related_party_review@1",
+          "created_at": "2026-11-03T13:00:00Z"
+        },
+        {
+          "finding_id": "70000000-0000-4000-8000-000000000022",
+          "case_id": "40000000-0000-4000-8000-000000000002",
+          "tenant_id": "10000000-0000-4000-8000-000000000001",
+          "kind": "contradictory_evidence",
+          "category": "related_party",
+          "explanation": "Two records give different shareholdings for Synthetic Group Holdings in Synthetic Border Retail: 60% in the company register extract and 55% in the 2024 annual return. With the 40% individual holding in the annual return, the recorded stakes add up to more than 100%. The records have not been reconciled.",
+          "evidence_refs": [
+            {
+              "evidence_id": "50000000-0000-4000-8000-000000000025",
+              "document_sha256": "2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e",
+              "locator": {
+                "page": null,
+                "record": "row 4"
+              }
+            },
+            {
+              "evidence_id": "50000000-0000-4000-8000-000000000026",
+              "document_sha256": "2f2f2f2f2f2f2f2f2f2f2f2f2f2f2f2f2f2f2f2f2f2f2f2f2f2f2f2f2f2f2f2f",
+              "locator": {
+                "page": 3,
+                "record": null
+              }
+            }
+          ],
+          "unresolved_amount": null,
+          "confidence": "medium",
+          "alternative_explanations": [
+            "The register extract may predate a share transfer recorded in the annual return.",
+            "One of the records may contain a data-entry error."
+          ],
+          "legal_route": {
+            "status": "unverified",
+            "citation": null,
+            "verified_by": null
+          },
+          "proposed_action": {
+            "type": "request_evidence",
+            "requires_human_approval": true
+          },
+          "producer": "langgraph_run",
+          "producer_version": "related_party_review@1",
+          "created_at": "2026-11-03T13:00:00Z"
+        },
+        {
+          "finding_id": "70000000-0000-4000-8000-000000000023",
+          "case_id": "40000000-0000-4000-8000-000000000002",
+          "tenant_id": "10000000-0000-4000-8000-000000000001",
+          "kind": "missing_evidence",
+          "category": "refund_reconciliation",
+          "explanation": "LSL 15,000.00 of claimed input VAT has no supporting invoice on file. The bank statement shows a payment of that amount described as a management fee.",
+          "evidence_refs": [
+            {
+              "evidence_id": "50000000-0000-4000-8000-000000000027",
+              "document_sha256": "3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a",
+              "locator": {
+                "page": null,
+                "record": "txn 0412"
+              }
+            }
+          ],
+          "unresolved_amount": {
+            "amount": "15000.00",
+            "currency": "LSL"
+          },
+          "confidence": "medium",
+          "alternative_explanations": [
+            "An invoice may exist that the taxpayer has not yet supplied."
+          ],
+          "legal_route": {
+            "status": "unverified",
+            "citation": null,
+            "verified_by": null
+          },
+          "proposed_action": {
+            "type": "request_evidence",
+            "requires_human_approval": true
+          },
+          "producer": "langgraph_run",
+          "producer_version": "refund_reconciliation@1",
+          "created_at": "2026-11-03T13:00:00Z"
+        },
+        {
+          "finding_id": "70000000-0000-4000-8000-000000000024",
+          "case_id": "40000000-0000-4000-8000-000000000002",
+          "tenant_id": "10000000-0000-4000-8000-000000000001",
+          "kind": "inference",
+          "category": "related_party",
+          "explanation": "Reported losses in three consecutive periods alongside related-party charges may merit specialist review of pricing. Pricing has not been established.",
+          "evidence_refs": [
+            {
+              "evidence_id": "50000000-0000-4000-8000-000000000021",
+              "document_sha256": "2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a",
+              "locator": {
+                "page": 2,
+                "record": null
+              }
+            }
+          ],
+          "unresolved_amount": null,
+          "confidence": "low",
+          "alternative_explanations": [
+            "Losses may reflect market conditions unrelated to the related-party supply."
+          ],
+          "legal_route": {
+            "status": "unverified",
+            "citation": null,
+            "verified_by": null
+          },
+          "proposed_action": {
+            "type": "specialist_review",
+            "requires_human_approval": true
+          },
+          "producer": "langgraph_run",
+          "producer_version": "related_party_review@1",
+          "created_at": "2026-11-03T13:00:00Z"
+        }
+      ]
+    },
+    "40000000-0000-4000-8000-000000000003": {
+      "evidence": [],
+      "entities": [],
+      "findings": []
+    },
+    "40000000-0000-4000-8000-000000000004": {
+      "evidence": [
+        {
+          "evidence_id": "50000000-0000-4000-8000-000000000004",
+          "case_id": "40000000-0000-4000-8000-000000000004",
+          "tenant_id": "10000000-0000-4000-8000-000000000001",
+          "version": 1,
+          "supersedes_evidence_id": null,
+          "document_sha256": "4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c",
+          "media_type": "application/pdf",
+          "size_bytes": 39021,
+          "document_type": "invoice",
+          "source": "synthetic_fixture",
+          "received_at": "2026-11-03T10:12:00Z",
+          "extraction": {
+            "status": "completed",
+            "extractor_version": "docling-serve@locked",
+            "error_code": null
+          },
+          "service_links": [
+            {
+              "service": "frappe",
+              "external_type": "File",
+              "external_id": "synthetic-invoice-0004",
+              "sync": {
+                "state": "synced",
+                "last_attempt_at": "2026-11-03T10:00:01Z",
+                "error_code": null
+              }
+            },
+            {
+              "service": "openaleph",
+              "external_type": "document",
+              "external_id": "syn-doc-0004",
+              "sync": {
+                "state": "synced",
+                "last_attempt_at": "2026-11-03T10:00:01Z",
+                "error_code": null
+              }
+            }
+          ],
+          "synthetic": true
+        }
+      ],
+      "entities": [
+        {
+          "entity_id": "60000000-0000-4000-8000-000000000041",
+          "case_id": "40000000-0000-4000-8000-000000000004",
+          "tenant_id": "10000000-0000-4000-8000-000000000001",
+          "ftm_schema": "Company",
+          "properties": {
+            "name": [
+              "Synthetic Highland Imports"
+            ],
+            "jurisdiction": [
+              "ls"
+            ]
+          },
+          "evidence_ids": [
+            "50000000-0000-4000-8000-000000000004"
+          ],
+          "match_candidates": [],
+          "service_links": [
+            {
+              "service": "openaleph",
+              "external_type": "entity",
+              "external_id": "syn-ent-0041",
+              "sync": {
+                "state": "synced",
+                "last_attempt_at": "2026-11-03T10:00:01Z",
+                "error_code": null
+              }
+            }
+          ],
+          "synthetic": true
+        },
+        {
+          "entity_id": "60000000-0000-4000-8000-000000000042",
+          "case_id": "40000000-0000-4000-8000-000000000004",
+          "tenant_id": "10000000-0000-4000-8000-000000000001",
+          "ftm_schema": "Company",
+          "properties": {
+            "name": [
+              "Synthetic Overseas Consulting"
+            ],
+            "jurisdiction": [
+              "gb"
+            ]
+          },
+          "evidence_ids": [
+            "50000000-0000-4000-8000-000000000004"
+          ],
+          "match_candidates": [],
+          "service_links": [
+            {
+              "service": "openaleph",
+              "external_type": "entity",
+              "external_id": "syn-ent-0042",
+              "sync": {
+                "state": "synced",
+                "last_attempt_at": "2026-11-03T10:00:01Z",
+                "error_code": null
+              }
+            }
+          ],
+          "synthetic": true
+        }
+      ],
+      "findings": [
+        {
+          "finding_id": "70000000-0000-4000-8000-000000000040",
+          "case_id": "40000000-0000-4000-8000-000000000004",
+          "tenant_id": "10000000-0000-4000-8000-000000000001",
+          "kind": "observed_fact",
+          "category": "imported_services",
+          "explanation": "Synthetic invoice records a foreign consulting service of LSL 3000.00.",
+          "evidence_refs": [
+            {
+              "evidence_id": "50000000-0000-4000-8000-000000000004",
+              "document_sha256": "4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c",
+              "locator": {
+                "page": 1,
+                "record": null
+              }
+            }
+          ],
+          "unresolved_amount": null,
+          "confidence": "high",
+          "alternative_explanations": [],
+          "legal_route": {
+            "status": "unverified",
+            "citation": null,
+            "verified_by": null
+          },
+          "proposed_action": {
+            "type": "none",
+            "requires_human_approval": true
+          },
+          "producer": "langgraph_run",
+          "producer_version": "imported_services_review@1",
+          "created_at": "2026-11-03T13:00:00Z"
+        },
+        {
+          "finding_id": "70000000-0000-4000-8000-000000000041",
+          "case_id": "40000000-0000-4000-8000-000000000004",
+          "tenant_id": "10000000-0000-4000-8000-000000000001",
+          "kind": "missing_evidence",
+          "category": "imported_services",
+          "explanation": "No withholding or reverse-charge record was supplied for the imported service.",
+          "evidence_refs": [
+            {
+              "evidence_id": "50000000-0000-4000-8000-000000000004",
+              "document_sha256": "4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c",
+              "locator": {
+                "page": 1,
+                "record": null
+              }
+            }
+          ],
+          "unresolved_amount": {
+            "amount": "3000.00",
+            "currency": "LSL"
+          },
+          "confidence": "medium",
+          "alternative_explanations": [
+            "Withholding may have been paid under a separate return not yet linked to this case."
+          ],
+          "legal_route": {
+            "status": "unverified",
+            "citation": null,
+            "verified_by": null
+          },
+          "proposed_action": {
+            "type": "request_evidence",
+            "requires_human_approval": true
+          },
+          "producer": "langgraph_run",
+          "producer_version": "imported_services_review@1",
+          "created_at": "2026-11-03T13:00:00Z"
+        }
+      ]
+    },
+    "40000000-0000-4000-8000-000000000005": {
+      "evidence": [],
+      "entities": [],
+      "findings": []
+    },
+    "40000000-0000-4000-8000-000000000006": {
+      "evidence": [
+        {
+          "evidence_id": "50000000-0000-4000-8000-000000000061",
+          "case_id": "40000000-0000-4000-8000-000000000006",
+          "tenant_id": "10000000-0000-4000-8000-000000000001",
+          "version": 1,
+          "supersedes_evidence_id": null,
+          "document_sha256": "6a6a6a6a6a6a6a6a6a6a6a6a6a6a6a6a6a6a6a6a6a6a6a6a6a6a6a6a6a6a6a6a",
+          "media_type": "application/pdf",
+          "size_bytes": 77120,
+          "document_type": "invoice",
+          "source": "synthetic_fixture",
+          "received_at": "2026-11-03T10:30:00Z",
+          "extraction": {
+            "status": "failed",
+            "extractor_version": "docling-serve@locked",
+            "error_code": "extraction_timeout"
+          },
+          "service_links": [
+            {
+              "service": "frappe",
+              "external_type": "File",
+              "external_id": "synthetic-invoice-0061",
+              "sync": {
+                "state": "synced",
+                "last_attempt_at": "2026-11-03T10:00:01Z",
+                "error_code": null
+              }
+            }
+          ],
+          "synthetic": true
+        }
+      ],
+      "entities": [],
+      "findings": []
+    },
+    "40000000-0000-4000-8000-000000000007": {
+      "evidence": [],
+      "entities": [],
+      "findings": []
+    },
+    "40000000-0000-4000-8000-000000000008": {
+      "evidence": [],
+      "entities": [],
+      "findings": []
+    },
+    "40000000-0000-4000-8000-000000000009": {
+      "evidence": [],
+      "entities": [],
+      "findings": []
+    }
+  }
+}

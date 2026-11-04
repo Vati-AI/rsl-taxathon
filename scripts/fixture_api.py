@@ -1,7 +1,8 @@
 """Read-only fixture implementation of the Vati /api/v1 queue operations (TAX-040).
 
 Serves listCases, getCase and getTaxpayer from integration/api/fixtures/auditor_queue.json
-for UI development. Requests are checked with the contract's own rules
+for UI development, and listEvidence, listEntities and listFindings (TAX-041) from
+integration/api/fixtures/case_records.json. Requests are checked with the contract's own rules
 (integration/api/contract.py), so missing or malformed tenant headers, bad IDs and
 unknown routes fail exactly as the contract specifies. The fixture principal may see one
 tenant; any other tenant is 403 tenant_scope_denied. Responses carry
@@ -20,6 +21,13 @@ from typing import Any
 ROOT = Path(__file__).resolve().parents[1]
 API_DIR = ROOT / "integration" / "api"
 FIXTURE_PATH = API_DIR / "fixtures" / "auditor_queue.json"
+RECORDS_PATH = API_DIR / "fixtures" / "case_records.json"
+# listEvidence/listEntities/listFindings -> list key in case_records.json (TAX-041).
+CASE_RECORD_OPERATIONS = {
+    "listEvidence": "evidence",
+    "listEntities": "entities",
+    "listFindings": "findings",
+}
 if str(API_DIR) not in sys.path:
     sys.path.insert(0, str(API_DIR))
 
@@ -45,11 +53,37 @@ MESSAGES = {
 Response = tuple[int, dict[str, str], dict[str, Any]]
 
 
-def load_fixture(path: Path = FIXTURE_PATH) -> dict[str, Any]:
+def _load_synthetic(path: Path) -> dict[str, Any]:
     data: dict[str, Any] = json.loads(path.read_text(encoding="utf-8"))
     if data.get("synthetic") is not True:
         raise ValueError("fixture data must be marked synthetic")
     return data
+
+
+def load_fixture(path: Path = FIXTURE_PATH, records: Path = RECORDS_PATH) -> dict[str, Any]:
+    data = _load_synthetic(path)
+    data["case_records"] = _load_synthetic(records)["cases"]
+    return data
+
+
+def _list_case_records(
+    data: dict[str, Any], case_id: str, kind: str, query: dict[str, str]
+) -> Response | str:
+    """Evidence, entities or findings of one visible case, paged like listCases."""
+    if not any(c["case_id"] == case_id for c in data["cases"]):
+        return "not_found"
+    records = data.get("case_records", {}).get(case_id)
+    if records is None:
+        return "not_found"
+    items = list(records[kind])
+    limit = int(query.get("limit", "25"))
+    cursor = query.get("cursor", "0")
+    if not cursor.isdigit() or int(cursor) > len(items):
+        return "invalid_request"
+    start = int(cursor)
+    more = start + limit < len(items)
+    meta = {"next_cursor": str(start + limit) if more else None, "has_more": more}
+    return 200, {}, {"data": items[start : start + limit], "meta": meta}
 
 
 def _error(code: str, correlation: str, message: str | None = None) -> Response:
@@ -151,6 +185,9 @@ def _dispatch(
         result = (200, {}, {"data": item}) if item else "not_found"
     elif op["operationId"] == "getTaxpayer":
         result = _get_taxpayer(data, params["taxpayer_id"])
+    elif op["operationId"] in CASE_RECORD_OPERATIONS:
+        kind = CASE_RECORD_OPERATIONS[op["operationId"]]
+        result = _list_case_records(data, params["case_id"], kind, query)
     else:
         # Contract operations without fixture data are absent here, never invented.
         return _error("not_found", correlation, "This operation has no fixture data.")

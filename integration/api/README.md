@@ -28,7 +28,7 @@ Rules every implementation must keep (see [ADR-003](../../docs/decisions/ADR-003
 
 ## Fixture server
 
-`python3 scripts/dev.py serve` serves `listCases`, `getCase` and `getTaxpayer` from the synthetic `fixtures/auditor_queue.json` (`scripts/fixture_api.py`). Requests are checked with `contract.check_request`; the fixture principal sees one tenant (any other is `403 tenant_scope_denied`). Responses carry `X-Vati-Mode: fixture`. Other operations return `404` "This operation has no fixture data." rather than invented data.
+`python3 scripts/dev.py serve` serves `listCases`, `getCase` and `getTaxpayer` from the synthetic `fixtures/auditor_queue.json`, and `listEvidence`, `listEntities` and `listFindings` (TAX-041) from `fixtures/case_records.json` (`scripts/fixture_api.py`). Requests are checked with `contract.check_request`; the fixture principal sees one tenant (any other is `403 tenant_scope_denied`). Responses carry `X-Vati-Mode: fixture`. A case with no fixture records returns an empty page; an unknown case is `404`. Mutations and any other operation return `404` rather than invented data.
 
 ## Examples and checks
 
