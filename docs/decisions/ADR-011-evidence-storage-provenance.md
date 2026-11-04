@@ -1,10 +1,10 @@
-# ADR-010: Evidence storage, extraction revisions and provenance
+# ADR-011: Evidence storage, extraction revisions and provenance
 
 Status: proposed (TAX-032, pending human review)
 Owner and task: Edga (owner), TAX-032; implemented by keletso-claude-code on Keletso's instruction
 Date: 2026-11-04
 
-Context and smallest prototype need: ARCHITECTURE.md makes Frappe the holder of original evidence and its restricted reference; OpenAleph is a derived index. DATA_MODEL.md requires append-only evidence with a supersedes pointer, a document SHA-256, a page/record locator and an extraction version. The contract (`RegisterDocumentRequest`, `Evidence`, `EvidenceRef`, `EvidenceLocator` in integration/api/openapi.json) limits uploads to five media types and 25 MiB, and names a restricted Frappe File rather than a URL. TAX-038 (Docling), TAX-036 (OpenAleph) and TAX-043 (upload form) need one storage model to build on. (ADR-008 and ADR-009 were in use on open branches when this was written, so this ADR takes 010.)
+Context and smallest prototype need: ARCHITECTURE.md makes Frappe the holder of original evidence and its restricted reference; OpenAleph is a derived index. DATA_MODEL.md requires append-only evidence with a supersedes pointer, a document SHA-256, a page/record locator and an extraction version. The contract (`RegisterDocumentRequest`, `Evidence`, `EvidenceRef`, `EvidenceLocator` in integration/api/openapi.json) limits uploads to five media types and 25 MiB, and names a restricted Frappe File rather than a URL. TAX-038 (Docling), TAX-036 (OpenAleph) and TAX-043 (upload form) need one storage model to build on. (ADR-008 to ADR-010 are reserved for TAX-033, TAX-034 and TAX-031, so this ADR takes 011.)
 
 Decision:
 

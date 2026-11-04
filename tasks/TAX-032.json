@@ -48,7 +48,7 @@
   "evidence": [
     {
       "criterion": 1,
-      "text": "Vati Evidence (private File, server-computed SHA-256 re-read from disk, supersedes/lineage versions), Vati Evidence Extraction (append-only success/partial/failure revisions citing the original hash) and Vati Extraction Provenance (page/record locator + bbox) in commit 62fa2e2; ADR-010. frappe_dev.py verify on disposable site verify-20261104t091217 (tax019 stack): install, migrate x2, 47 site-backed tests OK incl. 12 in vati_tax.evidence.test_evidence_bench; site dropped."
+      "text": "Vati Evidence (private File, server-computed SHA-256 re-read from disk, supersedes/lineage versions), Vati Evidence Extraction (append-only success/partial/failure revisions citing the original hash) and Vati Extraction Provenance (page/record locator + bbox) in commit 62fa2e2; ADR-011. frappe_dev.py verify on disposable site verify-20261104t091217 (tax019 stack): install, migrate x2, 47 site-backed tests OK incl. 12 in vati_tax.evidence.test_evidence_bench; site dropped."
     },
     {
       "criterion": 2,

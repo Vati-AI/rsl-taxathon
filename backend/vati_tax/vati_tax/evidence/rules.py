@@ -3,7 +3,7 @@
 Pure functions with no Frappe import, so the rules are testable without a bench.
 ``vati_tax.evidence.store`` applies them to the ``Vati Evidence`` and
 ``Vati Evidence Extraction`` DocTypes. See
-docs/decisions/ADR-010-evidence-storage-provenance.md.
+docs/decisions/ADR-011-evidence-storage-provenance.md.
 
 Model:
 
