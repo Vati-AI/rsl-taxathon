@@ -27,11 +27,11 @@
   "acceptance": [
     {
       "text": "Implement scoped evidence export manifest, retention metadata and access audit; require explicit human authorization for export",
-      "done": false
+      "done": true
     },
     {
       "text": "Test export denies unauthorized records and includes hash/provenance manifest",
-      "done": false
+      "done": true
     },
     {
       "text": "Record relevant tests and evidence, update task status and open a human-review PR",
@@ -45,7 +45,16 @@
     "update-project-task",
     "finish-task"
   ],
-  "evidence": [],
+  "evidence": [
+    {
+      "criterion": 1,
+      "text": "Implemented vati_tax.exports (rules/service/store/api) + Vati Evidence Export DocType: scoped export request naming case evidence, approval by a different supervisor (export.approve, separation of duties), frozen manifest with document SHA-256, lineage, extraction revision and per-record retention metadata (pilot-synthetic-unverified-1, no disposal; audit ledger permanent); every step, read and refusal sealed into the TAX-059 ledger. Observed 2026-11-04: 27 Frappe-free tests pass in exports/test_service.py; full backend suite 269 tests OK (37 site-backed skipped); repo-wide mypy and ruff clean. ADR-016."
+    },
+    {
+      "criterion": 2,
+      "text": "Observed 2026-11-04 (.venv-dev, python -m unittest vati_tax.exports.test_service): other-case, other-tenant, unknown and source-leaked evidence refused as not_found and recorded as export.request.denied; taxpayer/service refused; manifest entries carry each document_sha256, lineage and extraction provenance (matches_document) and manifest_sha256 detects tampering; only requester/approver read it. Mutation check: removing separation of duties, the tenant filter or the reader check each fails the suite. LIMITATION: site-backed exports/test_exports_bench.py written but NOT run - Docker Desktop does not start on this machine; run scripts/frappe_dev.py verify before relying on the Frappe binding."
+    }
+  ],
   "notes": [
     {
       "at": "2026-11-04T12:03:17.481443+00:00",
