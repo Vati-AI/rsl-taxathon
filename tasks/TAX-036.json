@@ -2,7 +2,7 @@
   "id": "TAX-036",
   "kind": "task",
   "title": "OpenAleph and FtM tax entity mapping",
-  "owner": "Keletso",
+  "owner": "Leseli",
   "area": "integration",
   "phase": "pilot",
   "status": "IN_PROGRESS",
@@ -12,7 +12,7 @@
     "TAX-030",
     "TAX-032"
   ],
-  "claimed_by": "keletso-claude-code-tax036",
+  "claimed_by": "leseli-claude-20261104-036",
   "branch": "task/TAX-036",
   "pr": null,
   "scope": "Map companies, persons, ownership, invoices, payments and evidence using supported FtM schema plus documented tax extensions",
@@ -59,6 +59,10 @@
     {
       "at": "2026-11-04T10:11:44.570516+00:00",
       "text": "Owner returned from Leseli to Keletso and claim taken over at Keletso's instruction; Leseli's claim had no implementation and no active agent."
+    },
+    {
+      "at": "2026-11-04T10:51:41.078704+00:00",
+      "text": "Keletso handed TAX-036 back to Leseli to continue (Keletso's agent had only claimed it; no implementation was pushed). Owner Leseli; claimed by leseli-claude-20261104-036 on the same branch."
     }
   ]
 }
