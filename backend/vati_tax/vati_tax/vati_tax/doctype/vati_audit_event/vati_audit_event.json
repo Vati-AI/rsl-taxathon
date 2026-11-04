@@ -139,7 +139,7 @@
    "fieldname": "subject_type",
    "fieldtype": "Select",
    "label": "Subject Type",
-   "options": "decision\nevidence_request\nevidence\ncase\nledger\ncontrol",
+   "options": "decision\nevidence_request\nevidence\ncase\nledger\ncontrol\nexport",
    "reqd": 1,
    "set_only_once": 1
   },
@@ -243,7 +243,7 @@
  "in_create": 1,
  "index_web_pages_for_search": 0,
  "links": [],
- "modified": "2026-11-04 15:00:00.000000",
+ "modified": "2026-11-04 18:00:00.000000",
  "modified_by": "Administrator",
  "module": "Vati Tax",
  "name": "Vati Audit Event",

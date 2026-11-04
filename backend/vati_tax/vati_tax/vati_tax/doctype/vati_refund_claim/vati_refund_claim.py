@@ -3,11 +3,14 @@
 One per submission. If it references a VAT return, that return must belong to
 the same tenant, taxpayer and period, and the claim cannot exceed the refund
 position declared there. Supporting documents are referenced by TAX-032
-evidence IDs; this DocType stores no files.
+evidence IDs; this DocType stores no files. Each referenced evidence must
+belong to the claim's own tenant and taxpayer (TAX-043).
 """
 
 from __future__ import annotations
 
+import json
+from collections.abc import Iterable
 from typing import TYPE_CHECKING, Any
 
 import frappe
@@ -16,6 +19,29 @@ from vati_tax.submissions import domain, guard
 from vati_tax.submissions.declaration import DeclarationDocument
 
 REASONS = ("excess_input_vat", "zero_rated_supplies", "other")
+EVIDENCE = "Vati Evidence"
+
+
+def foreign_evidence_ids(
+    tenant_id: str, taxpayer_id: str, evidence_ids: Iterable[str]
+) -> list[str]:
+    """The IDs that are not evidence of this tenant and taxpayer.
+
+    A missing ID and another taxpayer's (or tenant's) evidence are reported the
+    same way, so a claim cannot be used to probe for other records. Database
+    read on purpose: the explicit tenant and taxpayer filters confine it.
+    """
+    ids = list(dict.fromkeys(evidence_ids))
+    if not ids:
+        return []
+    known = set(
+        frappe.get_all(
+            EVIDENCE,
+            filters={"name": ["in", ids], "tenant_id": tenant_id, "taxpayer_id": taxpayer_id},
+            pluck="name",
+        )
+    )
+    return [evidence_id for evidence_id in ids if evidence_id not in known]
 
 
 class VatiRefundClaim(DeclarationDocument):
@@ -51,6 +77,13 @@ class VatiRefundClaim(DeclarationDocument):
                 title="explanation_required",
             )
         self.set_evidence_ids()
+        ids = json.loads(self.evidence_ids) if self.evidence_ids else []
+        if foreign_evidence_ids(self.tenant_id, self.taxpayer_id, ids):
+            frappe.throw(
+                "evidence_ids must reference this taxpayer's own evidence.",
+                guard.InvalidDomainInput,
+                title="invalid_reference",
+            )
         if self.vat_return_id:
             self._check_vat_return()
 

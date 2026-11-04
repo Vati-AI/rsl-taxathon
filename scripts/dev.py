@@ -142,6 +142,7 @@ def check():
             "integration/jube",
             "integration/followthemoney",
             "integration/openaleph",
+            "integration/docling",
         ],
         ["python3", "-m", "unittest", "discover", "-s", "tests/data", "-v"],
         ["python3", "-m", "unittest", "discover", "-s", "tests/tooling", "-v"],
@@ -152,6 +153,14 @@ def check():
         ["python3", "-m", "unittest", "discover", "-s", "tests/ai", "-p", "test_imported*.py"],
         # TAX-047 checkpoint/resume tests skip without the LangGraph SQLite checkpointer.
         ["python3", "-m", "unittest", "discover", "-s", "tests/ai", "-p", "test_human*.py"],
+        # TAX-049 related-party checks; playbook graph tests skip without LangGraph.
+        ["python3", "-m", "unittest", "discover", "-s", "tests/ai", "-p", "test_related*.py"],
+        # TAX-051 work-arrangement checks; checkpoint playbook tests skip without LangGraph.
+        ["python3", "-m", "unittest", "discover", "-s", "tests/ai", "-p", "test_work*.py"],
+        # TAX-061 playbook registry checks skip without LangGraph and its SQLite checkpointer.
+        ["python3", "-m", "unittest", "discover", "-s", "tests/ai", "-p", "test_playbook*.py"],
+        # TAX-064 workflow observation (pure Python, reads TAX-059 ledger entries).
+        ["python3", "-m", "unittest", "discover", "-s", "tests/ai", "-p", "test_action*.py"],
         ["python3", "integration/api/contract.py"],
         ["python3", "-m", "unittest", "discover", "-s", "tests/contracts", "-v"],
         # Frappe-free app logic (portal boundary/fixtures); bench tests cover the rest.

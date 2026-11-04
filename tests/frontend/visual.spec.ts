@@ -75,8 +75,8 @@ test('keyboard focus states', async ({ page }, testInfo) => {
 
   await mockTaxpayerSession(page, 'taxpayer');
   await page.goto(TAXPAYER + '/taxpayer/submissions/new');
-  await pageReady(page, 'New submission');
+  await pageReady(page, 'New VAT refund claim');
   await page.getByLabel('Tax period').press('Enter');
-  await expect(page.getByLabel('Type of return or claim')).toBeFocused();
+  await expect(page.getByLabel('Tax period')).toBeFocused();
   await check(page, 'taxpayer-focus-first-invalid-1440');
 });
