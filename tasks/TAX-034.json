@@ -5,7 +5,7 @@
   "owner": "Keletso",
   "area": "integration",
   "phase": "pilot",
-  "status": "IN_PROGRESS",
+  "status": "IN_REVIEW",
   "priority": "P0",
   "depends_on": [
     "TAX-018",
@@ -14,7 +14,7 @@
   ],
   "claimed_by": "claude-keletso-tax034",
   "branch": "task/TAX-034",
-  "pr": null,
+  "pr": "https://github.com/Vati-AI/rsl-taxathon/pull/123",
   "scope": "Map create/read/assign/status/escalation operations to verified Jube APIs; Jube is operational case authority",
   "inputs": [
     "PROJECT.md",
@@ -64,6 +64,10 @@
     {
       "at": "2026-11-04T08:25:56.148348+00:00",
       "text": "Claimed by claude-keletso-tax034"
+    },
+    {
+      "at": "2026-11-04T08:55:37.625542+00:00",
+      "text": "Agent finished implementation and opened human review"
     }
   ]
 }
