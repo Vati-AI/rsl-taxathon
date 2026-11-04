@@ -18,7 +18,7 @@ Human owner = accountability. AI agent = implementer recorded in `claimed_by`. T
 | [TAX-029](TAX-029.json) | Edga | foundation | Frappe identity, roles and tenant permissions | TAX-019 |
 | [TAX-030](TAX-030.json) | Edga | foundation | Canonical IDs and external service mapping | TAX-018, TAX-019 |
 | [TAX-031](TAX-031.json) | Edga | pilot | Submission and tax-domain DocTypes | TAX-029, TAX-030 |
-| [TAX-032](TAX-032.json) | Leseli | pilot | Evidence storage, extraction records and provenance | TAX-029, TAX-030 |
+| [TAX-032](TAX-032.json) | Edga | pilot | Evidence storage, extraction records and provenance | TAX-029, TAX-030 |
 | [TAX-033](TAX-033.json) | Edga | pilot | Durable outbox and idempotent workers | TAX-030 |
 | [TAX-034](TAX-034.json) | Keletso | pilot | Jube case lifecycle adapter | TAX-018, TAX-025, TAX-030 |
 | [TAX-035](TAX-035.json) | Keletso | pilot | Jube explainable tax-risk configuration | TAX-025, TAX-024 |
