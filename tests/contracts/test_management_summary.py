@@ -19,17 +19,20 @@ DATA = fixture_api.load_fixture()
 MGMT = fixture_api.load_management()
 TENANT = DATA["principal"]["tenant_id"]
 OTHER_TENANT = "10000000-0000-4000-8000-000000000002"
-OFFICER_B = "80000000-0000-4000-8000-000000000002"
+SUPERVISOR = {"officer_id": "80000000-0000-4000-8000-000000000003", "roles": ["supervisor"]}
 CORRELATION = "c0000000-0000-4000-8000-0000000000bb"
 PATH = "/api/v1/management/summary"
 EXAMPLES = ROOT / "integration" / "api" / "examples" / "http"
 
 
-def call(query=None, data=DATA, mgmt=MGMT, tenant=TENANT):
+def call(query=None, data=DATA, mgmt=MGMT, tenant=TENANT, role="supervisor"):
+    """A request as the fixture principal picked by X-Vati-Fixture-Role (TAX-042)."""
     headers = {"Authorization": "Bearer synthetic", "X-Correlation-ID": CORRELATION}
     if tenant is not None:
         headers["X-Vati-Tenant-ID"] = tenant
-    return fixture_api.handle("GET", PATH, headers, query or {}, data, SPEC, mgmt)
+    if role is not None:
+        headers["X-Vati-Fixture-Role"] = role
+    return fixture_api.handle("GET", PATH, headers, query or {}, data, SPEC, management=mgmt)
 
 
 def conforms(query, status, headers, body):
@@ -54,12 +57,6 @@ def summary(query=None, **kwargs):
     return body["data"]
 
 
-def as_officer_b():
-    data = copy.deepcopy(DATA)
-    data["principal"]["officer_id"] = OFFICER_B
-    return data
-
-
 class AccessTests(unittest.TestCase):
     def test_supervisor_gets_a_conformant_synthetic_summary(self):
         for days in ("1", "7", "30", "90", "365"):
@@ -71,17 +68,22 @@ class AccessTests(unittest.TestCase):
                 self.assertTrue(body["data"]["synthetic"])
                 self.assertEqual(body["data"]["window"]["days"], int(days))
 
-    def test_officer_without_supervisor_role_is_forbidden_without_data(self):
-        status, headers, body = call(data=as_officer_b())
-        self.assertEqual(status, 403)
-        self.assertEqual(body["error"]["code"], "forbidden")
-        self.assertNotIn("data", body)
-        self.assertEqual(conforms({}, status, headers, body), [])
+    def test_auditor_and_specialist_are_forbidden_without_data(self):
+        # No role header is the default auditor principal, as in TAX-042.
+        for role in (None, "auditor", "specialist"):
+            with self.subTest(role=role):
+                status, headers, body = call(role=role)
+                self.assertEqual(status, 403)
+                self.assertEqual(body["error"]["code"], "forbidden")
+                self.assertNotIn("data", body)
+                self.assertEqual(conforms({}, status, headers, body), [])
 
-    def test_principal_unknown_to_the_officer_records_is_forbidden(self):
-        data = copy.deepcopy(DATA)
-        data["principal"]["officer_id"] = "80000000-0000-4000-8000-0000000000ff"
-        self.assertEqual(call(data=data)[0], 403)
+    def test_unknown_fixture_role_is_rejected(self):
+        self.assertEqual(call(role="director")[0], 400)
+
+    def test_supervisor_without_a_ledger_identity_is_forbidden(self):
+        viewer = {"officer_id": "80000000-0000-4000-8000-0000000000ff", "roles": ["supervisor"]}
+        self.assertEqual(fixture_api.management_summary(DATA, MGMT, 30, viewer=viewer), "forbidden")
 
     def test_other_tenant_and_missing_tenant_are_refused(self):
         status, _, body = call(tenant=OTHER_TENANT)
@@ -196,7 +198,8 @@ class MeasureTests(unittest.TestCase):
 
     def test_unnamed_officer_is_reported_as_missing_data(self):
         mgmt = copy.deepcopy(MGMT)
-        mgmt["officers"] = [o for o in mgmt["officers"] if o["officer_id"] != OFFICER_B]
+        officer_b = "80000000-0000-4000-8000-000000000002"
+        mgmt["officers"] = [o for o in mgmt["officers"] if o["officer_id"] != officer_b]
         body = summary(mgmt=mgmt)
         self.assertIn("workload", {m["metric"] for m in body["missing_data"]})
 
@@ -207,8 +210,12 @@ class AssuranceTests(unittest.TestCase):
         self.assertTrue(assurance["ledger_intact"])
         self.assertEqual(assurance["overrides"], 3)
         self.assertEqual(assurance["refusals"], 2)
-        # Supervisor C's three overrides are visible; viewer A's own refused approvals are not.
-        self.assertEqual(assurance["review_signals"], [{"kind": "repeated_overrides", "count": 1}])
+        # Officer A's refused self-approvals are visible to supervisor C; C's own three
+        # overrides are withheld from C and only counted.
+        self.assertEqual(
+            assurance["review_signals"],
+            [{"kind": "repeated_separation_of_duties_attempts", "count": 1}],
+        )
         self.assertEqual(assurance["withheld_about_viewer"], 1)
         self.assertNotIn("officer.a@example.test", json.dumps(assurance))
         self.assertNotIn("supervisor.c@example.test", json.dumps(assurance))
@@ -216,7 +223,7 @@ class AssuranceTests(unittest.TestCase):
     def test_a_tampered_ledger_is_reported_as_broken(self):
         entries = fixture_api.ledger_entries(TENANT, MGMT["ledger_events"])
         entries[3] = dataclasses.replace(entries[3], reason="edited after the fact")
-        body = fixture_api.management_summary(DATA, MGMT, 30, entries=entries)
+        body = fixture_api.management_summary(DATA, MGMT, 30, viewer=SUPERVISOR, entries=entries)
         assert isinstance(body, dict)
         self.assertFalse(body["assurance"]["ledger_intact"])
         kinds = [s["kind"] for s in body["assurance"]["review_signals"]]
@@ -234,11 +241,13 @@ class AssuranceTests(unittest.TestCase):
 class ExampleTests(unittest.TestCase):
     def test_contract_example_matches_the_fixture_response(self):
         example = json.loads(
-            (EXAMPLES / "21_get_management_summary.json").read_text(encoding="utf-8")
+            (EXAMPLES / "25_get_management_summary.json").read_text(encoding="utf-8")
         )
         req = example["request"]
+        # Contract examples leave out the fixture-only role header; act as the supervisor.
+        headers = {**req["headers"], "X-Vati-Fixture-Role": "supervisor"}
         status, _, body = fixture_api.handle(
-            "GET", req["path"], req["headers"], req["query"], DATA, SPEC, MGMT
+            "GET", req["path"], headers, req["query"], DATA, SPEC, management=MGMT
         )
         self.assertEqual(status, example["response"]["status"])
         self.assertEqual(body, example["response"]["body"])

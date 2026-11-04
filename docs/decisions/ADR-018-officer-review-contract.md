@@ -1,0 +1,34 @@
+# ADR-018: Officer review contract, specialist referral and the decision screen
+
+Status: proposed (TAX-042; contract changes for review by Keletso, decision rules for review by Edga)
+Owner and task: Leseli (auditor-frontend), TAX-042; implemented by leseli-claude-20261104-042.
+Date: 2026-11-04
+
+Context and smallest prototype need: TAX-042 presents officer clearance, evidence requests and specialist referral with rationale and stale-version checks, and must show that nothing irreversible happens from an agent suggestion. TAX-046 (ADR-013) built the Frappe decision records and their rules, but the Vati `/api/v1` contract (ADR-003, ADR-005) had only `requestEvidence`. It had no way to read a case's review state, propose, approve or reject a decision, and no specialist referral outcome. TAX-029 already defines the `specialist.refer` permission (auditor and supervisor), but nothing used it. The screen also needs to know which actions the officer may take, so it can explain a disabled control instead of failing after a click.
+
+Decision:
+
+- Three contract operations, projecting ADR-013 and following ADR-003 (tenant header, `ErrorResponse`, correlation IDs, `Idempotency-Key` on mutations, synthetic examples checked by `contract.py`):
+  - `getCaseReview` (`GET /api/v1/cases/{case_id}/review`): `case_version` (the `expected_version` for the next review action), `viewer` (officer ID, roles, `allowed_actions`), `open_decision` and the review trail.
+  - `proposeDecision` (`POST /api/v1/cases/{case_id}/decisions`).
+  - `reviewDecision` (`POST /api/v1/cases/{case_id}/decisions/{decision_id}/review`) with `approve`, `reject` or `withdraw`.
+
+  Refusals use the existing codes, `version_conflict` (409) or `invalid_domain_input` (422), with the ADR-013 reason in `field_errors[].code`. No new error code is added, so `ERROR_STATUS` is unchanged. Officer identifiers are UUIDs in the contract, as `EvidenceRequest.authorised_by` already is. Mapping Frappe users to officer IDs remains the open point ADR-013 names.
+- `refer_to_specialist` joins the ADR-013 outcome list. It runs the same Jube `escalate` operation as `escalate_to_supervisor`, but the proposer also needs `specialist.refer`, so specialists cannot refer to themselves. It is an internal officer review, never a referral outside the tax office (AGENTS.md). The contract description now says so.
+- `viewer.allowed_actions` is computed with the TAX-029 policy (`decision.propose`, `specialist.refer`, `evidence_request.authorise`, and `decision.approve` only when an open proposal exists that the viewer did not make). It is a hint for the screen; the server authorises every action again.
+- The auditor app has one review page per case (`/auditor/cases/{id}/review`), not a tab: frappe-ui tabs unmount inactive panels, which would discard an officer's unsent text. Every action opens a confirmation dialog that shows the exact action, the rationale, the cited findings, the case version and what will or will not reach Jube. Nothing is sent before Confirm; Escape or Cancel sends nothing; Confirm cannot send twice. Each confirmed action has one Idempotency-Key, reused when it is retried after an outage, so a lost response cannot record it twice. The case version and Jube status the officer was looking at when they opened the action are sent as `expected_version` and `expected_case_status`. A refusal keeps the officer's text and, where relevant, offers a reload.
+- Agent and rule suggestions (`Finding.proposed_action`) are listed apart from the decision form. "Use as a starting point" fills in the outcome or the evidence request's findings; it never sends, and the officer still writes the rationale and confirms.
+- `scripts/fixture_review.py` serves these operations, plus `listFindings` and `requestEvidence`, for development and review, keeping in-memory state for the life of the server process. It applies the same permission, separation-of-duties, stale-version, expiry, one-open-decision and idempotency rules. The fixture-only `X-Vati-Fixture-Role` header picks a synthetic officer (an "Acting as" switch in the fixture banner); a real server ignores it. Fixture approvals record a fixture Jube result; nothing leaves the process.
+
+Alternatives and tradeoff:
+
+- Call the Frappe whitelisted methods (`vati_tax.decisions.api.*`) from the browser directly: no contract change, but the auditor app would bypass the Vati boundary that every other screen uses (ADR-003, ADR-005), and Frappe's error shape differs. Rejected; the Vati API layer maps one to the other.
+- A separate specialist-referral record and permission flow: closer to a future referral-package feature, but TAX-042 needs only an internal review hand-off that Jube already models as an escalation. Revisit if specialists must record opinions against a referral (`specialist.opinion.record`).
+- Let the screen work out permissions from roles: duplicates TAX-029 policy in TypeScript and drifts. The server-computed `allowed_actions` keeps one source.
+- A decision tab on the case page: shorter navigation, but tab switches would lose unsent text (see above).
+
+Official sources and version/date checked (2026-11-04): OpenAPI Specification 3.1.1 (https://spec.openapis.org/oas/v3.1.1.html), as used by ADR-003 and ADR-005; frappe-ui 1.1.0 (pinned in package.json) `Dialog` (`dismissible`, `actions` slot) and `TabPanel` (reka-ui `TabsContent` unmounts inactive panels) read from the installed package source; ADR-001, ADR-003, ADR-007, ADR-009, ADR-013 and `backend/vati_tax/vati_tax/identity/policy.py` in this repository.
+
+Verification performed: `integration/api/contract.py` validates the contract with 24 HTTP examples (4 new: review state, specialist referral, approval and `decision_pending`). `tests/contracts/test_fixture_review.py` (13 tests) checks fixture responses against the contract and every refusal path. Backend: `test_engine.py` covers the referral permission and Jube escalation, and `viewer` for each role and the proposer. Auditor app: 14 new unit tests (`api/review.test.ts`, `components/DecisionPanel.test.ts`) and 8 browser tests (`e2e/review.spec.ts`, Edge) cover keyboard confirmation, Escape sending nothing, suggestions sending nothing, server-side permission denial, separation of duties, stale view, expired proposal, evidence request and retry after a lost response. The TAX-023 harness checks the review page for serious axe violations and horizontal overflow at 1440, 1024 and 390px.
+
+Consequences and revisit trigger: the future Vati API server implements these three operations over `vati_tax.decisions.api`, mapping Frappe users to officer UUIDs and Frappe errors to `ErrorResponse`. TAX-045 shows evidence requests to the taxpayer; TAX-055 adds end-to-end regression over this page. Revisit when officers get UUIDs, when specialists record opinions on referrals, or if a referral must leave the case's Jube workflow.

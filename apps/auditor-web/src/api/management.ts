@@ -4,7 +4,7 @@
  * else with 403, which the view shows as a denied state with no figures.
  * Records not marked synthetic are refused, as for every other read.
  */
-import { CASE_STATUSES, request, type CaseStatus } from './vati';
+import { apiRequest, CASE_STATUSES, type CaseStatus } from './vati';
 import { ApiError } from './errors';
 
 export interface Ratio {
@@ -215,11 +215,10 @@ export async function getManagementSummary(
   fetchImpl: typeof fetch = fetch,
   signal?: AbortSignal,
 ) {
-  const body = await request(
+  const body = await apiRequest(
     '/api/v1/management/summary',
-    { window_days: String(windowDays) },
+    { query: { window_days: String(windowDays) }, signal },
     fetchImpl,
-    signal,
   );
   return parseManagementSummary(body.data);
 }

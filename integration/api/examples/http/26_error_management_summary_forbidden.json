@@ -10,20 +10,20 @@
     "headers": {
       "Authorization": "Bearer synthetic-dev-token-not-a-secret",
       "X-Vati-Tenant-ID": "10000000-0000-4000-8000-000000000001",
-      "X-Correlation-ID": "c0000000-0000-4000-8000-000000000022"
+      "X-Correlation-ID": "c0000000-0000-4000-8000-000000000026"
     }
   },
   "response": {
     "status": 403,
     "headers": {
-      "X-Correlation-ID": "c0000000-0000-4000-8000-000000000022"
+      "X-Correlation-ID": "c0000000-0000-4000-8000-000000000026"
     },
     "body": {
       "error": {
         "code": "forbidden",
         "message": "Only supervisors can view management figures.",
         "retryable": false,
-        "correlation_id": "c0000000-0000-4000-8000-000000000022",
+        "correlation_id": "c0000000-0000-4000-8000-000000000026",
         "service": "vati"
       }
     }

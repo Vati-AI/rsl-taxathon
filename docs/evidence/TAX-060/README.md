@@ -6,9 +6,9 @@ They were captured with `CAPTURE_SCREENSHOTS=1 npm run test:auditor:browser -- m
 
 | File | State |
 |---|---|
-| `dashboard-1440.png`, `dashboard-1024.png`, `dashboard-390.png` | Supervisor view, last 30 days, at the three standard widths |
+| `dashboard-1440.png`, `dashboard-1024.png`, `dashboard-390.png` | Acting as supervisor (banner "Acting as (fixture)": Supervisor), last 30 days, at the three standard widths |
 | `loading-1440.png` | Loading |
-| `denied-1440.png` | An officer without the supervisor role: refused, with no figures and the window control disabled |
+| `denied-1440.png` | Acting as specialist: the server refuses with 403, no figures are shown, the window control is disabled and the "Supervision" nav entry is hidden |
 | `empty-1440.png` | Nothing to measure: "No data" instead of 0%, and empty tables explained |
 | `ledger-broken-1440.png` | Audit ledger check failed: red badge and a `ledger_integrity` review signal |
 
@@ -19,7 +19,9 @@ These are the 30-day figures from the fixture, checked in `tests/contracts/test_
 - Closed with no further action: 3 of 6 closed cases with a recorded outcome. A 7th closed case has no recorded outcome and is listed as missing data.
 - Legal routes verified: 3 of 7 findings.
 - 3 outstanding evidence requests, 1 of them overdue.
-- The ledger is intact, with one review signal for repeated overrides. One signal about the viewing supervisor is withheld.
+- The ledger is intact. Supervisor C sees one review signal for officer A's repeated refused self-approvals. C's own repeated overrides are withheld from C and only counted ("1 signal concerns you").
+
+The acting officer comes from TAX-042's fixture-only role switch. The auditor (the default) and the specialist are refused by the server and don't see the nav entry.
 
 ## Accessibility and keyboard checks
 

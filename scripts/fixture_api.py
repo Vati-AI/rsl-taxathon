@@ -1,13 +1,17 @@
-"""Read-only fixture implementation of the Vati /api/v1 queue operations (TAX-040).
+"""Fixture implementation of selected Vati /api/v1 operations for UI development.
 
 Serves listCases, getCase and getTaxpayer from integration/api/fixtures/auditor_queue.json
-for UI development, and getManagementSummary (TAX-060) measured from those cases plus
-integration/api/fixtures/management.json. Requests are checked with the contract's own rules
-(integration/api/contract.py), so missing or malformed tenant headers, bad IDs and
-unknown routes fail exactly as the contract specifies. The fixture principal may see one
-tenant; any other tenant is 403 tenant_scope_denied. Responses carry
-``X-Vati-Mode: fixture`` and every record is synthetic. There are no mutations and no
-fallback to or from live services.
+(TAX-040), the officer review operations getCaseReview, listFindings,
+proposeDecision, reviewDecision and requestEvidence from ``fixture_review`` (TAX-042),
+and the supervisor-only getManagementSummary (TAX-060) measured from those cases plus
+integration/api/fixtures/management.json.
+Requests are checked with the contract's own rules (integration/api/contract.py), so
+missing or malformed tenant headers, bad IDs, invalid bodies and unknown routes fail
+exactly as the contract specifies. The fixture principal may see one tenant; any other
+tenant is 403 tenant_scope_denied. The acting officer comes from the fixture-only
+``X-Vati-Fixture-Role`` header (see ``fixture_review``). Responses carry
+``X-Vati-Mode: fixture`` and every record is synthetic. Review actions change in-memory
+fixture state only; there is no fallback to or from live services.
 """
 
 from __future__ import annotations
@@ -32,6 +36,7 @@ if str(API_DIR) not in sys.path:
     sys.path.insert(0, str(API_DIR))
 
 import contract  # noqa: E402
+import fixture_review  # noqa: E402
 
 MODE_HEADER = "X-Vati-Mode"
 OPEN_STATUSES = {
@@ -233,17 +238,24 @@ def management_summary(
     mgmt: dict[str, Any],
     window_days: int,
     *,
+    viewer: dict[str, Any],
     entries: list[Any] | None = None,
 ) -> dict[str, Any] | str:
-    """The getManagementSummary body for the fixture principal, or an error code.
+    """The getManagementSummary body for the acting officer, or an error code.
 
-    ``entries`` replaces the sealed fixture ledger (tests use it to tamper with the chain).
+    ``viewer`` is the acting fixture principal (``officer_id`` and ``roles``); only the
+    supervisor role may read the summary. ``entries`` replaces the sealed fixture ledger
+    (tests use it to tamper with the chain).
     """
     principal = data["principal"]
     officers = {o["officer_id"]: o for o in mgmt["officers"]}
-    viewer = officers.get(principal["officer_id"])
-    if viewer is None or "supervisor" not in viewer["roles"]:
+    if "supervisor" not in viewer["roles"]:
         return "forbidden"
+    record = officers.get(viewer["officer_id"])
+    if record is None:
+        # Without a ledger identity the viewer's own signals could not be withheld.
+        return "forbidden"
+    viewer_login = record["login"]
     until = _ts(mgmt["as_of"])
     if until is None:
         raise ValueError("management fixture needs as_of")
@@ -299,7 +311,7 @@ def management_summary(
 
     if entries is None and "ledger_events" in mgmt:
         entries = ledger_entries(principal["tenant_id"], mgmt["ledger_events"])
-    assurance = _assurance(entries, viewer["login"], since, until, window_days)
+    assurance = _assurance(entries, viewer_login, since, until, window_days)
     if not assurance["available"]:
         missing.append({"metric": "assurance", "detail": assurance["reason"]})
 
@@ -409,17 +421,20 @@ def handle(
     query: dict[str, str],
     data: dict[str, Any] | None = None,
     spec: dict[str, Any] | None = None,
+    body: Any = None,
+    review: fixture_review.ReviewStore | None = None,
     management: dict[str, Any] | None = None,
 ) -> Response:
     """Return (status, extra headers, JSON body) for a fixture /api/v1 request."""
     data = data if data is not None else load_fixture()
     spec = spec if spec is not None else contract.load_spec()
+    review = review if review is not None else fixture_review.STORE
     lowered = {k.lower(): v for k, v in headers.items()}
     correlation = _correlation(lowered)
-    status, extra, body = _dispatch(
-        method, path, lowered, query, data, spec, correlation, management
+    status, extra, payload = _dispatch(
+        method, path, lowered, query, data, spec, correlation, body, review, management
     )
-    return status, {**extra, "X-Correlation-ID": correlation, MODE_HEADER: "fixture"}, body
+    return status, {**extra, "X-Correlation-ID": correlation, MODE_HEADER: "fixture"}, payload
 
 
 def _dispatch(
@@ -430,28 +445,43 @@ def _dispatch(
     data: dict[str, Any],
     spec: dict[str, Any],
     correlation: str,
+    body: Any,
+    review: fixture_review.ReviewStore,
     management: dict[str, Any] | None = None,
 ) -> Response:
     match = contract.match_operation(spec, method, path)
-    if match is None or method.lower() != "get":
+    if match is None:
         return _error("not_found", correlation)
-    violations = contract.check_request(spec, method, path, headers, None, query)
+    _, op, params = match
+    op_id = op["operationId"]
+    if method.lower() != "get" and op_id not in fixture_review.OPERATIONS:
+        return _error("not_found", correlation, "This operation has no fixture data.")
+    violations = contract.check_request(spec, method, path, headers, body, query)
     if violations:
         return _error(violations[0].code, correlation)
     if headers.get(contract.TENANT_HEADER) != data["principal"]["tenant_id"]:
         return _error("tenant_scope_denied", correlation)
-    _, op, params = match
+    if op_id in fixture_review.OPERATIONS:
+        return review.handle(op_id, params, headers, body, data["cases"], correlation)
+    # Statuses a fixture approval changed (the Jube projection in fixture mode).
+    data = {**data, "cases": [review.overlay_case(c) for c in data["cases"]]}
     result: Response | str
-    if op["operationId"] == "listCases":
+    if op_id == "listCases":
         result = _list_cases(data, query)
-    elif op["operationId"] == "getCase":
+    elif op_id == "getCase":
         item = next((c for c in data["cases"] if c["case_id"] == params["case_id"]), None)
         result = (200, {}, {"data": item}) if item else "not_found"
-    elif op["operationId"] == "getTaxpayer":
+    elif op_id == "getTaxpayer":
         result = _get_taxpayer(data, params["taxpayer_id"])
-    elif op["operationId"] == "getManagementSummary":
+    elif op_id == "getManagementSummary":
+        # The same acting officer as the review operations (X-Vati-Fixture-Role).
+        role = headers.get(fixture_review.ROLE_HEADER) or "auditor"
+        acting = review.review["principals"].get(role)
+        if acting is None:
+            return _error("invalid_request", correlation)
         mgmt = management if management is not None else load_management()
-        summary = management_summary(data, mgmt, int(query.get("window_days", "30")))
+        days = int(query.get("window_days", "30"))
+        summary = management_summary(data, mgmt, days, viewer=acting)
         result = summary if isinstance(summary, str) else (200, {}, {"data": summary})
     else:
         # Contract operations without fixture data are absent here, never invented.

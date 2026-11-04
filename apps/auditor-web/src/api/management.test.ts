@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
-import exampleText from '../../../../integration/api/examples/http/21_get_management_summary.json?raw';
+import exampleText from '../../../../integration/api/examples/http/25_get_management_summary.json?raw';
 import { ApiError } from './errors';
 import { getManagementSummary, parseManagementSummary, type ManagementSummary } from './management';
 

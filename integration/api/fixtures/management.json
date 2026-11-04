@@ -1,25 +1,27 @@
 {
-  "description": "Synthetic records behind getManagementSummary (TAX-060), served by scripts/dev.py serve. Open workload comes from auditor_queue.json; this file adds closed cases, decision outcomes, evidence requests, findings and audit-ledger events. scripts/fixture_api.py measures the summary from these records (the ledger with the TAX-059 functions). Every record is synthetic.",
+  "description": "Synthetic records behind getManagementSummary (TAX-060), served by scripts/dev.py serve. Open workload comes from auditor_queue.json; this file adds closed cases, decision outcomes, evidence requests, findings and audit-ledger events. scripts/fixture_api.py measures the summary from these records (the ledger with the TAX-059 functions). Officers give the names and ledger logins; who is acting, and with which role, comes from the case_review.json principals selected by X-Vati-Fixture-Role (TAX-042). Every record is synthetic.",
   "synthetic": true,
   "as_of": "2026-11-04T12:00:00Z",
   "officers": [
     {
       "officer_id": "80000000-0000-4000-8000-000000000001",
       "display_name": "Synthetic Officer A",
-      "login": "officer.a@example.test",
-      "roles": ["auditor", "supervisor"]
+      "login": "officer.a@example.test"
     },
     {
       "officer_id": "80000000-0000-4000-8000-000000000002",
       "display_name": "Synthetic Officer B",
-      "login": "officer.b@example.test",
-      "roles": ["auditor"]
+      "login": "officer.b@example.test"
     },
     {
       "officer_id": "80000000-0000-4000-8000-000000000003",
       "display_name": "Synthetic Supervisor C",
-      "login": "supervisor.c@example.test",
-      "roles": ["supervisor"]
+      "login": "supervisor.c@example.test"
+    },
+    {
+      "officer_id": "80000000-0000-4000-8000-000000000004",
+      "display_name": "Synthetic Specialist D",
+      "login": "specialist.d@example.test"
     }
   ],
   "closed_cases": [

@@ -12,6 +12,7 @@ import {
 } from 'frappe-ui';
 import FixtureBanner from './components/FixtureBanner.vue';
 import StatePanel from './components/StatePanel.vue';
+import { fixtureRole } from './session';
 
 const route = useRoute();
 const router = useRouter();
@@ -55,7 +56,8 @@ function reloadPage() {
               :active="section === 'cases'"
             />
           </SidebarSection>
-          <SidebarSection label="Supervision">
+          <!-- Supervisors only. The server still refuses anyone else (403). -->
+          <SidebarSection v-if="fixtureRole === 'supervisor'" label="Supervision">
             <SidebarItem
               label="Management dashboard"
               icon="lucide-gauge"

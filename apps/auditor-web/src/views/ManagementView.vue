@@ -13,6 +13,7 @@ import PageLayout from '../components/PageLayout.vue';
 import StatePanel from '../components/StatePanel.vue';
 import { errorPanel } from '../components/errorPanel';
 import { useLoader } from '../composables/useLoader';
+import { fixtureRole } from '../session';
 import {
   durationText,
   plural,
@@ -38,9 +39,10 @@ function setWindow(value: unknown) {
   void router.replace({ query: days === 30 ? {} : { window: String(days) } });
 }
 
+// Reload when the window or the fixture "Acting as" officer changes.
 const { state, reload } = useLoader(
   (signal) => getManagementSummary(windowDays.value, fetch, signal),
-  windowDays,
+  () => [windowDays.value, fixtureRole.value],
 );
 const summary = computed(() => (state.value.status === 'ready' ? state.value.data : null));
 const denied = computed(

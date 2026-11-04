@@ -21,18 +21,13 @@ function edit(change: (data: Record<string, any>) => void) {
   };
 }
 
-const forbidden = (route: Route) =>
-  route.fulfill({
-    status: 403,
-    json: {
-      error: {
-        code: 'forbidden',
-        message: 'Only supervisors can view management figures.',
-        retryable: false,
-        correlation_id: 'c0000000-0000-4000-8000-0000000000dd',
-      },
-    },
-  });
+/**
+ * Act as a fixture officer (TAX-042 "Acting as" switch, stored by session.ts and
+ * sent as X-Vati-Fixture-Role). Init scripts run in order, so a later call wins.
+ */
+async function actAs(page: Page, role: 'auditor' | 'specialist' | 'supervisor') {
+  await page.addInitScript((value) => localStorage.setItem('vati.fixtureRole', value), role);
+}
 
 async function ready(page: Page) {
   await expect(page.getByRole('heading', { level: 1, name: 'Management dashboard' })).toBeVisible();
@@ -51,6 +46,10 @@ async function seriousViolations(page: Page) {
 }
 
 test.describe('management dashboard', () => {
+  test.beforeEach(async ({ page }) => {
+    await actAs(page, 'supervisor');
+  });
+
   test('supervisor sees measured figures with their denominators', async ({ page }) => {
     await page.goto('/auditor/');
     await nav(page).getByRole('link', { name: 'Management dashboard' }).click();
@@ -90,7 +89,9 @@ test.describe('management dashboard', () => {
 
     const assurance = page.locator('section[aria-labelledby="assurance-heading"]');
     await expect(assurance).toContainText('Intact: every entry verifies');
-    await expect(assurance).toContainText('Repeated overrides');
+    // Officer A's refused self-approvals are shown; the viewer's own overrides are withheld.
+    await expect(assurance).toContainText('Repeated refused self-approvals or overrides');
+    await expect(assurance).not.toContainText('Repeated overrides');
     await expect(assurance).toContainText('1 signal concerns you and is not shown here');
     // Review signals never name anyone on this dashboard.
     await expect(assurance).not.toContainText('@example.test');
@@ -112,16 +113,40 @@ test.describe('management dashboard', () => {
     await expect(page.getByTestId('window-line')).toContainText('(7 days)');
   });
 
-  test('a non-supervisor is refused and no figures are shown', async ({ page }) => {
-    await page.route(SUMMARY, forbidden);
-    await page.goto('/auditor/management');
-    const alert = page.getByRole('alert').filter({ hasText: 'Supervisors only' });
-    await expect(alert).toBeVisible();
-    await expect(alert).toContainText('c0000000-0000-4000-8000-0000000000dd');
-    await expect(page.getByRole('heading', { level: 2 })).toHaveCount(0);
-    await expect(page.getByText('Synthetic Officer A')).toHaveCount(0);
-    await expect(page.getByRole('combobox', { name: 'Reporting window' })).toBeDisabled();
+  test('the server refuses an auditor or specialist and no figures are shown', async ({ page }) => {
+    for (const role of ['auditor', 'specialist'] as const) {
+      await actAs(page, role);
+      await page.goto('/auditor/management');
+      const alert = page.getByRole('alert').filter({ hasText: 'Supervisors only' });
+      await expect(alert, role).toBeVisible();
+      await expect(alert).toContainText(/Reference: [0-9a-f-]{36}/);
+      await expect(page.getByRole('heading', { level: 2 })).toHaveCount(0);
+      await expect(page.getByText('Synthetic Officer A')).toHaveCount(0);
+      await expect(page.getByRole('combobox', { name: 'Reporting window' })).toBeDisabled();
+    }
     await shot(page, 'denied-1440');
+  });
+
+  test('only supervisors see the nav entry, and switching role reloads the page', async ({
+    page,
+  }) => {
+    await actAs(page, 'auditor');
+    await page.goto('/auditor/');
+    await expect(page.getByRole('heading', { level: 1, name: 'Overview' })).toBeVisible();
+    const entry = nav(page).getByRole('link', { name: 'Management dashboard' });
+    await expect(entry).toHaveCount(0);
+
+    const actingAs = page.getByRole('combobox', { name: 'Acting as (fixture)' });
+    await actingAs.selectOption('supervisor');
+    await expect(entry).toBeVisible();
+    await entry.click();
+    await ready(page);
+
+    // Back to auditor on the dashboard: the entry goes and the server refuses the reload.
+    await actingAs.selectOption('auditor');
+    await expect(entry).toHaveCount(0);
+    await expect(page.getByRole('alert').filter({ hasText: 'Supervisors only' })).toBeVisible();
+    await expect(page.getByRole('heading', { level: 2 })).toHaveCount(0);
   });
 
   test('service unavailable offers a retry that recovers', async ({ page }) => {

@@ -190,7 +190,7 @@ class ReadTests(unittest.TestCase):
         self.assertEqual((status, body["error"]["code"]), (400, "invalid_request"))
 
     def test_operations_without_fixture_data_are_not_invented(self):
-        status, headers, body = call("/api/v1/cases/40000000-0000-4000-8000-000000000002/findings")
+        status, headers, body = call("/api/v1/cases/40000000-0000-4000-8000-000000000002/evidence")
         self.assertEqual((status, body["error"]["code"]), (404, "not_found"))
         self.assertEqual(body["error"]["message"], "This operation has no fixture data.")
         self.assertEqual(headers["X-Vati-Mode"], "fixture")

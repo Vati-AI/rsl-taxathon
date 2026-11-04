@@ -22,7 +22,9 @@ Decision:
 - Legal-route coverage: reviewer-verified findings over all findings on open cases and on cases closed in the window. `unverified` and `no_verified_route` (policy gap) are given separately, and the three always add up to the denominator.
 - `assurance` comes from the TAX-059 reads (`ledger_summary` and `integrity_signals`) for the same window. It gives the chain check, the entry, override and refusal counts, and distinct actors. Review signals are counted by kind only. Signals about the viewing supervisor are withheld by the TAX-059 rule, and only their number is shown. Per-person detail stays in the restricted integrity views (TAX-077). If the ledger cannot be read, the result is `available: false` with a reason, never zeros.
 - `missing_data` lists every known gap, for example a closed case without a creation time. A partial figure is never presented as complete.
-- `scripts/fixture_api.py` measures the summary from `fixtures/auditor_queue.json` (open cases) and the new synthetic `fixtures/management.json` (closed cases, outcomes, evidence requests, findings, ledger events, officers and roles). It seals the ledger events and reads them with the real Frappe-free `vati_tax.audit.ledger` functions. The fixture clock is the file's `as_of`, so the figures stay fixed. The fixture principal (Synthetic Officer A) holds the supervisor role there. Contract example 21 is generated from the fixture response, and a test keeps the two equal.
+- `scripts/fixture_api.py` measures the summary from `fixtures/auditor_queue.json` (open cases) and the new synthetic `fixtures/management.json` (closed cases, outcomes, evidence requests, findings, ledger events, and officer names and ledger logins). It seals the ledger events and reads them with the real Frappe-free `vati_tax.audit.ledger` functions. The fixture clock is the file's `as_of`, so the figures stay fixed.
+- In fixture mode, the acting officer and their role come from TAX-042's fixture-only `X-Vati-Fixture-Role` header (the `case_review.json` principals), so there is no separate mechanism. The default `auditor` and the `specialist` get `403`; only `supervisor` (Synthetic Supervisor C) sees the figures. The app shows the "Supervision" nav entry only when acting as supervisor, and reloads the dashboard when the role changes. The server still decides access. A real server ignores the header and takes the role from authentication (TAX-029).
+- Contract example 25 is generated from the fixture response as the supervisor, and a test keeps the two equal. Example 26 is the refusal.
 
 Alternatives and tradeoff:
 
@@ -36,9 +38,9 @@ Official sources and version/date checked (2026-11-04):
 - in this repository: ADR-013 (decision outcomes), ADR-015 (ledger read contract and signal rules) and docs/DESIGN_STANDARD.md (tables, no decorative charts or invented metrics).
 
 Verification performed:
-- `integration/api/contract.py` validates the contract with 22 HTTP examples, 2 of them new (summary, and forbidden for an officer).
-- `tests/contracts/test_management_summary.py` (17 tests) covers:
-  - supervisor-only access: officer refused with no data, unknown principal refused, other tenant, missing tenant, out-of-range windows;
+- `integration/api/contract.py` validates the contract with 26 HTTP examples (TAX-042's included), 2 of them new: 25 (summary) and 26 (forbidden for an officer).
+- `tests/contracts/test_management_summary.py` (18 tests) covers:
+  - supervisor-only access: auditor (the default) and specialist refused with no data, an unknown fixture role rejected, a supervisor without a ledger identity refused, other tenant, missing tenant, out-of-range windows;
   - schema conformance for 1, 7, 30, 90 and 365 days;
   - breakdowns adding up to totals, and ratios sharing one denominator that excludes missing outcomes;
   - a window that moves closures and ledger counts but not point-in-time figures;
