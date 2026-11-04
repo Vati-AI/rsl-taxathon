@@ -298,8 +298,19 @@ test.describe('VAT refund claim (TAX-043)', () => {
     const reason = page.getByRole('combobox', { name: 'Reason for the claim' });
     await reason.focus();
     await page.keyboard.press('Enter');
-    await expect(page.getByRole('option', { name: 'Choose a reason' })).toBeFocused();
-    await page.keyboard.press('ArrowDown');
+    const first = page.getByRole('option', { name: 'Choose a reason' });
+    const target = page.getByRole('option', { name: 'More input VAT than output VAT' });
+    await expect(first).toBeFocused();
+    // The frappe-ui (Reka) listbox can ignore a key pressed while it is still
+    // opening (seen on CI at 390px). Press ArrowDown only while focus is still on
+    // the first option, so a slow first press is never followed by an overshoot.
+    await expect(async () => {
+      const isFocused = (el: Element) => el === document.activeElement;
+      if (!(await target.evaluate(isFocused)) && (await first.evaluate(isFocused))) {
+        await page.keyboard.press('ArrowDown');
+      }
+      await expect(target).toBeFocused({ timeout: 1_000 });
+    }).toPass({ timeout: 10_000 });
     await page.keyboard.press('Enter');
     await expect(reason).toContainText('More input VAT than output VAT');
     await expect(reason).toBeFocused();
