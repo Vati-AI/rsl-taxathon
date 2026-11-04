@@ -66,6 +66,9 @@ DECISION_PROPOSE: Final = "decision.propose"
 DECISION_APPROVE: Final = "decision.approve"
 CASE_ASSIGN: Final = "case.assign"
 PLAYBOOK_APPROVE: Final = "playbook.approve"
+# Resend an already approved decision to Jube after a retryable failure
+# (TAX-046). It approves nothing, so the outbox service identity may do it.
+DECISION_EXECUTE: Final = "decision.execute"
 INTEGRATION_CALLBACK: Final = "integration.callback"
 DRAFT_RECORD: Final = "draft.record"
 
@@ -85,6 +88,7 @@ ACTION_ROLES: Final[dict[str, frozenset[Role]]] = {
     DECISION_APPROVE: frozenset({SUPERVISOR}),
     CASE_ASSIGN: frozenset({SUPERVISOR}),
     PLAYBOOK_APPROVE: frozenset({SUPERVISOR}),
+    DECISION_EXECUTE: frozenset({SUPERVISOR, SERVICE}),
     # Service identities deliver integration results (extraction, matching,
     # risk callbacks) and record agent drafts that a human must then review.
     INTEGRATION_CALLBACK: frozenset({SERVICE}),

@@ -1,0 +1,464 @@
+{
+ "generated_by": "npm run test:frontend:browser (Playwright 1.64.1 JSON reporter, summarised)",
+ "browser": "Microsoft Edge 156.0.4314.50 on Windows 11",
+ "branch_commit": "308205b (task/TAX-023 merged with main 2ad25f2)",
+ "started_at": "2026-11-04T09:54:43.341Z",
+ "stats": {
+  "expected": 66,
+  "unexpected": 0,
+  "flaky": 0,
+  "skipped": 9
+ },
+ "tests": [
+  {
+   "file": "auditor.spec.ts",
+   "test": "positive navigation: overview \u2192 queue \u2192 case \u2192 taxpayer \u2192 breadcrumb back",
+   "project": "desktop-1440",
+   "status": "passed"
+  },
+  {
+   "file": "auditor.spec.ts",
+   "test": "denied access: another tenant is refused by the API and shown without data",
+   "project": "desktop-1440",
+   "status": "passed"
+  },
+  {
+   "file": "auditor.spec.ts",
+   "test": "keyboard: skip link, visible focus and sidebar activation",
+   "project": "desktop-1440",
+   "status": "passed"
+  },
+  {
+   "file": "auditor.spec.ts",
+   "test": "matrix overview: no serious axe violations, no page-wide horizontal scroll",
+   "project": "desktop-1440",
+   "status": "passed"
+  },
+  {
+   "file": "auditor.spec.ts",
+   "test": "matrix queue: no serious axe violations, no page-wide horizontal scroll",
+   "project": "desktop-1440",
+   "status": "passed"
+  },
+  {
+   "file": "auditor.spec.ts",
+   "test": "matrix case-detail: no serious axe violations, no page-wide horizontal scroll",
+   "project": "desktop-1440",
+   "status": "passed"
+  },
+  {
+   "file": "auditor.spec.ts",
+   "test": "matrix taxpayer: no serious axe violations, no page-wide horizontal scroll",
+   "project": "desktop-1440",
+   "status": "passed"
+  },
+  {
+   "file": "auditor.spec.ts",
+   "test": "matrix showcase: no serious axe violations, no page-wide horizontal scroll",
+   "project": "desktop-1440",
+   "status": "passed"
+  },
+  {
+   "file": "auditor.spec.ts",
+   "test": "matrix not-found: no serious axe violations, no page-wide horizontal scroll",
+   "project": "desktop-1440",
+   "status": "passed"
+  },
+  {
+   "file": "auditor.spec.ts",
+   "test": "positive navigation: overview \u2192 queue \u2192 case \u2192 taxpayer \u2192 breadcrumb back",
+   "project": "tablet-1024",
+   "status": "passed"
+  },
+  {
+   "file": "auditor.spec.ts",
+   "test": "denied access: another tenant is refused by the API and shown without data",
+   "project": "tablet-1024",
+   "status": "passed"
+  },
+  {
+   "file": "auditor.spec.ts",
+   "test": "keyboard: skip link, visible focus and sidebar activation",
+   "project": "tablet-1024",
+   "status": "passed"
+  },
+  {
+   "file": "auditor.spec.ts",
+   "test": "matrix overview: no serious axe violations, no page-wide horizontal scroll",
+   "project": "tablet-1024",
+   "status": "passed"
+  },
+  {
+   "file": "auditor.spec.ts",
+   "test": "matrix queue: no serious axe violations, no page-wide horizontal scroll",
+   "project": "tablet-1024",
+   "status": "passed"
+  },
+  {
+   "file": "auditor.spec.ts",
+   "test": "matrix case-detail: no serious axe violations, no page-wide horizontal scroll",
+   "project": "tablet-1024",
+   "status": "passed"
+  },
+  {
+   "file": "auditor.spec.ts",
+   "test": "matrix taxpayer: no serious axe violations, no page-wide horizontal scroll",
+   "project": "tablet-1024",
+   "status": "passed"
+  },
+  {
+   "file": "auditor.spec.ts",
+   "test": "matrix showcase: no serious axe violations, no page-wide horizontal scroll",
+   "project": "tablet-1024",
+   "status": "passed"
+  },
+  {
+   "file": "auditor.spec.ts",
+   "test": "matrix not-found: no serious axe violations, no page-wide horizontal scroll",
+   "project": "tablet-1024",
+   "status": "passed"
+  },
+  {
+   "file": "auditor.spec.ts",
+   "test": "positive navigation: overview \u2192 queue \u2192 case \u2192 taxpayer \u2192 breadcrumb back",
+   "project": "mobile-390",
+   "status": "passed"
+  },
+  {
+   "file": "auditor.spec.ts",
+   "test": "denied access: another tenant is refused by the API and shown without data",
+   "project": "mobile-390",
+   "status": "passed"
+  },
+  {
+   "file": "auditor.spec.ts",
+   "test": "keyboard: skip link, visible focus and sidebar activation",
+   "project": "mobile-390",
+   "status": "passed"
+  },
+  {
+   "file": "auditor.spec.ts",
+   "test": "matrix overview: no serious axe violations, no page-wide horizontal scroll",
+   "project": "mobile-390",
+   "status": "passed"
+  },
+  {
+   "file": "auditor.spec.ts",
+   "test": "matrix queue: no serious axe violations, no page-wide horizontal scroll",
+   "project": "mobile-390",
+   "status": "passed"
+  },
+  {
+   "file": "auditor.spec.ts",
+   "test": "matrix case-detail: no serious axe violations, no page-wide horizontal scroll",
+   "project": "mobile-390",
+   "status": "passed"
+  },
+  {
+   "file": "auditor.spec.ts",
+   "test": "matrix taxpayer: no serious axe violations, no page-wide horizontal scroll",
+   "project": "mobile-390",
+   "status": "passed"
+  },
+  {
+   "file": "auditor.spec.ts",
+   "test": "matrix showcase: no serious axe violations, no page-wide horizontal scroll",
+   "project": "mobile-390",
+   "status": "passed"
+  },
+  {
+   "file": "auditor.spec.ts",
+   "test": "matrix not-found: no serious axe violations, no page-wide horizontal scroll",
+   "project": "mobile-390",
+   "status": "passed"
+  },
+  {
+   "file": "taxpayer.spec.ts",
+   "test": "positive navigation: list \u2192 status \u2192 breadcrumb \u2192 new submission \u2192 account",
+   "project": "desktop-1440",
+   "status": "passed"
+  },
+  {
+   "file": "taxpayer.spec.ts",
+   "test": "denied access: a guest is sent to login with a portal-only return path",
+   "project": "desktop-1440",
+   "status": "passed"
+  },
+  {
+   "file": "taxpayer.spec.ts",
+   "test": "denied access: a signed-in user without a taxpayer membership is refused",
+   "project": "desktop-1440",
+   "status": "passed"
+  },
+  {
+   "file": "taxpayer.spec.ts",
+   "test": "denied access: another taxpayer's submission is concealed as not found",
+   "project": "desktop-1440",
+   "status": "passed"
+  },
+  {
+   "file": "taxpayer.spec.ts",
+   "test": "denied access: a membership revoked after loading shows no submissions",
+   "project": "desktop-1440",
+   "status": "passed"
+  },
+  {
+   "file": "taxpayer.spec.ts",
+   "test": "logout ends the session and a later visit goes to login",
+   "project": "desktop-1440",
+   "status": "passed"
+  },
+  {
+   "file": "taxpayer.spec.ts",
+   "test": "keyboard: skip link and navigation activation",
+   "project": "desktop-1440",
+   "status": "passed"
+  },
+  {
+   "file": "taxpayer.spec.ts",
+   "test": "keyboard: an incomplete form keeps values and focuses the first invalid field",
+   "project": "desktop-1440",
+   "status": "passed"
+  },
+  {
+   "file": "taxpayer.spec.ts",
+   "test": "matrix submissions: no serious axe violations, no page-wide horizontal scroll",
+   "project": "desktop-1440",
+   "status": "passed"
+  },
+  {
+   "file": "taxpayer.spec.ts",
+   "test": "matrix submission: no serious axe violations, no page-wide horizontal scroll",
+   "project": "desktop-1440",
+   "status": "passed"
+  },
+  {
+   "file": "taxpayer.spec.ts",
+   "test": "matrix new-submission: no serious axe violations, no page-wide horizontal scroll",
+   "project": "desktop-1440",
+   "status": "passed"
+  },
+  {
+   "file": "taxpayer.spec.ts",
+   "test": "matrix account: no serious axe violations, no page-wide horizontal scroll",
+   "project": "desktop-1440",
+   "status": "passed"
+  },
+  {
+   "file": "taxpayer.spec.ts",
+   "test": "matrix not-found: no serious axe violations, no page-wide horizontal scroll",
+   "project": "desktop-1440",
+   "status": "passed"
+  },
+  {
+   "file": "taxpayer.spec.ts",
+   "test": "positive navigation: list \u2192 status \u2192 breadcrumb \u2192 new submission \u2192 account",
+   "project": "tablet-1024",
+   "status": "passed"
+  },
+  {
+   "file": "taxpayer.spec.ts",
+   "test": "denied access: a guest is sent to login with a portal-only return path",
+   "project": "tablet-1024",
+   "status": "passed"
+  },
+  {
+   "file": "taxpayer.spec.ts",
+   "test": "denied access: a signed-in user without a taxpayer membership is refused",
+   "project": "tablet-1024",
+   "status": "passed"
+  },
+  {
+   "file": "taxpayer.spec.ts",
+   "test": "denied access: another taxpayer's submission is concealed as not found",
+   "project": "tablet-1024",
+   "status": "passed"
+  },
+  {
+   "file": "taxpayer.spec.ts",
+   "test": "denied access: a membership revoked after loading shows no submissions",
+   "project": "tablet-1024",
+   "status": "passed"
+  },
+  {
+   "file": "taxpayer.spec.ts",
+   "test": "logout ends the session and a later visit goes to login",
+   "project": "tablet-1024",
+   "status": "passed"
+  },
+  {
+   "file": "taxpayer.spec.ts",
+   "test": "keyboard: skip link and navigation activation",
+   "project": "tablet-1024",
+   "status": "passed"
+  },
+  {
+   "file": "taxpayer.spec.ts",
+   "test": "keyboard: an incomplete form keeps values and focuses the first invalid field",
+   "project": "tablet-1024",
+   "status": "passed"
+  },
+  {
+   "file": "taxpayer.spec.ts",
+   "test": "matrix submissions: no serious axe violations, no page-wide horizontal scroll",
+   "project": "tablet-1024",
+   "status": "passed"
+  },
+  {
+   "file": "taxpayer.spec.ts",
+   "test": "matrix submission: no serious axe violations, no page-wide horizontal scroll",
+   "project": "tablet-1024",
+   "status": "passed"
+  },
+  {
+   "file": "taxpayer.spec.ts",
+   "test": "matrix new-submission: no serious axe violations, no page-wide horizontal scroll",
+   "project": "tablet-1024",
+   "status": "passed"
+  },
+  {
+   "file": "taxpayer.spec.ts",
+   "test": "matrix account: no serious axe violations, no page-wide horizontal scroll",
+   "project": "tablet-1024",
+   "status": "passed"
+  },
+  {
+   "file": "taxpayer.spec.ts",
+   "test": "matrix not-found: no serious axe violations, no page-wide horizontal scroll",
+   "project": "tablet-1024",
+   "status": "passed"
+  },
+  {
+   "file": "taxpayer.spec.ts",
+   "test": "positive navigation: list \u2192 status \u2192 breadcrumb \u2192 new submission \u2192 account",
+   "project": "mobile-390",
+   "status": "passed"
+  },
+  {
+   "file": "taxpayer.spec.ts",
+   "test": "denied access: a guest is sent to login with a portal-only return path",
+   "project": "mobile-390",
+   "status": "passed"
+  },
+  {
+   "file": "taxpayer.spec.ts",
+   "test": "denied access: a signed-in user without a taxpayer membership is refused",
+   "project": "mobile-390",
+   "status": "passed"
+  },
+  {
+   "file": "taxpayer.spec.ts",
+   "test": "denied access: another taxpayer's submission is concealed as not found",
+   "project": "mobile-390",
+   "status": "passed"
+  },
+  {
+   "file": "taxpayer.spec.ts",
+   "test": "denied access: a membership revoked after loading shows no submissions",
+   "project": "mobile-390",
+   "status": "passed"
+  },
+  {
+   "file": "taxpayer.spec.ts",
+   "test": "logout ends the session and a later visit goes to login",
+   "project": "mobile-390",
+   "status": "passed"
+  },
+  {
+   "file": "taxpayer.spec.ts",
+   "test": "keyboard: skip link and navigation activation",
+   "project": "mobile-390",
+   "status": "passed"
+  },
+  {
+   "file": "taxpayer.spec.ts",
+   "test": "keyboard: an incomplete form keeps values and focuses the first invalid field",
+   "project": "mobile-390",
+   "status": "passed"
+  },
+  {
+   "file": "taxpayer.spec.ts",
+   "test": "matrix submissions: no serious axe violations, no page-wide horizontal scroll",
+   "project": "mobile-390",
+   "status": "passed"
+  },
+  {
+   "file": "taxpayer.spec.ts",
+   "test": "matrix submission: no serious axe violations, no page-wide horizontal scroll",
+   "project": "mobile-390",
+   "status": "passed"
+  },
+  {
+   "file": "taxpayer.spec.ts",
+   "test": "matrix new-submission: no serious axe violations, no page-wide horizontal scroll",
+   "project": "mobile-390",
+   "status": "passed"
+  },
+  {
+   "file": "taxpayer.spec.ts",
+   "test": "matrix account: no serious axe violations, no page-wide horizontal scroll",
+   "project": "mobile-390",
+   "status": "passed"
+  },
+  {
+   "file": "taxpayer.spec.ts",
+   "test": "matrix not-found: no serious axe violations, no page-wide horizontal scroll",
+   "project": "mobile-390",
+   "status": "passed"
+  },
+  {
+   "file": "visual.spec.ts",
+   "test": "auditor screens and denied state",
+   "project": "desktop-1440",
+   "status": "skipped"
+  },
+  {
+   "file": "visual.spec.ts",
+   "test": "taxpayer screens and denied states",
+   "project": "desktop-1440",
+   "status": "skipped"
+  },
+  {
+   "file": "visual.spec.ts",
+   "test": "keyboard focus states",
+   "project": "desktop-1440",
+   "status": "skipped"
+  },
+  {
+   "file": "visual.spec.ts",
+   "test": "auditor screens and denied state",
+   "project": "tablet-1024",
+   "status": "skipped"
+  },
+  {
+   "file": "visual.spec.ts",
+   "test": "taxpayer screens and denied states",
+   "project": "tablet-1024",
+   "status": "skipped"
+  },
+  {
+   "file": "visual.spec.ts",
+   "test": "keyboard focus states",
+   "project": "tablet-1024",
+   "status": "skipped"
+  },
+  {
+   "file": "visual.spec.ts",
+   "test": "auditor screens and denied state",
+   "project": "mobile-390",
+   "status": "skipped"
+  },
+  {
+   "file": "visual.spec.ts",
+   "test": "taxpayer screens and denied states",
+   "project": "mobile-390",
+   "status": "skipped"
+  },
+  {
+   "file": "visual.spec.ts",
+   "test": "keyboard focus states",
+   "project": "mobile-390",
+   "status": "skipped"
+  }
+ ]
+}

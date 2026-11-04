@@ -13,7 +13,14 @@ export default [
       globals: { document: "readonly", window: "readonly", fetch: "readonly", console: "readonly" }
     }
   },
-  ...tseslint.configs.recommended.map((config) => ({ ...config, files: ["apps/**/*.{ts,vue}"] })),
+  ...tseslint.configs.recommended.map((config) => ({ ...config, files: ["apps/**/*.{ts,vue}", "tests/frontend/**/*.ts"] })),
+  {
+    // TAX-023 browser harness: Playwright specs run in Node; page.evaluate bodies run in the browser.
+    files: ["tests/frontend/**/*.ts"],
+    languageOptions: {
+      globals: { __dirname: "readonly", process: "readonly", document: "readonly", getComputedStyle: "readonly" }
+    }
+  },
   ...pluginVue.configs["flat/recommended"].map((config) => ({ ...config, files: ["apps/**/*.vue"] })),
   {
     files: ["apps/**/*.vue"],

@@ -56,9 +56,10 @@ Callers check actions with `permissions.require_action(action, tenant_id, taxpay
 | `decision.propose`* | | yes | yes | yes | |
 | `decision.approve`* | | | | yes, not own proposal | |
 | `case.assign`*, `playbook.approve`* | | | | yes | |
+| `decision.execute` (TAX-046: resend an approved decision to Jube) | | | | yes | yes |
 | `integration.callback` | | | | | yes |
 
-\* Human-only. A service identity is refused these actions even if the matrix is widened by mistake. Stale approvals, idempotent decision records and the Jube transition belong to TAX-046.
+\* Human-only. A service identity is refused these actions even if the matrix is widened by mistake. Stale approvals, idempotent decision records and the Jube transition are TAX-046 (see Decisions below).
 
 ## Local setup (synthetic users only)
 
@@ -74,3 +75,16 @@ The taxpayer above owns fixture `SUB-SYN-0001`. `portal/fixtures.py` maps every 
 ## Evidence (TAX-032)
 
 `Vati Evidence` and `Vati Evidence Extraction` follow the record-isolation convention (`tenant_id` + `taxpayer_id`). Officers and services read evidence in their tenant. A taxpayer reads only evidence it uploaded itself (`if_owner`), never officer uploads or extraction revisions. Only a service identity records extraction revisions (`integration.callback`). The evidence source is bound to the role: `taxpayer_portal` for taxpayers, `officer_upload` for officers, `synthetic_fixture` for officers or services. Evidence originals are private Files that nobody can make public, move, edit or delete through Frappe. See [ADR-011](decisions/ADR-011-evidence-storage-provenance.md).
+
+## Decisions and evidence requests (TAX-046)
+
+`Vati Decision`, `Vati Evidence Request` and `Vati Audit Event` follow the record-isolation convention (`tenant_id` + `taxpayer_id`). Officers and services read them in their tenant; taxpayers have no DocType permission. Nothing is created through Desk: `vati_tax.decisions.store` writes them after the action checks below, and controllers refuse deletes and edits to recorded fields. See [ADR-013](decisions/ADR-013-decisions-approvals-evidence-requests.md).
+
+| Step | Who | Refused when |
+| --- | --- | --- |
+| Record an agent draft | any `draft.record` role | never executable; approving it is `agent_only_decision` |
+| Propose | auditor, specialist, supervisor (`decision.propose`) | service or taxpayer; another decision on the case is open; stale `expected_version`; Jube status differs from `expected_case_status`; prohibited or unknown outcome; closing without a citation; evidence outside the tenant or taxpayer |
+| Approve or reject | a supervisor who did not propose it (`decision.approve`) | proposer, auditor, specialist or service; not `proposed`; stale `expected_version`; proposal older than 72 hours; Jube status changed since proposal |
+| Withdraw | the proposer | anyone else |
+| Retry the Jube call | supervisor or service (`decision.execute`) | not approved; already synced (replay); final failure; approval older than 24 hours |
+| Authorise an evidence request | auditor, supervisor (`evidence_request.authorise`) | specialist, service or taxpayer; stale `expected_version`; case without a taxpayer; due date not in the next 180 days |

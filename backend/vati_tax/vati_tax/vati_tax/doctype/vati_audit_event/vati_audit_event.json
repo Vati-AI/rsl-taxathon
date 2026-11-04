@@ -1,0 +1,209 @@
+{
+ "actions": [],
+ "autoname": "field:event_id",
+ "creation": "2026-11-04 13:00:00.000000",
+ "description": "Append-only audit event for decisions and evidence requests (TAX-046). Advancing events take the next case version under a unique key.",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "event_id",
+  "tenant_id",
+  "taxpayer_id",
+  "case_id",
+  "sequence",
+  "action",
+  "outcome",
+  "column_break_actor",
+  "actor",
+  "actor_role",
+  "occurred_at",
+  "correlation_id",
+  "subject_section",
+  "subject_type",
+  "subject_id",
+  "payload_hash",
+  "keys_section",
+  "sequence_key"
+ ],
+ "fields": [
+  {
+   "fieldname": "event_id",
+   "fieldtype": "Data",
+   "label": "Event ID",
+   "length": 36,
+   "reqd": 1,
+   "unique": 1,
+   "set_only_once": 1
+  },
+  {
+   "fieldname": "tenant_id",
+   "fieldtype": "Data",
+   "label": "Tenant ID",
+   "length": 36,
+   "reqd": 1,
+   "search_index": 1,
+   "set_only_once": 1,
+   "in_standard_filter": 1
+  },
+  {
+   "fieldname": "taxpayer_id",
+   "fieldtype": "Data",
+   "label": "Taxpayer ID",
+   "length": 36,
+   "search_index": 1,
+   "set_only_once": 1
+  },
+  {
+   "fieldname": "case_id",
+   "fieldtype": "Data",
+   "label": "Case ID",
+   "length": 36,
+   "reqd": 1,
+   "search_index": 1,
+   "set_only_once": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "sequence",
+   "fieldtype": "Int",
+   "label": "Case Version",
+   "set_only_once": 1,
+   "description": "Case version this event took; 0 for events that do not advance it."
+  },
+  {
+   "fieldname": "action",
+   "fieldtype": "Data",
+   "label": "Action",
+   "length": 64,
+   "reqd": 1,
+   "set_only_once": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "outcome",
+   "fieldtype": "Data",
+   "label": "Outcome",
+   "length": 64,
+   "reqd": 1,
+   "set_only_once": 1
+  },
+  {
+   "fieldname": "column_break_actor",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "actor",
+   "fieldtype": "Data",
+   "label": "Actor",
+   "length": 140,
+   "reqd": 1,
+   "set_only_once": 1
+  },
+  {
+   "fieldname": "actor_role",
+   "fieldtype": "Data",
+   "label": "Actor Role",
+   "length": 16,
+   "reqd": 1,
+   "set_only_once": 1
+  },
+  {
+   "fieldname": "occurred_at",
+   "fieldtype": "Datetime",
+   "label": "Occurred At (UTC)",
+   "reqd": 1,
+   "set_only_once": 1
+  },
+  {
+   "fieldname": "correlation_id",
+   "fieldtype": "Data",
+   "label": "Correlation ID",
+   "length": 36,
+   "reqd": 1,
+   "set_only_once": 1
+  },
+  {
+   "fieldname": "subject_section",
+   "fieldtype": "Section Break",
+   "label": "Subject"
+  },
+  {
+   "fieldname": "subject_type",
+   "fieldtype": "Select",
+   "label": "Subject Type",
+   "options": "decision\nevidence_request",
+   "reqd": 1,
+   "set_only_once": 1
+  },
+  {
+   "fieldname": "subject_id",
+   "fieldtype": "Data",
+   "label": "Subject ID",
+   "length": 36,
+   "reqd": 1,
+   "search_index": 1,
+   "set_only_once": 1
+  },
+  {
+   "fieldname": "payload_hash",
+   "fieldtype": "Data",
+   "label": "Payload SHA-256",
+   "length": 64,
+   "reqd": 1,
+   "set_only_once": 1
+  },
+  {
+   "fieldname": "keys_section",
+   "fieldtype": "Section Break",
+   "label": "Uniqueness keys",
+   "collapsible": 1
+  },
+  {
+   "fieldname": "sequence_key",
+   "fieldtype": "Data",
+   "label": "Sequence Key",
+   "length": 64,
+   "read_only": 1,
+   "unique": 1,
+   "description": "SHA-256 of tenant, case and case version (advancing events only)."
+  }
+ ],
+ "in_create": 1,
+ "index_web_pages_for_search": 0,
+ "links": [],
+ "modified": "2026-11-04 13:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Vati Tax",
+ "name": "Vati Audit Event",
+ "naming_rule": "By fieldname",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "export": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager"
+  },
+  {
+   "read": 1,
+   "role": "Vati Auditor"
+  },
+  {
+   "read": 1,
+   "role": "Vati Specialist"
+  },
+  {
+   "read": 1,
+   "role": "Vati Supervisor"
+  },
+  {
+   "read": 1,
+   "role": "Vati Service"
+  }
+ ],
+ "search_fields": "case_id,action",
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "action"
+}

@@ -48,6 +48,22 @@ jobs:
       - run: npx playwright install --with-deps chromium
       - run: npm run build:auditor
       - run: npm run test:auditor:browser
+  frontend-browser:
+    # TAX-023: both portals at 1440/1024/390px with session mocks; no Frappe site needed.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - run: npm run build:auditor
+      - run: npm run test:frontend:browser
   ai-smoke:
     runs-on: ubuntu-latest
     steps:
