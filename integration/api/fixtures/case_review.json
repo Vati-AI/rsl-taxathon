@@ -1,0 +1,279 @@
+{
+  "description": "Synthetic officer review state for the fixture server (TAX-042): fixture principals, findings with agent suggestions and seeded decisions. Times are given in hours before the server starts so the seeds never go stale. Fixture only; no live service data.",
+  "synthetic": true,
+  "principals": {
+    "auditor": { "officer_id": "80000000-0000-4000-8000-000000000001", "roles": ["auditor"] },
+    "specialist": { "officer_id": "80000000-0000-4000-8000-000000000004", "roles": ["specialist"] },
+    "supervisor": { "officer_id": "80000000-0000-4000-8000-000000000003", "roles": ["supervisor"] }
+  },
+  "findings": [
+    {
+      "finding_id": "70000000-0000-4000-8000-000000000101",
+      "case_id": "40000000-0000-4000-8000-000000000001",
+      "kind": "observed_fact",
+      "category": "refund_reconciliation",
+      "explanation": "Synthetic purchase invoices for the period reconcile with the input VAT declared on the return.",
+      "evidence_refs": [
+        {
+          "evidence_id": "50000000-0000-4000-8000-000000000101",
+          "document_sha256": "1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a",
+          "locator": { "page": 2, "record": null }
+        }
+      ],
+      "unresolved_amount": null,
+      "confidence": "high",
+      "alternative_explanations": [],
+      "legal_route": { "status": "unverified", "citation": null, "verified_by": null },
+      "proposed_action": { "type": "human_clearance", "requires_human_approval": true },
+      "producer": "langgraph_run",
+      "producer_version": "refund_reconciliation@1",
+      "hours_ago": 30
+    },
+    {
+      "finding_id": "70000000-0000-4000-8000-000000000201",
+      "case_id": "40000000-0000-4000-8000-000000000002",
+      "kind": "missing_evidence",
+      "category": "related_party",
+      "explanation": "No synthetic service agreement was supplied for management fees paid to a company that shares a director with the taxpayer.",
+      "evidence_refs": [],
+      "unresolved_amount": { "amount": "48500.00", "currency": "LSL" },
+      "confidence": "medium",
+      "alternative_explanations": ["The fees may be at arm's length and the agreement simply not uploaded yet."],
+      "legal_route": { "status": "unverified", "citation": null, "verified_by": null },
+      "proposed_action": { "type": "request_evidence", "requires_human_approval": true },
+      "producer": "langgraph_run",
+      "producer_version": "related_party_review@1",
+      "hours_ago": 20
+    },
+    {
+      "finding_id": "70000000-0000-4000-8000-000000000301",
+      "case_id": "40000000-0000-4000-8000-000000000003",
+      "kind": "inference",
+      "category": "worker_classification",
+      "explanation": "Synthetic payslips and contractor invoices for the same five people overlap in three months, which may point to misclassified workers.",
+      "evidence_refs": [
+        {
+          "evidence_id": "50000000-0000-4000-8000-000000000301",
+          "document_sha256": "3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c",
+          "locator": { "page": null, "record": "payroll-2026-07" }
+        }
+      ],
+      "unresolved_amount": { "amount": "12750.00", "currency": "LSL" },
+      "confidence": "low",
+      "alternative_explanations": [
+        "The people may have held two separate roles during the overlap.",
+        "Invoices may relate to a period after the employment ended."
+      ],
+      "legal_route": { "status": "no_verified_route", "citation": null, "verified_by": null },
+      "proposed_action": { "type": "specialist_review", "requires_human_approval": true },
+      "producer": "langgraph_run",
+      "producer_version": "worker_classification@1",
+      "hours_ago": 26
+    },
+    {
+      "finding_id": "70000000-0000-4000-8000-000000000401",
+      "case_id": "40000000-0000-4000-8000-000000000004",
+      "kind": "missing_evidence",
+      "category": "imported_services",
+      "explanation": "No synthetic withholding or reverse-charge record was found for the imported consulting service.",
+      "evidence_refs": [],
+      "unresolved_amount": { "amount": "3000.00", "currency": "LSL" },
+      "confidence": "medium",
+      "alternative_explanations": [],
+      "legal_route": { "status": "unverified", "citation": null, "verified_by": null },
+      "proposed_action": { "type": "request_evidence", "requires_human_approval": true },
+      "producer": "jube_rule",
+      "producer_version": "imported_services_rules@1",
+      "hours_ago": 50
+    },
+    {
+      "finding_id": "70000000-0000-4000-8000-000000000501",
+      "case_id": "40000000-0000-4000-8000-000000000005",
+      "kind": "unverified_evidence",
+      "category": "policy_gap",
+      "explanation": "The refund relies on a treatment that no verified legal route in the registry covers yet.",
+      "evidence_refs": [],
+      "unresolved_amount": null,
+      "confidence": "medium",
+      "alternative_explanations": [],
+      "legal_route": { "status": "no_verified_route", "citation": null, "verified_by": null },
+      "proposed_action": { "type": "policy_gap_review", "requires_human_approval": true },
+      "producer": "langgraph_run",
+      "producer_version": "policy_gap_gate@1",
+      "hours_ago": 90
+    },
+    {
+      "finding_id": "70000000-0000-4000-8000-000000000021",
+      "case_id": "40000000-0000-4000-8000-000000000002",
+      "kind": "observed_fact",
+      "category": "related_party",
+      "explanation": "Contract CTR-SYN-002-01 records a disclosed related-party supply of shared logistics services from Synthetic Group Holdings, invoiced at LSL 87,200.00.",
+      "evidence_refs": [
+        {
+          "evidence_id": "50000000-0000-4000-8000-000000000021",
+          "document_sha256": "2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a",
+          "locator": {
+            "page": 1,
+            "record": null
+          }
+        },
+        {
+          "evidence_id": "50000000-0000-4000-8000-000000000022",
+          "document_sha256": "2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b",
+          "locator": {
+            "page": 1,
+            "record": null
+          }
+        }
+      ],
+      "unresolved_amount": null,
+      "confidence": "high",
+      "alternative_explanations": [],
+      "legal_route": {
+        "status": "unverified",
+        "citation": null,
+        "verified_by": null
+      },
+      "proposed_action": {
+        "type": "none",
+        "requires_human_approval": true
+      },
+      "producer": "langgraph_run",
+      "producer_version": "related_party_review@1",
+      "hours_ago": 24
+    },
+    {
+      "finding_id": "70000000-0000-4000-8000-000000000022",
+      "case_id": "40000000-0000-4000-8000-000000000002",
+      "kind": "contradictory_evidence",
+      "category": "related_party",
+      "explanation": "Two records give different shareholdings for Synthetic Group Holdings in Synthetic Border Retail: 60% in the company register extract and 55% in the 2024 annual return. With the 40% individual holding in the annual return, the recorded stakes add up to more than 100%. The records have not been reconciled.",
+      "evidence_refs": [
+        {
+          "evidence_id": "50000000-0000-4000-8000-000000000025",
+          "document_sha256": "2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e",
+          "locator": {
+            "page": null,
+            "record": "row 4"
+          }
+        },
+        {
+          "evidence_id": "50000000-0000-4000-8000-000000000026",
+          "document_sha256": "2f2f2f2f2f2f2f2f2f2f2f2f2f2f2f2f2f2f2f2f2f2f2f2f2f2f2f2f2f2f2f2f",
+          "locator": {
+            "page": 3,
+            "record": null
+          }
+        }
+      ],
+      "unresolved_amount": null,
+      "confidence": "medium",
+      "alternative_explanations": [
+        "The register extract may predate a share transfer recorded in the annual return.",
+        "One of the records may contain a data-entry error."
+      ],
+      "legal_route": {
+        "status": "unverified",
+        "citation": null,
+        "verified_by": null
+      },
+      "proposed_action": {
+        "type": "request_evidence",
+        "requires_human_approval": true
+      },
+      "producer": "langgraph_run",
+      "producer_version": "related_party_review@1",
+      "hours_ago": 24
+    },
+    {
+      "finding_id": "70000000-0000-4000-8000-000000000024",
+      "case_id": "40000000-0000-4000-8000-000000000002",
+      "kind": "inference",
+      "category": "related_party",
+      "explanation": "Reported losses in three consecutive periods alongside related-party charges may merit specialist review of pricing. Pricing has not been established.",
+      "evidence_refs": [
+        {
+          "evidence_id": "50000000-0000-4000-8000-000000000021",
+          "document_sha256": "2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a",
+          "locator": {
+            "page": 2,
+            "record": null
+          }
+        }
+      ],
+      "unresolved_amount": null,
+      "confidence": "low",
+      "alternative_explanations": [
+        "Losses may reflect market conditions unrelated to the related-party supply."
+      ],
+      "legal_route": {
+        "status": "unverified",
+        "citation": null,
+        "verified_by": null
+      },
+      "proposed_action": {
+        "type": "specialist_review",
+        "requires_human_approval": true
+      },
+      "producer": "langgraph_run",
+      "producer_version": "related_party_review@1",
+      "hours_ago": 24
+    },
+    {
+      "finding_id": "70000000-0000-4000-8000-000000000040",
+      "case_id": "40000000-0000-4000-8000-000000000004",
+      "kind": "observed_fact",
+      "category": "imported_services",
+      "explanation": "Synthetic invoice records a foreign consulting service of LSL 3000.00.",
+      "evidence_refs": [
+        {
+          "evidence_id": "50000000-0000-4000-8000-000000000004",
+          "document_sha256": "4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c",
+          "locator": {
+            "page": 1,
+            "record": null
+          }
+        }
+      ],
+      "unresolved_amount": null,
+      "confidence": "high",
+      "alternative_explanations": [],
+      "legal_route": {
+        "status": "unverified",
+        "citation": null,
+        "verified_by": null
+      },
+      "proposed_action": {
+        "type": "none",
+        "requires_human_approval": true
+      },
+      "producer": "langgraph_run",
+      "producer_version": "imported_services_review@1",
+      "hours_ago": 24
+    }
+  ],
+  "decisions": [
+    {
+      "decision_id": "d0000000-0000-4000-8000-000000000001",
+      "case_id": "40000000-0000-4000-8000-000000000001",
+      "outcome": "close_no_further_action",
+      "rationale": "Purchase invoices for the period reconcile with the declared input VAT; no further action is needed.",
+      "evidence_ids": [],
+      "finding_ids": ["70000000-0000-4000-8000-000000000101"],
+      "rating": 2,
+      "proposed_by": "auditor",
+      "hours_ago": 3
+    },
+    {
+      "decision_id": "d0000000-0000-4000-8000-000000000005",
+      "case_id": "40000000-0000-4000-8000-000000000005",
+      "outcome": "continue_investigation",
+      "rationale": "The refund treatment has no verified legal route yet; keep investigating until the policy gap is reviewed.",
+      "evidence_ids": [],
+      "finding_ids": ["70000000-0000-4000-8000-000000000501"],
+      "rating": 3,
+      "proposed_by": "auditor",
+      "hours_ago": 80
+    }
+  ]
+}

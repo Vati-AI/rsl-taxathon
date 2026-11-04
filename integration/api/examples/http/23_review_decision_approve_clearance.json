@@ -1,0 +1,62 @@
+{
+  "name": "review_decision_approve_clearance",
+  "operation_id": "reviewDecision",
+  "scenario": "SYN-001",
+  "synthetic": true,
+  "description": "A supervisor who did not propose the clearance approves it. The decision's one Jube operation runs and Jube reports the case resolved.",
+  "request": {
+    "method": "POST",
+    "path": "/api/v1/cases/40000000-0000-4000-8000-000000000001/decisions/d0000000-0000-4000-8000-000000000001/review",
+    "headers": {
+      "Authorization": "Bearer synthetic-dev-token-not-a-secret",
+      "X-Vati-Tenant-ID": "10000000-0000-4000-8000-000000000001",
+      "X-Correlation-ID": "c0000000-0000-4000-8000-000000000023",
+      "Idempotency-Key": "supervisor:review:SYN-001:v5"
+    },
+    "body": {
+      "action": "approve",
+      "expected_version": 5
+    }
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "X-Correlation-ID": "c0000000-0000-4000-8000-000000000023"
+    },
+    "body": {
+      "data": {
+        "decision_id": "d0000000-0000-4000-8000-000000000001",
+        "case_id": "40000000-0000-4000-8000-000000000001",
+        "tenant_id": "10000000-0000-4000-8000-000000000001",
+        "status": "approved",
+        "origin": "officer",
+        "outcome": "close_no_further_action",
+        "operation": "transition",
+        "target_status": "RESOLVED",
+        "rationale": "Purchase invoices for the period reconcile with the declared input VAT; no further action is needed.",
+        "evidence_ids": [],
+        "finding_ids": ["70000000-0000-4000-8000-000000000101"],
+        "rating": 2,
+        "draft_id": null,
+        "proposed_by": "80000000-0000-4000-8000-000000000001",
+        "proposed_at": "2026-11-04T07:00:00Z",
+        "case_status_at_proposal": "AWAITING_HUMAN",
+        "case_version": 4,
+        "reviewed_by": "80000000-0000-4000-8000-000000000003",
+        "reviewed_at": "2026-11-04T10:45:00Z",
+        "review_reason": null,
+        "jube_sync": {
+          "state": "synced",
+          "attempts": 1,
+          "error_code": null,
+          "retryable": false,
+          "last_attempt_at": "2026-11-04T10:45:00Z",
+          "synced_at": "2026-11-04T10:45:00Z",
+          "changed": true,
+          "status_after": "RESOLVED",
+          "status_authority": "jube"
+        }
+      }
+    }
+  }
+}

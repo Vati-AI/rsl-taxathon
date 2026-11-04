@@ -9,7 +9,8 @@ import {
   wire,
   wireFinding,
 } from '../testing/makeRecords';
-import { getCaseRecords, listFindings, parseEvidence, parseFinding } from './caseRecords';
+import { getCaseRecords, parseEvidence } from './caseRecords';
+import { listFindings, parseFinding } from './review';
 import { ApiError } from './errors';
 
 const page = (data: unknown[], meta = { next_cursor: null, has_more: false }) => ({ data, meta });

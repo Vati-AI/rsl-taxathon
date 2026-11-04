@@ -67,8 +67,9 @@ test.describe('finding to source', () => {
     await openTab(page, 'Findings');
     await expect(page.getByRole('heading', { name: 'Records disagree (1)' })).toBeVisible();
     await expect(page.getByRole('heading', { name: 'Evidence missing (1)' })).toBeVisible();
-    const missing = page.getByRole('article', { name: 'Evidence missing: Refund reconciliation' });
-    await expect(missing).toContainText('LSL 15,000.00');
+    const missing = page.getByRole('article', { name: 'Evidence missing: Related party' });
+    await expect(missing).toContainText('LSL 48,500.00');
+    await expect(missing).toContainText('No source cited');
     await expect(missing).toContainText('Needs officer approval');
     await expect(page.getByRole('main')).not.toContainText(ACCUSING);
   });

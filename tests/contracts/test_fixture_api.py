@@ -194,7 +194,7 @@ class ReadTests(unittest.TestCase):
         del data["case_records"]["40000000-0000-4000-8000-000000000002"]
         headers = {"X-Vati-Tenant-ID": TENANT}
         status, out_headers, body = fixture_api.handle(
-            "GET", f"/api/v1/cases/{CASE_2}/findings", headers, {}, data, SPEC
+            "GET", f"/api/v1/cases/{CASE_2}/evidence", headers, {}, data, SPEC
         )
         self.assertEqual((status, body["error"]["code"]), (404, "not_found"))
         self.assertNotIn("data", body)
@@ -211,12 +211,18 @@ CASE_2 = "40000000-0000-4000-8000-000000000002"
 RECORD_OPERATIONS = [
     ("evidence", "listEvidence", "Evidence"),
     ("entities", "listEntities", "Entity"),
-    ("findings", "listFindings", "Finding"),
 ]
 
 
+def served_findings(case_id):
+    """Findings as served (TAX-042 review fixture), the one source the views cite from."""
+    status, _, body = call(f"/api/v1/cases/{case_id}/findings")
+    assert status == 200, body
+    return body["data"]
+
+
 class CaseRecordTests(unittest.TestCase):
-    """listEvidence, listEntities and listFindings fixtures (TAX-041)."""
+    """listEvidence and listEntities fixtures (TAX-041) and the findings that cite them."""
 
     def test_every_record_matches_its_schema_and_case(self):
         for case_id, records in DATA["case_records"].items():
@@ -234,7 +240,7 @@ class CaseRecordTests(unittest.TestCase):
     def test_finding_citations_resolve_to_stored_evidence_hashes(self):
         for case_id, records in DATA["case_records"].items():
             hashes = {e["evidence_id"]: e["document_sha256"] for e in records["evidence"]}
-            for finding in records["findings"]:
+            for finding in served_findings(case_id):
                 for ref in finding["evidence_refs"]:
                     with self.subTest(finding=finding["finding_id"]):
                         self.assertEqual(hashes.get(ref["evidence_id"]), ref["document_sha256"])
@@ -252,7 +258,7 @@ class CaseRecordTests(unittest.TestCase):
 
     def test_disputed_ownership_case_has_the_records_the_view_needs(self):
         records = DATA["case_records"][CASE_2]
-        kinds = {f["kind"] for f in records["findings"]}
+        kinds = {f["kind"] for f in served_findings(CASE_2)}
         self.assertTrue({"contradictory_evidence", "missing_evidence"} <= kinds)
         statuses = {c["review_status"] for e in records["entities"] for c in e["match_candidates"]}
         self.assertEqual(statuses, {"unreviewed", "confirmed", "rejected"})
@@ -284,7 +290,7 @@ class CaseRecordTests(unittest.TestCase):
                 self.assertEqual(seen, DATA["case_records"][CASE_2][key])
 
     def test_case_without_records_is_an_empty_page(self):
-        path = "/api/v1/cases/40000000-0000-4000-8000-000000000007/findings"
+        path = "/api/v1/cases/40000000-0000-4000-8000-000000000007/evidence"
         status, _, body = call(path)
         self.assertEqual(
             (status, body), (200, {"data": [], "meta": {"next_cursor": None, "has_more": False}})
@@ -296,7 +302,7 @@ class CaseRecordTests(unittest.TestCase):
         status, _, body = call(f"/api/v1/cases/{CASE_2}/entities", tenant=OTHER_TENANT)
         self.assertEqual((status, body["error"]["code"]), (403, "tenant_scope_denied"))
         self.assertNotIn("data", body)
-        status, _, body = call(f"/api/v1/cases/{CASE_2}/findings", {"cursor": "abc"})
+        status, _, body = call(f"/api/v1/cases/{CASE_2}/entities", {"cursor": "abc"})
         self.assertEqual((status, body["error"]["code"]), (400, "invalid_request"))
         status, _, body = call("/api/v1/cases/SYN-002/evidence")
         self.assertEqual((status, body["error"]["code"]), (400, "invalid_case_id"))

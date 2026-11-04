@@ -7,7 +7,17 @@ import { defineConfig, devices } from '@playwright/test';
 // Playwright loads this config as CommonJS, so __dirname is available.
 const root = path.resolve(__dirname, '../..');
 const port = Number(process.env.AUDITOR_E2E_PORT ?? 58091);
+// Review actions change in-memory fixture state (TAX-042), so they run against
+// their own fixture server and never disturb the queue counts the other specs assert.
+const reviewPort = Number(process.env.AUDITOR_REVIEW_E2E_PORT ?? 58095);
 const python = process.env.PYTHON ?? 'python3';
+const server = (p: number) => ({
+  command: `${python} scripts/dev.py serve --port ${p}`,
+  cwd: root,
+  url: `http://127.0.0.1:${p}/api/health`,
+  reuseExistingServer: false,
+  timeout: 30_000,
+});
 
 export default defineConfig({
   testDir: './e2e',
@@ -24,14 +34,18 @@ export default defineConfig({
   projects: [
     {
       name: 'desktop',
+      testIgnore: /review.*\.spec\.ts/,
       use: { ...devices['Desktop Chrome'], viewport: { width: 1440, height: 900 } },
     },
+    {
+      name: 'review',
+      testMatch: /review.*\.spec\.ts/,
+      use: {
+        ...devices['Desktop Chrome'],
+        viewport: { width: 1440, height: 900 },
+        baseURL: `http://127.0.0.1:${reviewPort}`,
+      },
+    },
   ],
-  webServer: {
-    command: `${python} scripts/dev.py serve --port ${port}`,
-    cwd: root,
-    url: `http://127.0.0.1:${port}/api/health`,
-    reuseExistingServer: false,
-    timeout: 30_000,
-  },
+  webServer: [server(port), server(reviewPort)],
 });

@@ -451,6 +451,18 @@ class ApprovalTests(unittest.TestCase):
         self.assertEqual(self.h.jube.calls[0][0], "escalate")
         self.assertEqual(approved["jube_sync"]["state"], "synced")
 
+    def test_specialist_referral_needs_the_refer_permission_and_escalates(self) -> None:
+        # TAX-029: auditors and supervisors refer; a specialist cannot refer to themselves.
+        with self.assertRaises(policy.ActionDenied):
+            self.h.propose(who=SPECIALIST, outcome="refer_to_specialist", evidence_ids=[])
+        self.assertEqual(self.h.repo.decisions, {})
+        proposed = self.h.propose(outcome="refer_to_specialist", evidence_ids=[])
+        self.assertEqual(proposed["target_status"], "AWAITING_HUMAN")
+        self.assertEqual(self.h.jube.calls, [])  # nothing outward before approval
+        approved = self.h.review(proposed["decision_id"])
+        self.assertEqual(self.h.jube.calls[0][0], "escalate")
+        self.assertEqual(approved["jube_sync"]["state"], "synced")
+
 
 class ExecutionFailureTests(unittest.TestCase):
     def setUp(self) -> None:
@@ -622,6 +634,29 @@ class ReviewStateTests(unittest.TestCase):
         self.assertEqual([e["sequence"] for e in state["audit_events"]], [1, 2, None])
         with self.assertRaises(policy.ActionDenied):
             engine.case_review_state(h.ctx(TAXPAYER_SCOPE), h.repo, case_id=h.case_id)
+
+    def test_viewer_lists_only_permitted_review_actions(self) -> None:
+        h = Harness()
+
+        def allowed(who: policy.TenantScope) -> list[str]:
+            state = engine.case_review_state(h.ctx(who), h.repo, case_id=h.case_id)
+            self.assertEqual(state["viewer"]["actor"], who.user)
+            return state["viewer"]["allowed_actions"]
+
+        self.assertEqual(
+            allowed(AUDITOR),
+            ["decision.propose", "specialist.refer", "evidence_request.authorise"],
+        )
+        self.assertEqual(allowed(SPECIALIST), ["decision.propose"])
+        # No open proposal: nothing to approve yet.
+        self.assertNotIn("decision.approve", allowed(SUPERVISOR))
+        self.assertEqual(allowed(SERVICE), [])
+        h.propose(who=SUPERVISOR)
+        # The proposer may not approve their own proposal; another supervisor may.
+        self.assertNotIn("decision.approve", allowed(SUPERVISOR))
+        other = scope("supervisor2@example.test", policy.SUPERVISOR)
+        self.assertIn("decision.approve", allowed(other))
+        self.assertNotIn("decision.approve", allowed(AUDITOR))
 
 
 if __name__ == "__main__":

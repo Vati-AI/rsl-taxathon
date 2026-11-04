@@ -1,50 +1,33 @@
 /**
  * Client for the case record operations of the Vati /api/v1 contract
- * (integration/api/openapi.json): listEvidence, listEntities and listFindings.
- * Evidence is metadata and provenance only; the contract never returns document
- * content. Records not marked synthetic, or not belonging to the requested case,
- * are refused rather than shown.
+ * (integration/api/openapi.json): listEvidence and listEntities (TAX-041). Findings
+ * come from the one listFindings client in ./review (TAX-042). Evidence is metadata and
+ * provenance only; the contract never returns document content. Records not marked
+ * synthetic, or not belonging to the requested case, are refused rather than shown.
  */
 import { ApiError } from './errors';
+import { listFindings, type Finding } from './review';
 import {
+  UUID,
+  apiRequest,
   invalid,
   isRecord,
-  money,
-  request,
   requireId,
   serviceLinks,
-  type Money,
+  type Fetch,
+  type Json,
   type ServiceLink,
 } from './vati';
 
-type Fetch = typeof fetch;
-type Json = Record<string, unknown>;
+export type { EvidenceLocator, EvidenceRef, Finding, FindingKind } from './review';
 
 const SHA256 = /^[0-9a-f]{64}$/;
-const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
 const MAX_PAGES = 10;
 
 export const EXTRACTION_STATUSES = ['pending', 'running', 'completed', 'failed'] as const;
 export type ExtractionStatus = (typeof EXTRACTION_STATUSES)[number];
-export const FINDING_KINDS = [
-  'observed_fact',
-  'inference',
-  'missing_evidence',
-  'unverified_evidence',
-  'contradictory_evidence',
-] as const;
-export type FindingKind = (typeof FINDING_KINDS)[number];
 export const REVIEW_STATUSES = ['unreviewed', 'confirmed', 'rejected'] as const;
 export type ReviewStatus = (typeof REVIEW_STATUSES)[number];
-const CONFIDENCE = ['low', 'medium', 'high'] as const;
-const LEGAL_STATUSES = ['unverified', 'verified_by_reviewer', 'no_verified_route'] as const;
-const ACTIONS = [
-  'none',
-  'human_clearance',
-  'request_evidence',
-  'specialist_review',
-  'policy_gap_review',
-] as const;
 
 export interface Evidence {
   evidence_id: string;
@@ -86,37 +69,6 @@ export interface Entity {
   synthetic: true;
 }
 
-export interface EvidenceLocator {
-  page: number | null;
-  record: string | null;
-}
-
-export interface EvidenceRef {
-  evidence_id: string;
-  document_sha256: string;
-  locator: EvidenceLocator;
-}
-
-export interface Finding {
-  finding_id: string;
-  case_id: string;
-  kind: FindingKind;
-  category: string;
-  explanation: string;
-  evidence_refs: EvidenceRef[];
-  unresolved_amount: Money | null;
-  confidence: (typeof CONFIDENCE)[number];
-  alternative_explanations: string[];
-  legal_route: {
-    status: (typeof LEGAL_STATUSES)[number];
-    citation: string | null;
-  };
-  proposed_action: { type: (typeof ACTIONS)[number] };
-  producer: string;
-  producer_version: string;
-  created_at: string;
-}
-
 export interface CaseRecords {
   evidence: Evidence[];
   entities: Entity[];
@@ -138,12 +90,12 @@ function nullableText(value: unknown, what: string): string | null {
 }
 
 function ownedBy(value: Json, caseId: string, what: string) {
-  if (value.synthetic === false) invalid(`${what} that is not synthetic`);
+  if (value.synthetic !== true) invalid(`${what} that is not synthetic`);
   if (value.case_id !== caseId) invalid(`${what} from another case`);
 }
 
 export function parseEvidence(value: unknown, caseId: string): Evidence {
-  if (!isRecord(value) || value.synthetic !== true) invalid('evidence that is not synthetic');
+  if (!isRecord(value)) invalid('an evidence record');
   ownedBy(value, caseId, 'evidence');
   const id = text(value, 'evidence_id', 'an evidence record');
   if (!UUID.test(id)) invalid('an evidence record');
@@ -195,7 +147,7 @@ function parseCandidate(value: unknown): MatchCandidate {
 }
 
 export function parseEntity(value: unknown, caseId: string): Entity {
-  if (!isRecord(value) || value.synthetic !== true) invalid('an entity that is not synthetic');
+  if (!isRecord(value)) invalid('an entity');
   ownedBy(value, caseId, 'an entity');
   const id = text(value, 'entity_id', 'an entity');
   if (!UUID.test(id)) invalid('an entity');
@@ -222,57 +174,9 @@ export function parseEntity(value: unknown, caseId: string): Entity {
   };
 }
 
-function parseRef(value: unknown): EvidenceRef {
-  if (!isRecord(value) || !isRecord(value.locator)) invalid('an evidence citation');
-  const sha = text(value, 'document_sha256', 'an evidence citation');
-  if (!SHA256.test(sha)) invalid('an evidence citation');
-  const page = value.locator.page;
-  if (page !== null && (typeof page !== 'number' || !Number.isInteger(page) || page < 1))
-    invalid('a page reference');
-  return {
-    evidence_id: text(value, 'evidence_id', 'an evidence citation'),
-    document_sha256: sha,
-    locator: { page, record: nullableText(value.locator.record, 'a record reference') },
-  };
-}
-
-export function parseFinding(value: unknown, caseId: string): Finding {
-  if (!isRecord(value)) invalid('a finding');
-  ownedBy(value, caseId, 'a finding');
-  const refs = value.evidence_refs;
-  const alternatives = value.alternative_explanations;
-  if (!Array.isArray(refs)) invalid('finding citations');
-  if (!Array.isArray(alternatives) || alternatives.some((a) => typeof a !== 'string'))
-    invalid('alternative explanations');
-  const legal = value.legal_route;
-  const action = value.proposed_action;
-  if (!isRecord(legal) || !isRecord(action)) invalid('a finding');
-  // Every proposed action needs officer approval; anything else is refused.
-  if (action.requires_human_approval !== true) invalid('a proposed action without approval');
-  return {
-    finding_id: text(value, 'finding_id', 'a finding'),
-    case_id: caseId,
-    kind: oneOf(value.kind, FINDING_KINDS, 'a finding kind'),
-    category: text(value, 'category', 'a finding category'),
-    explanation: text(value, 'explanation', 'a finding'),
-    evidence_refs: refs.map(parseRef),
-    unresolved_amount: money(value.unresolved_amount),
-    confidence: oneOf(value.confidence, CONFIDENCE, 'a confidence level'),
-    alternative_explanations: alternatives as string[],
-    legal_route: {
-      status: oneOf(legal.status, LEGAL_STATUSES, 'a legal route status'),
-      citation: nullableText(legal.citation, 'a legal citation'),
-    },
-    proposed_action: { type: oneOf(action.type, ACTIONS, 'a proposed action') },
-    producer: text(value, 'producer', 'a finding producer'),
-    producer_version: text(value, 'producer_version', 'a finding producer'),
-    created_at: text(value, 'created_at', 'a finding time'),
-  };
-}
-
 async function listAll<T>(
   caseId: string,
-  segment: 'evidence' | 'entities' | 'findings',
+  segment: 'evidence' | 'entities',
   parse: (value: unknown, caseId: string) => T,
   fetchImpl: Fetch,
   signal?: AbortSignal,
@@ -284,7 +188,7 @@ async function listAll<T>(
   for (let page = 0; page < MAX_PAGES; page++) {
     const query: Record<string, string> = { limit: '100' };
     if (cursor) query.cursor = cursor;
-    const body = await request(path, query, fetchImpl, signal);
+    const body = await apiRequest(path, { query, signal }, fetchImpl);
     if (!Array.isArray(body.data) || !isRecord(body.meta)) invalid(`a ${segment} page`);
     items.push(...body.data.map((item) => parse(item, caseId)));
     if (body.meta.has_more !== true) return items;
@@ -299,9 +203,6 @@ export const listEvidence = (caseId: string, fetchImpl: Fetch = fetch, signal?: 
 
 export const listEntities = (caseId: string, fetchImpl: Fetch = fetch, signal?: AbortSignal) =>
   listAll(caseId, 'entities', parseEntity, fetchImpl, signal);
-
-export const listFindings = (caseId: string, fetchImpl: Fetch = fetch, signal?: AbortSignal) =>
-  listAll(caseId, 'findings', parseFinding, fetchImpl, signal);
 
 /** Evidence, entities and findings of one case, loaded together. */
 export async function getCaseRecords(

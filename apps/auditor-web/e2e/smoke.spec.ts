@@ -45,7 +45,12 @@ test.describe('navigation', () => {
       .or(page.locator('section[aria-labelledby="reasons-heading"]'));
     await expect(reasons.first()).toContainText('shares a director');
     await expect(reasons.first()).toContainText('several consecutive periods');
-    await expect(page.getByRole('button', { name: 'Request evidence' })).toBeDisabled();
+    await expect(page.getByRole('link', { name: 'Review and decide' })).toHaveAttribute(
+      'href',
+      `/auditor/cases/${CASE_2}/review`,
+    );
+    await page.getByRole('tab', { name: 'Findings' }).click();
+    await expect(page.getByText('No synthetic service agreement was supplied')).toBeVisible();
     await page.getByRole('tab', { name: 'Evidence' }).click();
     await expect(page.getByRole('region', { name: 'Evidence on file' })).toBeVisible();
     await page.getByRole('tab', { name: 'Overview' }).click();

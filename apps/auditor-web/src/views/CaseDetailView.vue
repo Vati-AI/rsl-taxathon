@@ -71,23 +71,15 @@ const SYNC_LABELS = { synced: 'Up to date', pending: 'Waiting', failed: 'Failed'
     ]"
   >
     <template v-if="item" #actions>
-      <span id="request-evidence-reason" class="hidden text-sm text-ink-gray-5 md:inline">
-        Not available in fixture mode
-      </span>
       <Button
         variant="solid"
         theme="blue"
-        label="Request evidence"
-        icon-left="lucide-file-question"
-        disabled
-        aria-describedby="request-evidence-reason"
-        tooltip="Evidence requests need the Frappe portal and officer approval flow (later tasks). Fixture mode is read-only."
+        label="Review and decide"
+        icon-left="lucide-gavel"
+        :route="{ name: 'case-review', params: { caseId } }"
       />
     </template>
 
-    <p v-if="item" class="mb-3 text-sm text-ink-gray-5 md:hidden">
-      Request evidence is not available in fixture mode.
-    </p>
     <div
       v-if="state.status === 'loading'"
       role="status"

@@ -64,7 +64,6 @@ export function makeFinding(n: number, overrides: Partial<Finding> = {}): Findin
     legal_route: { status: 'unverified', citation: null },
     proposed_action: { type: 'none' },
     producer: 'langgraph_run',
-    producer_version: 'test@1',
     created_at: '2026-11-03T13:00:00Z',
     ...overrides,
   };

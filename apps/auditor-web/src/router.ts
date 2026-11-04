@@ -35,6 +35,13 @@ export const routes: RouteRecordRaw[] = [
     meta: { section: 'cases', title: 'Evidence' },
   },
   {
+    path: '/cases/:caseId/review',
+    name: 'case-review',
+    component: () => import('./views/CaseReviewView.vue'),
+    props: true,
+    meta: { section: 'cases', title: 'Review and decide' },
+  },
+  {
     path: '/taxpayers/:taxpayerId',
     name: 'taxpayer',
     component: () => import('./views/TaxpayerView.vue'),
