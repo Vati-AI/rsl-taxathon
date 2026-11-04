@@ -9,6 +9,7 @@ assessment or decision. Taxpayers never see risk scores or investigation state.
 
 from __future__ import annotations
 
+from collections.abc import Iterable
 from typing import Any, TypedDict
 
 FIXTURE_META: dict[str, Any] = {"mode": "fixture", "synthetic": True}
@@ -116,10 +117,39 @@ SUBMISSIONS: tuple[SubmissionFixture, ...] = (
 )
 
 
-def list_submissions() -> list[SubmissionFixture]:
-    """All fixture submissions, newest first, as shown to the signed-in user."""
-    return sorted(SUBMISSIONS, key=lambda item: (item["submitted_at"], item["id"]), reverse=True)
+# TAX-029 ownership: the synthetic tenant used by the API contract examples and
+# one synthetic taxpayer per fixture. Kept out of the payload; it only decides
+# which taxpayer membership may see each record.
+FIXTURE_TENANT_ID = "10000000-0000-4000-8000-000000000001"
+FIXTURE_OWNERS: dict[str, str] = {
+    "SUB-SYN-0001": "80015243-dd34-4e97-b085-7356ffdd042f",
+    "SUB-SYN-0002": "c9c9f393-d1c3-4c1b-9cbe-88ddbb5a65ab",
+    "SUB-SYN-0003": "4d1bafec-0bf6-4e66-a2de-16774e9fecd6",
+    "SUB-SYN-0004": "af5967a0-b7e0-40f5-b0b6-e1162e45d60e",
+}
+
+# (tenant_id, taxpayer_id) pairs from the caller's taxpayer memberships.
+TaxpayerScope = Iterable[tuple[str, str]]
 
 
-def find_submission(submission_id: str) -> SubmissionFixture | None:
-    return next((item for item in SUBMISSIONS if item["id"] == submission_id), None)
+def _visible(item: SubmissionFixture, scope: frozenset[tuple[str, str]]) -> bool:
+    return (FIXTURE_TENANT_ID, FIXTURE_OWNERS[item["id"]]) in scope
+
+
+def list_submissions(scope: TaxpayerScope) -> list[SubmissionFixture]:
+    """The caller's own fixture submissions, newest first."""
+    pairs = frozenset(scope)
+    return sorted(
+        (item for item in SUBMISSIONS if _visible(item, pairs)),
+        key=lambda item: (item["submitted_at"], item["id"]),
+        reverse=True,
+    )
+
+
+def find_submission(submission_id: str, scope: TaxpayerScope) -> SubmissionFixture | None:
+    """The submission if the caller owns it; another taxpayer's is concealed."""
+    pairs = frozenset(scope)
+    return next(
+        (item for item in SUBMISSIONS if item["id"] == submission_id and _visible(item, pairs)),
+        None,
+    )
