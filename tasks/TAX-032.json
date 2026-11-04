@@ -2,7 +2,7 @@
   "id": "TAX-032",
   "kind": "task",
   "title": "Evidence storage, extraction records and provenance",
-  "owner": "Edga",
+  "owner": "Leseli",
   "area": "backend",
   "phase": "pilot",
   "status": "BACKLOG",
@@ -46,5 +46,10 @@
     "finish-task"
   ],
   "evidence": [],
-  "notes": []
+  "notes": [
+    {
+      "at": "2026-11-04T09:25:26.768195+00:00",
+      "text": "Owner reassigned from Edga to Leseli with Edga's agreement, so Leseli can take the path from evidence storage to TAX-041, TAX-042 and TAX-060."
+    }
+  ]
 }

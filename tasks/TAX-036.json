@@ -2,7 +2,7 @@
   "id": "TAX-036",
   "kind": "task",
   "title": "OpenAleph and FtM tax entity mapping",
-  "owner": "Keletso",
+  "owner": "Leseli",
   "area": "integration",
   "phase": "pilot",
   "status": "BACKLOG",
@@ -47,5 +47,10 @@
     "finish-task"
   ],
   "evidence": [],
-  "notes": []
+  "notes": [
+    {
+      "at": "2026-11-04T09:25:26.768195+00:00",
+      "text": "Owner reassigned from Keletso to Leseli with Keletso's agreement, so Leseli can take the path from evidence storage to TAX-041, TAX-042 and TAX-060."
+    }
+  ]
 }

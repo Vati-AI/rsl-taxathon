@@ -18,11 +18,11 @@ Human owner = accountability. AI agent = implementer recorded in `claimed_by`. T
 | [TAX-029](TAX-029.json) | Edga | foundation | Frappe identity, roles and tenant permissions | TAX-019 |
 | [TAX-030](TAX-030.json) | Edga | foundation | Canonical IDs and external service mapping | TAX-018, TAX-019 |
 | [TAX-031](TAX-031.json) | Edga | pilot | Submission and tax-domain DocTypes | TAX-029, TAX-030 |
-| [TAX-032](TAX-032.json) | Edga | pilot | Evidence storage, extraction records and provenance | TAX-029, TAX-030 |
+| [TAX-032](TAX-032.json) | Leseli | pilot | Evidence storage, extraction records and provenance | TAX-029, TAX-030 |
 | [TAX-033](TAX-033.json) | Edga | pilot | Durable outbox and idempotent workers | TAX-030 |
 | [TAX-034](TAX-034.json) | Keletso | pilot | Jube case lifecycle adapter | TAX-018, TAX-025, TAX-030 |
 | [TAX-035](TAX-035.json) | Keletso | pilot | Jube explainable tax-risk configuration | TAX-025, TAX-024 |
-| [TAX-036](TAX-036.json) | Keletso | pilot | OpenAleph and FtM tax entity mapping | TAX-026, TAX-030, TAX-032 |
+| [TAX-036](TAX-036.json) | Leseli | pilot | OpenAleph and FtM tax entity mapping | TAX-026, TAX-030, TAX-032 |
 | [TAX-037](TAX-037.json) | Keletso | pilot | yente candidate review adapter | TAX-027, TAX-036 |
 | [TAX-038](TAX-038.json) | Keletso | pilot | Docling extraction adapter | TAX-028, TAX-032, TAX-033 |
 | [TAX-039](TAX-039.json) | Keletso | pilot | Frappe to Jube submission and state bridge | TAX-031, TAX-033, TAX-034, TAX-035 |
@@ -32,7 +32,7 @@ Human owner = accountability. AI agent = implementer recorded in `claimed_by`. T
 | [TAX-043](TAX-043.json) | Kananelo | pilot | Claim form and validated document upload | TAX-021, TAX-031, TAX-032 |
 | [TAX-044](TAX-044.json) | Kananelo | pilot | Pre-submission reconciliation and correction UI | TAX-043, TAX-048 |
 | [TAX-045](TAX-045.json) | Kananelo | pilot | Evidence request responses and safe tracking | TAX-043, TAX-046 |
-| [TAX-046](TAX-046.json) | Edga | pilot | Human decisions and evidence request authorization | TAX-029, TAX-034, TAX-032 |
+| [TAX-046](TAX-046.json) | Leseli | pilot | Human decisions and evidence request authorization | TAX-029, TAX-034, TAX-032 |
 | [TAX-047](TAX-047.json) | Gupta | pilot | Persistent checkpoints and authenticated human resume | TAX-022, TAX-046 |
 | [TAX-048](TAX-048.json) | Gupta | pilot | VAT refund reconciliation and three lanes | TAX-022, TAX-024, TAX-018 |
 | [TAX-049](TAX-049.json) | Gupta | pilot | Related-party service and persistent-loss playbook | TAX-048, TAX-036 |
@@ -45,7 +45,7 @@ Human owner = accountability. AI agent = implementer recorded in `claimed_by`. T
 | [TAX-056](TAX-056.json) | Leseli | pilot | Agent evaluation and injection regression | TAX-049, TAX-050, TAX-051, TAX-052, TAX-053 |
 | [TAX-057](TAX-057.json) | Leseli | pilot | Tenant isolation, replay and failure matrix | TAX-054, TAX-046 |
 | [TAX-058](TAX-058.json) | Keletso | pilot | Five-scenario demo and measured acceptance | TAX-055, TAX-056, TAX-057 |
-| [TAX-059](TAX-059.json) | Edga | pilot | Audit ledger and segregation of duties | TAX-046 |
+| [TAX-059](TAX-059.json) | Leseli | pilot | Audit ledger and segregation of duties | TAX-046 |
 | [TAX-060](TAX-060.json) | Leseli | pilot | Management workload and assurance dashboard | TAX-040, TAX-059 |
 | [TAX-061](TAX-061.json) | Gupta | pilot | Approved playbook and reusable tool registry | TAX-047, TAX-052 |
 | [TAX-062](TAX-062.json) | Edga | pilot | Pilot data access, retention and export controls | TAX-032, TAX-059 |
