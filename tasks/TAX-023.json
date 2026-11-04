@@ -5,12 +5,12 @@
   "owner": "Kananelo",
   "area": "tests/frontend",
   "phase": "foundation",
-  "status": "IN_PROGRESS",
+  "status": "IN_REVIEW",
   "priority": "P0",
   "depends_on": [],
   "claimed_by": "kananelo-claude-20261103-tax023",
   "branch": "task/TAX-023",
-  "pr": null,
+  "pr": "https://github.com/Vati-AI/rsl-taxathon/pull/135",
   "scope": "Set up browser fixtures, role session mocks and viewport/keyboard test matrix for both frontends; prepare visual checks at 1440/1024/390px and capture screenshot baselines only after human acceptance",
   "inputs": [
     "PROJECT.md",
@@ -32,7 +32,7 @@
     },
     {
       "text": "Record relevant tests and evidence, update task status and open a human-review PR",
-      "done": false
+      "done": true
     },
     {
       "text": "Follow docs/DESIGN_STANDARD.md; supply relevant viewport/state screenshots and keyboard/accessibility evidence for human visual review",
@@ -58,6 +58,10 @@
     {
       "criterion": 4,
       "text": "Observed 2026-11-04: 41 screenshots in docs/evidence/TAX-023 captured from the running apps after the TAX-029 merge with CAPTURE_SCREENSHOTS=1 (auditor overview/queue/case/taxpayer/not-found/denied and taxpayer submissions/status/new/account/not-found/other-taxpayer/denied at 1440, 1024 and 390px, plus keyboard focus captures at 1440px). The axe scan (WCAG 2.0/2.1 A and AA, serious/critical) and reflow check (no page-wide horizontal scroll) pass on 6 auditor and 5 taxpayer routes at all widths, except one recorded defect excluded for that element only: label-content-name-mismatch on the auditor showcase loading-demo button (ShowcaseView.vue, auditor frontend owner). Screenshots are review evidence, not approved baselines; human visual review is still required."
+    },
+    {
+      "criterion": 3,
+      "text": "Observed 2026-11-04: tests and evidence recorded in criteria 1, 2 and 4, docs/evidence/TAX-023/README.md and results.json; status set to IN_REVIEW; human-review PR https://github.com/Vati-AI/rsl-taxathon/pull/135 opened against main from task/TAX-023 (pushed at fd9b63f). task.py finish was not used because dev.py check stops on 2 pre-existing Windows tooling failures that also fail on clean main; finish's steps were done manually."
     }
   ],
   "notes": [
@@ -68,6 +72,10 @@
     {
       "at": "2026-11-03T16:22:38.744986+00:00",
       "text": "Claimed by kananelo-claude-20261103-tax023"
+    },
+    {
+      "at": "2026-11-04T10:27:16.911153+00:00",
+      "text": "Implementation submitted for human review in PR #135. task.py finish could not run on Windows because dev.py check stops on the 2 pre-existing tests/tooling file-mode failures (identical on clean main 2ad25f2); its steps were performed manually: main merged, checks rerun, branch pushed explicitly, PR opened."
     }
   ]
 }
