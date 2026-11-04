@@ -22,4 +22,6 @@ Package layout:
 
 Tests named `test_*.py` must pass under plain `unittest` without a site. Site-backed tests skip themselves there and run on the disposable `verify` site via `bench run-tests --app vati_tax`.
 
-TAX-031 to TAX-033 add submissions, evidence and the outbox; give their DocTypes `tenant_id`/`taxpayer_id` fields and role permissions, and add negative tests.
+- `vati_tax/submissions` (TAX-031) holds the taxpayer and submission rules: `domain.py` (pure money, period, status and field-write rules), `guard.py`/`declaration.py` (controller adapters) and the `Vati Taxpayer`, `Vati Submission`, `Vati VAT Return`, `Vati Refund Claim` and `Vati Imported Service` DocTypes ([ADR-010](../../docs/decisions/ADR-010-submission-doctypes.md)).
+
+TAX-032 and TAX-033 add evidence and the outbox; give their DocTypes `tenant_id`/`taxpayer_id` fields and role permissions, and add negative tests.

@@ -21,6 +21,8 @@ Use UUIDs for internal IDs, UTC ISO timestamps, explicit tenant IDs and string d
 
 Proposed UI state projection (map to configured Jube workflow; do not create a second lifecycle): RECEIVED → VALIDATING → INVESTIGATING → AWAITING_HUMAN → RESOLVED. AWAITING_EVIDENCE and FAILED_PROCESSING are explicit branches with retry/re-entry rules. Only authorized humans can transition AWAITING_HUMAN to RESOLVED. Closure does not authorize refund payment or enforcement.
 
+TAX-031 implements Taxpayer, Submission, VATReturn, RefundClaim and imported services as `Vati Taxpayer`, `Vati Submission`, `Vati VAT Return`, `Vati Refund Claim` and `Vati Imported Service` (LSL Currency columns with strict decimal parsing, `YYYY-MM` or `YYYY-Qn` periods; [ADR-010](decisions/ADR-010-submission-doctypes.md)).
+
 Maintain a `service_links` table unique on (tenant_id, service, external_id), mapping case_id/evidence_id to Jube/OpenAleph/Frappe IDs. Frappe document names are namespaced by DocType. TAX-030 implements this as the `Vati Service Link` DocType ([ADR-006](decisions/ADR-006-canonical-ids-service-links.md)). Optimistic version checks prevent concurrent decision overwrites. Idempotency key and request digest prevent replay with changed payloads. Foreign keys include tenant boundaries or equivalent database constraints.
 
 Evidence is append-only: corrections create a new version with a supersedes pointer. Findings distinguish observed facts, inference, missing evidence and proposed actions. Store reviewed outcomes separately from model suggestions. A legal-route field remains `unverified` until a qualified reviewer supplies an authoritative citation.

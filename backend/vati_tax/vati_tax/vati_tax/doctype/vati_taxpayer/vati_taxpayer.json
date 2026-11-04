@@ -1,0 +1,165 @@
+{
+ "actions": [],
+ "autoname": "field:taxpayer_id",
+ "creation": "2026-11-04 12:00:00.000000",
+ "description": "Taxpayer registry record (TAX-031). Synthetic data only.",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "taxpayer_id",
+  "tenant_id",
+  "display_name",
+  "taxpayer_type",
+  "column_break_ident",
+  "tin",
+  "tin_masked",
+  "sector",
+  "registered_on",
+  "synthetic",
+  "keys_section",
+  "tin_key"
+ ],
+ "fields": [
+  {
+   "description": "UUID used by memberships, submissions and cases. Generated if omitted.",
+   "fieldname": "taxpayer_id",
+   "fieldtype": "Data",
+   "label": "Taxpayer ID",
+   "length": 36,
+   "reqd": 1,
+   "set_only_once": 1,
+   "unique": 1
+  },
+  {
+   "fieldname": "tenant_id",
+   "fieldtype": "Link",
+   "in_standard_filter": 1,
+   "label": "Tenant",
+   "options": "Vati Tenant",
+   "reqd": 1,
+   "search_index": 1,
+   "set_only_once": 1
+  },
+  {
+   "fieldname": "display_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Display Name",
+   "length": 200,
+   "reqd": 1
+  },
+  {
+   "fieldname": "taxpayer_type",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Taxpayer Type",
+   "options": "\nindividual\ncompany\npartnership\ntrust\nother",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_ident",
+   "fieldtype": "Column Break"
+  },
+  {
+   "description": "Synthetic identification number, 6-15 digits. Unique per tenant.",
+   "fieldname": "tin",
+   "fieldtype": "Data",
+   "label": "TIN (synthetic)",
+   "length": 15
+  },
+  {
+   "fieldname": "tin_masked",
+   "fieldtype": "Data",
+   "label": "TIN (masked)",
+   "length": 15,
+   "read_only": 1
+  },
+  {
+   "fieldname": "sector",
+   "fieldtype": "Data",
+   "label": "Sector",
+   "length": 120
+  },
+  {
+   "fieldname": "registered_on",
+   "fieldtype": "Date",
+   "label": "Registered On"
+  },
+  {
+   "default": "1",
+   "fieldname": "synthetic",
+   "fieldtype": "Check",
+   "label": "Synthetic",
+   "set_only_once": 1
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "keys_section",
+   "fieldtype": "Section Break",
+   "label": "Uniqueness keys"
+  },
+  {
+   "description": "SHA-256 of tenant and TIN.",
+   "fieldname": "tin_key",
+   "fieldtype": "Data",
+   "label": "TIN Key",
+   "length": 64,
+   "read_only": 1,
+   "unique": 1
+  }
+ ],
+ "index_web_pages_for_search": 0,
+ "links": [],
+ "modified": "2026-11-04 12:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Vati Tax",
+ "name": "Vati Taxpayer",
+ "naming_rule": "By fieldname",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "export": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "write": 1
+  },
+  {
+   "read": 1,
+   "role": "Vati Taxpayer"
+  },
+  {
+   "export": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Vati Auditor"
+  },
+  {
+   "export": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Vati Specialist"
+  },
+  {
+   "export": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Vati Supervisor",
+   "write": 1
+  },
+  {
+   "create": 1,
+   "read": 1,
+   "role": "Vati Service",
+   "write": 1
+  }
+ ],
+ "search_fields": "display_name,tin_masked",
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "display_name",
+ "track_changes": 1
+}
