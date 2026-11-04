@@ -29,7 +29,7 @@ Rules every implementation must keep (see [ADR-003](../../docs/decisions/ADR-003
 
 `listCases`, `getTaxpayer`, `selection_reasons` and the embedded taxpayer summary were added for the auditor queue (TAX-040, [ADR-005](../../docs/decisions/ADR-005-case-queue-contract.md)). Selection reasons are routing signals, never findings.
 
-`getCaseReview`, `proposeDecision` and `reviewDecision` were added for officer decisions, approvals and specialist referrals (TAX-042, [ADR-016](../../docs/decisions/ADR-016-officer-review-contract.md)). They project the Frappe decision records of [ADR-013](../../docs/decisions/ADR-013-decisions-approvals-evidence-requests.md). Refusals use `version_conflict` (409) or `invalid_domain_input` (422) with the reason in `field_errors[].code`, e.g. `stale_case_version`, `decision_pending`, `proposal_expired`, `case_state_changed`, `citation_required`.
+`getCaseReview`, `proposeDecision` and `reviewDecision` were added for officer decisions, approvals and specialist referrals (TAX-042, [ADR-018](../../docs/decisions/ADR-018-officer-review-contract.md)). They project the Frappe decision records of [ADR-013](../../docs/decisions/ADR-013-decisions-approvals-evidence-requests.md). Refusals use `version_conflict` (409) or `invalid_domain_input` (422) with the reason in `field_errors[].code`, e.g. `stale_case_version`, `decision_pending`, `proposal_expired`, `case_state_changed`, `citation_required`.
 
 ## Fixture server
 

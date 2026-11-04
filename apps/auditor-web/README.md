@@ -5,7 +5,7 @@ Owner: Leseli. See `tasks/README.md` for work and `docs/ARCHITECTURE.md` for bou
 Officer-facing Vue 3 + TypeScript + Frappe UI app (ADR-004). It reads the Vati
 `/api/v1` contract (`listCases`, `getCase`, `getTaxpayer`; ADR-005) through
 `src/api/vati.ts`, and the officer review operations (`getCaseReview`,
-`listFindings`, `proposeDecision`, `reviewDecision`, `requestEvidence`; ADR-016)
+`listFindings`, `proposeDecision`, `reviewDecision`, `requestEvidence`; ADR-018)
 through `src/api/review.ts`, all served from synthetic fixtures by
 `scripts/dev.py serve`. Live services arrive with later tasks.
 

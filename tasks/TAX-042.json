@@ -52,7 +52,7 @@
   "evidence": [
     {
       "criterion": 1,
-      "text": "Review page /auditor/cases/{id}/review (DecisionPanel and forms): officer clearance (close outcomes need a cited finding), evidence request (requestEvidence) and specialist referral (new refer_to_specialist outcome, needs specialist.refer; Jube escalate). Every action carries the rationale or reason the officer wrote and the case version and Jube status they viewed (expected_version, expected_case_status); stale views, a case moved in Jube, an open decision and expired proposals are refused with an explanation and a reload, keeping the text. Contract: getCaseReview, proposeDecision, reviewDecision added to openapi.json (ADR-016) with 4 examples; contract.py valid (24 examples). Fixture: scripts/fixture_review.py, 13 tests in tests/contracts/test_fixture_review.py."
+      "text": "Review page /auditor/cases/{id}/review (DecisionPanel and forms): officer clearance (close outcomes need a cited finding), evidence request (requestEvidence) and specialist referral (new refer_to_specialist outcome, needs specialist.refer; Jube escalate). Every action carries the rationale or reason the officer wrote and the case version and Jube status they viewed (expected_version, expected_case_status); stale views, a case moved in Jube, an open decision and expired proposals are refused with an explanation and a reload, keeping the text. Contract: getCaseReview, proposeDecision, reviewDecision added to openapi.json (ADR-018) with 4 examples; contract.py valid (24 examples). Fixture: scripts/fixture_review.py, 13 tests in tests/contracts/test_fixture_review.py."
     },
     {
       "criterion": 2,

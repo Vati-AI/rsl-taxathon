@@ -1,6 +1,6 @@
 /**
  * Officer review operations of the Vati /api/v1 contract (integration/api/openapi.json,
- * TAX-042, ADR-014): getCaseReview, listFindings, proposeDecision, reviewDecision and
+ * TAX-042, ADR-018): getCaseReview, listFindings, proposeDecision, reviewDecision and
  * requestEvidence. Decisions are recorded in Frappe and only an approved decision is
  * executed in Jube (ADR-013); this client never sends anything without an explicit
  * officer action, and every mutation carries an Idempotency-Key the caller keeps for
