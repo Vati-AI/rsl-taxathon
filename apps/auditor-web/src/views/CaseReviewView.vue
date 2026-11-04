@@ -17,18 +17,18 @@ const { state, reload, refresh } = useLoader(
   () => props.caseId,
 );
 const item = computed(() => (state.value.status === 'ready' ? state.value.data : null));
+// Two items only: at narrow widths frappe-ui collapses a middle item into a menu
+// button without an accessible name. The "Back to case" action links to the case.
+const breadcrumbs = computed(() => [
+  { label: 'My case queue', route: { name: 'queue' } },
+  { label: item.value ? `${item.value.display_id} · Review and decide` : 'Review and decide' },
+]);
 </script>
 
 <template>
   <PageLayout
     :title="item ? `Review and decide · ${item.display_id}` : 'Review and decide'"
-    :breadcrumbs="[
-      { label: 'My case queue', route: { name: 'queue' } },
-      item
-        ? { label: item.display_id, route: { name: 'case', params: { caseId } } }
-        : { label: 'Case' },
-      { label: 'Review and decide' },
-    ]"
+    :breadcrumbs="breadcrumbs"
   >
     <template v-if="item" #actions>
       <Button
