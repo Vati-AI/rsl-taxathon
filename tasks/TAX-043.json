@@ -5,15 +5,15 @@
   "owner": "Kananelo",
   "area": "apps/taxpayer-web",
   "phase": "pilot",
-  "status": "BACKLOG",
+  "status": "IN_PROGRESS",
   "priority": "P0",
   "depends_on": [
     "TAX-021",
     "TAX-031",
     "TAX-032"
   ],
-  "claimed_by": null,
-  "branch": null,
+  "claimed_by": "kananelo-claude-20261104-tax043",
+  "branch": "task/TAX-043",
   "pr": null,
   "scope": "Connect Frappe claim form/upload to restricted storage with idempotency and clear required-field guidance",
   "inputs": [
@@ -51,5 +51,10 @@
     "finish-task"
   ],
   "evidence": [],
-  "notes": []
+  "notes": [
+    {
+      "at": "2026-11-04T10:43:51.882065+00:00",
+      "text": "Claimed by kananelo-claude-20261104-tax043"
+    }
+  ]
 }
