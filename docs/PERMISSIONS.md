@@ -87,6 +87,8 @@ The taxpayer above owns fixture `SUB-SYN-0001`. `portal/fixtures.py` maps every 
 
 `Vati Decision` and `Vati Evidence Request` follow the record-isolation convention (`tenant_id` + `taxpayer_id`). Officers and services read them in their tenant; taxpayers have no DocType permission. `Vati Audit Event` is the audit ledger (TAX-059, below): only supervisors read it in Desk, and officers see a case's decision trail through `get_case_review_state`. Nothing is created through Desk: `vati_tax.decisions.store` writes them after the action checks below, and controllers refuse deletes and edits to recorded fields. See [ADR-013](decisions/ADR-013-decisions-approvals-evidence-requests.md).
 
+TAX-045: taxpayers read their own evidence requests only through the portal (`vati_tax.portal.api.get_evidence_requests` / `get_evidence_request`), which filters by the caller's own (tenant, taxpayer) memberships and returns an allowlisted view: no case ID, finding IDs, authoriser, case version or keys; another scope's request is reported as not found. `respond_to_evidence_request` needs `evidence.respond` for the request's own taxpayer. `Vati Evidence Response` is read-only for every role (written only by `vati_tax.responses.store`, never edited or deleted) and isolated by `tenant_id` + `taxpayer_id`. Attached evidence must be the caller's own and not already attached to another request. See [ADR-019](decisions/ADR-019-evidence-request-responses.md).
+
 | Step | Who | Refused when |
 | --- | --- | --- |
 | Record an agent draft | any `draft.record` role | never executable; approving it is `agent_only_decision` |

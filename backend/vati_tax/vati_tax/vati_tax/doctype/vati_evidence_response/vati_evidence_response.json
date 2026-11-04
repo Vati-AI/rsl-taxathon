@@ -1,0 +1,139 @@
+{
+ "actions": [],
+ "autoname": "field:response_id",
+ "creation": "2026-11-04 20:00:00.000000",
+ "description": "A taxpayer's structured response to one officer-authorised Vati Evidence Request (TAX-045). Written only through vati_tax.responses.store; never changed or deleted.",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "response_id",
+  "request_id",
+  "tenant_id",
+  "taxpayer_id",
+  "items",
+  "message",
+  "responded_at",
+  "responded_by",
+  "registration_key",
+  "request_digest"
+ ],
+ "fields": [
+  {
+   "fieldname": "response_id",
+   "fieldtype": "Data",
+   "label": "Response ID",
+   "length": 36,
+   "reqd": 1,
+   "unique": 1,
+   "set_only_once": 1
+  },
+  {
+   "description": "One response per evidence request.",
+   "fieldname": "request_id",
+   "fieldtype": "Data",
+   "label": "Evidence request ID",
+   "length": 36,
+   "reqd": 1,
+   "unique": 1,
+   "set_only_once": 1
+  },
+  {
+   "fieldname": "tenant_id",
+   "fieldtype": "Data",
+   "label": "Tenant ID",
+   "length": 36,
+   "reqd": 1,
+   "set_only_once": 1
+  },
+  {
+   "fieldname": "taxpayer_id",
+   "fieldtype": "Data",
+   "label": "Taxpayer ID",
+   "length": 36,
+   "reqd": 1,
+   "set_only_once": 1
+  },
+  {
+   "description": "JSON list, one entry per requested item: item_index, evidence_ids and an optional unavailable_reason.",
+   "fieldname": "items",
+   "fieldtype": "Long Text",
+   "label": "Items",
+   "reqd": 1,
+   "set_only_once": 1
+  },
+  {
+   "description": "Optional note from the taxpayer to the officer.",
+   "fieldname": "message",
+   "fieldtype": "Small Text",
+   "label": "Message",
+   "set_only_once": 1
+  },
+  {
+   "fieldname": "responded_at",
+   "fieldtype": "Datetime",
+   "label": "Responded at",
+   "reqd": 1,
+   "set_only_once": 1
+  },
+  {
+   "fieldname": "responded_by",
+   "fieldtype": "Data",
+   "label": "Responded by",
+   "reqd": 1,
+   "set_only_once": 1
+  },
+  {
+   "fieldname": "registration_key",
+   "fieldtype": "Data",
+   "label": "Registration key",
+   "read_only": 1,
+   "unique": 1
+  },
+  {
+   "fieldname": "request_digest",
+   "fieldtype": "Data",
+   "label": "Request digest",
+   "read_only": 1
+  }
+ ],
+ "in_create": 1,
+ "index_web_pages_for_search": 0,
+ "links": [],
+ "modified": "2026-11-04 20:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Vati Tax",
+ "name": "Vati Evidence Response",
+ "naming_rule": "By fieldname",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "read": 1,
+   "role": "System Manager"
+  },
+  {
+   "read": 1,
+   "role": "Vati Taxpayer"
+  },
+  {
+   "read": 1,
+   "role": "Vati Auditor"
+  },
+  {
+   "read": 1,
+   "role": "Vati Specialist"
+  },
+  {
+   "read": 1,
+   "role": "Vati Supervisor"
+  },
+  {
+   "read": 1,
+   "role": "Vati Service"
+  }
+ ],
+ "search_fields": "request_id",
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "request_id"
+}

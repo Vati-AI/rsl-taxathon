@@ -1,7 +1,9 @@
 import { call } from './frappe-call';
 import type {
+  EvidenceRequestView,
   EvidenceView,
   FixtureEnvelope,
+  LiveEnvelope,
   PortalSession,
   RefundClaimResult,
   Submission,
@@ -235,6 +237,55 @@ export async function submitRefundClaim(payload: RefundClaimPayload): Promise<Re
     payload.tenant_id,
   );
   if (result?.mode !== 'live' || typeof result.data?.reference !== 'string') {
+    throw new PortalError('unavailable', 'The portal returned data in an unexpected format.');
+  }
+  return result;
+}
+
+// --- evidence requests (TAX-045) ---------------------------------------------------
+
+/** A live read through frappe-ui's call; anything but `mode: live` is refused. */
+async function liveRequest<T>(method: string, args: Record<string, unknown> = {}): Promise<T> {
+  let payload: LiveEnvelope<T>;
+  try {
+    payload = await call<LiveEnvelope<T>>(method, args);
+  } catch (error) {
+    throw error instanceof PortalError ? error : classifyError(error);
+  }
+  if (payload?.mode !== 'live' || payload.data === undefined) {
+    throw new PortalError('unavailable', 'The portal returned data in an unexpected format.');
+  }
+  return payload.data;
+}
+
+export function fetchEvidenceRequests(): Promise<EvidenceRequestView[]> {
+  return liveRequest<EvidenceRequestView[]>('vati_tax.portal.api.get_evidence_requests');
+}
+
+export function fetchEvidenceRequest(id: string): Promise<EvidenceRequestView> {
+  return liveRequest<EvidenceRequestView>('vati_tax.portal.api.get_evidence_request', {
+    request_id: id,
+  });
+}
+
+export interface ResponseAnswer {
+  item_index: number;
+  evidence_ids: string[];
+  unavailable_reason: string | null;
+}
+
+/** Send the answers. Safe to repeat with the same key: the server replays, never duplicates. */
+export async function respondToEvidenceRequest(payload: {
+  request_id: string;
+  items: ResponseAnswer[];
+  message: string | null;
+  idempotency_key: string;
+}): Promise<LiveEnvelope<EvidenceRequestView>> {
+  const result = await post<LiveEnvelope<EvidenceRequestView>>(
+    'vati_tax.portal.api.respond_to_evidence_request',
+    { ...payload },
+  );
+  if (result?.mode !== 'live' || typeof result.data?.request_id !== 'string') {
     throw new PortalError('unavailable', 'The portal returned data in an unexpected format.');
   }
   return result;
