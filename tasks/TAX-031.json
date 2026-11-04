@@ -27,15 +27,15 @@
   "acceptance": [
     {
       "text": "Add Taxpayer, Submission, VAT Return, Refund Claim and Imported Service DocTypes with decimal/currency and period validation",
-      "done": false
+      "done": true
     },
     {
       "text": "Migrate clean site and test malformed amounts, invalid periods and unauthorized writes",
-      "done": false
+      "done": true
     },
     {
       "text": "Record relevant tests and evidence, update task status and open a human-review PR",
-      "done": false
+      "done": true
     }
   ],
   "verification": "Migrate clean site and test malformed amounts, invalid periods and unauthorized writes",
@@ -45,7 +45,20 @@
     "update-project-task",
     "finish-task"
   ],
-  "evidence": [],
+  "evidence": [
+    {
+      "criterion": 1,
+      "text": "Added Vati Taxpayer, Vati Submission, Vati VAT Return, Vati Refund Claim and Vati Imported Service (backend/vati_tax/vati_tax/vati_tax/doctype/*, rules in vati_tax/submissions/domain.py, ADR-010). LSL Currency columns with strict 2-decimal Decimal parsing before Frappe casts; YYYY-MM / YYYY-Qn periods with derived start/end and no future periods; all carry tenant_id/taxpayer_id for TAX-029 isolation. 15 Frappe-free tests in submissions/test_domain.py pass."
+    },
+    {
+      "criterion": 2,
+      "text": "scripts/frappe_dev.py verify --project rsl-taxathon-frappe-tax019 (ports 58010/59010) on a fresh disposable site: install, migrate twice ok, 48 site-backed tests OK (13 new in submissions/test_submission_bench.py: malformed amounts rejected not cast to 0, invalid/future periods, non-LSL currency, refund over declared position, unauthorized writes, cross-taxpayer and cross-tenant read/list/write/create/delete refused, staff cannot rewrite figures, server fields refused), 101 Frappe-free tests OK (15 skipped bench modules), site dropped. Disabling the two tenant hooks made the new isolation tests fail (14 failures); restored and green."
+    },
+    {
+      "criterion": 3,
+      "text": "python3 scripts/dev.py check and python3 scripts/quality.py (ruff, mypy, frontend lint/build) pass; task status maintained by the agent; human-review PR opened via task.py finish."
+    }
+  ],
   "notes": [
     {
       "at": "2026-11-04T08:34:21.008973+00:00",
