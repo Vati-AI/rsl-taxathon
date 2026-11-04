@@ -22,7 +22,7 @@ Human owner = accountability. AI agent = implementer recorded in `claimed_by`. T
 | [TAX-033](TAX-033.json) | Edga | pilot | Durable outbox and idempotent workers | TAX-030 |
 | [TAX-034](TAX-034.json) | Keletso | pilot | Jube case lifecycle adapter | TAX-018, TAX-025, TAX-030 |
 | [TAX-035](TAX-035.json) | Keletso | pilot | Jube explainable tax-risk configuration | TAX-025, TAX-024 |
-| [TAX-036](TAX-036.json) | Leseli | pilot | OpenAleph and FtM tax entity mapping | TAX-026, TAX-030, TAX-032 |
+| [TAX-036](TAX-036.json) | Keletso | pilot | OpenAleph and FtM tax entity mapping | TAX-026, TAX-030, TAX-032 |
 | [TAX-037](TAX-037.json) | Keletso | pilot | yente candidate review adapter | TAX-027, TAX-036 |
 | [TAX-038](TAX-038.json) | Keletso | pilot | Docling extraction adapter | TAX-028, TAX-032, TAX-033 |
 | [TAX-039](TAX-039.json) | Keletso | pilot | Frappe to Jube submission and state bridge | TAX-031, TAX-033, TAX-034, TAX-035 |
