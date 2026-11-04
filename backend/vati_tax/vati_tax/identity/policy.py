@@ -76,6 +76,12 @@ DRAFT_RECORD: Final = "draft.record"
 LEDGER_READ: Final = "ledger.read"
 # Record an authorised exception to a named control, with a reason (TAX-059).
 OVERRIDE_RECORD: Final = "override.record"
+# Evidence export (TAX-062): an officer requests a scoped export of a case's
+# evidence, a different supervisor authorises it, and only those two people
+# read the frozen hash/provenance manifest. Nothing leaves without approval.
+EXPORT_REQUEST: Final = "export.request"
+EXPORT_APPROVE: Final = "export.approve"
+EXPORT_READ: Final = "export.read"
 
 ACTION_ROLES: Final[dict[str, frozenset[Role]]] = {
     SUBMISSION_CREATE: frozenset({TAXPAYER}),
@@ -100,6 +106,9 @@ ACTION_ROLES: Final[dict[str, frozenset[Role]]] = {
     DRAFT_RECORD: frozenset({AUDITOR, SPECIALIST, SUPERVISOR, SERVICE}),
     LEDGER_READ: frozenset({SUPERVISOR}),
     OVERRIDE_RECORD: frozenset({SUPERVISOR}),
+    EXPORT_REQUEST: frozenset({AUDITOR, SPECIALIST, SUPERVISOR}),
+    EXPORT_APPROVE: frozenset({SUPERVISOR}),
+    EXPORT_READ: frozenset({AUDITOR, SPECIALIST, SUPERVISOR}),
 }
 
 # Consequential human decisions. Never granted to a service identity, even if
@@ -115,6 +124,9 @@ HUMAN_ONLY_ACTIONS: Final[frozenset[str]] = frozenset(
         PLAYBOOK_APPROVE,
         LEDGER_READ,
         OVERRIDE_RECORD,
+        EXPORT_REQUEST,
+        EXPORT_APPROVE,
+        EXPORT_READ,
     }
 )
 # Actions on a taxpayer's own records; taxpayers need a matching taxpayer_id.
@@ -122,7 +134,7 @@ TAXPAYER_OWNED_ACTIONS: Final[frozenset[str]] = frozenset(
     {SUBMISSION_CREATE, SUBMISSION_READ, EVIDENCE_RESPOND, EVIDENCE_REGISTER}
 )
 # The approver must differ from the proposer (separation of duties).
-SEPARATION_OF_DUTIES: Final[frozenset[str]] = frozenset({DECISION_APPROVE})
+SEPARATION_OF_DUTIES: Final[frozenset[str]] = frozenset({DECISION_APPROVE, EXPORT_APPROVE})
 
 
 class PolicyError(Exception):
@@ -307,7 +319,7 @@ def authorize_action(
         if not proposed_by:
             raise ActionDenied("Approval needs the proposing user")
         if proposed_by.lower() == scope.user.lower():
-            raise ActionDenied("You cannot approve a decision you proposed")
+            raise ActionDenied("You cannot approve a request you made yourself")
 
 
 def allowed_actions(scope: TenantScope) -> list[str]:

@@ -5,7 +5,7 @@ import { classifyError } from './api';
 vi.mock('./frappe-call', () => ({ call: vi.fn() }));
 import { formatAmount, formatPeriod, statusDisplay } from './format';
 import { loginUrl, portalPath } from './portal-path';
-import { emptyDraft, normaliseAmount, validateDraft } from './validation';
+import { emptyClaim, normaliseAmount, validateDetails } from './validation';
 
 const TODAY = new Date('2026-11-03T12:00:00Z');
 
@@ -60,37 +60,53 @@ describe('display helpers', () => {
   });
 });
 
-describe('validateDraft', () => {
+describe('validateDetails (VAT refund claim, TAX-043)', () => {
   const valid = {
-    taxType: 'VAT return',
+    ...emptyClaim(),
     period: '2026-09',
     amount: '15,000.5',
-    contactEmail: '',
-    declaration: true,
+    reason: 'excess_input_vat',
   };
 
-  it('accepts a complete draft', () => {
-    expect(validateDraft(valid, TODAY)).toEqual({});
+  it('accepts complete claim details', () => {
+    expect(validateDetails(valid, TODAY)).toEqual({});
     expect(normaliseAmount(valid.amount)).toBe('15000.50');
   });
 
   it('reports every missing field with an actionable message', () => {
-    const errors = validateDraft(emptyDraft(), TODAY);
-    expect(Object.keys(errors).sort()).toEqual(['amount', 'declaration', 'period', 'taxType']);
-    expect(errors.amount).toMatch(/0\.00/);
+    const errors = validateDetails(emptyClaim(), TODAY);
+    expect(Object.keys(errors).sort()).toEqual(['amount', 'period', 'reason']);
+    expect(errors.period).toMatch(/2026-09/);
   });
 
-  it('rejects future periods, bad months and malformed amounts', () => {
-    expect(validateDraft({ ...valid, period: '2026-12' }, TODAY).period).toMatch(/future/);
-    expect(validateDraft({ ...valid, period: '2026-13' }, TODAY).period).toBeDefined();
-    expect(validateDraft({ ...valid, amount: '12.345' }, TODAY).amount).toBeDefined();
-    expect(validateDraft({ ...valid, amount: '-5' }, TODAY).amount).toBeDefined();
-    expect(validateDraft({ ...valid, contactEmail: 'nope' }, TODAY).contactEmail).toBeDefined();
+  it('rejects future periods, bad months, quarters and malformed amounts', () => {
+    expect(validateDetails({ ...valid, period: '2026-12' }, TODAY).period).toMatch(/future/);
+    expect(validateDetails({ ...valid, period: '2026-13' }, TODAY).period).toBeDefined();
+    expect(validateDetails({ ...valid, period: '2026-Q3' }, TODAY).period).toBeDefined();
+    expect(validateDetails({ ...valid, period: '1999-12' }, TODAY).period).toMatch(/2000/);
+    expect(validateDetails({ ...valid, amount: '12.345' }, TODAY).amount).toBeDefined();
+    expect(validateDetails({ ...valid, amount: '-5' }, TODAY).amount).toBeDefined();
+    expect(validateDetails({ ...valid, contactEmail: 'nope' }, TODAY).contactEmail).toBeDefined();
+  });
+
+  it('requires a claimed amount above zero and within range', () => {
+    expect(validateDetails({ ...valid, amount: '0.00' }, TODAY).amount).toMatch(/more than 0/);
+    expect(validateDetails({ ...valid, amount: '000' }, TODAY).amount).toMatch(/more than 0/);
+    expect(validateDetails({ ...valid, amount: '1000000000000' }, TODAY).amount).toMatch(/large/);
+    expect(validateDetails({ ...valid, amount: '999999999999.99' }, TODAY)).toEqual({});
+  });
+
+  it('needs an explanation only for another reason', () => {
+    expect(validateDetails({ ...valid, reason: 'other' }, TODAY).explanation).toBeDefined();
+    expect(
+      validateDetails({ ...valid, reason: 'other', explanation: 'Synthetic reason' }, TODAY),
+    ).toEqual({});
+    expect(validateDetails({ ...valid, reason: 'refund_please' }, TODAY).reason).toBeDefined();
   });
 
   it('does not modify the entered values', () => {
     const draft = { ...valid, amount: 'abc' };
-    validateDraft(draft, TODAY);
+    validateDetails(draft, TODAY);
     expect(draft.amount).toBe('abc');
   });
 });

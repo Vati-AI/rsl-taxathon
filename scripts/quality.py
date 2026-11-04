@@ -17,6 +17,7 @@ SOURCES = [
     "integration/jube",
     "integration/followthemoney",
     "integration/openaleph",
+    "integration/docling",
     "tests/integration",
 ]
 

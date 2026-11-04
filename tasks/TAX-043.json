@@ -5,16 +5,16 @@
   "owner": "Kananelo",
   "area": "apps/taxpayer-web",
   "phase": "pilot",
-  "status": "BACKLOG",
+  "status": "IN_REVIEW",
   "priority": "P0",
   "depends_on": [
     "TAX-021",
     "TAX-031",
     "TAX-032"
   ],
-  "claimed_by": null,
-  "branch": null,
-  "pr": null,
+  "claimed_by": "kananelo-claude-20261104-tax043",
+  "branch": "task/TAX-043",
+  "pr": "https://github.com/Vati-AI/rsl-taxathon/pull/146",
   "scope": "Connect Frappe claim form/upload to restricted storage with idempotency and clear required-field guidance",
   "inputs": [
     "PROJECT.md",
@@ -28,19 +28,19 @@
   "acceptance": [
     {
       "text": "Connect Frappe claim form/upload to restricted storage with idempotency and clear required-field guidance",
-      "done": false
+      "done": true
     },
     {
       "text": "Test valid submission, duplicate retry, invalid document and cross-tenant evidence access",
-      "done": false
+      "done": true
     },
     {
       "text": "Record relevant tests and evidence, update task status and open a human-review PR",
-      "done": false
+      "done": true
     },
     {
       "text": "Follow docs/DESIGN_STANDARD.md; supply relevant viewport/state screenshots and keyboard/accessibility evidence for human visual review",
-      "done": false
+      "done": true
     }
   ],
   "verification": "Test valid submission, duplicate retry, invalid document and cross-tenant evidence access",
@@ -50,6 +50,32 @@
     "update-project-task",
     "finish-task"
   ],
-  "evidence": [],
-  "notes": []
+  "evidence": [
+    {
+      "criterion": 1,
+      "text": "Observed 2026-11-04 (scope: VAT refund claims only, per owner). /taxpayer/submissions/new is a three-step claim form (details, supporting documents, review and send) connected to TAX-031/032: documents upload as private evidence via vati_tax.evidence.api.upload_evidence with X-Vati-Tenant-ID (restricted storage; views never expose a path or URL); vati_tax.portal.api.submit_refund_claim stores the refund_claim Vati Submission and Vati Refund Claim in one transaction and moves it to submitted. Idempotency: one key per draft; same key and answers replay (replayed: true, no second record), changed answers give 422 idempotency_conflict; each upload has its own key reused on retry. Required-field guidance: required fields marked, all problems listed at once with actionable messages, values kept, focus on first invalid field; server field_errors are placed on the matching field/step. Vati Refund Claim now refuses evidence_ids that are not the claim's own tenant and taxpayer evidence (gap found during preparation)."
+    },
+    {
+      "criterion": 2,
+      "text": "Observed 2026-11-04 on the branch merged with main 0f78045: scripts/frappe_dev.py verify --project rsl-taxathon-frappe-tax043 (ports 58020/59020) on fresh disposable sites (install, migrate twice ok, sites dropped): all 11 new site-backed tests in vati_tax/portal/test_refund_claim_bench.py pass - valid submission (stored submitted, linked to own evidence), duplicate retry (replay, no duplicate; changed answers conflict; key scoped per taxpayer), invalid document (exe, renamed PNG as .pdf, empty, broken PDF rejected, nothing stored), cross-tenant and cross-taxpayer evidence (claim citing another taxpayer's, another tenant's or unknown evidence refused and nothing stored; DocType refuses foreign evidence when the portal API is bypassed; taxpayer cannot read another scope's evidence or upload into another tenant). Suite: 118 site-backed tests, 3 failures pre-existing on plain origin/main and unrelated (TAX-046 test_approved_decision_is_persisted_audited_and_executed_once, test_tenant_and_taxpayer_isolation; TAX-059 test_unauthorised_override_is_refused_and_the_attempt_is_kept). Frappe-free: backend 283 OK (13 new in portal/test_claims.py); vitest taxpayer 46/46 incl. new claim.test.ts; Playwright claim.spec.ts covers the same four scenarios in the browser."
+    },
+    {
+      "criterion": 4,
+      "text": "Observed 2026-11-04 on Windows 11, Edge (PLAYWRIGHT_CHANNEL=msedge), Playwright 1.64.1: follows docs/DESIGN_STANDARD.md with frappe-ui components and shared tokens (step-by-step taxpayer form, text-plus-colour status badges, one primary action). 33 screenshots in docs/evidence/TAX-043 (11 states x 1440/1024/390: details, details errors, documents empty/uploaded/rejected, review, declaration required, send unconfirmed, sent, sent replayed, evidence not found). npm run test:frontend:browser --workers=2 on the merged branch: 90 passed, 0 failed, 9 skipped (opt-in visual). Every claim step passes axe WCAG 2.1 A/AA serious/critical and has no page-wide horizontal scroll at all widths; keyboard-only claim completes (focus moves to each step heading; combobox opens with Enter, arrows, Enter); upload results announced in a polite live region; errors linked via aria-describedby/aria-invalid. axe found and this PR fixed a colour-contrast failure on the upload error text. Human visual approval is pending reviewer; not assumed by the agent."
+    },
+    {
+      "criterion": 3,
+      "text": "Observed 2026-11-04: tests and evidence recorded in criteria 1, 2 and 4 and in docs/evidence/TAX-043; branch refreshed from main 0f78045 with a clean merge and affected checks rerun; status set to IN_REVIEW; human-review PR https://github.com/Vati-AI/rsl-taxathon/pull/146 opened against main. The agent has not merged it. task.py finish could not run unmodified on Windows (dev.py check stops at two pre-existing POSIX file-mode tooling tests), so its steps were run by hand in the same order."
+    }
+  ],
+  "notes": [
+    {
+      "at": "2026-11-04T10:43:51.882065+00:00",
+      "text": "Claimed by kananelo-claude-20261104-tax043"
+    },
+    {
+      "at": "2026-11-04T13:15:49.143343+00:00",
+      "text": "Agent finished implementation and opened human review"
+    }
+  ]
 }

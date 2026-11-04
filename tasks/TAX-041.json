@@ -5,14 +5,14 @@
   "owner": "Leseli",
   "area": "apps/auditor-web",
   "phase": "pilot",
-  "status": "BACKLOG",
+  "status": "IN_PROGRESS",
   "priority": "P0",
   "depends_on": [
     "TAX-040",
     "TAX-036"
   ],
-  "claimed_by": null,
-  "branch": null,
+  "claimed_by": "leseli-claude-20261104-041",
+  "branch": "task/TAX-041",
   "pr": null,
   "scope": "Display evidence citations, page/record references, relationships and clearly marked disputed matches",
   "inputs": [
@@ -50,5 +50,10 @@
     "finish-task"
   ],
   "evidence": [],
-  "notes": []
+  "notes": [
+    {
+      "at": "2026-11-04T11:20:21.316310+00:00",
+      "text": "Claimed by leseli-claude-20261104-041"
+    }
+  ]
 }

@@ -17,7 +17,7 @@ This fetches official source at immutable commits from `integration/upstreams.lo
 | yente | Matching API | `python3 scripts/yente_dev.py up` (isolated compose, synthetic-only manifest in integration/yente; no OpenSanctions data); runbook integration/yente/README.md; TAX-037 next |
 | openaleph | Evidence search/graph | `python3 scripts/openaleph_dev.py up` (isolated multi-user compose in integration/openaleph, not upstream's single-user start-local.sh); runbook integration/openaleph/README.md; entity ingest in TAX-036 |
 | yente | Matching API | external/yente/docker-compose.yml; replace commercial manifest with synthetic data in TAX-027 |
-| docling | Extraction server | `python3 scripts/docling_dev.py up` (docker-compose.docling.yml: CPU image, API key, size/page/time bounds, offline models); runbook integration/docling/README.md; TAX-038 next |
+| docling | Extraction server | `python3 scripts/docling_dev.py up` (docker-compose.docling.yml: CPU image, API key, size/page/time bounds, offline models); runbook integration/docling/README.md; extraction adapter `integration/docling/extraction_adapter.py` (TAX-038, live run pending) |
 | frappe | Vendor development tooling | docker-compose.frappe.yml and external/frappe/docs/05-development; TAX-019 |
 | followthemoney | Entity library source | Tax mapping and schema subset check (TAX-036): `python3 scripts/ftm_schema_subset.py --check` |
 | langgraph | Workflow library source | AI package dependencies and TAX-022/047 |

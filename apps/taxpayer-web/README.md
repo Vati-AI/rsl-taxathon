@@ -4,10 +4,32 @@ Owner: Kananelo. See `tasks/README.md` for work and `docs/ARCHITECTURE.md` for b
 
 Vue 3 + TypeScript + Vite + Frappe UI taxpayer portal (ADR-002), served by the
 `vati_tax` Frappe app at `/taxpayer`. TAX-021 delivers the authenticated shell:
-routes, login/logout, submissions list, submission status and a two-step
-submission form. Data is **explicitly synthetic fixture data** from
-`vati_tax.portal.api` until TAX-031 adds Submission DocTypes, so sending a
-submission is disabled with a visible reason.
+routes, login/logout, submissions list and submission status. The list and
+status pages still show **explicitly synthetic fixture data** from
+`vati_tax.portal.api`.
+
+## VAT refund claim (TAX-043)
+
+`/taxpayer/submissions/new` is the VAT refund claim form (refund claims only;
+VAT returns are out of scope). Three steps, then a confirmation:
+
+1. **Claim details**: monthly tax period, amount claimed (more than 0.00),
+   reason, explanation (required for "another reason"), optional contact email.
+2. **Supporting documents**: at least one. Each file is checked in the browser
+   (PDF, PNG, JPEG, CSV or XLSX, up to 25 MB), then uploaded as private
+   evidence through `vati_tax.evidence.api.upload_evidence` (TAX-032) with the
+   `X-Vati-Tenant-ID` header from the session's taxpayer scope. A failed upload
+   can be retried under the same idempotency key, or removed.
+3. **Review and send**: the declaration, then
+   `vati_tax.portal.api.submit_refund_claim`, which stores the `refund_claim`
+   submission and its `Vati Refund Claim` (TAX-031) in one transaction.
+
+One idempotency key covers the whole draft, so sending again after a lost
+connection replays the stored claim instead of creating a second one; changed
+answers under the same key are refused as a conflict. Server field errors are
+placed on the matching field and step. Rules: `src/lib/validation.ts` and
+`src/lib/documents.ts` mirror `vati_tax/portal/claims.py` and the evidence
+limits; the server re-checks everything.
 
 ## Session boundary
 
