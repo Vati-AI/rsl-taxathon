@@ -3,7 +3,11 @@ import { expect, test, type Page } from '@playwright/test';
 import { pageReady } from './support/checks';
 import { AUDITOR, TAXPAYER } from './support/env';
 import { AUDITOR_ROUTES, TAXPAYER_ROUTES, type MatrixRoute } from './support/matrix';
-import { mockAuditorAccess, mockTaxpayerSession } from './support/sessions';
+import {
+  mockAuditorAccess,
+  mockTaxpayerSession,
+  OTHER_TAXPAYER_SUBMISSION_ID,
+} from './support/sessions';
 
 // Visual checks at every matrix width, in two opt-in modes:
 //
@@ -54,7 +58,10 @@ test('taxpayer screens and denied states', async ({ page }, testInfo) => {
     await visit(page, TAXPAYER, route);
     await check(page, `taxpayer-${route.name}-${w}`);
   }
-  mock.persona = 'denied';
+  await page.goto(TAXPAYER + `/taxpayer/submissions/${OTHER_TAXPAYER_SUBMISSION_ID}`);
+  await pageReady(page, 'Submission not found');
+  await check(page, `taxpayer-other-taxpayer-${w}`);
+  mock.persona = 'revoked';
   await page.goto(TAXPAYER + '/taxpayer/submissions');
   await expect(page.getByText('Access denied')).toBeVisible();
   await check(page, `taxpayer-denied-${w}`);

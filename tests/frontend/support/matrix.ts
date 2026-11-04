@@ -62,7 +62,12 @@ export const AUDITOR_ROUTES: MatrixRoute[] = [
 
 export const TAXPAYER_ROUTES: MatrixRoute[] = [
   { name: 'submissions', path: '/taxpayer/submissions', heading: 'Your submissions' },
-  { name: 'submission', path: '/taxpayer/submissions/SUB-SYN-0002', heading: /^VAT return · / },
+  // SUB-SYN-0001: owned by the synthetic taxpayer user (docs/PERMISSIONS.md, TAX-029).
+  {
+    name: 'submission',
+    path: '/taxpayer/submissions/SUB-SYN-0001',
+    heading: /^VAT refund claim · /,
+  },
   { name: 'new-submission', path: '/taxpayer/submissions/new', heading: 'New submission' },
   { name: 'account', path: '/taxpayer/account', heading: 'Account' },
   { name: 'not-found', path: '/taxpayer/no-such-page', heading: 'Page not found' },

@@ -10,36 +10,42 @@ password was used.
 
 - Windows 11, Microsoft Edge 156.0.4314.50 (`PLAYWRIGHT_CHANNEL=msedge`),
   Playwright 1.64.1, axe-core via @axe-core/playwright 4.14.0.
-- Branch `task/TAX-023` merged with `main` at c1acc2a (includes TAX-040 auditor
-  queue/profile and the #106 reassignment).
+- Branch `task/TAX-023` merged with current `main` (includes TAX-040 auditor
+  queue/profile, TAX-029 taxpayer roles and tenant permissions, and the #106
+  reassignment).
 - Auditor: built app (`npm run build:auditor`) on `vite preview`, `/api` from
   the synthetic fixture server `scripts/dev.py` (unchanged).
 - Taxpayer: Vite dev server; portal API answered by the session mocks in
-  `tests/frontend/support/sessions.ts` using the records from
-  `backend/vati_tax/vati_tax/portal/fixtures.py`.
+  `tests/frontend/support/sessions.ts`, which call `list_submissions(scope)`
+  from `backend/vati_tax/vati_tax/portal/fixtures.py` for the synthetic
+  taxpayer user documented in docs/PERMISSIONS.md (owner of SUB-SYN-0001).
 
 ## Results (`results.json`)
 
-`npm run test:frontend:browser`: **60 passed, 0 failed, 0 flaky**; 9 skipped are
-the opt-in visual tests (run separately below). Three consecutive full runs on
-2026-11-04 gave the same result; `results.json` is the last run.
+`npm run test:frontend:browser`: **66 passed, 0 failed, 0 flaky**; the 9 skipped
+are the opt-in visual tests (run separately below). `results.json` is the
+Playwright JSON report of that run, summarised (run started
+2026-11-04T09:29Z). Runs on the final merged branch are listed in the PR.
 
 | Spec               | 1440px | 1024px | 390px |
 | ------------------ | ------ | ------ | ----- |
 | `auditor.spec.ts`  | 9/9    | 9/9    | 9/9   |
-| `taxpayer.spec.ts` | 11/11  | 11/11  | 11/11 |
+| `taxpayer.spec.ts` | 13/13  | 13/13  | 13/13 |
 
 Covered at every width:
 
 - **Positive navigation** — auditor: overview → My case queue → SYN-002 →
-  taxpayer profile → back → breadcrumb to queue. Taxpayer: list → submission
-  status → breadcrumb → new submission → account.
-- **Denied access** — auditor: requests for another synthetic tenant are
-  refused by the fixture API (403 `tenant_scope_denied`) on the queue, case and
-  taxpayer pages; "You do not have access" is shown and no taxpayer data or
-  Request evidence action appears. Taxpayer: a guest is sent to
+  taxpayer profile → back → breadcrumb to queue. Taxpayer: list → own
+  submission status → breadcrumb → new submission → account.
+- **Denied access, auditor** — requests for another synthetic tenant are
+  refused by the fixture API itself (403 `tenant_scope_denied`) on the queue,
+  case and taxpayer pages; "You do not have access" is shown and no taxpayer
+  data or Request evidence action appears.
+- **Denied access, taxpayer (TAX-029 rules)** — a guest is sent to
   `/login?redirect-to=/taxpayer/...` and only the session check is called; a
-  signed-in user refused by the API sees "Access denied" and no submissions;
+  signed-in user without a taxpayer membership is refused and sent to login;
+  another taxpayer's submission is concealed as "Submission not found"; a
+  membership revoked after loading shows "Access denied" and no submissions;
   after logout a revisit goes to login.
 - **Keyboard** — first Tab focuses a visible "Skip to main content" link and
   Enter moves into the main region; sidebar/bottom-bar links show a visible
@@ -52,14 +58,16 @@ Covered at every width:
 ## Screenshots
 
 `CAPTURE_SCREENSHOTS=1 npm run test:frontend:browser -- visual` (7 passed; the 2
-skipped are the focus captures, which run at 1440px only). Full-page captures at
-1440, 1024 and 390px:
+skipped are the focus captures, which run at 1440px only). 41 full-page
+captures, all from the run on 2026-11-04 after the TAX-029 merge, at 1440, 1024
+and 390px:
 
 - Auditor: `auditor-overview`, `auditor-queue`, `auditor-case-detail`,
   `auditor-taxpayer`, `auditor-not-found`, `auditor-denied` (another tenant).
-- Taxpayer: `taxpayer-submissions`, `taxpayer-submission`,
-  `taxpayer-new-submission`, `taxpayer-account`, `taxpayer-not-found`,
-  `taxpayer-denied` (API refused).
+- Taxpayer: `taxpayer-submissions` (own submission only),
+  `taxpayer-submission`, `taxpayer-new-submission`, `taxpayer-account`,
+  `taxpayer-not-found`, `taxpayer-other-taxpayer` (concealed as not found),
+  `taxpayer-denied` (membership revoked after loading).
 - Keyboard focus (1440px): `auditor-focus-skip-link-1440.png`,
   `taxpayer-focus-first-invalid-1440.png`.
 
@@ -82,10 +90,10 @@ skipped are the focus captures, which run at 1440px only). Full-page captures at
 - These are harness results, not visual approval. Human review of the
   screenshots is still required; `tests/frontend/baselines/` is intentionally
   empty.
-- Taxpayer access tests cover the client-side guard with mocked Frappe
-  responses. The server-side page guard is covered by
-  `vati_tax/portal/test_access.py` and the live TAX-021 evidence. Taxpayer roles
-  and tenants are TAX-029.
+- Taxpayer access tests exercise the client with mocked Frappe responses that
+  follow TAX-029. The server-side rules are covered by
+  `vati_tax/portal/test_access.py`; a user without a taxpayer membership is
+  refused by the Frappe page guard before the app loads.
 - On Windows, `scripts/dev.py` can truncate the largest built auditor asset
   under parallel requests (observed: about 3 in 4 rounds lost the end of a
   310 KB file over HTTP/1.0 connection-close; keep-alive did not). The harness

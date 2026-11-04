@@ -56,12 +56,17 @@ responses are small JSON and still come from it, including its access rules.
 Everything is answered inside the test browser; no account or password exists.
 
 - **Taxpayer portal**: `vati_tax.portal.api.*` and `/login` are intercepted.
-  Submission records are read from `backend/vati_tax/vati_tax/portal/fixtures.py`
-  so they match what the Frappe app serves. Responses follow Frappe v16 shapes
-  (`{ message }`, or HTTP 403 with `exc_type`). Personas:
-  - `taxpayer`: signed-in synthetic Website User `taxpayer.a@example.test`.
-  - `guest`: no session; every portal method is refused with 403.
-  - `denied`: signed in, but the portal API refuses submission data.
+  Records come from `list_submissions(scope)` in
+  `backend/vati_tax/vati_tax/portal/fixtures.py`, so the mock follows the
+  same TAX-029 ownership rules as the Frappe app. Responses follow Frappe v16
+  shapes (`{ message }`, or HTTP 403 with `exc_type`). Personas:
+  - `taxpayer`: `taxpayer.a@example.test` with the taxpayer membership from
+    docs/PERMISSIONS.md; sees only SUB-SYN-0001, and another taxpayer's
+    submission is "not found".
+  - `guest`: not signed in; every portal method is refused with 403.
+  - `no-membership`: signed in but not linked to a taxpayer; refused with 403.
+  - `revoked`: the portal loaded, then the membership was removed; data calls
+    are refused.
 - **Auditor workspace**: the fixture API (`scripts/fixture_api.py`, TAX-040)
   has one signed-in officer principal scoped to one synthetic tenant. Nothing
   is faked in the browser:
@@ -69,11 +74,9 @@ Everything is answered inside the test browser; no account or password exists.
   - `denied`: requests select another synthetic tenant, so the fixture API
     itself answers 403 `tenant_scope_denied`.
 
-Personas are session states, not RSL roles. Taxpayer roles and tenant
-permissions arrive in TAX-029; extend the personas then rather than inventing
-roles here. The taxpayer guest test covers the client-side guard; the server
-page guard is covered by `vati_tax/portal/test_access.py` and the live TAX-021
-evidence.
+Personas mirror the documented TAX-029 rules (docs/PERMISSIONS.md); do not
+invent roles here. The taxpayer tests cover the client; the server page guard
+and API scope are covered by `vati_tax/portal/test_access.py`.
 
 ## Accessibility scan and known issues
 

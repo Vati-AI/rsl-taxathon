@@ -8,7 +8,15 @@ import {
 } from './support/checks';
 import { TAXPAYER } from './support/env';
 import { isMobile, TAXPAYER_ROUTES } from './support/matrix';
-import { mockTaxpayerSession, PORTAL_SUBMISSIONS, SYNTHETIC_TAXPAYER } from './support/sessions';
+import {
+  mockTaxpayerSession,
+  OTHER_TAXPAYER_SUBMISSION_ID,
+  PORTAL_SUBMISSIONS,
+  SYNTHETIC_TAXPAYER,
+} from './support/sessions';
+
+// The synthetic taxpayer's own submission (SUB-SYN-0001 per docs/PERMISSIONS.md).
+const own = PORTAL_SUBMISSIONS[0] as { id: string; reference: string; tax_type: string };
 
 // The desktop sidebar and the mobile bottom bar share this accessible name.
 const nav = (page: Page) => page.getByRole('navigation', { name: 'Taxpayer portal' });
@@ -27,9 +35,9 @@ test.describe('taxpayer portal', () => {
       PORTAL_SUBMISSIONS.length,
     );
 
-    await page.getByRole('link', { name: /VAT-2026-08-000921/ }).click();
-    await expect(page).toHaveURL(/\/taxpayer\/submissions\/SUB-SYN-0002$/);
-    await pageReady(page, /^VAT return · /);
+    await page.getByRole('link', { name: new RegExp(own.reference) }).click();
+    await expect(page).toHaveURL(new RegExp(`/taxpayer/submissions/${own.id}$`));
+    await pageReady(page, new RegExp(`^${own.tax_type} · `));
     await expect(page.getByText('What happens next')).toBeVisible();
 
     await page.getByRole('link', { name: 'Submissions', exact: true }).first().click();
@@ -51,17 +59,42 @@ test.describe('taxpayer portal', () => {
     page,
   }) => {
     const mock = await mockTaxpayerSession(page, 'guest');
-    await page.goto(TAXPAYER + '/taxpayer/submissions/SUB-SYN-0002');
-    await expect(page).toHaveURL(/\/login\?redirect-to=%2Ftaxpayer%2Fsubmissions%2FSUB-SYN-0002$/);
+    await page.goto(TAXPAYER + `/taxpayer/submissions/${own.id}`);
+    await expect(page).toHaveURL(
+      new RegExp(`/login\\?redirect-to=%2Ftaxpayer%2Fsubmissions%2F${own.id}$`),
+    );
     await expect(page.getByRole('heading', { level: 1, name: 'Login' })).toBeVisible();
     // Only the session check ran: no submission data was requested for a guest.
     expect(mock.calls).toEqual(['vati_tax.portal.api.get_session']);
   });
 
-  test('denied access: a signed-in user refused by the API sees no submissions', async ({
+  test('denied access: a signed-in user without a taxpayer membership is refused', async ({
     page,
   }) => {
-    await mockTaxpayerSession(page, 'denied');
+    const mock = await mockTaxpayerSession(page, 'no-membership');
+    await page.goto(TAXPAYER + '/taxpayer/submissions');
+    // The client treats a refused session as no portal session and leaves for login;
+    // the Frappe page guard (TAX-029) already answers such users with 403.
+    await expect(page).toHaveURL(/\/login\?redirect-to=%2Ftaxpayer%2Fsubmissions$/);
+    expect(mock.calls).toEqual(['vati_tax.portal.api.get_session']);
+  });
+
+  test("denied access: another taxpayer's submission is concealed as not found", async ({
+    page,
+  }) => {
+    await mockTaxpayerSession(page, 'taxpayer');
+    await page.goto(TAXPAYER + `/taxpayer/submissions/${OTHER_TAXPAYER_SUBMISSION_ID}`);
+    await pageReady(page, 'Submission not found');
+    // frappe-ui renders a routed Button as a link.
+    const back = { name: 'Back to submissions' };
+    await expect(page.getByRole('link', back).or(page.getByRole('button', back))).toBeVisible();
+    await expect(page.getByText('What happens next')).toHaveCount(0);
+  });
+
+  test('denied access: a membership revoked after loading shows no submissions', async ({
+    page,
+  }) => {
+    await mockTaxpayerSession(page, 'revoked');
     await page.goto(TAXPAYER + '/taxpayer/submissions');
     await pageReady(page, 'Your submissions');
     await expect(page.getByText('Access denied')).toBeVisible();
