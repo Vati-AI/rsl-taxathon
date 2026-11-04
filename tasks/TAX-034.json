@@ -5,7 +5,7 @@
   "owner": "Keletso",
   "area": "integration",
   "phase": "pilot",
-  "status": "IN_PROGRESS",
+  "status": "IN_REVIEW",
   "priority": "P0",
   "depends_on": [
     "TAX-018",
@@ -14,7 +14,7 @@
   ],
   "claimed_by": "claude-keletso-tax034",
   "branch": "task/TAX-034",
-  "pr": null,
+  "pr": "https://github.com/Vati-AI/rsl-taxathon/pull/123",
   "scope": "Map create/read/assign/status/escalation operations to verified Jube APIs; Jube is operational case authority",
   "inputs": [
     "PROJECT.md",
@@ -28,15 +28,15 @@
   "acceptance": [
     {
       "text": "Map create/read/assign/status/escalation operations to verified Jube APIs; Jube is operational case authority",
-      "done": false
+      "done": true
     },
     {
       "text": "Contract tests against deployed Jube verify assignment/status and replay-safe creation",
-      "done": false
+      "done": true
     },
     {
       "text": "Record relevant tests and evidence, update task status and open a human-review PR",
-      "done": false
+      "done": true
     }
   ],
   "verification": "Contract tests against deployed Jube verify assignment/status and replay-safe creation",
@@ -46,11 +46,28 @@
     "update-project-task",
     "finish-task"
   ],
-  "evidence": [],
+  "evidence": [
+    {
+      "criterion": 1,
+      "text": "integration/jube/case_lifecycle.py maps ensure_case/get_case/transition/escalate/assign to Jube routes verified in locked source 01c4afd and deployed Swagger (CreateFromCaseKeyValue, GET /api/Case/{id}, GET /api/Case/, PUT /api/Case/). Workflow integration/jube/case_workflow.v1.json maps 8 Jube statuses to the 7 CaseStatus values (escalation = distinct Jube status projected AWAITING_HUMAN escalated). Returned state is always read from Jube; unmapped Jube status is an error. ADR-009."
+    },
+    {
+      "criterion": 2,
+      "text": "2026-11-04 python3 scripts/jube_cases.py contract on local Jube (adapter's own non-landlord key) passed 23 checks, case 78825350-b9c6-465b-bd41-ed31bd5a79b9 -> Jube case 5: create once; replay via link and via Jube lookup with lost link (no create); raw duplicate create Jube 409, one case; transition/escalate/assign changed Jube, repeats no-op, stale expectations version_conflict; unprovisioned officer and missing rating refused; resolve needs decision and closes; closed case not reopened or re-created; other tenant not_found; least-privilege probes (adapter 200 only Case/own model list/UserInTenant, invoker 403, wrong and retired landlord key 401). jube_rules.py verify 5/5 match after re-homing. Unit: 37 tests in tests/integration/test_jube_case_lifecycle.py."
+    },
+    {
+      "criterion": 3,
+      "text": "python3 scripts/dev.py check and python3 scripts/quality.py pass; results recorded in integration/jube/README.md; PR opened for human review by task.py finish."
+    }
+  ],
   "notes": [
     {
       "at": "2026-11-04T08:25:56.148348+00:00",
       "text": "Claimed by claude-keletso-tax034"
+    },
+    {
+      "at": "2026-11-04T08:55:37.625542+00:00",
+      "text": "Agent finished implementation and opened human review"
     }
   ]
 }
