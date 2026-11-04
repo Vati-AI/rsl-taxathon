@@ -57,6 +57,8 @@ Callers check actions with `permissions.require_action(action, tenant_id, taxpay
 | `decision.approve`* | | | | yes, not own proposal | |
 | `case.assign`*, `playbook.approve`* | | | | yes | |
 | `decision.execute` (TAX-046: resend an approved decision to Jube) | | | | yes | yes |
+| `ledger.read`* (TAX-059: audit ledger, integrity check, signals, summary) | | | | yes | |
+| `override.record`* (TAX-059: exception to a named control) | | | | yes, not on own work | |
 | `integration.callback` | | | | | yes |
 
 \* Human-only. A service identity is refused these actions even if the matrix is widened by mistake. Stale approvals, idempotent decision records and the Jube transition are TAX-046 (see Decisions below).
@@ -78,7 +80,7 @@ The taxpayer above owns fixture `SUB-SYN-0001`. `portal/fixtures.py` maps every 
 
 ## Decisions and evidence requests (TAX-046)
 
-`Vati Decision`, `Vati Evidence Request` and `Vati Audit Event` follow the record-isolation convention (`tenant_id` + `taxpayer_id`). Officers and services read them in their tenant; taxpayers have no DocType permission. Nothing is created through Desk: `vati_tax.decisions.store` writes them after the action checks below, and controllers refuse deletes and edits to recorded fields. See [ADR-013](decisions/ADR-013-decisions-approvals-evidence-requests.md).
+`Vati Decision` and `Vati Evidence Request` follow the record-isolation convention (`tenant_id` + `taxpayer_id`). Officers and services read them in their tenant; taxpayers have no DocType permission. `Vati Audit Event` is the audit ledger (TAX-059, below): only supervisors read it in Desk, and officers see a case's decision trail through `get_case_review_state`. Nothing is created through Desk: `vati_tax.decisions.store` writes them after the action checks below, and controllers refuse deletes and edits to recorded fields. See [ADR-013](decisions/ADR-013-decisions-approvals-evidence-requests.md).
 
 | Step | Who | Refused when |
 | --- | --- | --- |
@@ -88,3 +90,15 @@ The taxpayer above owns fixture `SUB-SYN-0001`. `portal/fixtures.py` maps every 
 | Withdraw | the proposer | anyone else |
 | Retry the Jube call | supervisor or service (`decision.execute`) | not approved; already synced (replay); final failure; approval older than 24 hours |
 | Authorise an evidence request | auditor, supervisor (`evidence_request.authorise`) | specialist, service or taxpayer; stale `expected_version`; case without a taxpayer; due date not in the next 180 days |
+
+## Audit ledger and separation of duties (TAX-059)
+
+Every `Vati Audit Event` takes the next position in its tenant's SHA-256 hash chain (`chain_seq`, `prev_hash`, `entry_hash`; `chain_key` is unique per tenant and position). The ledger records decision and evidence-request events, case and evidence reads, ledger reads, supervisor overrides and refused attempts, each with the actor, role and correlation ID. See [ADR-015](decisions/ADR-015-audit-ledger-separation-of-duties.md).
+
+| Step | Who | Refused when |
+| --- | --- | --- |
+| Read entries, verify the chain, read signals or the summary (`vati_tax.audit.api`) | a supervisor of the tenant (`ledger.read`) | auditor, specialist, service or taxpayer; another tenant. The refusal is recorded |
+| Record an override (`record_override`) | a supervisor (`override.record`) | auditor, specialist, service or taxpayer; the override concerns the supervisor's own work (`target_actor`); unknown control; reason shorter than 20 characters. The refusal is recorded |
+| Any decision action refused by the policy | anyone | recorded as `<action>.denied`, then refused |
+
+Entries cannot be edited or deleted through Frappe. A row changed directly in the database fails `verify_ledger`. Integrity signals (repeated overrides, repeated refused self-approvals or overrides, a broken chain) are review prompts only: they are never shown to the supervisor they concern and they change nothing.

@@ -27,6 +27,8 @@ from contextlib import AbstractContextManager
 from dataclasses import asdict, dataclass, field, replace
 from typing import Any, Literal, Protocol
 
+from vati_tax.audit import ledger
+from vati_tax.audit.ledger import MemoryLedger
 from vati_tax.decisions import rules
 from vati_tax.decisions.rules import (
     DecisionNotFound,
@@ -923,6 +925,26 @@ def evidence_request_view(
     return view
 
 
+def to_ledger(event: AuditEvent) -> ledger.Unsealed:
+    """The ledger form of a decision or evidence-request event (TAX-059)."""
+    return ledger.Unsealed(
+        event_id=event.event_id,
+        tenant_id=event.tenant_id,
+        action=event.action,
+        outcome=event.outcome,
+        actor=event.actor,
+        actor_role=event.actor_role,
+        occurred_at=event.occurred_at,
+        correlation_id=event.correlation_id,
+        subject_type=event.subject_type,
+        subject_id=event.subject_id,
+        payload_hash=event.payload_hash,
+        case_id=event.case_id,
+        taxpayer_id=event.taxpayer_id,
+        sequence=event.sequence,
+    )
+
+
 def event_view(event: AuditEvent) -> dict[str, Any]:
     return {
         "event_id": event.event_id,
@@ -951,6 +973,8 @@ class MemoryRepository:
     decisions: dict[str, DecisionRecord] = field(default_factory=dict)
     requests: dict[str, EvidenceRequestRecord] = field(default_factory=dict)
     events: list[AuditEvent] = field(default_factory=list)
+    # The tenant hash chain (TAX-059); every audit event is sealed into it.
+    ledger: MemoryLedger = field(default_factory=MemoryLedger)
 
     @contextlib.contextmanager
     def atomic(self) -> Iterator[None]:
@@ -958,11 +982,12 @@ class MemoryRepository:
             {k: replace(v) for k, v in self.decisions.items()},
             dict(self.requests),
             list(self.events),
+            list(self.ledger.rows),
         )
         try:
             yield
         except BaseException:
-            self.decisions, self.requests, self.events = snapshot
+            self.decisions, self.requests, self.events, self.ledger.rows = snapshot
             raise
 
     def get_case(self, tenant_id: str, case_id: str) -> CaseRef | None:
@@ -1045,6 +1070,10 @@ class MemoryRepository:
             for e in self.events
         ):
             raise Duplicate("sequence_key")
+        try:
+            ledger.append(self.ledger, to_ledger(event))
+        except ledger.Duplicate as exc:
+            raise Duplicate(str(exc)) from exc
         self.events.append(event)
 
     def case_events(self, tenant_id: str, case_id: str) -> list[AuditEvent]:
