@@ -84,3 +84,6 @@ jobs:
       - run: python -m unittest discover -s tests/ai -p 'test_human*.py' -v
         env:
           LANGSMITH_TRACING: 'false'
+      - run: python -m unittest discover -s tests/ai -p 'test_work*.py' -v
+        env:
+          LANGSMITH_TRACING: 'false'
