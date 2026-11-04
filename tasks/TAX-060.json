@@ -27,11 +27,11 @@
   "acceptance": [
     {
       "text": "Display workload, elapsed time, unresolved evidence, false positives and legal-route coverage from measured data",
-      "done": false
+      "done": true
     },
     {
       "text": "Verify denominators, missing-data states and supervisor-only visibility",
-      "done": false
+      "done": true
     },
     {
       "text": "Record relevant tests and evidence, update task status and open a human-review PR",
@@ -39,7 +39,7 @@
     },
     {
       "text": "Follow docs/DESIGN_STANDARD.md; supply relevant viewport/state screenshots and keyboard/accessibility evidence for human visual review",
-      "done": false
+      "done": true
     }
   ],
   "verification": "Verify denominators, missing-data states and supervisor-only visibility",
@@ -49,7 +49,20 @@
     "update-project-task",
     "finish-task"
   ],
-  "evidence": [],
+  "evidence": [
+    {
+      "criterion": 1,
+      "text": "Supervisor-only dashboard /auditor/management (ManagementView.vue) shows workload (open cases by status and officer, unassigned), elapsed time (open-case age and time to close: median, nearest-rank p90, longest), unresolved evidence (outstanding, overdue, cases affected), closures with no further action (false positives) and after correction, legal-route coverage, and audit ledger assurance. Figures come from getManagementSummary (GET /api/v1/management/summary, ADR-020), which the fixture API measures from auditor_queue.json and the synthetic management.json, sealing the ledger events with the TAX-059 vati_tax.audit.ledger functions. Commit 859679f."
+    },
+    {
+      "criterion": 2,
+      "text": "Denominators: every ratio is {numerator, denominator}; closure ratios share one denominator that excludes closures without a recorded outcome; breakdowns add up to totals; a zero denominator reads 'No data', never 0% (tests/contracts/test_management_summary.py, 17 tests; vitest parser rejects 13 kinds of inconsistent or non-synthetic data). Missing data: closures or open cases without timestamps are excluded, counted and listed in missing_data; an unavailable ledger is a listed gap, not zeros; a tampered chain shows as failed. Supervisor-only: officer without the role and unknown principal get 403 forbidden with no data, another tenant 403, and the UI shows 'Supervisors only' with no figures; signals about the viewer are withheld and no logins reach the response. Playwright management.spec.ts: 12 tests pass in Edge."
+    },
+    {
+      "criterion": 4,
+      "text": "docs/evidence/TAX-060: screenshots at 1440, 1024 and 390px plus loading, denied, empty and ledger-broken states, captured in Edge (README lists them). Tables only, with no decorative charts; shared PageLayout, StatePanel and CaseStatusBadge; status shown as text plus colour. axe (WCAG 2 A/AA) finds no serious or critical violations and there is no page-wide horizontal scroll at all three widths, in both management.spec.ts and the TAX-023 matrix (management route added; 30 of 30 auditor harness tests pass). The window control and focusable table regions are reachable by keyboard, with visible focus. Visual approval is left to the reviewer."
+    }
+  ],
   "notes": [
     {
       "at": "2026-11-04T11:21:28.749416+00:00",
