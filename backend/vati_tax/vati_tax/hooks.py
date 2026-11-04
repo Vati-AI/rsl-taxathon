@@ -22,6 +22,10 @@ doc_events = {
     "File": {"before_validate": "vati_tax.evidence.store.guard_evidence_file"},
 }
 
+# TAX-033: deliver committed outbox events every minute. Handlers are registered
+# per event type with `vati_outbox_handlers = {"<type>": "dotted.path"}`.
+scheduler_events = {"cron": {"* * * * *": ["vati_tax.outbox.worker.dispatch_scheduled"]}}
+
 # TAX-021: the Vue taxpayer portal owns client routes under /taxpayer; every
 # deep link renders the guarded www/taxpayer page.
 website_route_rules = [
