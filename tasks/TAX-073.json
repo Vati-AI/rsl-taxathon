@@ -5,14 +5,14 @@
   "owner": "Keletso",
   "area": "integration",
   "phase": "expansion",
-  "status": "BACKLOG",
+  "status": "IN_PROGRESS",
   "priority": "P1",
   "depends_on": [
     "TAX-048",
     "TAX-018"
   ],
-  "claimed_by": null,
-  "branch": null,
+  "claimed_by": "claude-keletso-tax073",
+  "branch": "task/TAX-073",
   "pr": null,
   "scope": "Map customs, invoice, accounting and payment values with currency/date context",
   "inputs": [
@@ -46,5 +46,10 @@
     "finish-task"
   ],
   "evidence": [],
-  "notes": []
+  "notes": [
+    {
+      "at": "2026-11-04T09:00:19.387248+00:00",
+      "text": "Claimed by claude-keletso-tax073"
+    }
+  ]
 }
