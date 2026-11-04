@@ -28,11 +28,11 @@
   "acceptance": [
     {
       "text": "Handle authenticated file conversion, async polling, extraction provenance and retry-safe persistence",
-      "done": false
+      "done": true
     },
     {
       "text": "Test timeout, malformed document and one table/OCR fixture with source page references",
-      "done": false
+      "done": true
     },
     {
       "text": "Record relevant tests and evidence, update task status and open a human-review PR",
@@ -46,7 +46,16 @@
     "update-project-task",
     "finish-task"
   ],
-  "evidence": [],
+  "evidence": [
+    {
+      "criterion": 1,
+      "text": "integration/docling/extraction_adapter.py: authenticated (X-Api-Key) conversion via the locked docling-serve 1.38.2 async routes (POST /v1/convert/file/async once per attempt, GET /v1/status/poll/{task_id}?wait, GET /v1/result/{task_id}; never /v1/convert/source), verified against external/docling at 9c058db. Validates UUIDs, media type, 25 MiB bound and bytes SHA-256 before any request; maps body status (not HTTP code) to success/partial/failure and DoclingDocument texts/table cells to page+bbox+record provenance; records via the ADR-011 record_extraction port with a deterministic idempotency key; JobStore keyed by tenant/evidence/SHA/version/options resumes a task after restart instead of reconverting. 30 s timeout, max 3 attempts for safe GETs with backoff/Retry-After, 300 s document deadline, loopback-only HTTP config."
+    },
+    {
+      "criterion": 2,
+      "text": "tests/integration/test_docling_extraction.py (14 tests) against a fake following the locked routes and the TAX-028 recorded smoke output; every recorded payload validated by the real vati_tax.evidence.rules.parse_extraction. Table/OCR fixture: OCR text on page 1 with bbox, table cells on page 2 with record locators (3000.00 at tables/0/r1/c2, 3450.00 at tables/0/r3/c2). Timeout: deadline_exceeded retryable, job kept, next attempt resumes without resubmitting; transient poll timeout/503 retried honouring Retry-After; persistent timeout -> retryable upstream_unavailable; submit not blindly retried. Malformed/failed documents (conversion failure, policy rejection, skipped, task failure, empty content) recorded as failed revisions with error code and no items; partial_success -> partial; truncation -> partial. Store outage then retry records exactly one revision and duplicate delivery replays. 401 not retried; errors carry no key/document text/upstream body. Not yet run against the live container (Docker stopped, <5 GB disk on this machine)."
+    }
+  ],
   "notes": [
     {
       "at": "2026-11-04T13:55:23.383157+00:00",
