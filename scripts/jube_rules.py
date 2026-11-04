@@ -22,6 +22,7 @@ from typing import Any, Callable
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "integration" / "jube"))
 
+import case_lifecycle  # noqa: E402
 import tax_risk  # noqa: E402
 
 _spec = importlib.util.spec_from_file_location("jube_dev", ROOT / "scripts" / "jube_dev.py")
@@ -192,9 +193,12 @@ def apply(ruleset: dict[str, Any], request: Request, token: str) -> dict[str, An
     return {"model_id": model_id, "model_guid": model["guid"], **summary}
 
 
-INVOKER_ROLE = "Vati tax-risk invoke (local)"
-INVOKER_USER = "vati-tax-risk-invoker"
-API_KEY_ENV = "JUBE_TAX_RISK_API_KEY"
+# Lives in the non-landlord Vati Jube tenant (TAX-034). Landlord-tenant users bypass every Jube
+# permission, which is why the first TAX-035 identity (LEGACY_*) is retired by apply.
+INVOKER_ROLE = "Vati risk invoke (local)"
+INVOKER_USER = "vati-risk-invoker"
+API_KEY_ENV = "JUBE_RISK_INVOKER_API_KEY"
+LEGACY_INVOKER_USER = "vati-tax-risk-invoker"
 
 
 def find_named(request: Request, token: str, route: str, name: str) -> dict[str, Any] | None:
@@ -256,11 +260,32 @@ def provision_invoker(
     return done
 
 
-def store_api_key(key: str) -> None:
+def store_api_key(key: str, name: str = API_KEY_ENV) -> None:
     env_file = jube_dev.ENV_FILE
     with env_file.open("a", encoding="utf-8") as handle:
-        handle.write(f"{API_KEY_ENV}={key}\n")
+        handle.write(f"{name}={key}\n")
     env_file.chmod(0o600)
+
+
+def retire_landlord_invoker(request: Request, token: str) -> list[str]:
+    """Revoke and deactivate the first TAX-035 invoker, created in Jube's landlord tenant.
+
+    Jube grants every permission in every tenant to users whose role belongs to the landlord
+    tenant (Jube docs Concepts/MultiTenancy), so that key could administer the installation.
+    Run while Administrator is still in the landlord tenant, where that user lives.
+    """
+    done: list[str] = []
+    user = find_named(request, token, "/api/UserRegistry/", LEGACY_INVOKER_USER)
+    if user is None:
+        return done
+    keys_route = f"/api/UserRegistryApiKey/ByUserRegistryId/{user['id']}"
+    for old in ok(*request("GET", keys_route, token=token), "list legacy API keys") or []:
+        ok(*request("DELETE", f"/api/UserRegistryApiKey/{old['id']}", token=token), "revoke")
+        done.append("revoked_landlord_api_key")
+    if user.get("active"):
+        ok(*request("PUT", "/api/UserRegistry/", {**user, "active": False}, token), "deactivate")
+        done.append("deactivated_landlord_user")
+    return done
 
 
 def api_key_request(method: str, path: str, body: Any = None, token: str | None = None):
@@ -304,6 +329,18 @@ def approve_pending(request: Request, token: str, model_id: int) -> list[str]:
             if status in (200, 204):
                 approved.append(f"{item.get('name')} v{item['version']}")
     return approved
+
+
+def request_sync(request: Request, token: str) -> str:
+    """Ask Jube's engine to load the current tenant's approved models (UI "Synchronise").
+
+    The engine only schedules tenants that have a synchronisation schedule row, so a newly
+    created tenant's model is never loaded (invoke answers 404) until one is requested.
+    """
+    when = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
+    body = {"scheduleDate": when}
+    ok(*request("POST", "/api/EntityAnalysisModelSynchronisationSchedule/", body, token), "sync")
+    return when
 
 
 def activation_names(body: Any) -> set[str]:
@@ -387,16 +424,21 @@ def main() -> None:
         print(json.dumps(results if args.full else summary_table(results), indent=2))
         return
     token = jube_dev.login()
-    if args.command == "apply":
-        result = apply(ruleset, jube_dev.request, token)
-        if args.approve_local:
-            result["approved"] = approve_pending(jube_dev.request, token, result["model_id"])
-        result["invoker"] = provision_invoker(
-            jube_dev.request, token, result["model_guid"], store_api_key
-        )
-        print(json.dumps(result, indent=2))
-        return
-    model = find_model(jube_dev.request, token, ruleset["jube_model"]["name"])
+    workflow = case_lifecycle.load_workflow()
+    retired = retire_landlord_invoker(jube_dev.request, token) if args.command == "apply" else []
+    with jube_dev.admin_in_tenant(token, workflow.tenant_name, workflow.tenant_description) as tid:
+        if args.command == "apply":
+            result = apply(ruleset, jube_dev.request, token)
+            if args.approve_local:
+                result["approved"] = approve_pending(jube_dev.request, token, result["model_id"])
+            result["invoker"] = retired + provision_invoker(
+                jube_dev.request, token, result["model_guid"], store_api_key
+            )
+            result["jube_tenant_id"] = tid
+            result["sync_requested"] = request_sync(jube_dev.request, token)
+            print(json.dumps(result, indent=2))
+            return
+        model = find_model(jube_dev.request, token, ruleset["jube_model"]["name"])
     api_key = jube_dev.read_env().get(API_KEY_ENV)
     if model is None or not api_key:
         raise SystemExit("Model or invoke API key missing; run apply --approve-local first")

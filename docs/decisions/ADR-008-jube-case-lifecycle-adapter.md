@@ -1,0 +1,31 @@
+# ADR-008: Jube case lifecycle adapter, status projection and Jube tenant isolation
+
+Status: proposed (TAX-034, pending human review)
+Owner and task: Keletso, TAX-034
+Date: 2026-11-04
+
+Context and smallest prototype need: ADR-001 makes Jube the operational case authority, and ADR-003 exposes a `CaseStatus` projection with `status_authority: "jube"`. The outbox (TAX-033), the Frappe bridge (TAX-039) and decision execution (TAX-046) need one adapter that creates, reads, assigns, transitions and escalates the single Jube case of a Vati `case_id` (ADR-006 one-per-case `jube`/`case` link) and can be retried safely. TAX-035 also left a least-privilege question: its invoke-only key could still read models, rules and users.
+
+Decision:
+
+- `integration/jube/case_lifecycle.py` is a client and mapping layer with no case storage. Operations: `ensure_case`, `get_case`, `transition`, `escalate`, `assign`. Each returns what Jube holds after the call and whether anything was sent. The link is stored through a `LinkStore` port; `MappingLinkStore` binds TAX-030 `record_link`/`case_service_links`. The adapter has no outbox; TAX-033 calls it.
+- The Jube workflow `Vati tax case lifecycle v1` is defined in reviewable `integration/jube/case_workflow.v1.json` and provisioned by `scripts/jube_cases.py`. Each Jube status maps to exactly one `CaseStatus`. Escalation is the extra Jube status `Escalated to supervisor` (higher Jube priority), projected as `AWAITING_HUMAN` with an `escalated` flag, so the contract enum does not change. `Resolved` also sets Jube closed status 3. No status sends a Jube notification or webhook.
+- Cases are raised with Jube's supported route `CreateFromCaseKeyValue`, keyed by the risk model's entry name `CaseId` = Vati `case_id`. The legacy `POST /api/Case/` insert (no archived payload, "no known caller" in the source) is not used.
+- Replay safety without Jube support: creation checks the link, then Jube by key (closed cases included), then creates; Jube's own 409 for an open case with the same key resolves to the existing case; a timed-out create is looked up and not resent. Updates compare the target with Jube's current state and send nothing when it already holds. A caller whose `expected_status`/`expected_officer_id` differs from Jube gets `version_conflict`.
+- Assignment uses Jube's `LockedUser` (the lock flag is left alone), naming `vati-officer-<officer UUID>`. Jube requires that user to exist in the same tenant; `jube_cases.py officer` provisions synthetic ones.
+- Jube identities live in a non-landlord tenant, `Vati synthetic (local)`. The adapter role holds only `Read Write Case` plus grants on this workflow and its statuses. The TAX-035 model and invoker were moved there. The first invoker, created in the landlord tenant, has its key revoked and its user deactivated. One adapter instance serves one Vati tenant. Others are concealed as `not_found`.
+
+Alternatives and tradeoff:
+
+- Keep identities in tenant 1 with empty roles: not least privilege. Jube treats every landlord-tenant user as holding all permissions in all tenants, which is what TAX-035 observed.
+- Make tenant 1 non-landlord: per Jube docs this is a direct database update, which would break Administrator's tenant management and landlord self-approval, and Vati never edits another service's database.
+- Grant the adapter `Read Write Cases Workflows Status` (19) so it can read status GUIDs at runtime: that permission also edits statuses. The GUIDs are written once by the admin provisioning step to ignored local config and validated at startup.
+- Map escalation onto a new `CaseStatus` value: a breaking contract change for a distinction Jube already expresses by status and priority.
+- Store assignee or status in Frappe and push to Jube: that would be a competing lifecycle (ADR-001).
+- Tradeoffs accepted: Jube has no compare-and-set, so a concurrent edit by a Jube user between our read and write is last-writer-wins inside Jube. Jube needs a 1-5 investigator rating before any update, and the adapter will not invent one. The key lookup lists the tenant's cases (unbounded), which is acceptable while the tenant holds only Vati cases.
+
+Official sources and version/date checked (2026-11-04): Jube locked source `01c4afdbcdb186cc36b128ed79283d544cfb9ec9` (`integration/upstreams.lock.json`): `Jube.App/Endpoints/Repository/CaseEndpoints.cs`, `Jube.Service/Repository/Case/CaseService.cs`, `Jube.Validations/Repository/Case/CaseDtoValidator.cs`, `Jube.Data/Query/GetExistingCasePriorityQuery`, `GetLastArchiveJsonByEntityAnalysisModelIdAndCaseKeyValueQuery`, `Jube.Data/Security/PermissionValidation.cs`, `Jube.App/Middlewares/HybridAuthorisationHandler.cs`, `Jube.Engine/.../ModelSyncTaskStarter.cs`; Jube docs `docs/Concepts/MultiTenancy/EnablingMultiTenancyAndSwitching/index.md` in the same checkout (https://www.jube.io/docs/); deployed Swagger `Jube.App.Api` v1 on the local stack.
+
+Verification performed: `python3 scripts/jube_cases.py contract` on the local stack with the adapter's own key. Creation was replay-safe through the link, through Jube after a lost link, and against a raw duplicate (Jube 409, one case). Status, escalation, assignment and resolution changed in Jube; repeats sent nothing; stale and closed-case requests were refused. The adapter key read only cases, the own-tenant model list and user allocations, and got 403 elsewhere. The invoker key got 403 everywhere, and wrong or retired keys got 401. `python3 scripts/jube_rules.py verify` matched all five scenarios after the move. `tests/integration/test_jube_case_lifecycle.py` covers the same rules against a Jube fake, plus retries, timeouts, races and configuration failures. Results are in `integration/jube/README.md`.
+
+Consequences and revisit trigger: TAX-033 and TAX-039 call the adapter with the tenant they authorised, and record outcomes and links. TAX-046 passes the approved decision ID and the officer's rating. Before a shared deployment, a real Jube tenant per Vati tenant and a human maker-checker are needed. Revisit if Jube adds case versioning, API key scopes or a read-only case permission, if the contract gains an escalation field, or if officers start editing cases directly in Jube.
