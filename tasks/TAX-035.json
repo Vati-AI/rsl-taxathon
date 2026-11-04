@@ -5,7 +5,7 @@
   "owner": "Keletso",
   "area": "integration",
   "phase": "pilot",
-  "status": "IN_PROGRESS",
+  "status": "IN_REVIEW",
   "priority": "P0",
   "depends_on": [
     "TAX-025",
@@ -13,7 +13,7 @@
   ],
   "claimed_by": "keletso-claude-code-tax035",
   "branch": "task/TAX-035",
-  "pr": null,
+  "pr": "https://github.com/Vati-AI/rsl-taxathon/pull/112",
   "scope": "Configure versioned synthetic rules for refund mismatch, related-party fees, losses and imported-service gaps",
   "inputs": [
     "PROJECT.md",
@@ -63,6 +63,10 @@
     {
       "at": "2026-11-03T19:29:22.734860+00:00",
       "text": "Claimed by keletso-claude-code-tax035"
+    },
+    {
+      "at": "2026-11-04T03:58:58.997742+00:00",
+      "text": "Agent finished implementation and opened human review"
     }
   ]
 }
