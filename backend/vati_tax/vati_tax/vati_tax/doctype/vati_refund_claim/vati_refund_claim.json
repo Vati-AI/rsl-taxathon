@@ -1,0 +1,178 @@
+{
+ "actions": [],
+ "autoname": "field:claim_id",
+ "creation": "2026-11-04 12:00:00.000000",
+ "description": "Declared VAT refund claim (TAX-031), one per refund_claim submission.",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "claim_id",
+  "submission_id",
+  "tenant_id",
+  "taxpayer_id",
+  "period",
+  "currency",
+  "claim_section",
+  "claimed_amount",
+  "claim_reason",
+  "explanation",
+  "vat_return_id",
+  "evidence_ids"
+ ],
+ "fields": [
+  {
+   "description": "UUID, generated if omitted. The document name.",
+   "fieldname": "claim_id",
+   "fieldtype": "Data",
+   "label": "Claim ID",
+   "length": 36,
+   "reqd": 1,
+   "set_only_once": 1,
+   "unique": 1
+  },
+  {
+   "fieldname": "submission_id",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Submission",
+   "options": "Vati Submission",
+   "reqd": 1,
+   "search_index": 1,
+   "set_only_once": 1,
+   "unique": 1
+  },
+  {
+   "fieldname": "tenant_id",
+   "fieldtype": "Link",
+   "in_standard_filter": 1,
+   "label": "Tenant",
+   "options": "Vati Tenant",
+   "reqd": 1,
+   "search_index": 1,
+   "set_only_once": 1
+  },
+  {
+   "fieldname": "taxpayer_id",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Taxpayer",
+   "options": "Vati Taxpayer",
+   "reqd": 1,
+   "search_index": 1,
+   "set_only_once": 1
+  },
+  {
+   "description": "Copied from the submission.",
+   "fieldname": "period",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Tax Period",
+   "length": 7,
+   "read_only": 1
+  },
+  {
+   "default": "LSL",
+   "fieldname": "currency",
+   "fieldtype": "Data",
+   "label": "Currency",
+   "length": 3,
+   "read_only": 1
+  },
+  {
+   "fieldname": "claim_section",
+   "fieldtype": "Section Break",
+   "label": "Claim"
+  },
+  {
+   "fieldname": "claimed_amount",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Claimed Amount (LSL)",
+   "non_negative": 1,
+   "options": "currency",
+   "reqd": 1
+  },
+  {
+   "fieldname": "claim_reason",
+   "fieldtype": "Select",
+   "label": "Reason",
+   "options": "\nexcess_input_vat\nzero_rated_supplies\nother",
+   "reqd": 1
+  },
+  {
+   "description": "Required when the reason is other.",
+   "fieldname": "explanation",
+   "fieldtype": "Small Text",
+   "label": "Explanation"
+  },
+  {
+   "description": "Optional; same taxpayer and period. The claim cannot exceed its refund position.",
+   "fieldname": "vat_return_id",
+   "fieldtype": "Link",
+   "label": "VAT Return",
+   "options": "Vati VAT Return"
+  },
+  {
+   "description": "TAX-032 evidence UUIDs supporting the claim.",
+   "fieldname": "evidence_ids",
+   "fieldtype": "JSON",
+   "label": "Evidence IDs"
+  }
+ ],
+ "index_web_pages_for_search": 0,
+ "links": [],
+ "modified": "2026-11-04 12:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Vati Tax",
+ "name": "Vati Refund Claim",
+ "naming_rule": "By fieldname",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "export": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "read": 1,
+   "role": "Vati Taxpayer",
+   "write": 1
+  },
+  {
+   "export": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Vati Auditor"
+  },
+  {
+   "export": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Vati Specialist"
+  },
+  {
+   "export": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Vati Supervisor"
+  },
+  {
+   "read": 1,
+   "role": "Vati Service"
+  }
+ ],
+ "search_fields": "submission_id,period",
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "submission_id",
+ "track_changes": 1
+}
