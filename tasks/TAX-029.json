@@ -5,13 +5,13 @@
   "owner": "Edga",
   "area": "backend",
   "phase": "foundation",
-  "status": "BACKLOG",
+  "status": "IN_PROGRESS",
   "priority": "P0",
   "depends_on": [
     "TAX-019"
   ],
-  "claimed_by": null,
-  "branch": null,
+  "claimed_by": "keletso-claude-code",
+  "branch": "task/TAX-029",
   "pr": null,
   "scope": "Define taxpayer, auditor, specialist and supervisor roles with tenant-aware permissions and service identities",
   "inputs": [
@@ -45,5 +45,14 @@
     "finish-task"
   ],
   "evidence": [],
-  "notes": []
+  "notes": [
+    {
+      "at": "2026-11-04T07:58:31.633180+00:00",
+      "text": "Claimed by keletso-claude-code"
+    },
+    {
+      "at": "2026-11-04T07:58:31.633376+00:00",
+      "text": "Implemented by keletso-claude-code on Keletso's instruction (2026-11-04); owner remains Edga"
+    }
+  ]
 }
