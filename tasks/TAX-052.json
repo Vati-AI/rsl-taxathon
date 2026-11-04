@@ -35,7 +35,7 @@
     },
     {
       "text": "Record relevant tests and evidence, update task status and open a human-review PR",
-      "done": false
+      "done": true
     }
   ],
   "verification": "No-route scenario never creates an enforcement conclusion; fabricated or unverified citations are rejected",
@@ -53,6 +53,10 @@
     {
       "criterion": 2,
       "text": "scratch .venv with ai/requirements.lock + pytest: python -m pytest tests/ai -q -> 51 passed (41 new TAX-052, 10 TAX-022). SYN-005 no-route scenario through the TAX-022 graph with a fabricated citation and enforcement_recommended proposal yields no_route/policy_gap_review, citation_not_in_registry rejection, blocked action, enforcement_conclusion None, data.enforcement_conclusions [] and no TAX-024 expected_non_findings emitted. Parametrized rejection of not-in-registry, wrong version, superseded/not-yet-effective version, unverified status, non-applicable and malformed citations; enforcement actions blocked even with a verified route; all five TAX-024 scenarios classified without enforcement; replay idempotent; malformed finding and exhausted step budget fail closed."
+    },
+    {
+      "criterion": 3,
+      "text": "PR #111 opened for human review (https://github.com/Vati-AI/rsl-taxathon/pull/111) by task.py finish after refresh from origin/main; dev.py check and quality.py passed in finish; tests/ai 51 passed; task IN_REVIEW and issue #53 synced. Agent will not merge."
     }
   ],
   "notes": [
