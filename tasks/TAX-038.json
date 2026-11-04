@@ -5,7 +5,7 @@
   "owner": "Keletso",
   "area": "integration",
   "phase": "pilot",
-  "status": "IN_PROGRESS",
+  "status": "IN_REVIEW",
   "priority": "P0",
   "depends_on": [
     "TAX-028",
@@ -14,7 +14,7 @@
   ],
   "claimed_by": "claude-gupta-20261104-tax038",
   "branch": "task/TAX-038",
-  "pr": null,
+  "pr": "https://github.com/Vati-AI/rsl-taxathon/pull/152",
   "scope": "Handle authenticated file conversion, async polling, extraction provenance and retry-safe persistence",
   "inputs": [
     "PROJECT.md",
@@ -36,7 +36,7 @@
     },
     {
       "text": "Record relevant tests and evidence, update task status and open a human-review PR",
-      "done": false
+      "done": true
     }
   ],
   "verification": "Test timeout, malformed document and one table/OCR fixture with source page references",
@@ -54,12 +54,20 @@
     {
       "criterion": 2,
       "text": "tests/integration/test_docling_extraction.py (14 tests) against a fake following the locked routes and the TAX-028 recorded smoke output; every recorded payload validated by the real vati_tax.evidence.rules.parse_extraction. Table/OCR fixture: OCR text on page 1 with bbox, table cells on page 2 with record locators (3000.00 at tables/0/r1/c2, 3450.00 at tables/0/r3/c2). Timeout: deadline_exceeded retryable, job kept, next attempt resumes without resubmitting; transient poll timeout/503 retried honouring Retry-After; persistent timeout -> retryable upstream_unavailable; submit not blindly retried. Malformed/failed documents (conversion failure, policy rejection, skipped, task failure, empty content) recorded as failed revisions with error code and no items; partial_success -> partial; truncation -> partial. Store outage then retry records exactly one revision and duplicate delivery replays. 401 not retried; errors carry no key/document text/upstream body. Not yet run against the live container (Docker stopped, <5 GB disk on this machine)."
+    },
+    {
+      "criterion": 3,
+      "text": "Tests and evidence recorded on task/TAX-038 (criteria 1-2). Branch refreshed from main (picked up #150), checks rerun, pushed explicitly; human-review PR https://github.com/Vati-AI/rsl-taxathon/pull/152 opened for owner Keletso with checks, the pending live-container verification and Windows-only environment exceptions documented. Agent will not merge."
     }
   ],
   "notes": [
     {
       "at": "2026-11-04T13:55:23.383157+00:00",
       "text": "Claimed by claude-gupta-20261104-tax038"
+    },
+    {
+      "at": "2026-11-04T14:04:39.142513+00:00",
+      "text": "Agent finished implementation and opened human review for owner Keletso. Live Docling run still pending (Docker stopped, low disk on implementing machine). task.py finish steps run individually: its dev.py check/quality.py gate fails on this Windows checkout only (POSIX file-mode tooling tests; CRLF vs Prettier), documented in the PR."
     }
   ]
 }
