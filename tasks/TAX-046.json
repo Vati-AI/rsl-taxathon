@@ -28,15 +28,15 @@
   "acceptance": [
     {
       "text": "Persist authorized rationale/action records and audit events; execute approved Jube transitions via the integration adapter",
-      "done": false
+      "done": true
     },
     {
       "text": "Reject agent-only decisions, stale approvals and duplicate outward actions; no assessment/refund-payment endpoints",
-      "done": false
+      "done": true
     },
     {
       "text": "Record relevant tests and evidence, update task status and open a human-review PR",
-      "done": false
+      "done": true
     }
   ],
   "verification": "Reject agent-only decisions, stale approvals and duplicate outward actions; no assessment/refund-payment endpoints",
@@ -46,7 +46,20 @@
     "update-project-task",
     "finish-task"
   ],
-  "evidence": [],
+  "evidence": [
+    {
+      "criterion": 1,
+      "text": "Vati Decision (officer proposal, review by a different supervisor, single Jube operation and its sync result), Vati Evidence Request (contract RequestEvidenceRequest) and append-only Vati Audit Event (actor, role, action, correlation ID, payload SHA-256; advancing events hold a unique per-case version) in backend/vati_tax/vati_tax/decisions and three DocTypes; ADR-013. Approved decisions call JubeCaseAdapter.transition/escalate (TAX-034) with the approved decision ID, rating and the status approved against. tests/integration/test_decision_execution.py: 5 tests through the real adapter and its Jube fake (RESOLVED closes the Jube case with the decision rating, escalation reaches the escalated status, retry after a lost response sends no second update, outage is a retryable failure then completes)."
+    },
+    {
+      "criterion": 2,
+      "text": "decisions/test_engine.py (37) and test_rules.py (12), plain unittest: agent drafts never approved or retried (agent_only_decision), service and taxpayer cannot propose, proposer cannot approve own decision, auditor and service cannot approve; stale approvals refused (old case version, proposal older than 72h, Jube status changed since proposal, approval older than 24h not retried); duplicate outward actions refused (idempotency replay sends nothing, changed payload is idempotency_conflict, one open decision per case, second approval refused, version_conflict from Jube is final); prohibited outcomes (assessment, refund, payment, fraud, prosecution) refused and no such endpoints exist; cross-tenant case and decision are not_found, cross-taxpayer evidence cannot be cited. Bench tests in decisions/test_decisions_bench.py written for frappe_dev.py verify, not run here (Docker not installed)."
+    },
+    {
+      "criterion": 3,
+      "text": "Ran the scripts/dev.py check commands with the venv interpreter: validate.py, compileall, tests/data, tests/integration (94), tests/ai refund and imported, contract.py, tests/contracts (44), backend unittest (166, 17 bench-only skipped) all pass; tests/tooling has 2 failures on Windows only (0o600 file mode checks in jube_dev and openaleph_dev env tests), unrelated to this change. quality.py steps: ruff check, ruff format --check and mypy pass; npm check not run (covers apps/ only, unchanged). Review PR opened with task.py finish."
+    }
+  ],
   "notes": [
     {
       "at": "2026-11-04T09:25:26.768195+00:00",

@@ -1,0 +1,204 @@
+{
+ "actions": [],
+ "autoname": "field:request_id",
+ "creation": "2026-11-04 13:00:00.000000",
+ "description": "Officer-authorised request for evidence from the case's taxpayer (TAX-046, RequestEvidenceRequest in integration/api/openapi.json).",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "request_id",
+  "tenant_id",
+  "taxpayer_id",
+  "case_id",
+  "status",
+  "column_break_auth",
+  "authorised_by",
+  "authoriser_role",
+  "case_version",
+  "due_date",
+  "created_at",
+  "request_section",
+  "items",
+  "finding_ids",
+  "message_to_taxpayer",
+  "keys_section",
+  "registration_key",
+  "request_digest"
+ ],
+ "fields": [
+  {
+   "fieldname": "request_id",
+   "fieldtype": "Data",
+   "label": "Request ID",
+   "length": 36,
+   "reqd": 1,
+   "unique": 1,
+   "set_only_once": 1
+  },
+  {
+   "fieldname": "tenant_id",
+   "fieldtype": "Data",
+   "label": "Tenant ID",
+   "length": 36,
+   "reqd": 1,
+   "search_index": 1,
+   "set_only_once": 1,
+   "in_standard_filter": 1
+  },
+  {
+   "fieldname": "taxpayer_id",
+   "fieldtype": "Data",
+   "label": "Taxpayer ID",
+   "length": 36,
+   "search_index": 1,
+   "set_only_once": 1,
+   "reqd": 1
+  },
+  {
+   "fieldname": "case_id",
+   "fieldtype": "Data",
+   "label": "Case ID",
+   "length": 36,
+   "reqd": 1,
+   "search_index": 1,
+   "set_only_once": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "label": "Status",
+   "options": "recorded\nsent\nresponded\nwithdrawn",
+   "default": "recorded",
+   "reqd": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "column_break_auth",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "authorised_by",
+   "fieldtype": "Data",
+   "label": "Authorised By",
+   "length": 140,
+   "reqd": 1,
+   "set_only_once": 1
+  },
+  {
+   "fieldname": "authoriser_role",
+   "fieldtype": "Data",
+   "label": "Authoriser Role",
+   "length": 16,
+   "reqd": 1,
+   "set_only_once": 1
+  },
+  {
+   "fieldname": "case_version",
+   "fieldtype": "Int",
+   "label": "Case Version",
+   "reqd": 1,
+   "set_only_once": 1
+  },
+  {
+   "fieldname": "due_date",
+   "fieldtype": "Date",
+   "label": "Due Date",
+   "reqd": 1,
+   "set_only_once": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "created_at",
+   "fieldtype": "Datetime",
+   "label": "Created At (UTC)",
+   "reqd": 1,
+   "set_only_once": 1
+  },
+  {
+   "fieldname": "request_section",
+   "fieldtype": "Section Break",
+   "label": "Request"
+  },
+  {
+   "fieldname": "items",
+   "fieldtype": "Long Text",
+   "label": "Requested Items (JSON)",
+   "reqd": 1,
+   "set_only_once": 1
+  },
+  {
+   "fieldname": "finding_ids",
+   "fieldtype": "Long Text",
+   "label": "Finding IDs (JSON)",
+   "reqd": 1,
+   "set_only_once": 1
+  },
+  {
+   "fieldname": "message_to_taxpayer",
+   "fieldtype": "Long Text",
+   "label": "Message To Taxpayer",
+   "reqd": 1,
+   "set_only_once": 1
+  },
+  {
+   "fieldname": "keys_section",
+   "fieldtype": "Section Break",
+   "label": "Uniqueness keys",
+   "collapsible": 1
+  },
+  {
+   "fieldname": "registration_key",
+   "fieldtype": "Data",
+   "label": "Registration Key",
+   "length": 64,
+   "read_only": 1,
+   "unique": 1
+  },
+  {
+   "fieldname": "request_digest",
+   "fieldtype": "Data",
+   "label": "Request Digest",
+   "length": 64,
+   "read_only": 1
+  }
+ ],
+ "in_create": 1,
+ "index_web_pages_for_search": 0,
+ "links": [],
+ "modified": "2026-11-04 13:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Vati Tax",
+ "name": "Vati Evidence Request",
+ "naming_rule": "By fieldname",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "export": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager"
+  },
+  {
+   "read": 1,
+   "role": "Vati Auditor"
+  },
+  {
+   "read": 1,
+   "role": "Vati Specialist"
+  },
+  {
+   "read": 1,
+   "role": "Vati Supervisor"
+  },
+  {
+   "read": 1,
+   "role": "Vati Service"
+  }
+ ],
+ "search_fields": "case_id,status",
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "case_id"
+}
