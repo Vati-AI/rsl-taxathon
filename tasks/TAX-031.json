@@ -5,7 +5,7 @@
   "owner": "Edga",
   "area": "backend",
   "phase": "pilot",
-  "status": "IN_PROGRESS",
+  "status": "IN_REVIEW",
   "priority": "P0",
   "depends_on": [
     "TAX-029",
@@ -13,7 +13,7 @@
   ],
   "claimed_by": "keletso-claude-code",
   "branch": "task/TAX-031",
-  "pr": null,
+  "pr": "https://github.com/Vati-AI/rsl-taxathon/pull/126",
   "scope": "Add Taxpayer, Submission, VAT Return, Refund Claim and Imported Service DocTypes with decimal/currency and period validation",
   "inputs": [
     "PROJECT.md",
@@ -67,6 +67,10 @@
     {
       "at": "2026-11-04T08:34:21.009104+00:00",
       "text": "Implemented by keletso-claude-code on Keletso's instruction (2026-11-04); owner remains Edga"
+    },
+    {
+      "at": "2026-11-04T09:11:00.700466+00:00",
+      "text": "Agent finished implementation and opened human review"
     }
   ]
 }
