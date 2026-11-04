@@ -17,5 +17,8 @@ Package layout:
 - `vati_tax/patches.txt` uses Frappe's `[pre_model_sync]` / `[post_model_sync]` sections. Add a dotted path plus a test for every data migration; never edit site databases manually.
 - `pyproject.toml` ships `*.txt`, JSON, HTML and `public/` assets with the package.
 - `vati_tax/api.py` exposes only an authenticated scaffold health method. `vati_tax/portal` holds the TAX-021 taxpayer portal boundary and its Frappe-free unit tests.
+- `vati_tax/ids` (TAX-030) holds canonical case IDs and service links. `canonical.py` has the pure rules, `mapping.py` the internal persistence API (`register_case`, `record_link`, `apply_link_event`, `resolve_case`, `case_service_links`), and the `Vati Case Identity` / `Vati Service Link` DocTypes store them ([ADR-006](../../docs/decisions/ADR-006-canonical-ids-service-links.md)).
 
-The app declares no DocTypes yet. TAX-029 adds roles and tenant permissions; TAX-030 to TAX-033 add IDs, submissions, evidence and the outbox.
+Tests named `test_*.py` must pass under plain `unittest` without a site. Site-backed tests skip themselves there and run on the disposable `verify` site via `bench run-tests --app vati_tax`.
+
+TAX-029 adds roles and tenant permissions; TAX-031 to TAX-033 add submissions, evidence and the outbox.

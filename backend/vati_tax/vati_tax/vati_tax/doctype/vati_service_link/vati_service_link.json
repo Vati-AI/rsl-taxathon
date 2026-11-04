@@ -1,0 +1,164 @@
+{
+ "actions": [],
+ "autoname": "hash",
+ "creation": "2026-11-04 09:00:00.000000",
+ "description": "Unique mapping from a canonical case to an upstream record (TAX-030).",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "tenant_id",
+  "case_id",
+  "service",
+  "external_type",
+  "external_id",
+  "column_break_sync",
+  "sync_state",
+  "last_attempt_at",
+  "error_code",
+  "source_event_id",
+  "keys_section",
+  "link_key",
+  "slot_key",
+  "event_key"
+ ],
+ "fields": [
+  {
+   "fieldname": "tenant_id",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Tenant ID",
+   "length": 36,
+   "reqd": 1,
+   "search_index": 1,
+   "set_only_once": 1
+  },
+  {
+   "fieldname": "case_id",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Case",
+   "options": "Vati Case Identity",
+   "reqd": 1,
+   "search_index": 1,
+   "set_only_once": 1
+  },
+  {
+   "fieldname": "service",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Service",
+   "options": "jube\nfrappe\nopenaleph\nyente\ndocling\nlanggraph",
+   "reqd": 1,
+   "set_only_once": 1
+  },
+  {
+   "fieldname": "external_type",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "External Type",
+   "length": 64,
+   "reqd": 1,
+   "set_only_once": 1
+  },
+  {
+   "fieldname": "external_id",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "External ID",
+   "length": 255,
+   "reqd": 1,
+   "set_only_once": 1
+  },
+  {
+   "fieldname": "column_break_sync",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "synced",
+   "fieldname": "sync_state",
+   "fieldtype": "Select",
+   "label": "Sync State",
+   "options": "pending\nsynced\nfailed",
+   "reqd": 1
+  },
+  {
+   "description": "Stored in UTC by the delivery worker.",
+   "fieldname": "last_attempt_at",
+   "fieldtype": "Datetime",
+   "label": "Last Attempt At (UTC)"
+  },
+  {
+   "fieldname": "error_code",
+   "fieldtype": "Data",
+   "label": "Error Code",
+   "length": 64
+  },
+  {
+   "description": "Event that first recorded this link; replaying it is a no-op.",
+   "fieldname": "source_event_id",
+   "fieldtype": "Data",
+   "label": "Source Event ID",
+   "length": 36,
+   "set_only_once": 1
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "keys_section",
+   "fieldtype": "Section Break",
+   "label": "Uniqueness keys"
+  },
+  {
+   "description": "SHA-256 of tenant, service, namespace and external ID.",
+   "fieldname": "link_key",
+   "fieldtype": "Data",
+   "label": "Link Key",
+   "length": 64,
+   "read_only": 1,
+   "unique": 1
+  },
+  {
+   "description": "Set for one-per-case external types (Jube case, OpenAleph collection).",
+   "fieldname": "slot_key",
+   "fieldtype": "Data",
+   "label": "Slot Key",
+   "length": 64,
+   "read_only": 1,
+   "unique": 1
+  },
+  {
+   "description": "SHA-256 of tenant and source event ID.",
+   "fieldname": "event_key",
+   "fieldtype": "Data",
+   "label": "Event Key",
+   "length": 64,
+   "read_only": 1,
+   "unique": 1
+  }
+ ],
+ "in_create": 1,
+ "index_web_pages_for_search": 0,
+ "links": [],
+ "modified": "2026-11-04 09:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Vati Tax",
+ "name": "Vati Service Link",
+ "naming_rule": "Random",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "export": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager"
+  }
+ ],
+ "search_fields": "case_id,service,external_id",
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "external_id",
+ "track_changes": 1
+}
