@@ -1,4 +1,4 @@
-# ADR-008: Jube case lifecycle adapter, status projection and Jube tenant isolation
+# ADR-009: Jube case lifecycle adapter, status projection and Jube tenant isolation
 
 Status: proposed (TAX-034, pending human review)
 Owner and task: Keletso, TAX-034

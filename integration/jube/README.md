@@ -99,7 +99,7 @@ How it maps to Jube (locked source, docs `Configuration/Models` and `Concepts/Ma
 
 ## Case lifecycle adapter (TAX-034)
 
-`case_lifecycle.py` is a client and mapping layer, not a second case store. Jube holds the case, its status, assignee and closure; every value the adapter returns was just read from Jube. `case_workflow.v1.json` is the reviewable workflow definition. Design and tradeoffs: [ADR-008](../../docs/decisions/ADR-008-jube-case-lifecycle-adapter.md).
+`case_lifecycle.py` is a client and mapping layer, not a second case store. Jube holds the case, its status, assignee and closure; every value the adapter returns was just read from Jube. `case_workflow.v1.json` is the reviewable workflow definition. Design and tradeoffs: [ADR-009](../../docs/decisions/ADR-009-jube-case-lifecycle-adapter.md).
 
 ```sh
 python3 scripts/jube_rules.py apply --approve-local   # model + risk invoker in the Vati tenant

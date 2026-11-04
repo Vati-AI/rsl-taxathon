@@ -49,7 +49,7 @@
   "evidence": [
     {
       "criterion": 1,
-      "text": "integration/jube/case_lifecycle.py maps ensure_case/get_case/transition/escalate/assign to Jube routes verified in locked source 01c4afd and deployed Swagger (CreateFromCaseKeyValue, GET /api/Case/{id}, GET /api/Case/, PUT /api/Case/). Workflow integration/jube/case_workflow.v1.json maps 8 Jube statuses to the 7 CaseStatus values (escalation = distinct Jube status projected AWAITING_HUMAN escalated). Returned state is always read from Jube; unmapped Jube status is an error. ADR-008."
+      "text": "integration/jube/case_lifecycle.py maps ensure_case/get_case/transition/escalate/assign to Jube routes verified in locked source 01c4afd and deployed Swagger (CreateFromCaseKeyValue, GET /api/Case/{id}, GET /api/Case/, PUT /api/Case/). Workflow integration/jube/case_workflow.v1.json maps 8 Jube statuses to the 7 CaseStatus values (escalation = distinct Jube status projected AWAITING_HUMAN escalated). Returned state is always read from Jube; unmapped Jube status is an error. ADR-009."
     },
     {
       "criterion": 2,
