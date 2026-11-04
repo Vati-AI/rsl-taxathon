@@ -5,15 +5,15 @@
   "owner": "Keletso",
   "area": "integration",
   "phase": "expansion",
-  "status": "BACKLOG",
+  "status": "IN_REVIEW",
   "priority": "P1",
   "depends_on": [
     "TAX-048",
     "TAX-018"
   ],
-  "claimed_by": null,
-  "branch": null,
-  "pr": null,
+  "claimed_by": "claude-keletso-tax073",
+  "branch": "task/TAX-073",
+  "pr": "https://github.com/Vati-AI/rsl-taxathon/pull/125",
   "scope": "Map customs, invoice, accounting and payment values with currency/date context",
   "inputs": [
     "PROJECT.md",
@@ -27,15 +27,15 @@
   "acceptance": [
     {
       "text": "Map customs, invoice, accounting and payment values with currency/date context",
-      "done": false
+      "done": true
     },
     {
       "text": "Different legitimate bases remain distinguishable; missing source does not imply false declaration",
-      "done": false
+      "done": true
     },
     {
       "text": "Record relevant tests and evidence, update task status and open a human-review PR",
-      "done": false
+      "done": true
     }
   ],
   "verification": "Different legitimate bases remain distinguishable; missing source does not imply false declaration",
@@ -45,6 +45,28 @@
     "update-project-task",
     "finish-task"
   ],
-  "evidence": [],
-  "notes": []
+  "evidence": [
+    {
+      "criterion": 1,
+      "text": "ai/tools/customs_reconciliation.py maps supplier_invoice, customs_value, accounting_value, payment and transfer_pricing_value per transaction with original/transaction/reporting (LSL) Money, value dates, valuation basis and cited exchange-rate records (rate, date, source); Decimal-only half-up cent conversion, no guessed rates. 35 tests in tests/integration/test_customs_reconciliation.py pass (matching, adjustments, tolerance boundaries, FX timing, mixed-currency, validation, tenant/case-scoped TAX-022 tool, replay/order determinism)."
+    },
+    {
+      "criterion": 2,
+      "text": "Bases are never merged: basis_totals keep each basis separate; FOB invoice vs CIF customs bridged by cited freight/insurance adjustments (SYN-001 matched_with_adjustments); transfer-pricing and differing/unknown valuation bases are basis_difference_unreconciled gaps, not discrepancies (SYN-002). Missing customs record (SYN-004) yields only customs_value_record_missing gap with interpretation incomplete_data and zero discrepancies; missing rates give not_comparable gaps. Tests assert no fraud/misdeclaration/abuse wording in outputs."
+    },
+    {
+      "criterion": 3,
+      "text": "python3 scripts/dev.py check passed (tests/integration incl. 35 TAX-073 tests); python3 scripts/quality.py passed (ruff, ruff format, mypy, npm check). Task status updated and human-review PR opened via scripts/task.py finish."
+    }
+  ],
+  "notes": [
+    {
+      "at": "2026-11-04T09:00:19.387248+00:00",
+      "text": "Claimed by claude-keletso-tax073"
+    },
+    {
+      "at": "2026-11-04T09:10:24.816298+00:00",
+      "text": "Agent finished implementation and opened human review"
+    }
+  ]
 }
