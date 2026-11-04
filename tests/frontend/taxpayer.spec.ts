@@ -48,7 +48,7 @@ test.describe('taxpayer portal', () => {
       .getByRole('link', { name: newLabel(testInfo.project.name) })
       .click();
     await expect(page).toHaveURL(/\/taxpayer\/submissions\/new$/);
-    await pageReady(page, 'New submission');
+    await pageReady(page, 'New VAT refund claim');
 
     await nav(page).getByRole('link', { name: 'Account' }).click();
     await pageReady(page, 'Account');
@@ -142,18 +142,19 @@ test.describe('taxpayer portal', () => {
   }) => {
     await mockTaxpayerSession(page, 'taxpayer');
     await page.goto(TAXPAYER + '/taxpayer/submissions/new');
-    await pageReady(page, 'New submission');
+    await pageReady(page, 'New VAT refund claim');
 
     const period = page.getByLabel('Tax period');
     await period.fill('2026-09');
     await period.press('Enter');
 
     await expect(
-      page.getByRole('alert').filter({ hasText: 'Fix 3 fields to continue' }),
+      page.getByRole('alert').filter({ hasText: 'Fix 2 fields to continue' }),
     ).toBeVisible();
-    const type = page.getByLabel('Type of return or claim');
-    await expect(type).toBeFocused();
-    await expect(type).toHaveAttribute('aria-invalid', 'true');
+    const amount = page.getByLabel('Amount claimed (LSL)');
+    await expect(amount).toBeFocused();
+    await expect(amount).toHaveAttribute('aria-invalid', 'true');
+    await expect(page.getByLabel('Reason for the claim')).toHaveAttribute('aria-invalid', 'true');
     await expect(period).toHaveValue('2026-09');
   });
 
