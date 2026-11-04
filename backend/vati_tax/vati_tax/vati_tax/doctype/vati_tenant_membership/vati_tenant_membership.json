@@ -1,0 +1,88 @@
+{
+ "actions": [],
+ "autoname": "hash",
+ "creation": "2026-11-04 10:00:00.000000",
+ "description": "Grants one user one Vati role inside one tenant; taxpayer memberships bind the user to one taxpayer (TAX-029).",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "user",
+  "tenant_id",
+  "vati_role",
+  "taxpayer_id",
+  "enabled"
+ ],
+ "fields": [
+  {
+   "fieldname": "user",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "User",
+   "options": "User",
+   "reqd": 1,
+   "search_index": 1,
+   "set_only_once": 1
+  },
+  {
+   "fieldname": "tenant_id",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Tenant",
+   "options": "Vati Tenant",
+   "reqd": 1,
+   "set_only_once": 1
+  },
+  {
+   "description": "The user must also hold the matching Frappe role (Vati Taxpayer, Vati Auditor, Vati Specialist, Vati Supervisor or Vati Service).",
+   "fieldname": "vati_role",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Vati Role",
+   "options": "\ntaxpayer\nauditor\nspecialist\nsupervisor\nservice",
+   "reqd": 1
+  },
+  {
+   "depends_on": "eval:doc.vati_role=='taxpayer'",
+   "description": "Lower-case UUID of the taxpayer this user acts for. Required for taxpayer memberships only.",
+   "fieldname": "taxpayer_id",
+   "fieldtype": "Data",
+   "label": "Taxpayer ID",
+   "mandatory_depends_on": "eval:doc.vati_role=='taxpayer'"
+  },
+  {
+   "default": "1",
+   "fieldname": "enabled",
+   "fieldtype": "Check",
+   "in_list_view": 1,
+   "label": "Enabled"
+  }
+ ],
+ "index_web_pages_for_search": 0,
+ "links": [],
+ "modified": "2026-11-04 10:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Vati Tax",
+ "name": "Vati Tenant Membership",
+ "naming_rule": "Random",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "read": 1,
+   "role": "System Manager",
+   "write": 1
+  },
+  {
+   "read": 1,
+   "role": "Vati Supervisor"
+  }
+ ],
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}

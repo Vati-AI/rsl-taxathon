@@ -1,0 +1,126 @@
+{
+ "actions": [],
+ "autoname": "field:case_id",
+ "creation": "2026-11-04 09:00:00.000000",
+ "description": "Canonical case identity (TAX-030). Operational status lives in Jube.",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "case_id",
+  "tenant_id",
+  "display_id",
+  "column_break_refs",
+  "taxpayer_id",
+  "submission_id",
+  "synthetic",
+  "keys_section",
+  "display_key",
+  "registration_key"
+ ],
+ "fields": [
+  {
+   "description": "Immutable shared UUID used by every component.",
+   "fieldname": "case_id",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Case ID",
+   "length": 36,
+   "reqd": 1,
+   "set_only_once": 1,
+   "unique": 1
+  },
+  {
+   "fieldname": "tenant_id",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Tenant ID",
+   "length": 36,
+   "reqd": 1,
+   "search_index": 1,
+   "set_only_once": 1
+  },
+  {
+   "description": "Human-readable label, unique per tenant.",
+   "fieldname": "display_id",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Display ID",
+   "length": 16,
+   "reqd": 1,
+   "set_only_once": 1
+  },
+  {
+   "fieldname": "column_break_refs",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "taxpayer_id",
+   "fieldtype": "Data",
+   "label": "Taxpayer ID",
+   "length": 36,
+   "set_only_once": 1
+  },
+  {
+   "fieldname": "submission_id",
+   "fieldtype": "Data",
+   "label": "Submission ID",
+   "length": 36,
+   "set_only_once": 1
+  },
+  {
+   "default": "1",
+   "fieldname": "synthetic",
+   "fieldtype": "Check",
+   "label": "Synthetic",
+   "set_only_once": 1
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "keys_section",
+   "fieldtype": "Section Break",
+   "label": "Uniqueness keys"
+  },
+  {
+   "description": "SHA-256 of tenant and display ID.",
+   "fieldname": "display_key",
+   "fieldtype": "Data",
+   "label": "Display Key",
+   "length": 64,
+   "read_only": 1,
+   "unique": 1
+  },
+  {
+   "description": "SHA-256 of tenant and registration idempotency key.",
+   "fieldname": "registration_key",
+   "fieldtype": "Data",
+   "label": "Registration Key",
+   "length": 64,
+   "read_only": 1,
+   "unique": 1
+  }
+ ],
+ "in_create": 1,
+ "index_web_pages_for_search": 0,
+ "links": [],
+ "modified": "2026-11-04 09:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Vati Tax",
+ "name": "Vati Case Identity",
+ "naming_rule": "By fieldname",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "export": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager"
+  }
+ ],
+ "search_fields": "display_id,tenant_id",
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "display_id",
+ "track_changes": 1
+}

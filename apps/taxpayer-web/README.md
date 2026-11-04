@@ -19,7 +19,11 @@ submission is disabled with a visible reason.
   an unauthenticated call with HTTP 403.
 - The Vue router re-checks the session on navigation and sends an expired
   session to login. Log out calls `POST /api/method/logout`.
-- Role and tenant restrictions are TAX-029; they extend `portal_access`.
+- TAX-029: only users with an enabled taxpayer membership reach the shell
+  (others get 403), and the portal API returns only their own taxpayer's
+  submissions; another taxpayer's submission is reported as not found. To view
+  the fixtures locally, grant your user a taxpayer membership in the fixture
+  tenant (see `docs/PERMISSIONS.md`).
 
 ## Commands (repository root)
 

@@ -9,15 +9,21 @@ Mirrors Frappe v16 ``frappe/www/desk.py``: guests are redirected to login.
 import frappe
 import frappe.sessions
 
+from vati_tax.identity.permissions import get_principal
+from vati_tax.identity.policy import TAXPAYER
 from vati_tax.portal.access import portal_access
 
 no_cache = 1
 
 
 def get_context(context):
-    decision = portal_access(frappe.session.user, frappe.request.path)
+    user = frappe.session.user
+    is_taxpayer = any(m.role == TAXPAYER for m in get_principal(user).memberships)
+    decision = portal_access(user, frappe.request.path, is_taxpayer=is_taxpayer)
     if decision.outcome == "login":
         frappe.redirect(decision.location)
+    if decision.outcome == "deny":
+        raise frappe.PermissionError("The taxpayer portal is for taxpayer accounts.")
 
     csrf_token = frappe.sessions.get_csrf_token()
     # get_csrf_token stores the token on the session; persist it before render.

@@ -122,18 +122,27 @@ try:
     report['module_defs'] = cmd(['bench', '--site', site, 'execute', 'frappe.get_all', '--kwargs',
         json.dumps({'doctype': 'Module Def', 'filters': {'app_name': 'vati_tax'}, 'pluck': 'name'})]).strip()
     report['import'] = cmd([python, '-c', 'import vati_tax, vati_tax.api, vati_tax.hooks, '
-        'vati_tax.portal.access, vati_tax.www.taxpayer; print(vati_tax.__version__ if hasattr(vati_tax, "__version__") else "ok")']).strip()
+        'vati_tax.portal.access, vati_tax.www.taxpayer, vati_tax.ids.mapping; print(vati_tax.__version__ if hasattr(vati_tax, "__version__") else "ok")']).strip()
     app = root / 'apps' / 'vati_tax'
     tests = subprocess.run([python, '-m', 'unittest', 'discover', '-s', str(app / 'vati_tax'),
         '-t', str(app), '-p', 'test_*.py'], cwd=root, text=True, capture_output=True)
     report['app_tests_exit'] = tests.returncode
     report['app_tests_summary'] = [l for l in tests.stderr.splitlines() if l.startswith(('Ran ', 'OK', 'FAILED'))]
+    # Site-backed tests (DocTypes, unique keys, permissions) run on the disposable site only.
+    cmd(['bench', '--site', site, 'set-config', 'allow_tests', 'true'])
+    bench_tests = subprocess.run(['bench', '--site', site, 'run-tests', '--app', 'vati_tax'],
+        cwd=root, text=True, capture_output=True)
+    report['bench_tests_exit'] = bench_tests.returncode
+    report['bench_tests_summary'] = [l for l in (bench_tests.stdout + bench_tests.stderr).splitlines()
+        if l.startswith(('Ran ', 'OK', 'FAILED'))]
+    if bench_tests.returncode:
+        sys.stderr.write(bench_tests.stdout[-3000:] + bench_tests.stderr[-3000:])
 finally:
     if created and os.environ.get('VERIFY_KEEP') != '1':
         cmd(['bench', 'drop-site', site, '--force', '--no-backup', '--db-root-password', pw])
         report['dropped_after_verify'] = True
 print(json.dumps(report, indent=2))
-if report.get('app_tests_exit'):
+if report.get('app_tests_exit') or report.get('bench_tests_exit'):
     sys.exit('vati_tax tests failed')
 """
 

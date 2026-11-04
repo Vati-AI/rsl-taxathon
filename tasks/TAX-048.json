@@ -5,7 +5,7 @@
   "owner": "Gupta",
   "area": "ai",
   "phase": "pilot",
-  "status": "IN_REVIEW",
+  "status": "DONE",
   "priority": "P0",
   "depends_on": [
     "TAX-022",
@@ -72,6 +72,10 @@
     {
       "at": "2026-11-04T03:47:19.329480+00:00",
       "text": "Agent finished implementation and opened human review"
+    },
+    {
+      "at": "2026-11-04T07:49:28.008149+00:00",
+      "text": "Verified merge of #110 on 2026-11-04"
     }
   ]
 }
