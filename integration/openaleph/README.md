@@ -5,7 +5,7 @@ Evidence search and entity graph. Owner: Keletso; LangGraph implementation is ow
 - Upstream: https://github.com/openaleph/openaleph (kept external, never copied here)
 - Official documentation: https://openaleph.org/docs/
 - Configuration: `OPENALEPH_BASE_URL`
-- Status: isolated development stack running and smoke-tested (TAX-026). No Vati adapter or FtM mapping yet (TAX-036).
+- Status: isolated development stack running and smoke-tested (TAX-026). Replay-safe entity ingest for the FtM tax mapping (TAX-036), tested against a fake of the locked `_bulk` route; it has not been run against the live stack yet.
 
 ## Run it (TAX-026)
 
@@ -61,3 +61,11 @@ python3 scripts/openaleph_dev.py stop          # stops containers; data volumes 
 | Search and entities | `GET /api/2/search?q=…&filter:collection_id=…`, `GET /api/2/entities/{id}` |
 
 The full OpenAPI description is served by the API at `/api/openapi.json`. Check it there before adding routes to the adapter (TAX-036). Collections map to Vati tenant/case scope in that task; never use a public collection for taxpayer evidence.
+
+## Entity ingest (TAX-036)
+
+`entity_ingest.py` writes entities from `integration/followthemoney/tax_mapping.py` with `POST /api/2/collections/{id}/_bulk` (locked source `aleph/views/collections_api.py`; 204 on success). Use a non-admin key with WRITE on only that tenant's restricted collection. OpenAleph then forces `safe` and `clean`, which strips checksum properties, so the evidence SHA-256 travels in the Vati extension, not in `contentHash`.
+
+- The caller keeps a ledger of `entity_id -> digest` per collection. A repeated ingest sends nothing, and new records are sent alone.
+- A changed entity is refused as `idempotency_conflict` without sending anything. Bulk writes go through FtM's fragment aggregator, so the adapter does not rely on a rewrite replacing old values. Re-index the collection after review instead.
+- Errors use contract codes: 401/403 `forbidden`, 429 `rate_limited` and 5xx `upstream_unavailable` (both retryable), other 4xx `invalid_request`. The ledger grows only after a batch is accepted.

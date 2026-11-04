@@ -5,16 +5,16 @@
   "owner": "Leseli",
   "area": "integration",
   "phase": "pilot",
-  "status": "BACKLOG",
+  "status": "DONE",
   "priority": "P0",
   "depends_on": [
     "TAX-026",
     "TAX-030",
     "TAX-032"
   ],
-  "claimed_by": null,
-  "branch": null,
-  "pr": null,
+  "claimed_by": "leseli-claude-20261104-036",
+  "branch": "task/TAX-036",
+  "pr": "https://github.com/Vati-AI/rsl-taxathon/pull/139",
   "scope": "Map companies, persons, ownership, invoices, payments and evidence using supported FtM schema plus documented tax extensions",
   "inputs": [
     "PROJECT.md",
@@ -28,15 +28,15 @@
   "acceptance": [
     {
       "text": "Map companies, persons, ownership, invoices, payments and evidence using supported FtM schema plus documented tax extensions",
-      "done": false
+      "done": true
     },
     {
       "text": "Validate entities and provenance; test conflicting ownership and repeated ingest",
-      "done": false
+      "done": true
     },
     {
       "text": "Record relevant tests and evidence, update task status and open a human-review PR",
-      "done": false
+      "done": true
     }
   ],
   "verification": "Validate entities and provenance; test conflicting ownership and repeated ingest",
@@ -46,11 +46,44 @@
     "update-project-task",
     "finish-task"
   ],
-  "evidence": [],
+  "evidence": [
+    {
+      "criterion": 1,
+      "text": "integration/followthemoney/tax_mapping.py maps parties (Company/Person/LegalEntity), ownership (Ownership), contracts (Contract + ContractAward), invoices (UnknownLink with invoice role), payments (Payment) and TAX-032 evidence (Document) using only schemata and properties of the locked FtM source (c8c457a; schema/types identical to v4.11.2 in the OpenAleph image). Tax fields FtM cannot hold go in a documented vati_tax_extension.v1 record per entity (ADR-012). ftm_schema_subset.v1.json is generated from the locked YAML by scripts/ftm_schema_subset.py; --check passes."
+    },
+    {
+      "criterion": 2,
+      "text": "tests/integration/test_ftm_tax_mapping.py, 25 tests passing: entities validated against the locked subset (schema, property, type, required, reference range); provenance rejected for hash mismatch with the stored original, unknown evidence, missing locator and missing source; conflicting ownership flagged (over 100 percent, disagreeing records) with both records kept, and successive or beneficial stakes not flagged; repeated ingest against a fake of the locked OpenAleph _bulk route sends nothing the second time, sends only new records, refuses a changed entity with idempotency_conflict, keeps the ledger on a failed batch and maps 403 to forbidden; all five TAX-024 scenarios map and validate. Not run: the real followthemoney library (PyICU does not build here, and Smart App Control blocks SQLAlchemy's compiled module even with DISABLE_SQLALCHEMY_CEXT_RUNTIME=1) and a live OpenAleph (Docker not running)."
+    },
+    {
+      "criterion": 3,
+      "text": "scripts/validate.py passes. Every dev.py check step was run with the venv interpreter (python3 is a Store stub on this machine): data, integration (119), ai refund/imported, contracts, backend and compileall pass; tests/tooling has 2 Windows-only failures (POSIX 0600 file-mode checks in the jube_dev/openaleph_dev env tests, untouched here). ruff check and format pass on all quality.py sources; mypy is left to CI because Smart App Control blocks it locally. Review PR opened for Keletso as integration area owner."
+    }
+  ],
   "notes": [
     {
       "at": "2026-11-04T09:25:26.768195+00:00",
       "text": "Owner reassigned from Keletso to Leseli with Keletso's agreement, so Leseli can take the path to TAX-041, TAX-042 and TAX-060."
+    },
+    {
+      "at": "2026-11-04T09:44:55.938738+00:00",
+      "text": "Claimed by leseli-claude-20261104-036"
+    },
+    {
+      "at": "2026-11-04T10:11:44.570516+00:00",
+      "text": "Owner returned from Leseli to Keletso and claim taken over at Keletso's instruction; Leseli's claim had no implementation and no active agent."
+    },
+    {
+      "at": "2026-11-04T10:51:41.078704+00:00",
+      "text": "Keletso handed TAX-036 back to Leseli to continue (Keletso's agent had only claimed it; no implementation was pushed). Owner Leseli; claimed by leseli-claude-20261104-036 on the same branch."
+    },
+    {
+      "at": "2026-11-04T11:00:26.208178+00:00",
+      "text": "Agent leseli-claude-20261104-036 finished implementation and opened review (https://github.com/Vati-AI/rsl-taxathon/pull/139) for Keletso as integration area owner. mypy left to CI (Smart App Control); real FtM library and live OpenAleph not run (see ADR-012)."
+    },
+    {
+      "at": "2026-11-04T11:13:13.030057+00:00",
+      "text": "Verified implementation PR #139 merged (84c401d, 2026-11-04T11:10Z); all acceptance criteria and evidence recorded."
     }
   ]
 }

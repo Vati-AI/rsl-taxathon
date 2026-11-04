@@ -2,7 +2,7 @@
  "actions": [],
  "autoname": "field:event_id",
  "creation": "2026-11-04 13:00:00.000000",
- "description": "Append-only audit event for decisions and evidence requests (TAX-046). Advancing events take the next case version under a unique key.",
+ "description": "Append-only audit ledger (TAX-046, TAX-059). Decision and evidence-request events, reads, overrides and refused attempts, sealed into one SHA-256 hash chain per tenant.",
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
@@ -13,17 +13,25 @@
   "sequence",
   "action",
   "outcome",
+  "category",
   "column_break_actor",
   "actor",
   "actor_role",
+  "target_actor",
   "occurred_at",
   "correlation_id",
   "subject_section",
   "subject_type",
   "subject_id",
   "payload_hash",
+  "reason",
+  "chain_section",
+  "chain_seq",
+  "prev_hash",
+  "entry_hash",
   "keys_section",
-  "sequence_key"
+  "sequence_key",
+  "chain_key"
  ],
  "fields": [
   {
@@ -58,7 +66,7 @@
    "fieldtype": "Data",
    "label": "Case ID",
    "length": 36,
-   "reqd": 1,
+   "reqd": 0,
    "search_index": 1,
    "set_only_once": 1,
    "in_list_view": 1
@@ -131,7 +139,7 @@
    "fieldname": "subject_type",
    "fieldtype": "Select",
    "label": "Subject Type",
-   "options": "decision\nevidence_request",
+   "options": "decision\nevidence_request\nevidence\ncase\nledger\ncontrol\nexport",
    "reqd": 1,
    "set_only_once": 1
   },
@@ -166,12 +174,76 @@
    "read_only": 1,
    "unique": 1,
    "description": "SHA-256 of tenant, case and case version (advancing events only)."
+  },
+  {
+   "fieldname": "category",
+   "fieldtype": "Select",
+   "label": "Category",
+   "options": "read\nwrite\napproval\noverride\ndenied",
+   "reqd": 1,
+   "set_only_once": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1
+  },
+  {
+   "fieldname": "target_actor",
+   "fieldtype": "Data",
+   "label": "Target Actor",
+   "length": 140,
+   "set_only_once": 1,
+   "description": "Whose work an override or refused attempt concerned."
+  },
+  {
+   "fieldname": "reason",
+   "fieldtype": "Small Text",
+   "label": "Reason",
+   "set_only_once": 1,
+   "description": "Required for overrides."
+  },
+  {
+   "fieldname": "chain_section",
+   "fieldtype": "Section Break",
+   "label": "Hash chain",
+   "collapsible": 1
+  },
+  {
+   "fieldname": "chain_seq",
+   "fieldtype": "Int",
+   "label": "Chain Position",
+   "reqd": 1,
+   "set_only_once": 1,
+   "description": "Position in the tenant ledger, from 1."
+  },
+  {
+   "fieldname": "prev_hash",
+   "fieldtype": "Data",
+   "label": "Previous Entry SHA-256",
+   "length": 64,
+   "reqd": 1,
+   "set_only_once": 1
+  },
+  {
+   "fieldname": "entry_hash",
+   "fieldtype": "Data",
+   "label": "Entry SHA-256",
+   "length": 64,
+   "reqd": 1,
+   "set_only_once": 1
+  },
+  {
+   "fieldname": "chain_key",
+   "fieldtype": "Data",
+   "label": "Chain Key",
+   "length": 64,
+   "read_only": 1,
+   "unique": 1,
+   "description": "SHA-256 of tenant and chain position; one entry per position."
   }
  ],
  "in_create": 1,
  "index_web_pages_for_search": 0,
  "links": [],
- "modified": "2026-11-04 13:00:00.000000",
+ "modified": "2026-11-04 18:00:00.000000",
  "modified_by": "Administrator",
  "module": "Vati Tax",
  "name": "Vati Audit Event",
@@ -186,23 +258,12 @@
   },
   {
    "read": 1,
-   "role": "Vati Auditor"
-  },
-  {
-   "read": 1,
-   "role": "Vati Specialist"
-  },
-  {
-   "read": 1,
+   "report": 1,
    "role": "Vati Supervisor"
-  },
-  {
-   "read": 1,
-   "role": "Vati Service"
   }
  ],
- "search_fields": "case_id,action",
- "sort_field": "creation",
+ "search_fields": "case_id,action,category",
+ "sort_field": "chain_seq",
  "sort_order": "DESC",
  "states": [],
  "title_field": "action"
