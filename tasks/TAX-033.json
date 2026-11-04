@@ -26,15 +26,15 @@
   "acceptance": [
     {
       "text": "Implement persisted delivery attempts, retry limits and dead-letter/manual-retry state",
-      "done": false
+      "done": true
     },
     {
       "text": "Crash/replay jobs and prove no duplicate case or outward evidence request",
-      "done": false
+      "done": true
     },
     {
       "text": "Record relevant tests and evidence, update task status and open a human-review PR",
-      "done": false
+      "done": true
     }
   ],
   "verification": "Crash/replay jobs and prove no duplicate case or outward evidence request",
@@ -44,7 +44,20 @@
     "update-project-task",
     "finish-task"
   ],
-  "evidence": [],
+  "evidence": [
+    {
+      "criterion": 1,
+      "text": "Vati Outbox Event/Attempt/Effect DocTypes persist delivery state, every attempt (committed before the handler runs), per-event max_attempts with bounded backoff, a dead_letter state, and operator retry_event/resolve_effect/release_effect (System Manager only). Observed on disposable site verify-20261104t085842 (frappe_dev.py verify, tax019 stack): poison/backoff, permanent and missing-handler dead letters, bounded crash loop, and manual-retry rules (409 while in progress) all passed."
+    },
+    {
+      "criterion": 2,
+      "text": "test_outbox_bench simulates worker crashes (BaseException plus rollback, then replay after lease expiry). Results: a crash after a committed local write left one canonical case. A crash after the outward call to a non-idempotent fake upstream, with reconcile, left exactly one Jube case and one evidence request, with no re-send. With an idempotent upstream it left one record. A crash after a completed effect made no second call. An unknown outcome dead-lettered instead of re-sending. A stale worker whose lease expired was fenced off before calling out. 18/18 outbox bench tests and 53/53 site tests passed; the site was dropped."
+    },
+    {
+      "criterion": 3,
+      "text": "python3 scripts/dev.py check passed (120 Frappe-free app tests, 32 site tests skipped there); python3 scripts/quality.py passed (ruff, mypy, frontend); frappe_dev.py verify exit 0 with 53 site tests. ADR-008 records the design. PR opened for human review."
+    }
+  ],
   "notes": [
     {
       "at": "2026-11-04T08:26:20.950348+00:00",
