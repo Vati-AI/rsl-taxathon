@@ -10,6 +10,10 @@ data (``mode: fixture``). ``submit_refund_claim`` (TAX-043) is live: it stores a
 VAT refund claim in the TAX-031 DocTypes (``mode: live``). Supporting documents
 are uploaded first through ``vati_tax.evidence.api.upload_evidence`` (TAX-032)
 and referenced here by evidence ID.
+
+The evidence request methods (TAX-045) are live too: the caller's own TAX-046
+evidence requests in their taxpayer-facing form, and a structured response to
+one of them (``vati_tax.responses``).
 """
 
 from __future__ import annotations
@@ -22,8 +26,11 @@ from frappe import _
 
 from vati_tax.identity.permissions import get_principal
 from vati_tax.identity.policy import TAXPAYER, canonical_uuid
+from vati_tax.ids.canonical import CaseNotFound, MappingError
 from vati_tax.portal import claims
 from vati_tax.portal.fixtures import FIXTURE_META, find_submission, list_submissions
+from vati_tax.responses import rules as response_rules
+from vati_tax.responses import store as response_store
 from vati_tax.submissions import domain
 from vati_tax.submissions.guard import InvalidDomainInput
 from vati_tax.vati_tax.doctype.vati_refund_claim.vati_refund_claim import foreign_evidence_ids
@@ -69,7 +76,8 @@ def _fail(
     status: int,
     code: str,
     message: str,
-    field_errors: list[claims.FieldError] | None = None,
+    field_errors: list[claims.FieldError] | list[response_rules.FieldError] | None = None,
+    action: str = "submit_refund_claim",
 ) -> NoReturn:
     """Raise with the docs/API_STANDARD.md error body; Frappe rolls back the request."""
     request = getattr(frappe.local, "request", None)
@@ -82,7 +90,7 @@ def _fail(
         "correlation_id": correlation_id,
         "field_errors": [error.as_dict() for error in field_errors or []],
     }
-    _log("submit_refund_claim", code, correlation_id=correlation_id)
+    _log(action, code, correlation_id=correlation_id)
     raise (PortalRequestError if status == 422 else PortalBadRequest)(message)
 
 
@@ -305,3 +313,75 @@ def submit_refund_claim(
 
     _log("submit_refund_claim", "created", submission_id=submission.name)
     return _view(submission.name, replayed=False)
+
+
+# --- evidence request responses (TAX-045) ------------------------------------------
+
+_RESPONSE_MESSAGES = {
+    "already_responded": "You have already responded to this request.",
+    "request_withdrawn": "This request is no longer needed, so it cannot be answered.",
+    "evidence_reused": "A document is already attached to another request. Upload it again for this one.",
+    "not_found": "A document could not be found. Remove it and upload the file again.",
+}
+
+
+@frappe.whitelist()
+def get_evidence_requests() -> dict[str, Any]:
+    """The caller's own evidence requests, in their taxpayer-facing form."""
+    _user, scope = _require_taxpayer()
+    return {**LIVE_META, "data": response_store.list_requests(scope)}
+
+
+@frappe.whitelist()
+def get_evidence_request(request_id: str) -> dict[str, Any]:
+    _user, scope = _require_taxpayer()
+    try:
+        return {**LIVE_META, "data": response_store.get_request(scope, request_id)}
+    except CaseNotFound:
+        raise frappe.DoesNotExistError(_("Evidence request not found.")) from None
+
+
+@frappe.whitelist(methods=["POST"])
+def respond_to_evidence_request(
+    request_id: str | None = None,
+    items: Any = None,
+    message: str | None = None,
+    idempotency_key: str | None = None,
+) -> dict[str, Any]:
+    """Answer every item of one of the caller's own open evidence requests.
+
+    Each item gets at least one of the caller's own uploaded documents, or a
+    reason it cannot be provided. Resending the same key with the same answers
+    returns the stored response with ``replayed: true``.
+    """
+    _user, scope = _require_taxpayer()
+    action = "respond_to_evidence_request"
+    request = getattr(frappe.local, "request", None)
+    correlation = request.headers.get("X-Vati-Correlation-ID") if request is not None else None
+    body = {"items": items, "message": message, "idempotency_key": idempotency_key}
+    try:
+        result = response_store.respond(scope, request_id or "", body, correlation)
+    except response_rules.ResponseInputError as exc:
+        _fail(422, "invalid_domain_input", "Check the highlighted answers.", exc.errors, action)
+    except CaseNotFound:
+        raise frappe.DoesNotExistError(_("Evidence request not found.")) from None
+    except MappingError as exc:
+        reason = exc.field_errors[0]["code"] if exc.field_errors else exc.code
+        if exc.code == "idempotency_conflict":
+            _fail(
+                422,
+                "idempotency_conflict",
+                "This response was already sent with different answers.",
+                action=action,
+            )
+        field = exc.field_errors[0]["field"] if exc.field_errors else "request_id"
+        text = _RESPONSE_MESSAGES.get(str(reason), "The response could not be sent.")
+        _fail(
+            422 if exc.http_status == 422 else 400,
+            str(exc.code),
+            text,
+            [response_rules.FieldError(str(field), str(reason), text)],
+            action,
+        )
+    _log(action, "replayed" if result["replayed"] else "responded", request_id=result["request_id"])
+    return {**LIVE_META, "replayed": result.pop("replayed"), "data": result}
