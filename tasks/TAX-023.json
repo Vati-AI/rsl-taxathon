@@ -5,7 +5,7 @@
   "owner": "Kananelo",
   "area": "tests/frontend",
   "phase": "foundation",
-  "status": "IN_REVIEW",
+  "status": "DONE",
   "priority": "P0",
   "depends_on": [],
   "claimed_by": "kananelo-claude-20261103-tax023",
@@ -76,6 +76,10 @@
     {
       "at": "2026-11-04T10:27:16.911153+00:00",
       "text": "Implementation submitted for human review in PR #135. task.py finish could not run on Windows because dev.py check stops on the 2 pre-existing tests/tooling file-mode failures (identical on clean main 2ad25f2); its steps were performed manually: main merged, checks rerun, branch pushed explicitly, PR opened."
+    },
+    {
+      "at": "2026-11-04T11:04:39.620336+00:00",
+      "text": "Verified PR #135 merged at 2026-11-04T10:35:28Z by leselilexus-cmd (merge commit 0398d17, ancestor of main); all four acceptance criteria marked done with four evidence entries; CI on 46f74c0 passed all five jobs. Recorded by kananelo-claude-20261104-tax023-done; owner Kananelo unchanged. Human visual approval of the screenshots is not implied."
     }
   ]
 }
