@@ -5,14 +5,14 @@
   "owner": "Edga",
   "area": "backend",
   "phase": "foundation",
-  "status": "IN_PROGRESS",
+  "status": "IN_REVIEW",
   "priority": "P0",
   "depends_on": [
     "TAX-019"
   ],
   "claimed_by": "keletso-claude-code",
   "branch": "task/TAX-029",
-  "pr": null,
+  "pr": "https://github.com/Vati-AI/rsl-taxathon/pull/118",
   "scope": "Define taxpayer, auditor, specialist and supervisor roles with tenant-aware permissions and service identities",
   "inputs": [
     "PROJECT.md",
@@ -26,15 +26,15 @@
   "acceptance": [
     {
       "text": "Define taxpayer, auditor, specialist and supervisor roles with tenant-aware permissions and service identities",
-      "done": false
+      "done": true
     },
     {
       "text": "Negative tests prevent cross-taxpayer reads/writes and unauthorized decision actions",
-      "done": false
+      "done": true
     },
     {
       "text": "Record relevant tests and evidence, update task status and open a human-review PR",
-      "done": false
+      "done": true
     }
   ],
   "verification": "Negative tests prevent cross-taxpayer reads/writes and unauthorized decision actions",
@@ -44,7 +44,20 @@
     "update-project-task",
     "finish-task"
   ],
-  "evidence": [],
+  "evidence": [
+    {
+      "criterion": 1,
+      "text": "Roles Vati Taxpayer/Auditor/Specialist/Supervisor/Service (sync_roles before_install/before_migrate, idempotent), Vati Tenant + Vati Tenant Membership DocTypes, convention-based tenant/taxpayer isolation via wildcard permission hooks, DocShare guard, service identities via provision.ensure_service_identity, X-Vati-Tenant-ID resolution and get_access_scope. scripts/frappe_dev.py verify (project rsl-taxathon-frappe-tax019, 2026-11-04, after merging origin/main incl. TAX-030): install + migrate x2 OK, bench run-tests --app vati_tax 35 tests OK (22 TAX-029). HTTP smoke on a disposable site with a synthetic service API key: guest 403, no header 400, non-member tenant 403, own tenant 200 with roles [service]; portal API as service 403. Matrix in docs/PERMISSIONS.md; ADR-007."
+    },
+    {
+      "criterion": 2,
+      "text": "identity/test_tenant_permissions.py (site-backed, 22 tests OK): taxpayer A cannot list/read/write taxpayer B records, create records for B/another tenant/no taxpayer, or move own record to B; same taxpayer_id in another tenant is invisible; staff and service confined to member tenants (read/write/create); no-membership user sees nothing; disabled membership/tenant removes access; DocShare across taxpayer/tenant rejected; service identity refused every human-only decision action; auditor/specialist cannot approve, supervisor cannot approve own proposal, taxpayer cannot propose; operator gets no decision bypass; portal returns only own fixture submissions and 404 for another taxpayer's, 403 for officers/Administrator. Mutation check: neutralising the two tenant hooks made 17/22 fail. identity/test_policy.py + portal/test_access.py: 44 Frappe-free tests OK (also in python3 scripts/dev.py check)."
+    },
+    {
+      "criterion": 3,
+      "text": "python3 scripts/dev.py check passed; python3 scripts/quality.py passed (ruff, ruff format, mypy, npm check). Status and evidence recorded; human-review PR opened via scripts/task.py finish."
+    }
+  ],
   "notes": [
     {
       "at": "2026-11-04T07:58:31.633180+00:00",
@@ -53,6 +66,10 @@
     {
       "at": "2026-11-04T07:58:31.633376+00:00",
       "text": "Implemented by keletso-claude-code on Keletso's instruction (2026-11-04); owner remains Edga"
+    },
+    {
+      "at": "2026-11-04T08:16:37.009131+00:00",
+      "text": "Agent finished implementation and opened human review"
     }
   ]
 }

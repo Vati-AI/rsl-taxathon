@@ -4,7 +4,15 @@ app_publisher = "Vati AI"
 app_description = "RSL Taxathon application and taxpayer portal"
 app_email = "keletso@vatiai.com"
 app_license = "Proprietary"
-# Add role/permission hooks only with the tests in TAX-029.
+
+# TAX-029: Vati roles, tenant/taxpayer isolation and document-share guard.
+# Any vati_tax DocType with a tenant_id field (plus taxpayer_id for taxpayer-
+# owned records) is narrowed by these wildcard hooks; see identity/permissions.py.
+before_install = "vati_tax.identity.install.before_install"
+before_migrate = "vati_tax.identity.install.before_migrate"
+permission_query_conditions = {"*": "vati_tax.identity.permissions.tenant_query_conditions"}
+has_permission = {"*": "vati_tax.identity.permissions.tenant_has_permission"}
+doc_events = {"DocShare": {"validate": "vati_tax.identity.permissions.validate_share"}}
 
 # TAX-021: the Vue taxpayer portal owns client routes under /taxpayer; every
 # deep link renders the guarded www/taxpayer page.

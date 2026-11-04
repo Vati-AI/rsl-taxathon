@@ -4,7 +4,7 @@ Use UUIDs for internal IDs, UTC ISO timestamps, explicit tenant IDs and string d
 
 | Entity | Key fields and relationships |
 |---|---|
-| Tenant / UserMembership | tenant_id, user_id, role (taxpayer, auditor, supervisor, service) |
+| Tenant / UserMembership | tenant_id, user_id, role (taxpayer, auditor, specialist, supervisor, service), taxpayer_id for taxpayer members (TAX-029) |
 | Taxpayer | taxpayer_id, tenant_id, synthetic/approved tax identifier, legal name, industry |
 | Submission | submission_id, taxpayer_id, period, type, status, source_ref, version |
 | VATReturn / RefundClaim | submission_id, declared amounts, currency, period, claim_id |

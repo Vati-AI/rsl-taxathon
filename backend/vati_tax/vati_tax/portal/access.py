@@ -4,8 +4,8 @@ Pure functions with no Frappe import so they are testable without a bench. The
 Frappe page guard (``vati_tax/www/taxpayer.py``) and the whitelisted portal API
 apply these rules to the live session.
 
-Role and tenant checks are deliberately not invented here: TAX-029 defines the
-taxpayer role and tenant permissions and extends ``portal_access``.
+TAX-029 narrows the shell to principals holding a taxpayer membership; the
+portal API additionally filters records to the caller's own taxpayer.
 """
 
 from __future__ import annotations
@@ -23,7 +23,7 @@ LOGIN_PATH = "/login"
 class PortalAccess:
     """Outcome of a portal access check."""
 
-    outcome: Literal["allow", "login"]
+    outcome: Literal["allow", "login", "deny"]
     location: str | None = None
 
 
@@ -53,13 +53,15 @@ def login_location(path: str | None) -> str:
     return f"{LOGIN_PATH}?{urlencode({'redirect-to': portal_path(path)})}"
 
 
-def portal_access(user: str | None, path: str | None) -> PortalAccess:
+def portal_access(user: str | None, path: str | None, *, is_taxpayer: bool) -> PortalAccess:
     """Decide whether ``user`` may load the portal page at ``path``.
 
-    Guests (or a missing session) are sent to login. Any authenticated user is
-    allowed into the shell; data endpoints still only return the caller's own
-    records. TAX-029 narrows this to the taxpayer role and tenant scope.
+    Guests (or a missing session) are sent to login. Authenticated users need an
+    enabled taxpayer membership (TAX-029); officers and service identities are
+    denied rather than shown an empty taxpayer shell.
     """
     if not user or user == GUEST_USER:
         return PortalAccess("login", login_location(path))
+    if not is_taxpayer:
+        return PortalAccess("deny")
     return PortalAccess("allow")
