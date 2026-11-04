@@ -1,0 +1,251 @@
+{
+  "registry_version": "SYN-PBR-2026.11.0",
+  "synthetic": true,
+  "notice": "SYNTHETIC PROTOTYPE REGISTRY. Approvals use placeholder supervisor identities and are not RSL activations. Real activation requires supervisor playbook.approve (TAX-046), holdout evaluation and rollback. Digests pin the exact reviewed source; any change makes that version unapproved until a reviewed registry update.",
+  "entries": [
+    {
+      "kind": "tool",
+      "name": "refund_reconciliation_tool",
+      "version": "1.0",
+      "status": "approved",
+      "proposed_by": "claude-gupta-20261104-tax061",
+      "approved_by": "SYN-SUPERVISOR-01",
+      "approved_on": "2026-11-04",
+      "source_files": [
+        "ai/tools/refund_reconciliation.py",
+        "ai/workflows/refund_lanes.py"
+      ],
+      "content_digest": "d68a2c6bd8c4e0575c386f58715fa3adfbd6cf2fe3716f6eadfcb09d9c0f3ac3",
+      "allowed_operations": [
+        "read_case_records"
+      ],
+      "provenance": [
+        "case_scoped",
+        "evidence_citations",
+        "advisory_only",
+        "deterministic"
+      ],
+      "tools": []
+    },
+    {
+      "kind": "tool",
+      "name": "imported_services_review_tool",
+      "version": "1.0",
+      "status": "approved",
+      "proposed_by": "claude-gupta-20261104-tax061",
+      "approved_by": "SYN-SUPERVISOR-01",
+      "approved_on": "2026-11-04",
+      "source_files": [
+        "ai/tools/imported_services.py",
+        "ai/tools/refund_reconciliation.py"
+      ],
+      "content_digest": "600579b6f92ba3c887dbd83e257927b1784df40a3d7fc0114a9afbe55fdd9c7b",
+      "allowed_operations": [
+        "read_case_records"
+      ],
+      "provenance": [
+        "case_scoped",
+        "evidence_citations",
+        "advisory_only",
+        "deterministic"
+      ],
+      "tools": []
+    },
+    {
+      "kind": "tool",
+      "name": "related_party_review_tool",
+      "version": "1.0",
+      "status": "approved",
+      "proposed_by": "claude-gupta-20261104-tax061",
+      "approved_by": "SYN-SUPERVISOR-01",
+      "approved_on": "2026-11-04",
+      "source_files": [
+        "ai/tools/related_party.py",
+        "ai/tools/refund_reconciliation.py"
+      ],
+      "content_digest": "931757aea6a02d6a0ed746d8babaf9d8ddd0c120f095eb4394b1de67da8f16e9",
+      "allowed_operations": [
+        "read_case_records"
+      ],
+      "provenance": [
+        "case_scoped",
+        "evidence_citations",
+        "advisory_only",
+        "deterministic"
+      ],
+      "tools": []
+    },
+    {
+      "kind": "tool",
+      "name": "work_arrangement_review_tool",
+      "version": "1.0",
+      "status": "approved",
+      "proposed_by": "claude-gupta-20261104-tax061",
+      "approved_by": "SYN-SUPERVISOR-01",
+      "approved_on": "2026-11-04",
+      "source_files": [
+        "ai/tools/work_arrangement.py",
+        "ai/tools/refund_reconciliation.py"
+      ],
+      "content_digest": "be4ad9c1ef3ab5dadbb9137d06bb64db99bcf48d6c813e87c727ca4593700c61",
+      "allowed_operations": [
+        "read_case_records"
+      ],
+      "provenance": [
+        "case_scoped",
+        "evidence_citations",
+        "advisory_only",
+        "deterministic"
+      ],
+      "tools": []
+    },
+    {
+      "kind": "tool",
+      "name": "policy_gap_gate",
+      "version": "1.0",
+      "status": "approved",
+      "proposed_by": "claude-gupta-20261104-tax061",
+      "approved_by": "SYN-SUPERVISOR-01",
+      "approved_on": "2026-11-04",
+      "source_files": [
+        "ai/workflows/policy_gap_gate.py",
+        "ai/workflows/legal_routes.py",
+        "ai/workflows/legal_route_registry.synthetic.json"
+      ],
+      "content_digest": "6f1c9dd86c413ff52bb740b0d9fc4a5e70a238fc310c216e7d22233b6a7c8986",
+      "allowed_operations": [
+        "read_case_findings",
+        "write_advisory_finding"
+      ],
+      "provenance": [
+        "case_scoped",
+        "evidence_citations",
+        "advisory_only",
+        "deterministic"
+      ],
+      "tools": []
+    },
+    {
+      "kind": "playbook",
+      "name": "refund_lanes",
+      "version": "1.0",
+      "status": "approved",
+      "proposed_by": "claude-gupta-20261104-tax061",
+      "approved_by": "SYN-SUPERVISOR-01",
+      "approved_on": "2026-11-04",
+      "source_files": [
+        "ai/workflows/refund_lanes.py",
+        "ai/workflows/fake_graph.py",
+        "ai/workflows/state.py",
+        "ai/tools/contracts.py"
+      ],
+      "content_digest": "3292ad4c765df0a91f851d0f0669bf2dadd110b9be51d10fd125b02a98bc8d2a",
+      "allowed_operations": [
+        "read_case_records",
+        "write_advisory_finding"
+      ],
+      "provenance": [
+        "case_scoped",
+        "evidence_citations",
+        "advisory_only",
+        "deterministic"
+      ],
+      "tools": [
+        "refund_reconciliation_tool@1.0"
+      ]
+    },
+    {
+      "kind": "playbook",
+      "name": "imported_services",
+      "version": "1.0",
+      "status": "approved",
+      "proposed_by": "claude-gupta-20261104-tax061",
+      "approved_by": "SYN-SUPERVISOR-01",
+      "approved_on": "2026-11-04",
+      "source_files": [
+        "ai/workflows/imported_services_playbook.py",
+        "ai/workflows/record_playbook.py",
+        "ai/workflows/fake_graph.py",
+        "ai/workflows/state.py",
+        "ai/tools/contracts.py"
+      ],
+      "content_digest": "de758e1da8f9a8aa4c20476ee50a46999bcfe7ad6ef64d9f4b77da8e1f16447e",
+      "allowed_operations": [
+        "read_case_records",
+        "write_advisory_finding"
+      ],
+      "provenance": [
+        "case_scoped",
+        "evidence_citations",
+        "advisory_only",
+        "deterministic"
+      ],
+      "tools": [
+        "imported_services_review_tool@1.0"
+      ]
+    },
+    {
+      "kind": "playbook",
+      "name": "related_party",
+      "version": "1.0",
+      "status": "approved",
+      "proposed_by": "claude-gupta-20261104-tax061",
+      "approved_by": "SYN-SUPERVISOR-01",
+      "approved_on": "2026-11-04",
+      "source_files": [
+        "ai/workflows/related_party_playbook.py",
+        "ai/workflows/record_playbook.py",
+        "ai/workflows/fake_graph.py",
+        "ai/workflows/state.py",
+        "ai/tools/contracts.py"
+      ],
+      "content_digest": "5dbac11858317e15e6cbf3192094051c5524dc81948c33c14489f171e80cc345",
+      "allowed_operations": [
+        "read_case_records",
+        "write_advisory_finding"
+      ],
+      "provenance": [
+        "case_scoped",
+        "evidence_citations",
+        "advisory_only",
+        "deterministic"
+      ],
+      "tools": [
+        "related_party_review_tool@1.0"
+      ]
+    },
+    {
+      "kind": "playbook",
+      "name": "work_arrangement",
+      "version": "1.0",
+      "status": "approved",
+      "proposed_by": "claude-gupta-20261104-tax061",
+      "approved_by": "SYN-SUPERVISOR-01",
+      "approved_on": "2026-11-04",
+      "source_files": [
+        "ai/workflows/work_arrangement_playbook.py",
+        "ai/workflows/human_checkpoints.py",
+        "ai/workflows/record_playbook.py",
+        "ai/workflows/fake_graph.py",
+        "ai/workflows/state.py",
+        "ai/tools/contracts.py"
+      ],
+      "content_digest": "aa7f7372cdf9448842e8ba324caccb577ba2c984e5b743e9f5400d97dcbbf7f7",
+      "allowed_operations": [
+        "read_case_records",
+        "write_advisory_finding",
+        "interrupt_for_human"
+      ],
+      "provenance": [
+        "case_scoped",
+        "evidence_citations",
+        "advisory_only",
+        "deterministic",
+        "human_checkpoint"
+      ],
+      "tools": [
+        "work_arrangement_review_tool@1.0"
+      ]
+    }
+  ]
+}

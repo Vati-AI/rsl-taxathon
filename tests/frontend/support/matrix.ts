@@ -74,7 +74,8 @@ export const TAXPAYER_ROUTES: MatrixRoute[] = [
     path: '/taxpayer/submissions/SUB-SYN-0001',
     heading: /^VAT refund claim · /,
   },
-  { name: 'new-submission', path: '/taxpayer/submissions/new', heading: 'New submission' },
+  // TAX-043: the new-submission route is the VAT refund claim form.
+  { name: 'new-submission', path: '/taxpayer/submissions/new', heading: 'New VAT refund claim' },
   { name: 'account', path: '/taxpayer/account', heading: 'Account' },
   { name: 'not-found', path: '/taxpayer/no-such-page', heading: 'Page not found' },
 ];

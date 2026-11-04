@@ -5,15 +5,15 @@
   "owner": "Edga",
   "area": "backend",
   "phase": "pilot",
-  "status": "BACKLOG",
+  "status": "IN_REVIEW",
   "priority": "P0",
   "depends_on": [
     "TAX-032",
     "TAX-059"
   ],
-  "claimed_by": null,
-  "branch": null,
-  "pr": null,
+  "claimed_by": "edga-claude-code-20261104-062",
+  "branch": "task/TAX-062",
+  "pr": "https://github.com/Vati-AI/rsl-taxathon/pull/144",
   "scope": "Implement scoped evidence export manifest, retention metadata and access audit; require explicit human authorization for export",
   "inputs": [
     "PROJECT.md",
@@ -27,11 +27,11 @@
   "acceptance": [
     {
       "text": "Implement scoped evidence export manifest, retention metadata and access audit; require explicit human authorization for export",
-      "done": false
+      "done": true
     },
     {
       "text": "Test export denies unauthorized records and includes hash/provenance manifest",
-      "done": false
+      "done": true
     },
     {
       "text": "Record relevant tests and evidence, update task status and open a human-review PR",
@@ -45,6 +45,24 @@
     "update-project-task",
     "finish-task"
   ],
-  "evidence": [],
-  "notes": []
+  "evidence": [
+    {
+      "criterion": 1,
+      "text": "Implemented vati_tax.exports (rules/service/store/api) + Vati Evidence Export DocType: scoped export request naming case evidence, approval by a different supervisor (export.approve, separation of duties), frozen manifest with document SHA-256, lineage, extraction revision and per-record retention metadata (pilot-synthetic-unverified-1, no disposal; audit ledger permanent); every step, read and refusal sealed into the TAX-059 ledger. Observed 2026-11-04: 27 Frappe-free tests pass in exports/test_service.py; full backend suite 269 tests OK (37 site-backed skipped); repo-wide mypy and ruff clean. ADR-016."
+    },
+    {
+      "criterion": 2,
+      "text": "Observed 2026-11-04 (.venv-dev, python -m unittest vati_tax.exports.test_service): other-case, other-tenant, unknown and source-leaked evidence refused as not_found and recorded as export.request.denied; taxpayer/service refused; manifest entries carry each document_sha256, lineage and extraction provenance (matches_document) and manifest_sha256 detects tampering; only requester/approver read it. Mutation check: removing separation of duties, the tenant filter or the reader check each fails the suite. LIMITATION: site-backed exports/test_exports_bench.py written but NOT run - Docker Desktop does not start on this machine; run scripts/frappe_dev.py verify before relying on the Frappe binding."
+    }
+  ],
+  "notes": [
+    {
+      "at": "2026-11-04T12:03:17.481443+00:00",
+      "text": "Claimed by edga-claude-code-20261104-062"
+    },
+    {
+      "at": "2026-11-04T12:19:57.515350+00:00",
+      "text": "Agent finished implementation and opened human review. Local finish gates could not run on Windows (2 pre-existing POSIX-mode tooling tests; no Node for quality.py npm steps); bench tests not run (Docker down). CI must be green and frappe_dev.py verify run before merge."
+    }
+  ]
 }

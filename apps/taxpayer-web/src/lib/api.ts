@@ -1,12 +1,35 @@
 import { call } from './frappe-call';
-import type { FixtureEnvelope, PortalSession, Submission } from './types';
+import type {
+  EvidenceView,
+  FixtureEnvelope,
+  PortalSession,
+  RefundClaimResult,
+  Submission,
+} from './types';
 
-export type PortalErrorKind = 'unauthenticated' | 'denied' | 'not_found' | 'unavailable';
+/**
+ * - `invalid`: the server refused the input (400/422); see `code`/`fieldErrors`.
+ * - `unavailable`: no usable answer (offline, 5xx, unexpected shape). For a
+ *   send this means the outcome is unknown, so retrying with the same key is safe.
+ */
+export type PortalErrorKind =
+  'unauthenticated' | 'denied' | 'not_found' | 'unavailable' | 'invalid';
+
+export interface FieldError {
+  field: string;
+  code: string;
+  message: string;
+}
 
 export class PortalError extends Error {
   constructor(
     readonly kind: PortalErrorKind,
     message: string,
+    /** API error code, e.g. `invalid_domain_input` or `idempotency_conflict`. */
+    readonly code: string | null = null,
+    /** Field-level reason, e.g. `too_large` for a rejected upload. */
+    readonly reason: string | null = null,
+    readonly fieldErrors: FieldError[] = [],
   ) {
     super(message);
     this.name = 'PortalError';
@@ -73,6 +96,148 @@ export async function fetchSubmission(id: string): Promise<Submission> {
       submission_id: id,
     })
   ).data;
+}
+
+// --- live calls (TAX-043) ---------------------------------------------------------
+
+declare global {
+  interface Window {
+    csrf_token?: string;
+  }
+}
+
+interface FrappeErrorBody {
+  exc_type?: string;
+  _server_messages?: string;
+  error?: { code?: string; message?: string; field_errors?: FieldError[] };
+}
+
+/** `code:reason` from the title of a Frappe server message (TAX-032 upload errors). */
+function serverMessageTitle(raw: string | undefined): string | null {
+  if (!raw) return null;
+  try {
+    for (const item of JSON.parse(raw) as string[]) {
+      const title = (JSON.parse(item) as { title?: unknown }).title;
+      if (typeof title === 'string' && title.includes(':')) return title;
+    }
+  } catch {
+    // Malformed messages are treated as absent.
+  }
+  return null;
+}
+
+/** Map a failed live call to what the UI should show. Messages never echo server text. */
+export function errorFromResponse(status: number, body: FrappeErrorBody | null): PortalError {
+  if (status === 401) {
+    return new PortalError('unauthenticated', 'Your session has ended. Log in again to continue.');
+  }
+  if (status === 403) {
+    return new PortalError('denied', 'You do not have access to this information.');
+  }
+  if (status === 404 || body?.exc_type === 'DoesNotExistError') {
+    return new PortalError('not_found', 'We could not find that record.');
+  }
+  if (status === 400 || status === 422) {
+    const portal = body?.error;
+    if (portal?.code) {
+      return new PortalError(
+        'invalid',
+        'Some answers need attention.',
+        portal.code,
+        null,
+        Array.isArray(portal.field_errors) ? portal.field_errors : [],
+      );
+    }
+    const title = serverMessageTitle(body?._server_messages);
+    const [code, reason] = title ? title.split(':', 2) : [null, null];
+    return new PortalError('invalid', 'The request was not accepted.', code, reason);
+  }
+  return new PortalError('unavailable', 'The portal could not be reached. Try again in a moment.');
+}
+
+/**
+ * POST to a whitelisted Frappe method. Used for the calls frappe-ui's `call`
+ * cannot make: a multipart upload with the tenant header, and responses whose
+ * structured error body the form needs.
+ */
+async function post<T>(
+  method: string,
+  body: FormData | Record<string, unknown>,
+  tenantId?: string,
+): Promise<T> {
+  const headers: Record<string, string> = { Accept: 'application/json' };
+  const token = window.csrf_token;
+  if (token && token !== '{{ csrf_token }}') headers['X-Frappe-CSRF-Token'] = token;
+  if (tenantId) headers['X-Vati-Tenant-ID'] = tenantId;
+  const isForm = body instanceof FormData;
+  if (!isForm) headers['Content-Type'] = 'application/json';
+
+  let response: Response;
+  try {
+    response = await fetch(`/api/method/${method}`, {
+      method: 'POST',
+      credentials: 'same-origin',
+      headers,
+      body: isForm ? body : JSON.stringify(body),
+    });
+  } catch {
+    throw new PortalError('unavailable', 'The portal could not be reached. Try again in a moment.');
+  }
+  let payload: unknown;
+  try {
+    payload = await response.json();
+  } catch {
+    payload = null;
+  }
+  if (!response.ok) throw errorFromResponse(response.status, payload as FrappeErrorBody | null);
+  const message = (payload as { message?: unknown } | null)?.message;
+  if (message === undefined || message === null) {
+    throw new PortalError('unavailable', 'The portal returned data in an unexpected format.');
+  }
+  return message as T;
+}
+
+/** Upload one supporting document as private evidence for the caller's own taxpayer. */
+export async function uploadEvidence(
+  file: File,
+  documentType: string,
+  idempotencyKey: string,
+  tenantId: string,
+): Promise<EvidenceView> {
+  const form = new FormData();
+  form.append('file', file, file.name);
+  form.append('document_type', documentType);
+  form.append('idempotency_key', idempotencyKey);
+  const view = await post<EvidenceView>('vati_tax.evidence.api.upload_evidence', form, tenantId);
+  if (typeof view?.evidence_id !== 'string') {
+    throw new PortalError('unavailable', 'The portal returned data in an unexpected format.');
+  }
+  return view;
+}
+
+export interface RefundClaimPayload {
+  idempotency_key: string;
+  period: string;
+  claimed_amount: string;
+  claim_reason: string;
+  explanation: string | null;
+  contact_email: string | null;
+  evidence_ids: string[];
+  declaration: boolean;
+  tenant_id: string;
+}
+
+/** Send the claim. Safe to repeat with the same key: the server replays, never duplicates. */
+export async function submitRefundClaim(payload: RefundClaimPayload): Promise<RefundClaimResult> {
+  const result = await post<RefundClaimResult>(
+    'vati_tax.portal.api.submit_refund_claim',
+    { ...payload },
+    payload.tenant_id,
+  );
+  if (result?.mode !== 'live' || typeof result.data?.reference !== 'string') {
+    throw new PortalError('unavailable', 'The portal returned data in an unexpected format.');
+  }
+  return result;
 }
 
 export async function logout(): Promise<void> {

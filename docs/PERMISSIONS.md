@@ -39,6 +39,8 @@ A `DocShare` can only target a user whose scope already reaches the document, so
 
 Server-set fields (reference, version, submission time, period dates, keys, net VAT, masked TIN) are refused when a client changes them. Submitted figures cannot change.
 
+A `Vati Refund Claim` may reference only `Vati Evidence` of its own tenant and taxpayer in `evidence_ids` (TAX-043). A missing ID and another taxpayer's or tenant's evidence are refused the same way (422 `invalid_reference`), so a claim cannot probe for other records. The portal method `vati_tax.portal.api.submit_refund_claim` acts only for the caller's own taxpayer membership.
+
 ## Action matrix
 
 Callers check actions with `permissions.require_action(action, tenant_id, taxpayer_id=..., proposed_by=...)`. `vati_tax.identity.api.get_access_scope` lists the caller's allowed actions for the header tenant.
@@ -59,6 +61,9 @@ Callers check actions with `permissions.require_action(action, tenant_id, taxpay
 | `decision.execute` (TAX-046: resend an approved decision to Jube) | | | | yes | yes |
 | `ledger.read`* (TAX-059: audit ledger, integrity check, signals, summary) | | | | yes | |
 | `override.record`* (TAX-059: exception to a named control) | | | | yes, not on own work | |
+| `export.request`* (TAX-062: request a scoped evidence export) | | yes | yes | yes | |
+| `export.approve`* (TAX-062: authorise or refuse an export) | | | | yes, not own request | |
+| `export.read`* (TAX-062: export status; manifest for requester and approver only) | | yes | yes | yes | |
 | `integration.callback` | | | | | yes |
 
 \* Human-only. A service identity is refused these actions even if the matrix is widened by mistake. Stale approvals, idempotent decision records and the Jube transition are TAX-046 (see Decisions below).
@@ -105,3 +110,16 @@ Every `Vati Audit Event` takes the next position in its tenant's SHA-256 hash ch
 | Any decision action refused by the policy | anyone | recorded as `<action>.denied`, then refused |
 
 Entries cannot be edited or deleted through Frappe. A row changed directly in the database fails `verify_ledger`. Integrity signals (repeated overrides, repeated refused self-approvals or overrides, a broken chain) are review prompts only: they are never shown to the supervisor they concern and they change nothing.
+
+## Evidence export and retention (TAX-062)
+
+An export hands named evidence of one case to a named recipient. It produces a frozen hash/provenance manifest, never the files or their text. `Vati Evidence Export` is tenant-scoped. Its Desk read is limited to System Manager, so manifests are only read through `vati_tax.exports.api`, which checks the reader and records the read. Every step and refusal is sealed into the audit ledger (subject type `export`). See [ADR-016](decisions/ADR-016-evidence-export-retention.md).
+
+| Step | Who | Refused when |
+| --- | --- | --- |
+| Request (`request_export`) | auditor, specialist, supervisor (`export.request`) | taxpayer or service; evidence not in that case or tenant, or unknown (all `not_found`); evidence not synthetic (pilot); no evidence named; purpose unknown; reason shorter than 20 characters. The refusal is recorded |
+| Approve or reject (`approve_export`, `reject_export`) | a supervisor who did not make the request (`export.approve`) | the requester; auditor, specialist, service or taxpayer; already decided; stale `expected_version`; request older than 72 hours; requested evidence no longer in the case; rejection without a reason. The refusal is recorded |
+| Read the manifest (`get_export_manifest`) | the requester or the approver (`export.read`) | anyone else (`not_found`); not approved; more than 24 hours after approval; manifest no longer matching its hash. The read and any refusal are recorded |
+| Read the retention policy (`get_retention_policy`) | auditor, specialist, supervisor | taxpayer or service |
+
+Retention is metadata only (`pilot-synthetic-unverified-1`, `policy_verified: false`). Nothing is disposed of automatically. A site's `vati_retention_days` can only add a `review_after` date, and the audit ledger is permanent.

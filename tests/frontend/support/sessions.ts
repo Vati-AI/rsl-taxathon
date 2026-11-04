@@ -15,6 +15,7 @@
  * requests stay in that tenant or select another one, which the API refuses.
  */
 import { execFileSync } from 'node:child_process';
+import { randomUUID } from 'node:crypto';
 import path from 'node:path';
 import type { Page, Route } from '@playwright/test';
 
@@ -46,6 +47,8 @@ interface PortalSubmission {
 }
 
 interface PortalFixtures {
+  /** The fixture tenant of SYNTHETIC_TAXPAYER's membership. */
+  tenant_id: string;
   /** Every fixture ID, owned by anyone. */
   all_ids: string[];
   /** list_submissions(scope) for SYNTHETIC_TAXPAYER. */
@@ -59,7 +62,8 @@ function loadPortalFixtures(): PortalFixtures {
     'm = importlib.util.module_from_spec(spec)',
     'spec.loader.exec_module(m)',
     'scope = [(m.FIXTURE_TENANT_ID, sys.argv[2])]',
-    "print(json.dumps({'all_ids': [s['id'] for s in m.SUBMISSIONS],",
+    "print(json.dumps({'tenant_id': m.FIXTURE_TENANT_ID,",
+    "                  'all_ids': [s['id'] for s in m.SUBMISSIONS],",
     "                  'visible': m.list_submissions(scope)}))",
   ].join('\n');
   const file = path.join(root, 'backend/vati_tax/vati_tax/portal/fixtures.py');
@@ -72,6 +76,9 @@ function loadPortalFixtures(): PortalFixtures {
 }
 
 const fixtures = loadPortalFixtures();
+
+/** The tenant of the synthetic taxpayer's membership (X-Vati-Tenant-ID for uploads). */
+export const SYNTHETIC_TENANT_ID = fixtures.tenant_id;
 
 /** Submissions the synthetic taxpayer may see (their own). */
 export const PORTAL_SUBMISSIONS = fixtures.visible;
@@ -96,10 +103,69 @@ const LOGIN_STUB = `<!doctype html><html lang="en"><head><meta charset="utf-8">
 <h1>Login</h1><p>Session mock: Frappe's login page is not part of the browser harness.</p>
 </main></body></html>`;
 
+/** A claim the mock accepted, keyed by idempotency key (as the server's scoped key). */
+interface StoredClaim {
+  body: string;
+  result: Record<string, unknown>;
+}
+
 export interface PortalMock {
   /** Calls the portal made, in order, for assertions. */
   calls: string[];
   persona: TaxpayerPersona;
+  /** Evidence IDs uploaded in this browser session. */
+  evidence: string[];
+  /** Claims stored by `submit_refund_claim`, by idempotency key. */
+  claims: Map<string, StoredClaim>;
+  /** Store the next claim, then drop the response: the client sees a lost connection. */
+  dropNextSendResponse: boolean;
+  /** Refuse the next claim as referencing evidence outside the caller's scope. */
+  rejectEvidenceOnSend: boolean;
+}
+
+/** Field names the TAX-043 claim must carry (vati_tax.portal.api.submit_refund_claim). */
+const CLAIM_FIELDS = [
+  'period',
+  'claimed_amount',
+  'claim_reason',
+  'explanation',
+  'contact_email',
+  'evidence_ids',
+] as const;
+
+let referenceCounter = 0;
+
+/** A TAX-032 upload refusal as Frappe sends it: the `code:reason` is the message title. */
+function uploadRefused(route: Route, reason: string) {
+  const message = JSON.stringify({
+    message: 'Upload refused (mock)',
+    title: `invalid_domain_input:${reason}`,
+  });
+  return route.fulfill({
+    status: 422,
+    json: { exc_type: 'EvidenceRequestError', _server_messages: JSON.stringify([message]) },
+  });
+}
+
+/** A portal API refusal in the docs/API_STANDARD.md shape. */
+function claimRefused(
+  route: Route,
+  code: string,
+  fieldErrors: { field: string; code: string; message: string }[] = [],
+) {
+  return route.fulfill({
+    status: 422,
+    json: {
+      exc_type: 'PortalRequestError',
+      error: {
+        code,
+        message: 'Check the highlighted answers.',
+        retryable: false,
+        correlation_id: 'mock-correlation-id',
+        field_errors: fieldErrors,
+      },
+    },
+  });
 }
 
 /**
@@ -111,7 +177,14 @@ export async function mockTaxpayerSession(
   page: Page,
   persona: TaxpayerPersona,
 ): Promise<PortalMock> {
-  const mock: PortalMock = { calls: [], persona };
+  const mock: PortalMock = {
+    calls: [],
+    persona,
+    evidence: [],
+    claims: new Map(),
+    dropNextSendResponse: false,
+    rejectEvidenceOnSend: false,
+  };
 
   await page.route('**/login**', (route) =>
     route.fulfill({ status: 200, contentType: 'text/html', body: LOGIN_STUB }),
@@ -131,11 +204,89 @@ export async function mockTaxpayerSession(
       if (p === 'guest') return refused(route, 'PermissionError', 403, 'Not permitted');
       if (p === 'no-membership')
         return refused(route, 'PermissionError', 403, 'This account is not linked to a taxpayer.');
-      const { user, full_name } = SYNTHETIC_TAXPAYER;
-      return ok(route, { ...FIXTURE, user, full_name });
+      const { user, full_name, taxpayer_id } = SYNTHETIC_TAXPAYER;
+      return ok(route, {
+        ...FIXTURE,
+        user,
+        full_name,
+        taxpayers: [{ tenant_id: SYNTHETIC_TENANT_ID, taxpayer_id }],
+      });
     }
-    if (p !== 'taxpayer' && method.startsWith('vati_tax.portal.api.')) {
+    if (
+      p !== 'taxpayer' &&
+      (method.startsWith('vati_tax.portal.api.') || method.startsWith('vati_tax.evidence.api.'))
+    ) {
       return refused(route, 'PermissionError', 403, 'This account is not linked to a taxpayer.');
+    }
+    if (method === 'vati_tax.evidence.api.upload_evidence') {
+      // As upload_evidence (TAX-032): the tenant header selects, never grants.
+      if (route.request().headers()['x-vati-tenant-id'] !== SYNTHETIC_TENANT_ID) {
+        return refused(route, 'TenantScopeDenied', 403, 'Outside your permitted scope');
+      }
+      const body = route.request().postDataBuffer()?.toString('latin1') ?? '';
+      const filename = /filename="([^"]*)"/.exec(body)?.[1] ?? '';
+      // Content checks the browser cannot make: the mock keys them off the file name.
+      if (filename.includes('renamed')) return uploadRefused(route, 'extension_mismatch');
+      if (filename.includes('broken')) return uploadRefused(route, 'malformed_document');
+      if (!/\.(pdf|png|jpe?g|csv|xlsx)$/i.test(filename)) {
+        return uploadRefused(route, 'disallowed_type');
+      }
+      const evidenceId = randomUUID();
+      mock.evidence.push(evidenceId);
+      return ok(route, {
+        evidence_id: evidenceId,
+        document_type: /name="document_type"\r\n\r\n([^\r]*)/.exec(body)?.[1] ?? 'invoice',
+        media_type: 'application/pdf',
+        size_bytes: 2048,
+        document_sha256: '0'.repeat(64),
+        received_at: '2026-11-04T10:00:00Z',
+        synthetic: true,
+      });
+    }
+    if (method === 'vati_tax.portal.api.submit_refund_claim') {
+      const body = (route.request().postDataJSON() ?? {}) as Record<string, unknown>;
+      const key = String(body.idempotency_key ?? '');
+      const fingerprint = JSON.stringify(CLAIM_FIELDS.map((f) => body[f] ?? null));
+      const stored = mock.claims.get(key);
+      if (stored) {
+        // Same key: same answers replay the original result, different answers conflict.
+        return stored.body === fingerprint
+          ? ok(route, { ...stored.result, replayed: true })
+          : claimRefused(route, 'idempotency_conflict');
+      }
+      const ids = (body.evidence_ids as string[] | undefined) ?? [];
+      if (mock.rejectEvidenceOnSend || ids.some((id) => !mock.evidence.includes(id))) {
+        mock.rejectEvidenceOnSend = false;
+        return claimRefused(route, 'invalid_domain_input', [
+          {
+            field: 'evidence_ids',
+            code: 'not_found',
+            message: 'A document could not be found. Remove it and upload the file again.',
+          },
+        ]);
+      }
+      referenceCounter += 1;
+      const result = {
+        mode: 'live',
+        replayed: false,
+        data: {
+          submission_id: randomUUID(),
+          reference: `REF-2026-${String(referenceCounter).padStart(6, '0')}`,
+          status: 'submitted',
+          period: body.period,
+          submitted_at: '2026-11-04T10:00:00',
+          claimed_amount: body.claimed_amount,
+          currency: 'LSL',
+          claim_reason: body.claim_reason,
+          evidence_count: ids.length,
+        },
+      };
+      mock.claims.set(key, { body: fingerprint, result });
+      if (mock.dropNextSendResponse) {
+        mock.dropNextSendResponse = false;
+        return route.abort('connectionreset');
+      }
+      return ok(route, result);
     }
     if (method === 'vati_tax.portal.api.get_submissions') {
       return ok(route, { ...FIXTURE, data: PORTAL_SUBMISSIONS });
