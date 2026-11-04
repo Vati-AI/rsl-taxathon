@@ -1,0 +1,363 @@
+[
+  {
+    "case_id": "SYN-001",
+    "synthetic": true,
+    "synthetic_notice": "Synthetic TAX-073 customs/invoice/accounting/payment values for testing; not real declarations, rates or taxpayers.",
+    "reporting_currency": "LSL",
+    "exchange_rates": [
+      {
+        "id": "FX-SYN-001-USD-20251003",
+        "from_currency": "USD",
+        "to_currency": "LSL",
+        "rate": "18.250000",
+        "date": "2025-10-03",
+        "source": "synthetic_reference_rate"
+      },
+      {
+        "id": "FX-SYN-001-USD-20251114",
+        "from_currency": "USD",
+        "to_currency": "LSL",
+        "rate": "18.600000",
+        "date": "2025-11-14",
+        "source": "synthetic_reference_rate"
+      },
+      {
+        "id": "FX-SYN-001-ZAR-20251020",
+        "from_currency": "ZAR",
+        "to_currency": "LSL",
+        "rate": "1.000000",
+        "date": "2025-10-20",
+        "source": "synthetic_reference_rate"
+      }
+    ],
+    "transactions": [
+      {
+        "id": "IMP-SYN-001-01",
+        "description": "Synthetic shelving import; FOB invoice, CIF customs value",
+        "values": [
+          {
+            "id": "CINV-SYN-001-01",
+            "basis": "supplier_invoice",
+            "source": "supplier_invoice",
+            "reference": "SYN-SUP-INV-001-01",
+            "amount": "10000.00",
+            "currency": "USD",
+            "date": "2025-10-03",
+            "valuation_basis": "FOB"
+          },
+          {
+            "id": "CUS-SYN-001-01",
+            "basis": "customs_value",
+            "source": "customs_declaration",
+            "reference": "SYN-DECL-001-01",
+            "amount": "10850.00",
+            "currency": "USD",
+            "date": "2025-10-06",
+            "valuation_basis": "CIF",
+            "rate_id": "FX-SYN-001-USD-20251003"
+          },
+          {
+            "id": "ACC-SYN-001-01",
+            "basis": "accounting_value",
+            "source": "purchase_ledger",
+            "amount": "182500.00",
+            "currency": "LSL",
+            "date": "2025-10-03",
+            "original_amount": "10000.00",
+            "original_currency": "USD",
+            "rate_id": "FX-SYN-001-USD-20251003"
+          },
+          {
+            "id": "CPAY-SYN-001-01",
+            "basis": "payment",
+            "source": "bank_statement",
+            "reference": "SYN-BANK-001-01",
+            "amount": "10000.00",
+            "currency": "USD",
+            "date": "2025-11-14"
+          }
+        ],
+        "adjustments": [
+          {
+            "id": "ADJ-SYN-001-FRT",
+            "kind": "freight",
+            "from_basis": "supplier_invoice",
+            "to_basis": "customs_value",
+            "effect": "add",
+            "amount": "700.00",
+            "currency": "USD",
+            "date": "2025-10-04"
+          },
+          {
+            "id": "ADJ-SYN-001-INS",
+            "kind": "insurance",
+            "from_basis": "supplier_invoice",
+            "to_basis": "customs_value",
+            "effect": "add",
+            "amount": "150.00",
+            "currency": "USD",
+            "date": "2025-10-04"
+          }
+        ]
+      },
+      {
+        "id": "IMP-SYN-001-02",
+        "description": "Synthetic regional import paid in two instalments",
+        "values": [
+          {
+            "id": "CINV-SYN-001-02",
+            "basis": "supplier_invoice",
+            "source": "supplier_invoice",
+            "amount": "50000.00",
+            "currency": "ZAR",
+            "date": "2025-10-20",
+            "valuation_basis": "FOB"
+          },
+          {
+            "id": "CUS-SYN-001-02",
+            "basis": "customs_value",
+            "source": "customs_declaration",
+            "reference": "SYN-DECL-001-02",
+            "amount": "50000.00",
+            "currency": "ZAR",
+            "date": "2025-10-20",
+            "valuation_basis": "FOB"
+          },
+          {
+            "id": "CUS-SYN-001-02-COPY",
+            "basis": "customs_value",
+            "source": "customs_declaration_copy",
+            "reference": "SYN-DECL-001-02",
+            "amount": "50000.00",
+            "currency": "ZAR",
+            "date": "2025-10-20",
+            "valuation_basis": "FOB"
+          },
+          {
+            "id": "ACC-SYN-001-02",
+            "basis": "accounting_value",
+            "source": "purchase_ledger",
+            "amount": "50000.00",
+            "currency": "LSL",
+            "date": "2025-10-20",
+            "original_amount": "50000.00",
+            "original_currency": "ZAR",
+            "rate_id": "FX-SYN-001-ZAR-20251020"
+          },
+          {
+            "id": "CPAY-SYN-001-02A",
+            "basis": "payment",
+            "source": "bank_statement",
+            "amount": "30000.00",
+            "currency": "ZAR",
+            "date": "2025-10-20"
+          },
+          {
+            "id": "CPAY-SYN-001-02B",
+            "basis": "payment",
+            "source": "bank_statement",
+            "amount": "20000.00",
+            "currency": "ZAR",
+            "date": "2025-10-20"
+          }
+        ]
+      }
+    ],
+    "expected": {
+      "discrepancy_codes": [],
+      "gap_codes": [],
+      "statuses": {
+        "IMP-SYN-001-01": {
+          "accounting_value": "matched",
+          "payment": "matched",
+          "customs_value": "matched_with_adjustments"
+        },
+        "IMP-SYN-001-02": {
+          "accounting_value": "matched",
+          "payment": "matched",
+          "customs_value": "matched"
+        }
+      }
+    }
+  },
+  {
+    "case_id": "SYN-002",
+    "synthetic": true,
+    "synthetic_notice": "Synthetic TAX-073 customs/invoice/accounting/payment values for testing; not real declarations, rates or taxpayers.",
+    "reporting_currency": "LSL",
+    "exchange_rates": [
+      {
+        "id": "FX-SYN-002-ZAR-20251110",
+        "from_currency": "ZAR",
+        "to_currency": "LSL",
+        "rate": "1.000000",
+        "date": "2025-11-10",
+        "source": "synthetic_reference_rate"
+      }
+    ],
+    "transactions": [
+      {
+        "id": "IMP-SYN-002-01",
+        "description": "Synthetic related-party stock import",
+        "values": [
+          {
+            "id": "CINV-SYN-002-01",
+            "basis": "supplier_invoice",
+            "source": "supplier_invoice",
+            "amount": "80000.00",
+            "currency": "ZAR",
+            "date": "2025-11-10",
+            "valuation_basis": "FOB"
+          },
+          {
+            "id": "CUS-SYN-002-01",
+            "basis": "customs_value",
+            "source": "customs_declaration",
+            "reference": "SYN-DECL-002-01",
+            "amount": "60000.00",
+            "currency": "ZAR",
+            "date": "2025-11-12",
+            "valuation_basis": "FOB"
+          },
+          {
+            "id": "TP-SYN-002-01",
+            "basis": "transfer_pricing_value",
+            "source": "transfer_pricing_file",
+            "amount": "95000.00",
+            "currency": "ZAR",
+            "date": "2025-11-10"
+          },
+          {
+            "id": "CPAY-SYN-002-01",
+            "basis": "payment",
+            "source": "bank_statement",
+            "reference": "SYN-BANK-002-01",
+            "amount": "80000.00",
+            "currency": "ZAR",
+            "date": "2025-11-20"
+          },
+          {
+            "id": "CPAY-SYN-002-01-ALT",
+            "basis": "payment",
+            "source": "remittance_advice",
+            "reference": "SYN-BANK-002-01",
+            "amount": "85000.00",
+            "currency": "ZAR",
+            "date": "2025-11-20"
+          }
+        ]
+      },
+      {
+        "id": "IMP-SYN-002-02",
+        "description": "Synthetic USD accessories import without a reference rate",
+        "values": [
+          {
+            "id": "CINV-SYN-002-02",
+            "basis": "supplier_invoice",
+            "source": "supplier_invoice",
+            "amount": "4000.00",
+            "currency": "USD",
+            "date": "2025-11-15",
+            "valuation_basis": "FOB"
+          },
+          {
+            "id": "ACC-SYN-002-02",
+            "basis": "accounting_value",
+            "source": "purchase_ledger",
+            "amount": "72000.00",
+            "currency": "LSL",
+            "date": "2025-11-15"
+          },
+          {
+            "id": "CUS-SYN-002-02",
+            "basis": "customs_value",
+            "source": "customs_declaration",
+            "amount": "72000.00",
+            "currency": "LSL",
+            "date": "2025-11-17",
+            "valuation_basis": "FOB"
+          },
+          {
+            "id": "CPAY-SYN-002-02",
+            "basis": "payment",
+            "source": "bank_statement",
+            "amount": "4000.00",
+            "currency": "USD",
+            "date": "2025-11-30"
+          }
+        ]
+      }
+    ],
+    "expected": {
+      "discrepancy_codes": ["conflicting_values_for_same_reference", "values_differ_beyond_tolerance"],
+      "gap_codes": [
+        "accounting_value_record_missing",
+        "bridging_evidence_needed",
+        "exchange_rate_missing",
+        "values_not_comparable"
+      ],
+      "statuses": {
+        "IMP-SYN-002-01": {
+          "payment": "not_comparable",
+          "customs_value": "difference_unexplained",
+          "transfer_pricing_value": "basis_difference_unreconciled"
+        },
+        "IMP-SYN-002-02": {
+          "accounting_value": "not_comparable",
+          "payment": "matched",
+          "customs_value": "not_comparable"
+        }
+      }
+    }
+  },
+  {
+    "case_id": "SYN-004",
+    "synthetic": true,
+    "synthetic_notice": "Synthetic TAX-073 customs/invoice/accounting/payment values for testing; not real declarations, rates or taxpayers.",
+    "reporting_currency": "LSL",
+    "exchange_rates": [],
+    "transactions": [
+      {
+        "id": "IMP-SYN-004-01",
+        "description": "Synthetic equipment import whose customs declaration was not supplied",
+        "values": [
+          {
+            "id": "CINV-SYN-004-01",
+            "basis": "supplier_invoice",
+            "source": "supplier_invoice",
+            "amount": "24222.22",
+            "currency": "LSL",
+            "date": "2025-12-01",
+            "valuation_basis": "FOB"
+          },
+          {
+            "id": "ACC-SYN-004-01",
+            "basis": "accounting_value",
+            "source": "purchase_ledger",
+            "amount": "24222.22",
+            "currency": "LSL",
+            "date": "2025-12-01"
+          },
+          {
+            "id": "CPAY-SYN-004-01",
+            "basis": "payment",
+            "source": "bank_statement",
+            "amount": "24222.22",
+            "currency": "LSL",
+            "date": "2025-12-05"
+          }
+        ]
+      }
+    ],
+    "expected": {
+      "discrepancy_codes": [],
+      "gap_codes": ["customs_value_record_missing"],
+      "statuses": {
+        "IMP-SYN-004-01": {
+          "accounting_value": "matched",
+          "payment": "matched"
+        }
+      }
+    }
+  }
+]

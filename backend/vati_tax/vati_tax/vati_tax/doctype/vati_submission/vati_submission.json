@@ -1,0 +1,275 @@
+{
+ "actions": [],
+ "autoname": "field:submission_id",
+ "creation": "2026-11-04 12:00:00.000000",
+ "description": "Taxpayer submission (TAX-031). Frappe owns this status; Jube owns the case.",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "submission_id",
+  "reference",
+  "tenant_id",
+  "taxpayer_id",
+  "submission_type",
+  "period",
+  "column_break_status",
+  "status",
+  "version",
+  "period_start",
+  "period_end",
+  "currency",
+  "declaration_section",
+  "declaration",
+  "contact_email",
+  "submitted_at",
+  "submitted_by",
+  "correction_reason",
+  "integration_section",
+  "source",
+  "idempotency_key",
+  "submission_key",
+  "case_id",
+  "synthetic"
+ ],
+ "fields": [
+  {
+   "description": "UUID shared with cases. Generated if omitted. The document name.",
+   "fieldname": "submission_id",
+   "fieldtype": "Data",
+   "label": "Submission ID",
+   "length": 36,
+   "reqd": 1,
+   "set_only_once": 1,
+   "unique": 1
+  },
+  {
+   "description": "Human-readable reference shown to the taxpayer.",
+   "fieldname": "reference",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Reference",
+   "length": 24,
+   "read_only": 1,
+   "unique": 1
+  },
+  {
+   "fieldname": "tenant_id",
+   "fieldtype": "Link",
+   "in_standard_filter": 1,
+   "label": "Tenant",
+   "options": "Vati Tenant",
+   "reqd": 1,
+   "search_index": 1,
+   "set_only_once": 1
+  },
+  {
+   "fieldname": "taxpayer_id",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Taxpayer",
+   "options": "Vati Taxpayer",
+   "reqd": 1,
+   "search_index": 1,
+   "set_only_once": 1
+  },
+  {
+   "fieldname": "submission_type",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Submission Type",
+   "options": "\nvat_return\nrefund_claim\npaye_return\nwithholding_return",
+   "reqd": 1,
+   "set_only_once": 1
+  },
+  {
+   "description": "YYYY-MM or YYYY-Q1..Q4; not in the future.",
+   "fieldname": "period",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Tax Period",
+   "length": 7,
+   "reqd": 1,
+   "set_only_once": 1
+  },
+  {
+   "fieldname": "column_break_status",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "draft",
+   "description": "Frappe-owned submission status. Case and risk state live in Jube.",
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Status",
+   "options": "draft\nsubmitted\ncorrection_needed\nwithdrawn",
+   "reqd": 1
+  },
+  {
+   "default": "1",
+   "fieldname": "version",
+   "fieldtype": "Int",
+   "label": "Version",
+   "read_only": 1
+  },
+  {
+   "fieldname": "period_start",
+   "fieldtype": "Date",
+   "label": "Period Start",
+   "read_only": 1
+  },
+  {
+   "fieldname": "period_end",
+   "fieldtype": "Date",
+   "label": "Period End",
+   "read_only": 1
+  },
+  {
+   "default": "LSL",
+   "fieldname": "currency",
+   "fieldtype": "Data",
+   "label": "Currency",
+   "length": 3,
+   "read_only": 1
+  },
+  {
+   "fieldname": "declaration_section",
+   "fieldtype": "Section Break",
+   "label": "Declaration"
+  },
+  {
+   "fieldname": "declaration",
+   "fieldtype": "Check",
+   "label": "I declare that the information given is true and complete"
+  },
+  {
+   "fieldname": "contact_email",
+   "fieldtype": "Data",
+   "label": "Contact Email",
+   "length": 140,
+   "options": "Email"
+  },
+  {
+   "fieldname": "submitted_at",
+   "fieldtype": "Datetime",
+   "label": "Submitted At",
+   "read_only": 1
+  },
+  {
+   "fieldname": "submitted_by",
+   "fieldtype": "Link",
+   "label": "Submitted By",
+   "options": "User",
+   "read_only": 1
+  },
+  {
+   "description": "Taxpayer-facing note from an officer; never internal case notes.",
+   "fieldname": "correction_reason",
+   "fieldtype": "Small Text",
+   "label": "Correction Needed"
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "integration_section",
+   "fieldtype": "Section Break",
+   "label": "Integration"
+  },
+  {
+   "default": "portal",
+   "fieldname": "source",
+   "fieldtype": "Select",
+   "label": "Source",
+   "options": "portal\napi\nsynthetic_seed",
+   "set_only_once": 1
+  },
+  {
+   "fieldname": "idempotency_key",
+   "fieldtype": "Data",
+   "label": "Idempotency Key",
+   "length": 255,
+   "set_only_once": 1
+  },
+  {
+   "description": "SHA-256 of tenant, taxpayer and idempotency key.",
+   "fieldname": "submission_key",
+   "fieldtype": "Data",
+   "label": "Submission Key",
+   "length": 64,
+   "read_only": 1,
+   "unique": 1
+  },
+  {
+   "description": "Canonical case UUID once a case exists (set once by the service identity).",
+   "fieldname": "case_id",
+   "fieldtype": "Data",
+   "label": "Case ID",
+   "length": 36
+  },
+  {
+   "default": "1",
+   "fieldname": "synthetic",
+   "fieldtype": "Check",
+   "label": "Synthetic",
+   "set_only_once": 1
+  }
+ ],
+ "index_web_pages_for_search": 0,
+ "links": [],
+ "modified": "2026-11-04 12:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Vati Tax",
+ "name": "Vati Submission",
+ "naming_rule": "By fieldname",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "export": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "write": 1
+  },
+  {
+   "create": 1,
+   "read": 1,
+   "role": "Vati Taxpayer",
+   "write": 1
+  },
+  {
+   "export": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Vati Auditor",
+   "write": 1
+  },
+  {
+   "export": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Vati Specialist"
+  },
+  {
+   "export": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Vati Supervisor",
+   "write": 1
+  },
+  {
+   "read": 1,
+   "role": "Vati Service",
+   "write": 1
+  }
+ ],
+ "search_fields": "reference,period",
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "reference",
+ "track_changes": 1
+}

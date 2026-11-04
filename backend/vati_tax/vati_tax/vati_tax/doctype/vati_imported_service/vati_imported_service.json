@@ -1,0 +1,223 @@
+{
+ "actions": [],
+ "autoname": "field:record_id",
+ "creation": "2026-11-04 12:00:00.000000",
+ "description": "Declared imported service from a non-resident supplier (TAX-031).",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "record_id",
+  "submission_id",
+  "tenant_id",
+  "taxpayer_id",
+  "period",
+  "currency",
+  "supplier_section",
+  "supplier_name",
+  "supplier_country",
+  "counterparty_id",
+  "service_description",
+  "column_break_invoice",
+  "invoice_reference",
+  "invoice_date",
+  "amount",
+  "vat_accounted",
+  "declared_treatment",
+  "evidence_ids"
+ ],
+ "fields": [
+  {
+   "description": "UUID, generated if omitted. The document name.",
+   "fieldname": "record_id",
+   "fieldtype": "Data",
+   "label": "Record ID",
+   "length": 36,
+   "reqd": 1,
+   "set_only_once": 1,
+   "unique": 1
+  },
+  {
+   "fieldname": "submission_id",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Submission",
+   "options": "Vati Submission",
+   "reqd": 1,
+   "search_index": 1,
+   "set_only_once": 1
+  },
+  {
+   "fieldname": "tenant_id",
+   "fieldtype": "Link",
+   "in_standard_filter": 1,
+   "label": "Tenant",
+   "options": "Vati Tenant",
+   "reqd": 1,
+   "search_index": 1,
+   "set_only_once": 1
+  },
+  {
+   "fieldname": "taxpayer_id",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Taxpayer",
+   "options": "Vati Taxpayer",
+   "reqd": 1,
+   "search_index": 1,
+   "set_only_once": 1
+  },
+  {
+   "description": "Copied from the submission.",
+   "fieldname": "period",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Tax Period",
+   "length": 7,
+   "read_only": 1
+  },
+  {
+   "default": "LSL",
+   "fieldname": "currency",
+   "fieldtype": "Data",
+   "label": "Currency",
+   "length": 3,
+   "read_only": 1
+  },
+  {
+   "fieldname": "supplier_section",
+   "fieldtype": "Section Break",
+   "label": "Supplier and service"
+  },
+  {
+   "fieldname": "supplier_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Supplier Name",
+   "length": 140,
+   "reqd": 1
+  },
+  {
+   "description": "ISO 3166-1 alpha-2; not LS.",
+   "fieldname": "supplier_country",
+   "fieldtype": "Data",
+   "label": "Supplier Country",
+   "length": 2,
+   "reqd": 1
+  },
+  {
+   "fieldname": "counterparty_id",
+   "fieldtype": "Data",
+   "label": "Counterparty ID",
+   "length": 36
+  },
+  {
+   "fieldname": "service_description",
+   "fieldtype": "Small Text",
+   "label": "Service Description",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_invoice",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "invoice_reference",
+   "fieldtype": "Data",
+   "label": "Invoice Reference",
+   "length": 64
+  },
+  {
+   "fieldname": "invoice_date",
+   "fieldtype": "Date",
+   "label": "Invoice Date",
+   "reqd": 1
+  },
+  {
+   "fieldname": "amount",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Amount (LSL)",
+   "non_negative": 1,
+   "options": "currency",
+   "reqd": 1
+  },
+  {
+   "fieldname": "vat_accounted",
+   "fieldtype": "Currency",
+   "label": "VAT Accounted (LSL)",
+   "non_negative": 1,
+   "options": "currency",
+   "reqd": 1
+  },
+  {
+   "description": "What the taxpayer says it did; not an established legal treatment.",
+   "fieldname": "declared_treatment",
+   "fieldtype": "Select",
+   "label": "Declared Treatment",
+   "options": "\nvat_accounted\nwithholding_declared\nnot_declared\nunsure",
+   "reqd": 1
+  },
+  {
+   "description": "TAX-032 evidence UUIDs (contract, invoice, payment).",
+   "fieldname": "evidence_ids",
+   "fieldtype": "JSON",
+   "label": "Evidence IDs"
+  }
+ ],
+ "index_web_pages_for_search": 0,
+ "links": [],
+ "modified": "2026-11-04 12:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Vati Tax",
+ "name": "Vati Imported Service",
+ "naming_rule": "By fieldname",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "export": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "read": 1,
+   "role": "Vati Taxpayer",
+   "write": 1
+  },
+  {
+   "export": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Vati Auditor"
+  },
+  {
+   "export": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Vati Specialist"
+  },
+  {
+   "export": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Vati Supervisor"
+  },
+  {
+   "read": 1,
+   "role": "Vati Service"
+  }
+ ],
+ "search_fields": "supplier_name,submission_id",
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "supplier_name",
+ "track_changes": 1
+}

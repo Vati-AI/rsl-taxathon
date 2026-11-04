@@ -26,6 +26,19 @@ Any `vati_tax` DocType with a `tenant_id` field is tenant-scoped. If it also has
 
 A `DocShare` can only target a user whose scope already reaches the document, so sharing cannot cross a tenant or taxpayer boundary. `frappe.get_all`, raw SQL and `ignore_permissions` bypass these hooks. Use them only on documented internal paths that check scope explicitly.
 
+## Submission DocTypes (TAX-031)
+
+`Vati Taxpayer`, `Vati Submission`, `Vati VAT Return`, `Vati Refund Claim` and `Vati Imported Service` are taxpayer-owned and use the isolation above. Field-level rules ([ADR-010](decisions/ADR-010-submission-doctypes.md)):
+
+| Principal | Taxpayer profile | Submission | Figures (return, claim, imported service) |
+| --- | --- | --- | --- |
+| Taxpayer | read own | create own; change declaration, contact email and status (`draft`/`correction_needed` -> `submitted`, `draft` -> `withdrawn`) | create, change, delete own while the submission is `draft` or `correction_needed` |
+| Auditor, supervisor | read; supervisor edits profile | read; `submitted` -> `correction_needed` with a reason | read |
+| Specialist | read | read | read |
+| Service | read, create, edit profile | read; set `case_id` once | read |
+
+Server-set fields (reference, version, submission time, period dates, keys, net VAT, masked TIN) are refused when a client changes them. Submitted figures cannot change.
+
 ## Action matrix
 
 Callers check actions with `permissions.require_action(action, tenant_id, taxpayer_id=..., proposed_by=...)`. `vati_tax.identity.api.get_access_scope` lists the caller's allowed actions for the header tenant.
@@ -35,6 +48,7 @@ Callers check actions with `permissions.require_action(action, tenant_id, taxpay
 | `submission.create`, `evidence.respond` | own taxpayer | | | | |
 | `submission.read` | own taxpayer | yes | yes | yes | yes |
 | `case.read`, `evidence.read` | | yes | yes | yes | yes |
+| `evidence.register` (TAX-032) | own taxpayer | yes | yes | yes | yes |
 | `investigation.request`, `finding.review` | | yes | yes | yes | |
 | `draft.record` (agent drafts for human review) | | yes | yes | yes | yes |
 | `evidence_request.authorise`*, `specialist.refer`* | | yes | | yes | |
@@ -56,3 +70,7 @@ bench --site taxathon.localhost execute vati_tax.identity.provision.grant_member
 ```
 
 The taxpayer above owns fixture `SUB-SYN-0001`. `portal/fixtures.py` maps every portal fixture to its synthetic owner.
+
+## Evidence (TAX-032)
+
+`Vati Evidence` and `Vati Evidence Extraction` follow the record-isolation convention (`tenant_id` + `taxpayer_id`). Officers and services read evidence in their tenant. A taxpayer reads only evidence it uploaded itself (`if_owner`), never officer uploads or extraction revisions. Only a service identity records extraction revisions (`integration.callback`). The evidence source is bound to the role: `taxpayer_portal` for taxpayers, `officer_upload` for officers, `synthetic_fixture` for officers or services. Evidence originals are private Files that nobody can make public, move, edit or delete through Frappe. See [ADR-011](decisions/ADR-011-evidence-storage-provenance.md).

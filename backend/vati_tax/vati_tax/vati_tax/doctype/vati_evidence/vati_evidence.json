@@ -1,0 +1,288 @@
+{
+ "actions": [],
+ "autoname": "field:evidence_id",
+ "creation": "2026-11-04 12:00:00.000000",
+ "description": "Immutable original document with server-computed SHA-256 (TAX-032). Corrections are new versions.",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "evidence_id",
+  "tenant_id",
+  "taxpayer_id",
+  "case_id",
+  "reference_doctype",
+  "reference_name",
+  "column_break_version",
+  "version",
+  "supersedes_evidence_id",
+  "lineage_id",
+  "document_type",
+  "source",
+  "received_at",
+  "synthetic",
+  "document_section",
+  "document_sha256",
+  "media_type",
+  "size_bytes",
+  "original_filename",
+  "column_break_file",
+  "file_ref",
+  "file_url",
+  "keys_section",
+  "registration_key",
+  "request_digest",
+  "supersede_key"
+ ],
+ "fields": [
+  {
+   "description": "Immutable UUID; also the document name.",
+   "fieldname": "evidence_id",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Evidence ID",
+   "length": 36,
+   "reqd": 1,
+   "set_only_once": 1,
+   "unique": 1
+  },
+  {
+   "fieldname": "tenant_id",
+   "fieldtype": "Data",
+   "in_standard_filter": 1,
+   "label": "Tenant ID",
+   "length": 36,
+   "reqd": 1,
+   "search_index": 1,
+   "set_only_once": 1
+  },
+  {
+   "fieldname": "taxpayer_id",
+   "fieldtype": "Data",
+   "in_standard_filter": 1,
+   "label": "Taxpayer ID",
+   "length": 36,
+   "reqd": 1,
+   "search_index": 1,
+   "set_only_once": 1
+  },
+  {
+   "fieldname": "case_id",
+   "fieldtype": "Link",
+   "label": "Case",
+   "options": "Vati Case Identity",
+   "search_index": 1,
+   "set_only_once": 1
+  },
+  {
+   "description": "Submission or request this document was uploaded for.",
+   "fieldname": "reference_doctype",
+   "fieldtype": "Link",
+   "label": "Reference DocType",
+   "options": "DocType",
+   "set_only_once": 1
+  },
+  {
+   "fieldname": "reference_name",
+   "fieldtype": "Dynamic Link",
+   "label": "Reference Name",
+   "options": "reference_doctype",
+   "search_index": 1,
+   "set_only_once": 1
+  },
+  {
+   "fieldname": "column_break_version",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "version",
+   "fieldtype": "Int",
+   "in_list_view": 1,
+   "label": "Version",
+   "reqd": 1,
+   "set_only_once": 1
+  },
+  {
+   "fieldname": "supersedes_evidence_id",
+   "fieldtype": "Link",
+   "label": "Supersedes",
+   "options": "Vati Evidence",
+   "set_only_once": 1
+  },
+  {
+   "description": "Evidence ID of version 1 of this document.",
+   "fieldname": "lineage_id",
+   "fieldtype": "Data",
+   "label": "Lineage ID",
+   "length": 36,
+   "reqd": 1,
+   "search_index": 1,
+   "set_only_once": 1
+  },
+  {
+   "fieldname": "document_type",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Document Type",
+   "options": "invoice\ncontract\npayslip\nimport_declaration\nbank_statement\nfinancial_statement\nother",
+   "reqd": 1,
+   "set_only_once": 1
+  },
+  {
+   "fieldname": "source",
+   "fieldtype": "Select",
+   "label": "Source",
+   "options": "taxpayer_portal\nofficer_upload\nsynthetic_fixture",
+   "reqd": 1,
+   "set_only_once": 1
+  },
+  {
+   "fieldname": "received_at",
+   "fieldtype": "Datetime",
+   "label": "Received At (UTC)",
+   "reqd": 1,
+   "set_only_once": 1
+  },
+  {
+   "default": "1",
+   "fieldname": "synthetic",
+   "fieldtype": "Check",
+   "label": "Synthetic",
+   "set_only_once": 1
+  },
+  {
+   "fieldname": "document_section",
+   "fieldtype": "Section Break",
+   "label": "Original document"
+  },
+  {
+   "description": "Computed by the server from the stored bytes.",
+   "fieldname": "document_sha256",
+   "fieldtype": "Data",
+   "label": "Document SHA-256",
+   "length": 64,
+   "reqd": 1,
+   "search_index": 1,
+   "set_only_once": 1
+  },
+  {
+   "fieldname": "media_type",
+   "fieldtype": "Select",
+   "label": "Media Type",
+   "options": "application/pdf\nimage/png\nimage/jpeg\ntext/csv\napplication/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+   "reqd": 1,
+   "set_only_once": 1
+  },
+  {
+   "fieldname": "size_bytes",
+   "fieldtype": "Int",
+   "label": "Size (bytes)",
+   "reqd": 1,
+   "set_only_once": 1
+  },
+  {
+   "fieldname": "original_filename",
+   "fieldtype": "Data",
+   "label": "Original File Name",
+   "length": 140,
+   "set_only_once": 1
+  },
+  {
+   "fieldname": "column_break_file",
+   "fieldtype": "Column Break"
+  },
+  {
+   "description": "Private Frappe File holding the original; never a public URL.",
+   "fieldname": "file_ref",
+   "fieldtype": "Link",
+   "label": "File",
+   "options": "File",
+   "reqd": 1,
+   "set_only_once": 1,
+   "unique": 1
+  },
+  {
+   "fieldname": "file_url",
+   "fieldtype": "Data",
+   "label": "Private File Path",
+   "length": 255,
+   "read_only": 1,
+   "reqd": 1,
+   "search_index": 1,
+   "set_only_once": 1
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "keys_section",
+   "fieldtype": "Section Break",
+   "label": "Uniqueness keys"
+  },
+  {
+   "description": "SHA-256 of tenant and upload idempotency key.",
+   "fieldname": "registration_key",
+   "fieldtype": "Data",
+   "label": "Registration Key",
+   "length": 64,
+   "read_only": 1,
+   "unique": 1
+  },
+  {
+   "fieldname": "request_digest",
+   "fieldtype": "Data",
+   "label": "Request Digest",
+   "length": 64,
+   "read_only": 1
+  },
+  {
+   "description": "One successor per version, so a lineage never forks.",
+   "fieldname": "supersede_key",
+   "fieldtype": "Data",
+   "label": "Supersede Key",
+   "length": 64,
+   "read_only": 1,
+   "unique": 1
+  }
+ ],
+ "in_create": 1,
+ "index_web_pages_for_search": 0,
+ "links": [],
+ "modified": "2026-11-04 12:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Vati Tax",
+ "name": "Vati Evidence",
+ "naming_rule": "By fieldname",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "export": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager"
+  },
+  {
+   "read": 1,
+   "role": "Vati Auditor"
+  },
+  {
+   "read": 1,
+   "role": "Vati Specialist"
+  },
+  {
+   "read": 1,
+   "role": "Vati Supervisor"
+  },
+  {
+   "read": 1,
+   "role": "Vati Service"
+  },
+  {
+   "if_owner": 1,
+   "read": 1,
+   "role": "Vati Taxpayer"
+  }
+ ],
+ "search_fields": "document_type,taxpayer_id",
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "original_filename"
+}

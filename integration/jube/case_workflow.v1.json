@@ -1,0 +1,41 @@
+{
+  "synthetic": true,
+  "workflow_version": "1.0.0",
+  "description": "Jube case workflow that carries the Vati case lifecycle (TAX-034). Jube owns the case and its status; each Jube status name maps to the Vati CaseStatus projection in integration/api/openapi.json. Reviewed in Git; provisioned with scripts/jube_cases.py.",
+  "jube_tenant": {
+    "name": "Vati synthetic (local)",
+    "description": "Non-landlord Jube tenant for Vati synthetic cases. Landlord-tenant users bypass every Jube permission, so Vati identities never live in the landlord tenant."
+  },
+  "case_key": "CaseId",
+  "workflow": {
+    "name": "Vati tax case lifecycle v1",
+    "description": "Synthetic Vati tax review cases; one case per Vati case_id. Case key CaseId is the risk model entry name: Jube archives invocations keyed by entry name."
+  },
+  "initial_status": "Received",
+  "escalation_status": "Escalated to supervisor",
+  "statuses": [
+    {"name": "Received", "vati_status": "RECEIVED", "priority": 1},
+    {"name": "Validating", "vati_status": "VALIDATING", "priority": 2},
+    {"name": "Investigating", "vati_status": "INVESTIGATING", "priority": 3},
+    {"name": "Awaiting evidence", "vati_status": "AWAITING_EVIDENCE", "priority": 3},
+    {"name": "Awaiting human review", "vati_status": "AWAITING_HUMAN", "priority": 4},
+    {"name": "Escalated to supervisor", "vati_status": "AWAITING_HUMAN", "priority": 5, "escalated": true},
+    {"name": "Resolved", "vati_status": "RESOLVED", "priority": 1, "closes_case": true, "requires_decision": true},
+    {"name": "Failed processing", "vati_status": "FAILED_PROCESSING", "priority": 2}
+  ],
+  "identities": {
+    "case_adapter": {
+      "user": "vati-case-adapter",
+      "role": "Vati case adapter (local)",
+      "permission_names": ["Read Write Case"],
+      "api_key_env": "JUBE_CASE_ADAPTER_API_KEY",
+      "case_workflow_access": true
+    },
+    "officer": {
+      "user_prefix": "vati-officer-",
+      "role": "Vati synthetic officer (local)",
+      "permission_names": ["Read Write Case"],
+      "case_workflow_access": true
+    }
+  }
+}

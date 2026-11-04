@@ -5,15 +5,15 @@
   "owner": "Edga",
   "area": "backend",
   "phase": "pilot",
-  "status": "BACKLOG",
+  "status": "DONE",
   "priority": "P0",
   "depends_on": [
     "TAX-029",
     "TAX-030"
   ],
-  "claimed_by": null,
-  "branch": null,
-  "pr": null,
+  "claimed_by": "keletso-claude-code",
+  "branch": "task/TAX-032",
+  "pr": "https://github.com/Vati-AI/rsl-taxathon/pull/127",
   "scope": "Add restricted evidence upload/reference, SHA-256, source/page locator and append-only extraction revisions",
   "inputs": [
     "PROJECT.md",
@@ -27,15 +27,15 @@
   "acceptance": [
     {
       "text": "Add restricted evidence upload/reference, SHA-256, source/page locator and append-only extraction revisions",
-      "done": false
+      "done": true
     },
     {
       "text": "Reject oversized/disallowed uploads; test permission checks and unchanged original hash across revisions",
-      "done": false
+      "done": true
     },
     {
       "text": "Record relevant tests and evidence, update task status and open a human-review PR",
-      "done": false
+      "done": true
     }
   ],
   "verification": "Reject oversized/disallowed uploads; test permission checks and unchanged original hash across revisions",
@@ -45,6 +45,36 @@
     "update-project-task",
     "finish-task"
   ],
-  "evidence": [],
-  "notes": []
+  "evidence": [
+    {
+      "criterion": 1,
+      "text": "Vati Evidence (private File, server-computed SHA-256 re-read from disk, supersedes/lineage versions), Vati Evidence Extraction (append-only success/partial/failure revisions citing the original hash) and Vati Extraction Provenance (page/record locator + bbox) in commit 62fa2e2; ADR-011. frappe_dev.py verify on disposable site verify-20261104t091217 (tax019 stack): install, migrate x2, 47 site-backed tests OK incl. 12 in vati_tax.evidence.test_evidence_bench; site dropped."
+    },
+    {
+      "criterion": 2,
+      "text": "test_evidence_bench: oversized (25 MiB+1), empty, .exe, .html, extension/media-type mismatch and malformed PDF rejected with nothing stored; taxpayer B, same taxpayer UUID in tenant 2 and tenant-2 auditor refused read/list/get/File access; taxpayer refused other taxpayer/tenant/officer source; only tenant service records extractions; 3 extraction revisions keep the evidence SHA-256 and verify_integrity stays intact; evidence/extraction updates and deletes refused; File public/delete refused (removing File hooks made that test fail). 14 Frappe-free rule tests in evidence/test_rules.py; dev.py check and quality.py pass."
+    },
+    {
+      "criterion": 3,
+      "text": "Tests and results recorded under criteria 1 and 2; status set to IN_REVIEW and review PR #127 opened; CI validate, quality, auditor-browser and ai-smoke passed on #127, which merged 2026-11-04T09:30Z. Recorded in this reconciliation because the implementation branch left this criterion unticked."
+    }
+  ],
+  "notes": [
+    {
+      "at": "2026-11-04T08:34:10.875638+00:00",
+      "text": "Claimed by keletso-claude-code"
+    },
+    {
+      "at": "2026-11-04T08:34:10.875804+00:00",
+      "text": "Implemented by keletso-claude-code on Keletso's instruction (2026-11-04); owner remains Edga."
+    },
+    {
+      "at": "2026-11-04T09:14:49.111234+00:00",
+      "text": "Agent finished implementation and opened human review"
+    },
+    {
+      "at": "2026-11-04T09:34:49.249671+00:00",
+      "text": "Verified implementation PR #127 merged (c2b8b09, 2026-11-04T09:30Z); all acceptance criteria and evidence recorded."
+    }
+  ]
 }
