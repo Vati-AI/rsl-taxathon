@@ -1,0 +1,80 @@
+{
+  "name": "get_case_review_awaiting_approval",
+  "operation_id": "getCaseReview",
+  "scenario": "SYN-001",
+  "synthetic": true,
+  "description": "A supervisor opens a case with a clearance proposed by another officer. decision.approve is listed because the supervisor did not propose it; nothing has been sent to Jube yet.",
+  "request": {
+    "method": "GET",
+    "path": "/api/v1/cases/40000000-0000-4000-8000-000000000001/review",
+    "headers": {
+      "Authorization": "Bearer synthetic-dev-token-not-a-secret",
+      "X-Vati-Tenant-ID": "10000000-0000-4000-8000-000000000001",
+      "X-Correlation-ID": "c0000000-0000-4000-8000-000000000021"
+    }
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "X-Correlation-ID": "c0000000-0000-4000-8000-000000000021"
+    },
+    "body": {
+      "data": {
+        "case_id": "40000000-0000-4000-8000-000000000001",
+        "tenant_id": "10000000-0000-4000-8000-000000000001",
+        "case_version": 5,
+        "viewer": {
+          "officer_id": "80000000-0000-4000-8000-000000000003",
+          "roles": ["supervisor"],
+          "allowed_actions": ["decision.propose", "specialist.refer", "evidence_request.authorise", "decision.approve"]
+        },
+        "open_decision": {
+          "decision_id": "d0000000-0000-4000-8000-000000000001",
+          "case_id": "40000000-0000-4000-8000-000000000001",
+          "tenant_id": "10000000-0000-4000-8000-000000000001",
+          "status": "proposed",
+          "origin": "officer",
+          "outcome": "close_no_further_action",
+          "operation": "transition",
+          "target_status": "RESOLVED",
+          "rationale": "Purchase invoices for the period reconcile with the declared input VAT; no further action is needed.",
+          "evidence_ids": [],
+          "finding_ids": ["70000000-0000-4000-8000-000000000101"],
+          "rating": 2,
+          "draft_id": null,
+          "proposed_by": "80000000-0000-4000-8000-000000000001",
+          "proposed_at": "2026-11-04T07:00:00Z",
+          "case_status_at_proposal": "AWAITING_HUMAN",
+          "case_version": 4,
+          "reviewed_by": null,
+          "reviewed_at": null,
+          "review_reason": null,
+          "jube_sync": {
+            "state": "not_started",
+            "attempts": 0,
+            "error_code": null,
+            "retryable": false,
+            "last_attempt_at": null,
+            "synced_at": null,
+            "changed": null,
+            "status_after": null,
+            "status_authority": "jube"
+          }
+        },
+        "audit_events": [
+          {
+            "event_id": "e0000000-0000-4000-8000-000000000001",
+            "sequence": 4,
+            "actor_id": "80000000-0000-4000-8000-000000000001",
+            "actor_role": "auditor",
+            "action": "decision.proposed",
+            "subject_type": "decision",
+            "subject_id": "d0000000-0000-4000-8000-000000000001",
+            "occurred_at": "2026-11-04T07:00:00Z",
+            "outcome": "proposed"
+          }
+        ]
+      }
+    }
+  }
+}

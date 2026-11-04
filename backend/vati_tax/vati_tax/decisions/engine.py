@@ -429,6 +429,9 @@ def propose(
         draft_id=body.get("draft_id"),
         idempotency_key=idempotency_key,
     )
+    extra_permission = rules.OUTCOME_PERMISSIONS.get(proposal.outcome)
+    if extra_permission is not None:
+        _authorize(ctx, extra_permission)
     key = rules.operation_key("decision.propose", proposal.tenant_id, proposal.idempotency_key)
     request_digest = proposal.digest()
     existing = repo.decision_by_key(key)
@@ -849,9 +852,40 @@ def case_review_state(ctx: Context, repo: Repository, *, case_id: str) -> dict[s
         "case_id": case.case_id,
         "tenant_id": case.tenant_id,
         "case_version": repo.case_version(case.tenant_id, case.case_id),
+        "viewer": viewer_view(ctx.scope, open_record),
         "open_decision": decision_view(open_record) if open_record else None,
         "audit_events": [event_view(e) for e in repo.case_events(case.tenant_id, case.case_id)],
     }
+
+
+# Review actions a screen offers. ``decision.approve`` is listed only when an open
+# proposal exists that this principal did not make (separation of duties).
+VIEWER_ACTIONS = (
+    policy.DECISION_PROPOSE,
+    policy.SPECIALIST_REFER,
+    policy.EVIDENCE_REQUEST_AUTHORISE,
+    policy.DECISION_APPROVE,
+)
+
+
+def viewer_view(scope: policy.TenantScope, open_record: DecisionRecord | None) -> dict[str, Any]:
+    """Who is looking and which review actions they may take (TAX-042).
+
+    A hint for the screen only: every action is authorised again when it is sent.
+    """
+    allowed: list[str] = []
+    for action in VIEWER_ACTIONS:
+        proposed_by = None
+        if action == policy.DECISION_APPROVE:
+            if open_record is None or open_record.status != "proposed":
+                continue
+            proposed_by = open_record.proposed_by
+        try:
+            policy.authorize_action(scope, action, proposed_by=proposed_by)
+        except policy.ActionDenied:
+            continue
+        allowed.append(action)
+    return {"actor": scope.user, "roles": sorted(scope.roles), "allowed_actions": allowed}
 
 
 def _iso(value: datetime.datetime | None) -> str | None:

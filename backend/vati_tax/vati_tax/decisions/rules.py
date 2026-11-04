@@ -78,7 +78,13 @@ OUTCOMES: Final[dict[str, OutcomeRule]] = {
     "request_further_evidence": OutcomeRule("transition", "AWAITING_EVIDENCE"),
     "continue_investigation": OutcomeRule("transition", "INVESTIGATING"),
     "escalate_to_supervisor": OutcomeRule("escalate", "AWAITING_HUMAN"),
+    # Specialist referral (TAX-042): an internal review by a specialist officer,
+    # escalated in Jube like a supervisor escalation. The proposer also needs
+    # ``specialist.refer`` (TAX-029). It is never a referral outside the tax office.
+    "refer_to_specialist": OutcomeRule("escalate", "AWAITING_HUMAN"),
 }
+# Outcomes that need an extra permission besides ``decision.propose``.
+OUTCOME_PERMISSIONS: Final[dict[str, str]] = {"refer_to_specialist": "specialist.refer"}
 # Outcomes outside Vati's authority (AGENTS.md). Named separately so a caller
 # gets a precise refusal instead of a generic "unknown outcome".
 PROHIBITED_OUTCOME = re.compile(
