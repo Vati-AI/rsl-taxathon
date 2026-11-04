@@ -79,22 +79,49 @@ def payload(path):
     return 404, {"error": "not_found", "mode": "fixture", "synthetic": True}
 
 
+MAX_JSON_BODY = 64 * 1024
+
+
 class Handler(SimpleHTTPRequestHandler):
+    def _api_v1(self, method, body=None):
+        # Contract-shaped fixture operations (TAX-040, TAX-042); first value wins per query key.
+        url = urlsplit(self.path)
+        query = {k: v[0] for k, v in parse_qs(url.query, keep_blank_values=True).items()}
+        code, extra, data = fixture_api.handle(
+            method, url.path, dict(self.headers), query, body=body
+        )
+        payload = json.dumps(data).encode()
+        self.send_response(code)
+        self.send_header("Content-Type", "application/json")
+        for name, value in extra.items():
+            self.send_header(name, value)
+        self.send_header("Content-Length", str(len(payload)))
+        self.end_headers()
+        self.wfile.write(payload)
+
+    def do_POST(self):
+        if not urlsplit(self.path).path.startswith("/api/v1/"):
+            self.send_error(404)
+            return
+        try:
+            length = int(self.headers.get("Content-Length") or 0)
+        except ValueError:
+            length = -1
+        if length < 0 or length > MAX_JSON_BODY:
+            self.send_error(413 if length > MAX_JSON_BODY else 400)
+            return
+        raw = self.rfile.read(length) if length else b""
+        try:
+            body = json.loads(raw) if raw else None
+        except (UnicodeDecodeError, json.JSONDecodeError):
+            body = None  # the contract check then answers 400 invalid_request
+        self._api_v1("POST", body)
+
     def do_GET(self):
         url = urlsplit(self.path)
         path = url.path
         if path.startswith("/api/v1/"):
-            # Contract-shaped fixture operations (TAX-040); first value wins per query key.
-            query = {k: v[0] for k, v in parse_qs(url.query, keep_blank_values=True).items()}
-            code, extra, data = fixture_api.handle("GET", path, dict(self.headers), query)
-            body = json.dumps(data).encode()
-            self.send_response(code)
-            self.send_header("Content-Type", "application/json")
-            for name, value in extra.items():
-                self.send_header(name, value)
-            self.send_header("Content-Length", str(len(body)))
-            self.end_headers()
-            self.wfile.write(body)
+            self._api_v1("GET")
             return
         if path.startswith("/api/"):
             code, data = payload(path)

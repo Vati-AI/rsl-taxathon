@@ -5,7 +5,7 @@
     "title": "Vati Integration API",
     "version": "1.0.0-draft",
     "summary": "Versioned Vati coordination boundary for cases, evidence, entities, findings, investigations and evidence requests.",
-    "description": "Proposed Vati routes (TAX-018). These are Vati contracts, not claims about Jube, Frappe, OpenAleph, yente, Docling or LangGraph endpoints. Jube is the operational case authority; Frappe owns users, submissions, evidence requests and approved decisions; Vati stores cross-service links, idempotency and delivery state. Tenant context is resolved from the authenticated principal; the X-Vati-Tenant-ID header selects a tenant and must fall inside the principal's permitted scope. Case IDs alone never authorise access. No route performs tax assessment, refund denial/payment, enforcement or referral. Synthetic data only."
+    "description": "Proposed Vati routes (TAX-018). These are Vati contracts, not claims about Jube, Frappe, OpenAleph, yente, Docling or LangGraph endpoints. Jube is the operational case authority; Frappe owns users, submissions, evidence requests and approved decisions; Vati stores cross-service links, idempotency and delivery state. Tenant context is resolved from the authenticated principal; the X-Vati-Tenant-ID header selects a tenant and must fall inside the principal's permitted scope. Case IDs alone never authorise access. No route performs tax assessment, refund denial/payment, enforcement or referral outside the tax office (a specialist referral is an internal officer review). Synthetic data only."
   },
   "servers": [
     {
@@ -21,6 +21,7 @@
     { "name": "findings" },
     { "name": "investigations" },
     { "name": "evidence-requests" },
+    { "name": "decisions" },
     { "name": "taxpayers" }
   ],
   "paths": {
@@ -340,6 +341,119 @@
         }
       }
     },
+    "/api/v1/cases/{case_id}/review": {
+      "get": {
+        "operationId": "getCaseReview",
+        "tags": ["decisions"],
+        "summary": "Read the officer review state of a case: review version, open decision, the viewer's permitted actions and the review trail.",
+        "description": "Projection of the Frappe decision records (TAX-046, ADR-013). case_version counts recorded review actions and is the expected_version for proposeDecision, reviewDecision and requestEvidence. viewer.allowed_actions is a hint for the screen; every action is authorised again when sent. decision.approve is listed only when an open proposal exists that the viewer did not make.",
+        "parameters": [
+          { "$ref": "#/components/parameters/TenantHeader" },
+          { "$ref": "#/components/parameters/CorrelationIdHeader" },
+          { "$ref": "#/components/parameters/CaseIdPath" }
+        ],
+        "responses": {
+          "200": {
+            "description": "Case review state.",
+            "headers": { "X-Correlation-ID": { "$ref": "#/components/headers/CorrelationId" } },
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/CaseReviewEnvelope" } }
+            }
+          },
+          "400": { "$ref": "#/components/responses/BadRequest" },
+          "401": { "$ref": "#/components/responses/Unauthenticated" },
+          "403": { "$ref": "#/components/responses/Forbidden" },
+          "404": { "$ref": "#/components/responses/NotFound" },
+          "429": { "$ref": "#/components/responses/RateLimited" },
+          "503": { "$ref": "#/components/responses/DependencyUnavailable" }
+        }
+      }
+    },
+    "/api/v1/cases/{case_id}/decisions": {
+      "post": {
+        "operationId": "proposeDecision",
+        "tags": ["decisions"],
+        "summary": "Propose an officer decision on a case. Nothing is sent to Jube until a different supervisor approves it.",
+        "description": "The authenticated officer is the proposer. The outcome comes from a fixed list; none assesses tax, decides or pays a refund, accuses or refers anyone outside the tax office. refer_to_specialist also needs specialist.refer. Closing outcomes cite at least one evidence item or finding. A stale expected_version, a Jube status other than expected_case_status, or another open decision on the case returns 409 version_conflict with field_errors (stale_case_version, case_state_changed, decision_pending). Agent suggestions are never decisions: an officer proposes in their own words.",
+        "parameters": [
+          { "$ref": "#/components/parameters/TenantHeader" },
+          { "$ref": "#/components/parameters/IdempotencyKeyHeader" },
+          { "$ref": "#/components/parameters/CorrelationIdHeader" },
+          { "$ref": "#/components/parameters/CaseIdPath" }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/ProposeDecisionRequest" }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Decision proposed and waiting for approval.",
+            "headers": {
+              "X-Correlation-ID": { "$ref": "#/components/headers/CorrelationId" },
+              "Idempotent-Replayed": { "$ref": "#/components/headers/IdempotentReplayed" }
+            },
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/DecisionEnvelope" } }
+            }
+          },
+          "400": { "$ref": "#/components/responses/BadRequest" },
+          "401": { "$ref": "#/components/responses/Unauthenticated" },
+          "403": { "$ref": "#/components/responses/Forbidden" },
+          "404": { "$ref": "#/components/responses/NotFound" },
+          "409": { "$ref": "#/components/responses/Conflict" },
+          "422": { "$ref": "#/components/responses/InvalidDomainInput" },
+          "429": { "$ref": "#/components/responses/RateLimited" },
+          "503": { "$ref": "#/components/responses/DependencyUnavailable" }
+        }
+      }
+    },
+    "/api/v1/cases/{case_id}/decisions/{decision_id}/review": {
+      "post": {
+        "operationId": "reviewDecision",
+        "tags": ["decisions"],
+        "summary": "Approve, reject or withdraw a proposed decision. Approval runs the decision's one Jube operation.",
+        "description": "approve and reject need a supervisor who is not the proposer (403 forbidden otherwise); withdraw is the proposer's. reject needs a reason. An agent draft is never approved (422 invalid_domain_input, agent_only_decision). A stale expected_version, an expired proposal or a case moved in Jube since the proposal returns 409 version_conflict (stale_case_version, proposal_expired, case_state_changed). A failed Jube call is returned as jube_sync.state failed, never as applied.",
+        "parameters": [
+          { "$ref": "#/components/parameters/TenantHeader" },
+          { "$ref": "#/components/parameters/IdempotencyKeyHeader" },
+          { "$ref": "#/components/parameters/CorrelationIdHeader" },
+          { "$ref": "#/components/parameters/CaseIdPath" },
+          { "$ref": "#/components/parameters/DecisionIdPath" }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/ReviewDecisionRequest" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Review recorded; for an approval, the Jube synchronisation result is included.",
+            "headers": {
+              "X-Correlation-ID": { "$ref": "#/components/headers/CorrelationId" },
+              "Idempotent-Replayed": { "$ref": "#/components/headers/IdempotentReplayed" }
+            },
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/DecisionEnvelope" } }
+            }
+          },
+          "400": { "$ref": "#/components/responses/BadRequest" },
+          "401": { "$ref": "#/components/responses/Unauthenticated" },
+          "403": { "$ref": "#/components/responses/Forbidden" },
+          "404": { "$ref": "#/components/responses/NotFound" },
+          "409": { "$ref": "#/components/responses/Conflict" },
+          "422": { "$ref": "#/components/responses/InvalidDomainInput" },
+          "429": { "$ref": "#/components/responses/RateLimited" },
+          "503": { "$ref": "#/components/responses/DependencyUnavailable" }
+        }
+      }
+    },
     "/api/v1/taxpayers/{taxpayer_id}": {
       "get": {
         "operationId": "getTaxpayer",
@@ -446,6 +560,13 @@
         "in": "path",
         "required": true,
         "description": "Internal immutable taxpayer UUID. Missing or malformed: 400 invalid_request. Never sufficient for authorisation alone.",
+        "schema": { "$ref": "#/components/schemas/Uuid" }
+      },
+      "DecisionIdPath": {
+        "name": "decision_id",
+        "in": "path",
+        "required": true,
+        "description": "Decision UUID; must belong to the case in the path. Missing or malformed: 400 invalid_request.",
         "schema": { "$ref": "#/components/schemas/Uuid" }
       }
     },
@@ -953,6 +1074,143 @@
         "additionalProperties": false,
         "required": ["data"],
         "properties": { "data": { "$ref": "#/components/schemas/EvidenceRequest" } }
+      },
+      "DecisionOutcome": {
+        "type": "string",
+        "description": "The only outcomes a decision can carry (ADR-013, TAX-042). Each runs one Jube operation after approval. refer_to_specialist is an internal review by a specialist officer, never a referral outside the tax office.",
+        "enum": ["close_no_further_action", "close_after_correction", "request_further_evidence", "continue_investigation", "escalate_to_supervisor", "refer_to_specialist"]
+      },
+      "OfficerRole": {
+        "type": "string",
+        "enum": ["auditor", "specialist", "supervisor"]
+      },
+      "ReviewPermission": {
+        "type": "string",
+        "description": "TAX-029 action names a reviewer may hold on a case.",
+        "enum": ["decision.propose", "specialist.refer", "evidence_request.authorise", "decision.approve"]
+      },
+      "CaseReviewViewer": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["officer_id", "roles", "allowed_actions"],
+        "properties": {
+          "officer_id": { "$ref": "#/components/schemas/Uuid" },
+          "roles": { "type": "array", "minItems": 1, "maxItems": 3, "items": { "$ref": "#/components/schemas/OfficerRole" } },
+          "allowed_actions": { "type": "array", "maxItems": 4, "items": { "$ref": "#/components/schemas/ReviewPermission" } }
+        }
+      },
+      "JubeSync": {
+        "type": "object",
+        "description": "Result of the decision's one Jube operation. Jube is the case authority; status_after is what Jube reported.",
+        "additionalProperties": false,
+        "required": ["state", "attempts", "error_code", "retryable", "last_attempt_at", "synced_at", "changed", "status_after", "status_authority"],
+        "properties": {
+          "state": { "type": "string", "enum": ["not_started", "pending", "synced", "failed"] },
+          "attempts": { "type": "integer", "minimum": 0, "maximum": 100 },
+          "error_code": { "type": ["string", "null"], "maxLength": 64 },
+          "retryable": { "type": "boolean" },
+          "last_attempt_at": { "anyOf": [{ "$ref": "#/components/schemas/Timestamp" }, { "type": "null" }] },
+          "synced_at": { "anyOf": [{ "$ref": "#/components/schemas/Timestamp" }, { "type": "null" }] },
+          "changed": { "type": ["boolean", "null"] },
+          "status_after": { "anyOf": [{ "$ref": "#/components/schemas/CaseStatus" }, { "type": "null" }] },
+          "status_authority": { "const": "jube" }
+        }
+      },
+      "Decision": {
+        "type": "object",
+        "description": "An officer decision recorded in Frappe (ADR-013). proposed_by and reviewed_by are officer IDs; reviewed_by is never the proposer for an approval.",
+        "additionalProperties": false,
+        "required": ["decision_id", "case_id", "tenant_id", "status", "origin", "outcome", "operation", "target_status", "rationale", "evidence_ids", "finding_ids", "rating", "draft_id", "proposed_by", "proposed_at", "case_status_at_proposal", "case_version", "reviewed_by", "reviewed_at", "review_reason", "jube_sync"],
+        "properties": {
+          "decision_id": { "$ref": "#/components/schemas/Uuid" },
+          "case_id": { "$ref": "#/components/schemas/Uuid" },
+          "tenant_id": { "$ref": "#/components/schemas/Uuid" },
+          "status": { "type": "string", "enum": ["proposed", "approved", "rejected", "withdrawn"] },
+          "origin": { "const": "officer" },
+          "outcome": { "$ref": "#/components/schemas/DecisionOutcome" },
+          "operation": { "type": "string", "enum": ["transition", "escalate"] },
+          "target_status": { "$ref": "#/components/schemas/CaseStatus" },
+          "rationale": { "type": "string", "minLength": 20, "maxLength": 4000 },
+          "evidence_ids": { "type": "array", "maxItems": 50, "items": { "$ref": "#/components/schemas/Uuid" } },
+          "finding_ids": { "type": "array", "maxItems": 50, "items": { "$ref": "#/components/schemas/Uuid" } },
+          "rating": { "type": "integer", "minimum": 1, "maximum": 5, "description": "Investigator rating Jube records with the case update (ADR-009); not a risk verdict." },
+          "draft_id": { "anyOf": [{ "$ref": "#/components/schemas/Uuid" }, { "type": "null" }] },
+          "proposed_by": { "$ref": "#/components/schemas/Uuid" },
+          "proposed_at": { "$ref": "#/components/schemas/Timestamp" },
+          "case_status_at_proposal": { "$ref": "#/components/schemas/CaseStatus" },
+          "case_version": { "type": "integer", "minimum": 1 },
+          "reviewed_by": { "anyOf": [{ "$ref": "#/components/schemas/Uuid" }, { "type": "null" }] },
+          "reviewed_at": { "anyOf": [{ "$ref": "#/components/schemas/Timestamp" }, { "type": "null" }] },
+          "review_reason": { "type": ["string", "null"], "maxLength": 2000 },
+          "jube_sync": { "$ref": "#/components/schemas/JubeSync" }
+        }
+      },
+      "DecisionEnvelope": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["data"],
+        "properties": { "data": { "$ref": "#/components/schemas/Decision" } }
+      },
+      "ReviewEvent": {
+        "type": "object",
+        "description": "One append-only review trail entry (Vati Audit Event, ADR-013).",
+        "additionalProperties": false,
+        "required": ["event_id", "sequence", "actor_id", "actor_role", "action", "subject_type", "subject_id", "occurred_at", "outcome"],
+        "properties": {
+          "event_id": { "$ref": "#/components/schemas/Uuid" },
+          "sequence": { "type": ["integer", "null"], "minimum": 1, "description": "Case version this action took; null for Jube results." },
+          "actor_id": { "$ref": "#/components/schemas/Uuid" },
+          "actor_role": { "type": "string", "enum": ["auditor", "specialist", "supervisor", "service"] },
+          "action": { "type": "string", "pattern": "^[a-z_]+\\.[a-z_]+$", "maxLength": 64 },
+          "subject_type": { "type": "string", "enum": ["decision", "evidence_request"] },
+          "subject_id": { "$ref": "#/components/schemas/Uuid" },
+          "occurred_at": { "$ref": "#/components/schemas/Timestamp" },
+          "outcome": { "type": "string", "minLength": 1, "maxLength": 64 }
+        }
+      },
+      "CaseReview": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["case_id", "tenant_id", "case_version", "viewer", "open_decision", "audit_events"],
+        "properties": {
+          "case_id": { "$ref": "#/components/schemas/Uuid" },
+          "tenant_id": { "$ref": "#/components/schemas/Uuid" },
+          "case_version": { "type": "integer", "minimum": 1, "description": "Send as expected_version with the next review action." },
+          "viewer": { "$ref": "#/components/schemas/CaseReviewViewer" },
+          "open_decision": { "anyOf": [{ "$ref": "#/components/schemas/Decision" }, { "type": "null" }] },
+          "audit_events": { "type": "array", "maxItems": 200, "items": { "$ref": "#/components/schemas/ReviewEvent" } }
+        }
+      },
+      "CaseReviewEnvelope": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["data"],
+        "properties": { "data": { "$ref": "#/components/schemas/CaseReview" } }
+      },
+      "ProposeDecisionRequest": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["outcome", "rationale", "rating", "expected_case_status", "expected_version", "evidence_ids", "finding_ids"],
+        "properties": {
+          "outcome": { "$ref": "#/components/schemas/DecisionOutcome" },
+          "rationale": { "type": "string", "minLength": 20, "maxLength": 4000 },
+          "rating": { "type": "integer", "minimum": 1, "maximum": 5 },
+          "expected_case_status": { "$ref": "#/components/schemas/CaseStatus" },
+          "expected_version": { "type": "integer", "minimum": 1 },
+          "evidence_ids": { "type": "array", "maxItems": 50, "items": { "$ref": "#/components/schemas/Uuid" } },
+          "finding_ids": { "type": "array", "maxItems": 50, "items": { "$ref": "#/components/schemas/Uuid" } },
+          "draft_id": { "anyOf": [{ "$ref": "#/components/schemas/Uuid" }, { "type": "null" }] }
+        }
+      },
+      "ReviewDecisionRequest": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["action", "expected_version"],
+        "properties": {
+          "action": { "type": "string", "enum": ["approve", "reject", "withdraw"] },
+          "expected_version": { "type": "integer", "minimum": 1 },
+          "reason": { "type": ["string", "null"], "minLength": 20, "maxLength": 2000, "description": "Required to reject." }
+        }
       },
       "ErrorCode": {
         "type": "string",

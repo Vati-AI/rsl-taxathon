@@ -4,6 +4,7 @@ import { Alert, Button, Skeleton, TabList, TabPanel, TabTrigger, Tabs } from 'fr
 import { getCase } from '../api/vati';
 import AmountText from '../components/AmountText.vue';
 import CaseStatusBadge from '../components/CaseStatusBadge.vue';
+import FindingsList from '../components/FindingsList.vue';
 import PageLayout from '../components/PageLayout.vue';
 import SelectionReasons from '../components/SelectionReasons.vue';
 import StatePanel from '../components/StatePanel.vue';
@@ -21,12 +22,11 @@ const tab = ref('overview');
 const item = computed(() => (state.value.status === 'ready' ? state.value.data : null));
 const processing = computed(() => (item.value ? processingState(item.value) : null));
 
-// These sections map to operations in integration/api/openapi.json that the read-only
+// These sections map to operations in integration/api/openapi.json that the
 // fixture server does not serve. Say so rather than invent data.
 const pending = [
   { value: 'evidence', label: 'Evidence', endpoint: '/api/v1/cases/{case_id}/evidence' },
   { value: 'entities', label: 'Entities', endpoint: '/api/v1/cases/{case_id}/entities' },
-  { value: 'findings', label: 'Findings', endpoint: '/api/v1/cases/{case_id}/findings' },
 ];
 const SYNC_LABELS = { synced: 'Up to date', pending: 'Waiting', failed: 'Failed' } as const;
 </script>
@@ -40,23 +40,15 @@ const SYNC_LABELS = { synced: 'Up to date', pending: 'Waiting', failed: 'Failed'
     ]"
   >
     <template v-if="item" #actions>
-      <span id="request-evidence-reason" class="hidden text-sm text-ink-gray-5 md:inline">
-        Not available in fixture mode
-      </span>
       <Button
         variant="solid"
         theme="blue"
-        label="Request evidence"
-        icon-left="lucide-file-question"
-        disabled
-        aria-describedby="request-evidence-reason"
-        tooltip="Evidence requests need the Frappe portal and officer approval flow (later tasks). Fixture mode is read-only."
+        label="Review and decide"
+        icon-left="lucide-gavel"
+        :route="{ name: 'case-review', params: { caseId } }"
       />
     </template>
 
-    <p v-if="item" class="mb-3 text-sm text-ink-gray-5 md:hidden">
-      Request evidence is not available in fixture mode.
-    </p>
     <div
       v-if="state.status === 'loading'"
       role="status"
@@ -86,6 +78,7 @@ const SYNC_LABELS = { synced: 'Up to date', pending: 'Waiting', failed: 'Failed'
       <Tabs v-model="tab">
         <TabList>
           <TabTrigger value="overview" label="Overview" />
+          <TabTrigger value="findings" label="Findings" />
           <TabTrigger
             v-for="entry in pending"
             :key="entry.value"
@@ -93,6 +86,9 @@ const SYNC_LABELS = { synced: 'Up to date', pending: 'Waiting', failed: 'Failed'
             :label="entry.label"
           />
         </TabList>
+        <TabPanel value="findings" class="pt-4">
+          <FindingsList :case-id="item.case_id" />
+        </TabPanel>
         <TabPanel value="overview" class="pt-4">
           <!-- minmax(0, …) lets wide children (the service table) scroll instead of widening the column. -->
           <div

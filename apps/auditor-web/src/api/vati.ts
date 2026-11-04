@@ -4,7 +4,7 @@
  * correlation ID. Records not marked synthetic are refused: this prototype only
  * ever displays synthetic data.
  */
-import { session } from '../session';
+import { fixtureRole, session } from '../session';
 import { ApiError } from './errors';
 
 export const CASE_STATUSES = [
@@ -80,10 +80,10 @@ export interface TaxpayerProfile {
   synthetic: true;
 }
 
-type Fetch = typeof fetch;
-type Json = Record<string, unknown>;
+export type Fetch = typeof fetch;
+export type Json = Record<string, unknown>;
 
-const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
+export const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
 const DECIMAL = /^-?(0|[1-9][0-9]*)(\.[0-9]{1,4})?$/;
 const MAX_QUEUE_PAGES = 10;
 
@@ -95,15 +95,16 @@ const UNAVAILABLE = new Set([
   'idempotency_in_progress',
 ]);
 
-function isRecord(value: unknown): value is Json {
+export function isRecord(value: unknown): value is Json {
   return typeof value === 'object' && value !== null && !Array.isArray(value);
 }
 
-function invalid(what: string): never {
+export function invalid(what: string): never {
   throw new ApiError('invalid', `The service returned ${what} that cannot be shown safely.`);
 }
 
-function newCorrelationId(): string {
+/** A random UUID: correlation IDs here, and Idempotency-Keys for review actions. */
+export function newCorrelationId(): string {
   if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
     return crypto.randomUUID();
   }
@@ -119,7 +120,11 @@ function errorFrom(status: number, body: unknown, fallbackReference: string): Ap
   const code = error && typeof error.code === 'string' ? error.code : null;
   const reference =
     error && typeof error.correlation_id === 'string' ? error.correlation_id : fallbackReference;
-  const options = { status, code, reference };
+  const first = error && Array.isArray(error.field_errors) ? error.field_errors[0] : null;
+  const reason = isRecord(first) && typeof first.code === 'string' ? first.code : null;
+  const currentVersion =
+    error && typeof error.current_version === 'number' ? error.current_version : null;
+  const options = { status, code, reference, reason, currentVersion };
   if ((code && DENIED.has(code)) || status === 401 || status === 403) {
     return new ApiError('denied', 'You do not have access to this record.', options);
   }
@@ -129,27 +134,49 @@ function errorFrom(status: number, body: unknown, fallbackReference: string): Ap
   if ((code && UNAVAILABLE.has(code)) || status === 429 || status >= 500) {
     return new ApiError('unavailable', `The case service is unavailable (${status}).`, options);
   }
+  if (code === 'version_conflict' || status === 409) {
+    return new ApiError('conflict', 'The case changed since you loaded it.', options);
+  }
+  if (code === 'invalid_domain_input' || code === 'idempotency_conflict' || status === 422) {
+    return new ApiError('rejected', 'The case service refused this action.', options);
+  }
   return new ApiError('invalid', 'The request was not accepted by the case service.', options);
 }
 
-async function request(
+export interface RequestOptions {
+  query?: Record<string, string>;
+  /** POST body; the request is a GET when absent. */
+  body?: unknown;
+  /** Required for mutations; reuse the same key when retrying the same action. */
+  idempotencyKey?: string;
+  signal?: AbortSignal;
+}
+
+/** One /api/v1 call: tenant and correlation headers, contract error mapping. */
+export async function apiRequest(
   path: string,
-  query: Record<string, string>,
+  options: RequestOptions,
   fetchImpl: Fetch,
-  signal?: AbortSignal,
 ): Promise<Json> {
   const correlation = newCorrelationId();
-  const params = new URLSearchParams(query).toString();
+  const params = new URLSearchParams(options.query ?? {}).toString();
+  const headers: Record<string, string> = {
+    Accept: 'application/json',
+    'X-Vati-Tenant-ID': session.tenantId,
+    'X-Correlation-ID': correlation,
+  };
+  // Fixture-only principal switch; a real server ignores it (session.ts).
+  if (fixtureRole.value !== 'auditor') headers['X-Vati-Fixture-Role'] = fixtureRole.value;
+  const init: RequestInit = { headers, signal: options.signal };
+  if (options.body !== undefined) {
+    init.method = 'POST';
+    headers['Content-Type'] = 'application/json';
+    if (options.idempotencyKey) headers['Idempotency-Key'] = options.idempotencyKey;
+    init.body = JSON.stringify(options.body);
+  }
   let response: Response;
   try {
-    response = await fetchImpl(params ? `${path}?${params}` : path, {
-      headers: {
-        Accept: 'application/json',
-        'X-Vati-Tenant-ID': session.tenantId,
-        'X-Correlation-ID': correlation,
-      },
-      signal,
-    });
+    response = await fetchImpl(params ? `${path}?${params}` : path, init);
   } catch (error) {
     if (error instanceof DOMException && error.name === 'AbortError') throw error;
     throw new ApiError('unavailable', 'The case service could not be reached.', {
@@ -167,7 +194,7 @@ async function request(
   return body;
 }
 
-function money(value: unknown): Money | null {
+export function money(value: unknown): Money | null {
   if (value === null) return null;
   if (isRecord(value) && typeof value.amount === 'string' && DECIMAL.test(value.amount)) {
     if (typeof value.currency === 'string' && /^[A-Z]{3}$/.test(value.currency)) {
@@ -177,7 +204,7 @@ function money(value: unknown): Money | null {
   return invalid('an amount');
 }
 
-function strings(value: Json, keys: string[]) {
+export function strings(value: Json, keys: string[]) {
   for (const key of keys)
     if (typeof value[key] !== 'string' || value[key] === '') invalid('a record');
 }
@@ -237,7 +264,7 @@ export async function listAssignedCases(fetchImpl: Fetch = fetch, signal?: Abort
   for (let page = 0; page < MAX_QUEUE_PAGES; page++) {
     const query: Record<string, string> = { assigned_to: 'me', limit: '100' };
     if (cursor) query.cursor = cursor;
-    const body = await request('/api/v1/cases', query, fetchImpl, signal);
+    const body = await apiRequest('/api/v1/cases', { query, signal }, fetchImpl);
     if (!Array.isArray(body.data) || !isRecord(body.meta)) invalid('a case page');
     cases.push(...body.data.map(parseCase));
     if (body.meta.has_more !== true) return cases;
@@ -248,13 +275,17 @@ export async function listAssignedCases(fetchImpl: Fetch = fetch, signal?: Abort
 }
 
 /** A malformed ID in a link can never match a record; say "not found" without a request. */
-function requireId(id: string, what: string) {
+export function requireId(id: string, what: string) {
   if (!UUID.test(id)) throw new ApiError('not_found', `No ${what} exists with this reference.`);
 }
 
 export async function getCase(caseId: string, fetchImpl: Fetch = fetch, signal?: AbortSignal) {
   requireId(caseId, 'case');
-  const body = await request(`/api/v1/cases/${encodeURIComponent(caseId)}`, {}, fetchImpl, signal);
+  const body = await apiRequest(
+    `/api/v1/cases/${encodeURIComponent(caseId)}`,
+    { signal },
+    fetchImpl,
+  );
   return parseCase(body.data);
 }
 
@@ -265,6 +296,6 @@ export async function getTaxpayer(
 ) {
   requireId(taxpayerId, 'taxpayer');
   const path = `/api/v1/taxpayers/${encodeURIComponent(taxpayerId)}`;
-  const body = await request(path, {}, fetchImpl, signal);
+  const body = await apiRequest(path, { signal }, fetchImpl);
   return parseTaxpayer(body.data);
 }

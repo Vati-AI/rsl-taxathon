@@ -1,11 +1,13 @@
-"""Read-only fixture implementation of the Vati /api/v1 queue operations (TAX-040).
+"""Fixture implementation of selected Vati /api/v1 operations for UI development.
 
 Serves listCases, getCase and getTaxpayer from integration/api/fixtures/auditor_queue.json
-for UI development. Requests are checked with the contract's own rules
-(integration/api/contract.py), so missing or malformed tenant headers, bad IDs and
-unknown routes fail exactly as the contract specifies. The fixture principal may see one
-tenant; any other tenant is 403 tenant_scope_denied. Responses carry
-``X-Vati-Mode: fixture`` and every record is synthetic. There are no mutations and no
+(TAX-040), and the officer review operations getCaseReview, listFindings,
+proposeDecision, reviewDecision and requestEvidence from ``fixture_review`` (TAX-042).
+Requests are checked with the contract's own rules (integration/api/contract.py), so
+missing or malformed tenant headers, bad IDs, invalid bodies and unknown routes fail
+exactly as the contract specifies. The fixture principal may see one tenant; any other
+tenant is 403 tenant_scope_denied. Responses carry ``X-Vati-Mode: fixture`` and every
+record is synthetic. Review actions change in-memory fixture state only; there is no
 fallback to or from live services.
 """
 
@@ -24,6 +26,7 @@ if str(API_DIR) not in sys.path:
     sys.path.insert(0, str(API_DIR))
 
 import contract  # noqa: E402
+import fixture_review  # noqa: E402
 
 MODE_HEADER = "X-Vati-Mode"
 OPEN_STATUSES = {
@@ -115,14 +118,19 @@ def handle(
     query: dict[str, str],
     data: dict[str, Any] | None = None,
     spec: dict[str, Any] | None = None,
+    body: Any = None,
+    review: fixture_review.ReviewStore | None = None,
 ) -> Response:
     """Return (status, extra headers, JSON body) for a fixture /api/v1 request."""
     data = data if data is not None else load_fixture()
     spec = spec if spec is not None else contract.load_spec()
+    review = review if review is not None else fixture_review.STORE
     lowered = {k.lower(): v for k, v in headers.items()}
     correlation = _correlation(lowered)
-    status, extra, body = _dispatch(method, path, lowered, query, data, spec, correlation)
-    return status, {**extra, "X-Correlation-ID": correlation, MODE_HEADER: "fixture"}, body
+    status, extra, payload = _dispatch(
+        method, path, lowered, query, data, spec, correlation, body, review
+    )
+    return status, {**extra, "X-Correlation-ID": correlation, MODE_HEADER: "fixture"}, payload
 
 
 def _dispatch(
@@ -133,23 +141,32 @@ def _dispatch(
     data: dict[str, Any],
     spec: dict[str, Any],
     correlation: str,
+    body: Any,
+    review: fixture_review.ReviewStore,
 ) -> Response:
     match = contract.match_operation(spec, method, path)
-    if match is None or method.lower() != "get":
+    if match is None:
         return _error("not_found", correlation)
-    violations = contract.check_request(spec, method, path, headers, None, query)
+    _, op, params = match
+    op_id = op["operationId"]
+    if method.lower() != "get" and op_id not in fixture_review.OPERATIONS:
+        return _error("not_found", correlation, "This operation has no fixture data.")
+    violations = contract.check_request(spec, method, path, headers, body, query)
     if violations:
         return _error(violations[0].code, correlation)
     if headers.get(contract.TENANT_HEADER) != data["principal"]["tenant_id"]:
         return _error("tenant_scope_denied", correlation)
-    _, op, params = match
+    if op_id in fixture_review.OPERATIONS:
+        return review.handle(op_id, params, headers, body, data["cases"], correlation)
+    # Statuses a fixture approval changed (the Jube projection in fixture mode).
+    data = {**data, "cases": [review.overlay_case(c) for c in data["cases"]]}
     result: Response | str
-    if op["operationId"] == "listCases":
+    if op_id == "listCases":
         result = _list_cases(data, query)
-    elif op["operationId"] == "getCase":
+    elif op_id == "getCase":
         item = next((c for c in data["cases"] if c["case_id"] == params["case_id"]), None)
         result = (200, {}, {"data": item}) if item else "not_found"
-    elif op["operationId"] == "getTaxpayer":
+    elif op_id == "getTaxpayer":
         result = _get_taxpayer(data, params["taxpayer_id"])
     else:
         # Contract operations without fixture data are absent here, never invented.
