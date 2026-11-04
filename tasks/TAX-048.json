@@ -5,16 +5,16 @@
   "owner": "Gupta",
   "area": "ai",
   "phase": "pilot",
-  "status": "BACKLOG",
+  "status": "IN_REVIEW",
   "priority": "P0",
   "depends_on": [
     "TAX-022",
     "TAX-024",
     "TAX-018"
   ],
-  "claimed_by": null,
-  "branch": null,
-  "pr": null,
+  "claimed_by": "keletso-claude-code",
+  "branch": "task/TAX-048",
+  "pr": "https://github.com/Vati-AI/rsl-taxathon/pull/110",
   "scope": "Calculate explained/unresolved amounts using deterministic tools and propose fast, standard or targeted lane",
   "inputs": [
     "PROJECT.md",
@@ -28,15 +28,15 @@
   "acceptance": [
     {
       "text": "Calculate explained/unresolved amounts using deterministic tools and propose fast, standard or targeted lane",
-      "done": false
+      "done": true
     },
     {
       "text": "Check decimal totals and all relevant legitimate/missing-evidence cases; lane is advisory until officer approval",
-      "done": false
+      "done": true
     },
     {
       "text": "Record relevant tests and evidence, update task status and open a human-review PR",
-      "done": false
+      "done": true
     }
   ],
   "verification": "Check decimal totals and all relevant legitimate/missing-evidence cases; lane is advisory until officer approval",
@@ -46,6 +46,32 @@
     "update-project-task",
     "finish-task"
   ],
-  "evidence": [],
-  "notes": []
+  "evidence": [
+    {
+      "criterion": 1,
+      "text": "ai/tools/refund_reconciliation.py computes claimed/explained/unresolved refund with Decimal only (floats and sub-cent strings rejected, LSL Money output); ai/workflows/refund_lanes.py wires it as case-scoped refund_reconciliation_tool plus reconcile -> propose_lane LangGraph nodes on the TAX-022 state/envelope. All five TAX-024 scenarios reproduce data/scenarios/cases.json supported_refund (15000/10000/0/2000/8000 LSL)."
+    },
+    {
+      "criterion": 2,
+      "text": "tests/ai/test_refund_reconciliation.py (22) + test_refund_lane_graph.py (7): decimal drift/one-cent/rounding/currency, fully evidenced SYN-001 -> fast with no abuse wording, missing contract/payment/invoice gaps, invoice/payment/return mismatches -> targeted, threshold boundary, tenant/case scope, fail-closed invalid money, replay. Lanes SYN-001 fast, 002 targeted, 003 none (no claim), 004 targeted, 005 standard; every proposal status=proposed, advisory, requires_officer_approval, decision=null. 39 passed via pytest with LangGraph; dev.py check runs 29 (7 graph skipped without LangGraph); quality.py passed."
+    },
+    {
+      "criterion": 3,
+      "text": "Tests and evidence recorded on task/TAX-048; scripts/dev.py check and scripts/quality.py (Node 24) pass locally; PR opened by task.py finish for human review (agent will not merge)."
+    }
+  ],
+  "notes": [
+    {
+      "at": "2026-11-03T19:39:13.435440+00:00",
+      "text": "Claimed by keletso-claude-code"
+    },
+    {
+      "at": "2026-11-03T19:48:02.046384+00:00",
+      "text": "Implemented by keletso-claude-code on Keletso's instruction (2026-11-03); owner remains Gupta."
+    },
+    {
+      "at": "2026-11-04T03:47:19.329480+00:00",
+      "text": "Agent finished implementation and opened human review"
+    }
+  ]
 }
