@@ -5,14 +5,14 @@
   "owner": "Leseli",
   "area": "apps/auditor-web",
   "phase": "pilot",
-  "status": "BACKLOG",
+  "status": "IN_PROGRESS",
   "priority": "P0",
   "depends_on": [
     "TAX-040",
     "TAX-059"
   ],
-  "claimed_by": null,
-  "branch": null,
+  "claimed_by": "leseli-claude-20261104-060",
+  "branch": "task/TAX-060",
   "pr": null,
   "scope": "Display workload, elapsed time, unresolved evidence, false positives and legal-route coverage from measured data",
   "inputs": [
@@ -50,5 +50,10 @@
     "finish-task"
   ],
   "evidence": [],
-  "notes": []
+  "notes": [
+    {
+      "at": "2026-11-04T11:21:28.749416+00:00",
+      "text": "Claimed by leseli-claude-20261104-060"
+    }
+  ]
 }
