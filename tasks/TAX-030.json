@@ -5,15 +5,15 @@
   "owner": "Edga",
   "area": "backend",
   "phase": "foundation",
-  "status": "BACKLOG",
+  "status": "IN_REVIEW",
   "priority": "P0",
   "depends_on": [
     "TAX-018",
     "TAX-019"
   ],
-  "claimed_by": null,
-  "branch": null,
-  "pr": null,
+  "claimed_by": "keletso-claude-code-tax030",
+  "branch": "task/TAX-030",
+  "pr": "https://github.com/Vati-AI/rsl-taxathon/pull/116",
   "scope": "Persist shared case identifier and unique mappings to Jube cases, Frappe records and OpenAleph collections/entities",
   "inputs": [
     "PROJECT.md",
@@ -27,15 +27,15 @@
   "acceptance": [
     {
       "text": "Persist shared case identifier and unique mappings to Jube cases, Frappe records and OpenAleph collections/entities",
-      "done": false
+      "done": true
     },
     {
       "text": "Replay same external event and test conflicting mapping and tenant-boundary rejection",
-      "done": false
+      "done": true
     },
     {
       "text": "Record relevant tests and evidence, update task status and open a human-review PR",
-      "done": false
+      "done": true
     }
   ],
   "verification": "Replay same external event and test conflicting mapping and tenant-boundary rejection",
@@ -45,6 +45,32 @@
     "update-project-task",
     "finish-task"
   ],
-  "evidence": [],
-  "notes": []
+  "evidence": [
+    {
+      "criterion": 1,
+      "text": "Vati Case Identity (immutable UUID case_id, per-tenant display_id) and Vati Service Link DocTypes persist mappings to Jube cases, Frappe records (namespaced by DocType) and OpenAleph collections/entities with DB unique link/slot/event keys. Observed on disposable site verify-20261104t080600.localhost (Frappe v16.54.0, stack rsl-taxathon-frappe-tax019): install + migrate x2 OK, test_links_to_jube_frappe_and_openaleph_are_persisted passed."
+    },
+    {
+      "criterion": 2,
+      "text": "bench run-tests --app vati_tax: 13 site-backed tests OK (event replay creates one row and returns replayed=true; reused event_id with changed mapping -> idempotency_conflict; external ID mapped to another case -> already_mapped; second Jube case -> slot_taken; direct duplicate insert -> UniqueValidationError; cross-tenant write/read/resolve rejected as not_found with zero tenant-B rows). Plain unittest: 36 Frappe-free rule tests OK (13 site tests skipped). dev.py check and quality.py passed."
+    },
+    {
+      "criterion": 3,
+      "text": "Evidence recorded in this task file; ADR-006 documents the model; human-review PR opened by task.py finish."
+    }
+  ],
+  "notes": [
+    {
+      "at": "2026-11-04T07:58:38.241101+00:00",
+      "text": "Claimed by keletso-claude-code-tax030"
+    },
+    {
+      "at": "2026-11-04T07:58:38.241279+00:00",
+      "text": "Implemented by keletso-claude-code on Keletso's instruction (2026-11-04)"
+    },
+    {
+      "at": "2026-11-04T08:09:03.853283+00:00",
+      "text": "Agent finished implementation and opened human review"
+    }
+  ]
 }
