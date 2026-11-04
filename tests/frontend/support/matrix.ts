@@ -1,3 +1,6 @@
+import { readFileSync } from 'node:fs';
+import path from 'node:path';
+
 /**
  * The viewport, route and keyboard test matrix for both frontends.
  *
@@ -25,10 +28,34 @@ export interface MatrixRoute {
   heading: string | RegExp;
 }
 
+// SYN-002 from integration/api/fixtures/auditor_queue.json (TAX-040 fixture API).
+const queue = JSON.parse(
+  readFileSync(
+    path.resolve(__dirname, '../../../integration/api/fixtures/auditor_queue.json'),
+    'utf8',
+  ),
+) as { cases: { case_id: string; display_id: string; taxpayer_id: string }[] };
+/** The auditor fixture case with display ID `displayId`, e.g. SYN-002. */
+export function auditorCase(displayId: string) {
+  const item = queue.cases.find((c) => c.display_id === displayId);
+  if (!item) throw new Error(`No auditor fixture case ${displayId}`);
+  return item;
+}
+const syn002 = auditorCase('SYN-002');
+
 export const AUDITOR_ROUTES: MatrixRoute[] = [
   { name: 'overview', path: '/auditor/', heading: 'Overview' },
-  { name: 'queue', path: '/auditor/cases', heading: 'Case queue' },
-  { name: 'case-detail', path: '/auditor/cases/SYN-002', heading: /^SYN-002 · / },
+  { name: 'queue', path: '/auditor/cases', heading: 'My case queue' },
+  {
+    name: 'case-detail',
+    path: `/auditor/cases/${syn002.case_id}`,
+    heading: 'SYN-002 · Synthetic Border Retail',
+  },
+  {
+    name: 'taxpayer',
+    path: `/auditor/taxpayers/${syn002.taxpayer_id}`,
+    heading: 'Synthetic Border Retail',
+  },
   { name: 'showcase', path: '/auditor/showcase', heading: 'Component showcase' },
   { name: 'not-found', path: '/auditor/no-such-page', heading: 'Page not found' },
 ];

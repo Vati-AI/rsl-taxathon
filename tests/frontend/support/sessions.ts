@@ -11,8 +11,9 @@
  * permissions are defined by TAX-029; until then `denied` stands in for "a
  * signed-in user whom the portal API refuses".
  *
- * Auditor workspace: it has no sign-in yet, so personas only control whether
- * the read-only fixture API grants or refuses case data.
+ * Auditor workspace: the fixture API (scripts/fixture_api.py) has one signed-in
+ * officer principal scoped to one synthetic tenant. Personas choose whether
+ * requests stay in that tenant or select another one, which the API refuses.
  */
 import { execFileSync } from 'node:child_process';
 import path from 'node:path';
@@ -127,10 +128,20 @@ export async function mockTaxpayerSession(
   return mock;
 }
 
-/** Officer reads succeed against the fixture server; `denied` refuses case data with 403. */
+/** A synthetic tenant outside the fixture principal's scope (integration/api/fixtures). */
+export const OTHER_TENANT_ID = '10000000-0000-4000-8000-000000000002';
+
+/**
+ * `officer`: requests go unchanged to the fixture API as its signed-in principal.
+ * `denied`: every Vati API request selects a tenant outside that principal's
+ * scope, so the real fixture API refuses it (403 tenant_scope_denied). Nothing
+ * is faked in the browser; the server's own access rule is exercised.
+ */
 export async function mockAuditorAccess(page: Page, persona: AuditorPersona): Promise<void> {
   if (persona === 'officer') return;
-  await page.route('**/api/cases**', (route) =>
-    route.fulfill({ status: 403, json: { error: 'forbidden', ...FIXTURE } }),
+  await page.route(/\/api\/v1\//, (route) =>
+    route.continue({
+      headers: { ...route.request().headers(), 'x-vati-tenant-id': OTHER_TENANT_ID },
+    }),
   );
 }

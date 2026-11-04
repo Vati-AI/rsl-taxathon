@@ -1,13 +1,16 @@
 import path from 'node:path';
 import { defineConfig, devices } from '@playwright/test';
-import { AUDITOR_PORT, TAXPAYER_PORT } from './support/env';
+import { AUDITOR_PORT, FIXTURE_API_PORT, TAXPAYER_PORT } from './support/env';
 import { VIEWPORTS } from './support/matrix';
 
 // TAX-023 cross-portal browser harness. One project per design-standard width
 // (docs/DESIGN_STANDARD.md); every spec runs at every width.
 //
-// - Auditor: the built app (`npm run build:auditor`) on the synthetic fixture
-//   server, on a dedicated port so a developer's own :58080 server is untouched.
+// - Auditor: the built app (`npm run build:auditor`) served by Vite preview,
+//   with /api proxied to the synthetic fixture server (scripts/dev.py). Both use
+//   dedicated ports so a developer's own :58080 server is untouched. Vite serves
+//   the static files because the fixture server can truncate large assets on
+//   Windows under parallel load (see README).
 // - Taxpayer: the Vite dev server. No Frappe site is needed: every
 //   `vati_tax.portal.api.*` call and `/login` is answered in the browser by the
 //   session mocks in support/sessions.ts, so tests never reach a real site.
@@ -41,11 +44,18 @@ export default defineConfig({
   })),
   webServer: [
     {
-      command: `${python} scripts/dev.py serve --port ${AUDITOR_PORT}`,
+      command: `${python} scripts/dev.py serve --port ${FIXTURE_API_PORT}`,
       cwd: root,
-      url: `http://127.0.0.1:${AUDITOR_PORT}/api/health`,
+      url: `http://127.0.0.1:${FIXTURE_API_PORT}/api/health`,
       reuseExistingServer: false,
       timeout: 30_000,
+    },
+    {
+      command: 'npx vite preview --config tests/frontend/support/auditor-preview.config.mts',
+      cwd: root,
+      url: `http://127.0.0.1:${AUDITOR_PORT}/auditor/`,
+      reuseExistingServer: false,
+      timeout: 60_000,
     },
     {
       command: `npx vite --config apps/taxpayer-web/vite.config.mts --port ${TAXPAYER_PORT} --strictPort`,

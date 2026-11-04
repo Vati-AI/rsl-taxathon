@@ -3,8 +3,8 @@
   "private": true,
   "scripts": {
     "lint": "eslint \"apps/**/*.{js,ts,vue}\" \"tests/frontend/**/*.ts\"",
-    "format:check": "prettier --check \"apps/**/*.{js,ts,vue,css,html}\" \"tests/frontend/**/*.{ts,json,md}\"",
-    "format": "prettier --write \"apps/**/*.{js,ts,vue,css,html}\" \"tests/frontend/**/*.{ts,json,md}\"",
+    "format:check": "prettier --check \"apps/**/*.{js,ts,vue,css,html}\" \"tests/frontend/**/*.{ts,mts,json,md}\"",
+    "format": "prettier --write \"apps/**/*.{js,ts,vue,css,html}\" \"tests/frontend/**/*.{ts,mts,json,md}\"",
     "dev:auditor": "vite --config apps/auditor-web/vite.config.mts",
     "build:auditor": "vite build --config apps/auditor-web/vite.config.mts",
     "typecheck:auditor": "vue-tsc --noEmit -p apps/auditor-web/tsconfig.json",

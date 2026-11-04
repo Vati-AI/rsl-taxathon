@@ -42,7 +42,7 @@ test('auditor screens and denied state', async ({ page }, testInfo) => {
     await check(page, `auditor-${route.name}-${w}`);
   }
   await mockAuditorAccess(page, 'denied');
-  await page.goto(AUDITOR + '/auditor/cases/SYN-001');
+  await page.goto(AUDITOR + AUDITOR_ROUTES.find((r) => r.name === 'case-detail')!.path);
   await expect(page.getByRole('alert').filter({ hasText: 'You do not have access' })).toBeVisible();
   await check(page, `auditor-denied-${w}`);
 });

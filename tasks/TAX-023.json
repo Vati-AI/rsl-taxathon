@@ -24,11 +24,11 @@
   "acceptance": [
     {
       "text": "Set up browser fixtures, role session mocks and viewport/keyboard test matrix for both frontends",
-      "done": false
+      "done": true
     },
     {
       "text": "Run one positive navigation test and one denied-access/keyboard test per portal",
-      "done": false
+      "done": true
     },
     {
       "text": "Record relevant tests and evidence, update task status and open a human-review PR",
@@ -36,7 +36,7 @@
     },
     {
       "text": "Follow docs/DESIGN_STANDARD.md; supply relevant viewport/state screenshots and keyboard/accessibility evidence for human visual review",
-      "done": false
+      "done": true
     }
   ],
   "verification": "Run one positive navigation test and one denied-access/keyboard test per portal",
@@ -46,7 +46,20 @@
     "update-project-task",
     "finish-task"
   ],
-  "evidence": [],
+  "evidence": [
+    {
+      "criterion": 1,
+      "text": "Observed 2026-11-04: tests/frontend adds a Playwright harness for both frontends with one project per design-standard width (desktop-1440, tablet-1024, mobile-390), browser fixtures/servers on dedicated ports (fixture API :58092, built auditor via vite preview :58093, taxpayer Vite :58094), session mocks (support/sessions.ts: taxpayer personas taxpayer/guest/denied answering vati_tax.portal.api.* from backend portal fixtures; auditor personas officer/denied using the fixture API's own tenant scope), and a route/viewport/keyboard matrix (support/matrix.ts). Wired as npm run test:frontend:browser, typecheck:frontend-tests (in npm run check), lint/format globs and a frontend-browser CI job."
+    },
+    {
+      "criterion": 2,
+      "text": "Observed 2026-11-04 on Windows with Edge 156.0.4314.50, Playwright 1.64.1: npm run test:frontend:browser gave 60 passed, 0 failed, 0 flaky in three consecutive full runs (results in docs/evidence/TAX-023/results.json). Per portal at each of 1440/1024/390px: one positive navigation test (auditor overview->queue->case->taxpayer profile->breadcrumb; taxpayer list->status->breadcrumb->new->account), denied-access tests (auditor: other tenant refused by fixture API with no data shown; taxpayer: guest redirected to login with portal-only return path, API-refused user sees Access denied, logout then revisit goes to login) and keyboard tests (skip link, visible focus, nav activation on Enter; taxpayer form focuses first invalid field and keeps values)."
+    },
+    {
+      "criterion": 4,
+      "text": "Observed 2026-11-04: 38 screenshots in docs/evidence/TAX-023 captured from the running apps with CAPTURE_SCREENSHOTS=1 (auditor overview/queue/case/taxpayer/not-found/denied and taxpayer submissions/status/new/account/not-found/denied at 1440, 1024 and 390px, plus keyboard focus captures at 1440px). axe scan (WCAG 2.0/2.1 A+AA, serious/critical) and reflow checks (no page-wide horizontal scroll) pass on 6 auditor and 5 taxpayer routes at all widths except one recorded defect: label-content-name-mismatch on the auditor showcase loading-demo button (ShowcaseView.vue, auditor frontend owner), excluded for that element only. Screenshots are review evidence, not approved baselines; human visual review is still required."
+    }
+  ],
   "notes": [
     {
       "at": "2026-11-03T15:40:40.955115+00:00",
