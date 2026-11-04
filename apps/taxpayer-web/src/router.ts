@@ -24,6 +24,19 @@ export const routes = [
     meta: { title: 'Submission status' },
   },
   {
+    path: '/requests',
+    name: 'evidence-requests',
+    component: () => import('./pages/EvidenceRequestsPage.vue'),
+    meta: { title: 'Evidence requests' },
+  },
+  {
+    path: '/requests/:id',
+    name: 'evidence-request',
+    component: () => import('./pages/EvidenceRequestPage.vue'),
+    props: true,
+    meta: { title: 'Evidence request' },
+  },
+  {
     path: '/account',
     name: 'account',
     component: () => import('./pages/AccountPage.vue'),

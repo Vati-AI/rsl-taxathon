@@ -77,3 +77,38 @@ export interface Submission {
 export interface FixtureEnvelope<T> extends FixtureMeta {
   data: T;
 }
+
+/** Taxpayer-facing statuses of an evidence request (TAX-045); nothing else is shown. */
+export type EvidenceRequestStatus = 'awaiting_response' | 'response_sent' | 'no_longer_needed';
+
+export interface RequestedItem {
+  index: number;
+  document_type: string;
+  description: string;
+}
+
+export interface ResponseItemView {
+  index: number;
+  documents: { evidence_id: string; name: string }[];
+  unavailable_reason: string | null;
+}
+
+/** vati_tax.responses.rules.taxpayer_view: an allowlist, never internal case data. */
+export interface EvidenceRequestView {
+  request_id: string;
+  status: EvidenceRequestStatus;
+  due_date: string | null;
+  message_to_taxpayer: string;
+  items: RequestedItem[];
+  response: {
+    responded_at: string | null;
+    message: string | null;
+    items: ResponseItemView[];
+  } | null;
+}
+
+export interface LiveEnvelope<T> {
+  mode: 'live';
+  data: T;
+  replayed?: boolean;
+}

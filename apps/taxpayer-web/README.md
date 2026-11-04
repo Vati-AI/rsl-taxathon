@@ -31,6 +31,17 @@ placed on the matching field and step. Rules: `src/lib/validation.ts` and
 `src/lib/documents.ts` mirror `vati_tax/portal/claims.py` and the evidence
 limits; the server re-checks everything.
 
+## Evidence requests (TAX-045)
+
+`/taxpayer/requests` lists the taxpayer's own evidence requests with
+taxpayer-facing statuses only (Response needed, Response sent, No longer
+needed). `/taxpayer/requests/:id` shows the officer's message and the requested
+items. The taxpayer answers every item with uploaded documents (one upload panel
+per item) or a reason it cannot be provided, then sends the response once (one
+idempotency key per response; a repeated send is replayed). Answered and
+withdrawn requests are read-only. Rules: `src/lib/responses.ts` mirrors
+`vati_tax/responses/rules.py`.
+
 ## Session boundary
 
 - `backend/vati_tax/vati_tax/www/taxpayer.py` guards every `/taxpayer/...` page

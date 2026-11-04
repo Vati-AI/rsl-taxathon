@@ -76,6 +76,13 @@ export const TAXPAYER_ROUTES: MatrixRoute[] = [
   },
   // TAX-043: the new-submission route is the VAT refund claim form.
   { name: 'new-submission', path: '/taxpayer/submissions/new', heading: 'New VAT refund claim' },
+  // TAX-045: evidence requests (OPEN_REQUEST_ID in support/sessions.ts).
+  { name: 'evidence-requests', path: '/taxpayer/requests', heading: 'Evidence requests' },
+  {
+    name: 'evidence-request',
+    path: '/taxpayer/requests/45000000-0000-4000-8000-000000000001',
+    heading: 'Evidence request',
+  },
   { name: 'account', path: '/taxpayer/account', heading: 'Account' },
   { name: 'not-found', path: '/taxpayer/no-such-page', heading: 'Page not found' },
 ];

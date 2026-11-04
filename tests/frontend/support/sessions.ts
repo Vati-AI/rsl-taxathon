@@ -121,6 +121,11 @@ export interface PortalMock {
   dropNextSendResponse: boolean;
   /** Refuse the next claim as referencing evidence outside the caller's scope. */
   rejectEvidenceOnSend: boolean;
+  /** TAX-045: evidence requests by ID (taxpayer-facing views) and stored responses by key. */
+  requests: Map<string, EvidenceRequestMock>;
+  responses: Map<string, StoredClaim>;
+  /** Store the next response, then drop the HTTP answer: the client sees a lost connection. */
+  dropNextRespondResponse: boolean;
 }
 
 /** Field names the TAX-043 claim must carry (vati_tax.portal.api.submit_refund_claim). */
@@ -173,6 +178,51 @@ function claimRefused(
  * refused in the browser, so the Vite proxy never forwards a test request to a
  * Frappe site a developer may have running on :58000.
  */
+/** A taxpayer-facing evidence request view, as vati_tax.responses.rules.taxpayer_view returns. */
+export interface EvidenceRequestMock {
+  request_id: string;
+  status: 'awaiting_response' | 'response_sent' | 'no_longer_needed';
+  due_date: string;
+  message_to_taxpayer: string;
+  items: { index: number; document_type: string; description: string }[];
+  response: unknown;
+}
+
+/** Synthetic requests owned by SYNTHETIC_TAXPAYER (TAX-045). */
+export const OPEN_REQUEST_ID = '45000000-0000-4000-8000-000000000001';
+export const ANSWERED_REQUEST_ID = '45000000-0000-4000-8000-000000000002';
+export const WITHDRAWN_REQUEST_ID = '45000000-0000-4000-8000-000000000003';
+/** Another taxpayer's request: the portal must report it as not found. */
+export const OTHER_TAXPAYER_REQUEST_ID = '45000000-0000-4000-8000-0000000000ff';
+
+function evidenceRequests(): Map<string, EvidenceRequestMock> {
+  const items = [
+    {
+      index: 0,
+      document_type: 'invoice',
+      description: 'Tax invoices for the September 2026 purchases in your refund claim.',
+    },
+    {
+      index: 1,
+      document_type: 'bank_statement',
+      description: 'Bank statement showing the payments for those invoices.',
+    },
+  ];
+  const message =
+    'Thank you for your VAT refund claim. Please send the documents below so we can check the input VAT.';
+  return new Map([
+    [OPEN_REQUEST_ID, { request_id: OPEN_REQUEST_ID, status: 'awaiting_response',
+      due_date: '2026-11-30', message_to_taxpayer: message, items, response: null }],
+    [ANSWERED_REQUEST_ID, { request_id: ANSWERED_REQUEST_ID, status: 'response_sent',
+      due_date: '2026-10-31', message_to_taxpayer: message, items: items.slice(0, 1),
+      response: { responded_at: '2026-10-20T09:30:00', message: 'Synthetic: invoices attached.',
+        items: [{ index: 0, documents: [{ evidence_id: 'e-answered', name: 'invoice-0912.pdf' }],
+          unavailable_reason: null }] } }],
+    [WITHDRAWN_REQUEST_ID, { request_id: WITHDRAWN_REQUEST_ID, status: 'no_longer_needed',
+      due_date: '2026-10-15', message_to_taxpayer: message, items: items.slice(1), response: null }],
+  ] as [string, EvidenceRequestMock][]); // prettier-ignore
+}
+
 export async function mockTaxpayerSession(
   page: Page,
   persona: TaxpayerPersona,
@@ -184,6 +234,9 @@ export async function mockTaxpayerSession(
     claims: new Map(),
     dropNextSendResponse: false,
     rejectEvidenceOnSend: false,
+    requests: evidenceRequests(),
+    responses: new Map(),
+    dropNextRespondResponse: false,
   };
 
   await page.route('**/login**', (route) =>
@@ -284,6 +337,77 @@ export async function mockTaxpayerSession(
       mock.claims.set(key, { body: fingerprint, result });
       if (mock.dropNextSendResponse) {
         mock.dropNextSendResponse = false;
+        return route.abort('connectionreset');
+      }
+      return ok(route, result);
+    }
+    if (method === 'vati_tax.portal.api.get_evidence_requests') {
+      return ok(route, { mode: 'live', data: [...mock.requests.values()] });
+    }
+    if (method === 'vati_tax.portal.api.get_evidence_request') {
+      const body = (route.request().postDataJSON() ?? {}) as { request_id?: string };
+      const item = mock.requests.get(String(body.request_id));
+      // As the server: another taxpayer's request is concealed as not found.
+      return item
+        ? ok(route, { mode: 'live', data: item })
+        : refused(route, 'DoesNotExistError', 404, 'Evidence request not found.');
+    }
+    if (method === 'vati_tax.portal.api.respond_to_evidence_request') {
+      const body = (route.request().postDataJSON() ?? {}) as {
+        request_id?: string;
+        items?: { item_index: number; evidence_ids: string[]; unavailable_reason: string | null }[];
+        message?: string | null;
+        idempotency_key?: string;
+      };
+      const item = mock.requests.get(String(body.request_id));
+      if (!item) return refused(route, 'DoesNotExistError', 404, 'Evidence request not found.');
+      const key = String(body.idempotency_key ?? '');
+      const fingerprint = JSON.stringify([body.request_id, body.items, body.message ?? null]);
+      const stored = mock.responses.get(key);
+      if (stored) {
+        return stored.body === fingerprint
+          ? ok(route, { ...stored.result, replayed: true })
+          : claimRefused(route, 'idempotency_conflict');
+      }
+      if (item.status !== 'awaiting_response') {
+        return claimRefused(route, 'invalid_domain_input', [
+          { field: 'request_id', code: 'already_responded',
+            message: 'You have already responded to this request.' },
+        ]); // prettier-ignore
+      }
+      const answers = body.items ?? [];
+      const missing = item.items.filter(
+        (i) => !answers.some((a) => a.item_index === i.index && (a.evidence_ids.length || a.unavailable_reason)),
+      ); // prettier-ignore
+      if (missing.length) {
+        return claimRefused(route, 'invalid_domain_input', missing.map((i) => ({
+          field: `items.${i.index}`, code: 'answer_required',
+          message: 'Upload a document for this item, or explain why you cannot provide it.' }))); // prettier-ignore
+      }
+      if (answers.some((a) => a.evidence_ids.some((e) => !mock.evidence.includes(e)))) {
+        return claimRefused(route, 'invalid_domain_input', [
+          { field: 'evidence_ids', code: 'not_found',
+            message: 'A document could not be found. Remove it and upload the file again.' },
+        ]); // prettier-ignore
+      }
+      const updated: EvidenceRequestMock = {
+        ...item,
+        status: 'response_sent',
+        response: {
+          responded_at: '2026-11-04T12:00:00',
+          message: body.message ?? null,
+          items: answers.map((a) => ({
+            index: a.item_index,
+            documents: a.evidence_ids.map((e, n) => ({ evidence_id: e, name: `document-${n + 1}.pdf` })),
+            unavailable_reason: a.unavailable_reason,
+          })),
+        },
+      }; // prettier-ignore
+      mock.requests.set(item.request_id, updated);
+      const result = { mode: 'live', replayed: false, data: updated };
+      mock.responses.set(key, { body: fingerprint, result });
+      if (mock.dropNextRespondResponse) {
+        mock.dropNextRespondResponse = false;
         return route.abort('connectionreset');
       }
       return ok(route, result);
