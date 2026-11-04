@@ -5,15 +5,15 @@
   "owner": "Keletso",
   "area": "integration",
   "phase": "pilot",
-  "status": "BACKLOG",
+  "status": "IN_PROGRESS",
   "priority": "P0",
   "depends_on": [
     "TAX-018",
     "TAX-025",
     "TAX-030"
   ],
-  "claimed_by": null,
-  "branch": null,
+  "claimed_by": "claude-keletso-tax034",
+  "branch": "task/TAX-034",
   "pr": null,
   "scope": "Map create/read/assign/status/escalation operations to verified Jube APIs; Jube is operational case authority",
   "inputs": [
@@ -47,5 +47,10 @@
     "finish-task"
   ],
   "evidence": [],
-  "notes": []
+  "notes": [
+    {
+      "at": "2026-11-04T08:25:56.148348+00:00",
+      "text": "Claimed by claude-keletso-tax034"
+    }
+  ]
 }
