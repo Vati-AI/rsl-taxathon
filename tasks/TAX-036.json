@@ -5,7 +5,7 @@
   "owner": "Leseli",
   "area": "integration",
   "phase": "pilot",
-  "status": "IN_PROGRESS",
+  "status": "IN_REVIEW",
   "priority": "P0",
   "depends_on": [
     "TAX-026",
@@ -14,7 +14,7 @@
   ],
   "claimed_by": "leseli-claude-20261104-036",
   "branch": "task/TAX-036",
-  "pr": null,
+  "pr": "https://github.com/Vati-AI/rsl-taxathon/pull/139",
   "scope": "Map companies, persons, ownership, invoices, payments and evidence using supported FtM schema plus documented tax extensions",
   "inputs": [
     "PROJECT.md",
@@ -76,6 +76,10 @@
     {
       "at": "2026-11-04T10:51:41.078704+00:00",
       "text": "Keletso handed TAX-036 back to Leseli to continue (Keletso's agent had only claimed it; no implementation was pushed). Owner Leseli; claimed by leseli-claude-20261104-036 on the same branch."
+    },
+    {
+      "at": "2026-11-04T11:00:26.208178+00:00",
+      "text": "Agent leseli-claude-20261104-036 finished implementation and opened review (https://github.com/Vati-AI/rsl-taxathon/pull/139) for Keletso as integration area owner. mypy left to CI (Smart App Control); real FtM library and live OpenAleph not run (see ADR-012)."
     }
   ]
 }
