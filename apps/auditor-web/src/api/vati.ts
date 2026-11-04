@@ -209,7 +209,7 @@ export function strings(value: Json, keys: string[]) {
     if (typeof value[key] !== 'string' || value[key] === '') invalid('a record');
 }
 
-function serviceLinks(value: unknown): ServiceLink[] {
+export function serviceLinks(value: unknown): ServiceLink[] {
   if (!Array.isArray(value)) invalid('service links');
   return value.map((link) => {
     if (!isRecord(link) || !isRecord(link.sync)) invalid('a service link');

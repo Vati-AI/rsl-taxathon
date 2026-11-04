@@ -1,10 +1,14 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { computed, ref, watch } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
 import { Alert, Button, Skeleton, TabList, TabPanel, TabTrigger, Tabs } from 'frappe-ui';
+import { getCaseRecords } from '../api/caseRecords';
 import { getCase } from '../api/vati';
 import AmountText from '../components/AmountText.vue';
+import CaseEvidenceTab from '../components/CaseEvidenceTab.vue';
+import CaseFindingsTab from '../components/CaseFindingsTab.vue';
+import CaseRelationshipsTab from '../components/CaseRelationshipsTab.vue';
 import CaseStatusBadge from '../components/CaseStatusBadge.vue';
-import FindingsList from '../components/FindingsList.vue';
 import PageLayout from '../components/PageLayout.vue';
 import SelectionReasons from '../components/SelectionReasons.vue';
 import StatePanel from '../components/StatePanel.vue';
@@ -18,16 +22,43 @@ const { state, reload } = useLoader(
   (signal) => getCase(props.caseId, fetch, signal),
   () => props.caseId,
 );
-const tab = ref('overview');
 const item = computed(() => (state.value.status === 'ready' ? state.value.data : null));
 const processing = computed(() => (item.value ? processingState(item.value) : null));
 
-// These sections map to operations in integration/api/openapi.json that the
-// fixture server does not serve. Say so rather than invent data.
-const pending = [
-  { value: 'evidence', label: 'Evidence', endpoint: '/api/v1/cases/{case_id}/evidence' },
-  { value: 'entities', label: 'Entities', endpoint: '/api/v1/cases/{case_id}/entities' },
-];
+// Evidence, relationships and findings (TAX-041) load together from listEvidence,
+// listEntities and listFindings, so citations can be checked against stored evidence.
+const { state: recordState, reload: reloadRecords } = useLoader(
+  (signal) => getCaseRecords(props.caseId, fetch, signal),
+  () => props.caseId,
+);
+const recordTabs = [
+  { value: 'evidence', label: 'Evidence' },
+  { value: 'relationships', label: 'Relationships' },
+  { value: 'findings', label: 'Findings' },
+] as const;
+
+// The open tab lives in the URL so a link back from a cited source lands on it.
+const TABS: string[] = ['overview', ...recordTabs.map((entry) => entry.value)];
+const route = useRoute();
+const router = useRouter();
+const fromQuery = () =>
+  typeof route.query.tab === 'string' && TABS.includes(route.query.tab)
+    ? route.query.tab
+    : 'overview';
+const tab = ref(fromQuery());
+const focusFinding = computed(() =>
+  typeof route.query.finding === 'string' ? route.query.finding : undefined,
+);
+watch(
+  () => route.query.tab,
+  () => (tab.value = fromQuery()),
+);
+watch(tab, (value) => {
+  if (value === fromQuery()) return;
+  const { finding, ...rest } = route.query;
+  const query = { ...rest, tab: value === 'overview' ? undefined : value };
+  void router.replace({ query: value === 'findings' ? { ...query, finding } : query });
+});
 const SYNC_LABELS = { synced: 'Up to date', pending: 'Waiting', failed: 'Failed' } as const;
 </script>
 
@@ -78,17 +109,13 @@ const SYNC_LABELS = { synced: 'Up to date', pending: 'Waiting', failed: 'Failed'
       <Tabs v-model="tab">
         <TabList>
           <TabTrigger value="overview" label="Overview" />
-          <TabTrigger value="findings" label="Findings" />
           <TabTrigger
-            v-for="entry in pending"
+            v-for="entry in recordTabs"
             :key="entry.value"
             :value="entry.value"
             :label="entry.label"
           />
         </TabList>
-        <TabPanel value="findings" class="pt-4">
-          <FindingsList :case-id="item.case_id" />
-        </TabPanel>
         <TabPanel value="overview" class="pt-4">
           <!-- minmax(0, …) lets wide children (the service table) scroll instead of widening the column. -->
           <div
@@ -232,12 +259,39 @@ const SYNC_LABELS = { synced: 'Up to date', pending: 'Waiting', failed: 'Failed'
             </section>
           </div>
         </TabPanel>
-        <TabPanel v-for="entry in pending" :key="entry.value" :value="entry.value" class="pt-4">
+        <TabPanel v-for="entry in recordTabs" :key="entry.value" :value="entry.value" class="pt-4">
+          <div
+            v-if="recordState.status === 'loading'"
+            role="status"
+            :aria-label="`Loading ${entry.label.toLowerCase()}`"
+            class="space-y-3"
+          >
+            <Skeleton class="h-6 w-48 rounded-control" />
+            <Skeleton class="h-32 w-full rounded-surface" />
+          </div>
           <StatePanel
-            kind="unavailable"
-            :title="`${entry.label} are not available in fixture mode`"
-            :message="`This section will load from ${entry.endpoint} (Vati API contract) when that service runs; the fixture server does not provide it. No ${entry.label.toLowerCase()} are shown rather than invented.`"
+            v-else-if="recordState.status === 'error'"
+            v-bind="errorPanel(recordState.error)"
+            @retry="reloadRecords"
           />
+          <template v-else>
+            <CaseEvidenceTab
+              v-if="entry.value === 'evidence'"
+              :case-id="caseId"
+              :records="recordState.data"
+            />
+            <CaseRelationshipsTab
+              v-else-if="entry.value === 'relationships'"
+              :case-id="caseId"
+              :records="recordState.data"
+            />
+            <CaseFindingsTab
+              v-else
+              :case-id="caseId"
+              :records="recordState.data"
+              :focus-id="focusFinding"
+            />
+          </template>
         </TabPanel>
       </Tabs>
     </template>

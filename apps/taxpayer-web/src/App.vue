@@ -24,6 +24,7 @@ const route = useRoute();
 const section = computed(() => {
   if (route.name === 'submissions' || route.name === 'submission') return 'submissions';
   if (route.name === 'new-submission') return 'new';
+  if (route.name === 'evidence-requests' || route.name === 'evidence-request') return 'requests';
   if (route.name === 'account') return 'account';
   return null;
 });
@@ -87,6 +88,12 @@ function retry() {
               :active="section === 'new'"
             />
             <SidebarItem
+              label="Evidence requests"
+              icon="lucide-inbox"
+              :route="{ name: 'evidence-requests' }"
+              :active="section === 'requests'"
+            />
+            <SidebarItem
               label="Account"
               icon="lucide-user"
               :route="{ name: 'account' }"
@@ -129,6 +136,12 @@ function retry() {
             icon="lucide-file-plus"
             :route="{ name: 'new-submission' }"
             :active="section === 'new'"
+          />
+          <MobileNavItem
+            label="Requests"
+            icon="lucide-inbox"
+            :route="{ name: 'evidence-requests' }"
+            :active="section === 'requests'"
           />
           <MobileNavItem
             label="Account"

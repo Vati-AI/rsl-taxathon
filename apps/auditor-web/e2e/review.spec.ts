@@ -177,7 +177,13 @@ test('an expired proposal cannot be approved', async ({ page }) => {
 test('an evidence request is confirmed and recorded without moving the case', async ({ page }) => {
   await page.goto(reviewUrl(2));
   await ready(page);
-  await page.getByRole('button', { name: 'Use as a starting point' }).click();
+  // SYN-002 has several suggestions (TAX-041 added its ownership findings); use the
+  // missing service agreement one.
+  await page
+    .getByRole('listitem')
+    .filter({ hasText: 'No synthetic service agreement' })
+    .getByRole('button', { name: 'Use as a starting point' })
+    .click();
   await page.getByLabel('Document 1 type').click();
   await page.getByRole('option', { name: 'Contract' }).click();
   await page.getByLabel('Document 1 description').fill('Signed management services agreement.');

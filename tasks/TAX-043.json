@@ -5,7 +5,7 @@
   "owner": "Kananelo",
   "area": "apps/taxpayer-web",
   "phase": "pilot",
-  "status": "IN_REVIEW",
+  "status": "DONE",
   "priority": "P0",
   "depends_on": [
     "TAX-021",
@@ -76,6 +76,10 @@
     {
       "at": "2026-11-04T13:15:49.143343+00:00",
       "text": "Agent finished implementation and opened human review"
+    },
+    {
+      "at": "2026-11-04T19:31:19.766851+00:00",
+      "text": "Verified implementation PR #146 merged by Hlompho28 on 2026-11-04 (merge d3407b3); all four acceptance criteria have recorded evidence; CI on f549dc4 passed (validate, quality, auditor-browser, frontend-browser, ai-smoke)."
     }
   ]
 }

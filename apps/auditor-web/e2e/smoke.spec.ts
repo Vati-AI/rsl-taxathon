@@ -52,8 +52,9 @@ test.describe('navigation', () => {
     await page.getByRole('tab', { name: 'Findings' }).click();
     await expect(page.getByText('No synthetic service agreement was supplied')).toBeVisible();
     await page.getByRole('tab', { name: 'Evidence' }).click();
-    await expect(page.getByText('Evidence are not available in fixture mode')).toBeVisible();
+    await expect(page.getByRole('region', { name: 'Evidence on file' })).toBeVisible();
     await page.getByRole('tab', { name: 'Overview' }).click();
+    await expect(page).toHaveURL(new RegExp(`/auditor/cases/${CASE_2}$`));
 
     await page.getByRole('link', { name: 'View taxpayer profile' }).click();
     await expect(page).toHaveURL(new RegExp(`/auditor/taxpayers/${TAXPAYER_2}$`));

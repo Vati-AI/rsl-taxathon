@@ -5,15 +5,15 @@
   "owner": "Kananelo",
   "area": "apps/taxpayer-web",
   "phase": "pilot",
-  "status": "BACKLOG",
+  "status": "IN_REVIEW",
   "priority": "P0",
   "depends_on": [
     "TAX-043",
     "TAX-046"
   ],
-  "claimed_by": null,
-  "branch": null,
-  "pr": null,
+  "claimed_by": "kananelo-claude-20261104-tax045",
+  "branch": "task/TAX-045",
+  "pr": "https://github.com/Vati-AI/rsl-taxathon/pull/160",
   "scope": "Allow structured responses against exact requests and show only approved taxpayer-facing statuses",
   "inputs": [
     "PROJECT.md",
@@ -27,19 +27,19 @@
   "acceptance": [
     {
       "text": "Allow structured responses against exact requests and show only approved taxpayer-facing statuses",
-      "done": false
+      "done": true
     },
     {
       "text": "Verify response attachments link to the right request and internal notes never appear",
-      "done": false
+      "done": true
     },
     {
       "text": "Record relevant tests and evidence, update task status and open a human-review PR",
-      "done": false
+      "done": true
     },
     {
       "text": "Follow docs/DESIGN_STANDARD.md; supply relevant viewport/state screenshots and keyboard/accessibility evidence for human visual review",
-      "done": false
+      "done": true
     }
   ],
   "verification": "Verify response attachments link to the right request and internal notes never appear",
@@ -49,6 +49,32 @@
     "update-project-task",
     "finish-task"
   ],
-  "evidence": [],
-  "notes": []
+  "evidence": [
+    {
+      "criterion": 1,
+      "text": "Observed 2026-11-04: taxpayer portal /taxpayer/requests lists the caller's own TAX-046 evidence requests and /taxpayer/requests/:id answers one. Structured response: every requested item answered exactly once by item_index with the taxpayer's own uploaded documents or a reason (vati_tax/responses/rules.py), stored as an immutable Vati Evidence Response; the request moves recorded -> sent -> responded (ADR-013 transitions) with a write entry evidence_request.responded in the TAX-059 ledger, in one transaction; idempotent replay, changed answers -> idempotency_conflict, second response -> already_responded, withdrawn -> request_withdrawn. Approved taxpayer-facing statuses only: recorded/sent -> awaiting_response (Response needed), responded -> response_sent, withdrawn -> no_longer_needed; any other status is not shown (ADR-019). Live HTTP on the isolated Frappe site: 13/13 checks passed; DB afterwards: answered request responded with 1 response and 1 ledger entry, the other taxpayer's request untouched."
+    },
+    {
+      "criterion": 2,
+      "text": "Observed 2026-11-04 on a fresh disposable site (scripts/frappe_dev.py verify, project rsl-taxathon-frappe-tax043): all 9 site-backed tests in vati_tax/responses/test_responses_bench.py pass - attachments must be the caller's own (same-tenant other taxpayer, other tenant and unknown evidence refused identically, request left recorded), a document already attached to one request cannot answer another (evidence_reused), answers must match the requested items, another taxpayer's or tenant's request is concealed (list, read, respond), stored response maps evidence to the exact item; internal notes and fields never appear (list and detail JSON contain no case_id, finding IDs, authoriser, case version or keys; detail keys equal the allowlist), taxpayer has no direct DocType access. 12 Frappe-free rule tests (allowlist, status mapping, unknown status hidden). Suite: 127 site-backed tests; the only 3 failures are pre-existing on main (TAX-046 x2, TAX-059 x1, Leseli). Live: list/response JSON contain none of the seeded internal marker values; /api/resource read of the request refused (403)."
+    },
+    {
+      "criterion": 4,
+      "text": "Observed 2026-11-04 on Windows 11, Edge, Playwright 1.64.1: frappe-ui components and shared tokens per docs/DESIGN_STANDARD.md (status badges text plus colour, one primary action, step-free single form, read-only states). 27 screenshots in docs/evidence/TAX-045 (requests list, open request, answered form, missing-answer errors, sent, unconfirmed send, answered read-only, withdrawn, not found; each at 1440/1024/390). npm run test:frontend:browser --workers=2: 123 passed, 0 failed, 9 skipped; responses.spec.ts runs axe (WCAG 2.1 A/AA serious/critical) and reflow on every state at all widths, a keyboard-only response, focus to the first unanswered item heading with the error as its accessible description, unique upload IDs per item. Human visual approval pending reviewer; not assumed by the agent."
+    },
+    {
+      "criterion": 3,
+      "text": "Observed 2026-11-04: tests and evidence recorded in criteria 1, 2 and 4, docs/evidence/TAX-045 and ADR-019; branch refreshed from main (no new commits; clean); status set to IN_REVIEW; human-review PR https://github.com/Vati-AI/rsl-taxathon/pull/160 opened against main and not merged by the agent. task.py finish could not run unmodified on Windows (dev.py check stops at two pre-existing POSIX file-mode tooling tests), so its steps were run by hand in the same order."
+    }
+  ],
+  "notes": [
+    {
+      "at": "2026-11-04T19:40:47.785754+00:00",
+      "text": "Claimed by kananelo-claude-20261104-tax045"
+    },
+    {
+      "at": "2026-11-04T20:29:40.019490+00:00",
+      "text": "Agent finished implementation and opened human review"
+    }
+  ]
 }

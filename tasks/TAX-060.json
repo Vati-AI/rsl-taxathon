@@ -65,6 +65,18 @@
     {
       "criterion": 3,
       "text": "Tests and results recorded under criteria 1, 2 and 4 (contract 22 examples; tests/contracts incl. 17 new; dev.py check steps pass except the 2 existing Windows-only tests/tooling file-permission tests; ruff, mypy and npm run check pass; auditor Playwright 34 pass; TAX-023 auditor harness 30 of 30). Status set to IN_REVIEW and review PR #158 opened; the agent will not merge."
+    },
+    {
+      "criterion": 2,
+      "text": "Denominators: every ratio is {numerator, denominator}; closure ratios share one denominator that excludes closures without a recorded outcome; breakdowns add up to totals; a zero denominator reads 'No data', never 0% (tests/contracts/test_management_summary.py, 18 tests; the vitest parser rejects 13 kinds of inconsistent or non-synthetic data). Missing data: records without timestamps are excluded, counted and listed in missing_data; an unavailable ledger is a listed gap, not zeros; a tampered chain shows as failed. Supervisor-only: in fixture mode the acting officer comes from TAX-042's X-Vati-Fixture-Role switch. The default auditor and the specialist get 403 forbidden with no data, another tenant gets 403, and an unknown role gets 400. The UI shows 'Supervisors only' with no figures, and the Supervision nav entry appears only when acting as supervisor. Signals about the viewer are withheld and no logins reach the response. management.spec.ts: 13 tests pass in Edge."
+    },
+    {
+      "criterion": 3,
+      "text": "Rerun after merging main (TAX-041, TAX-042, TAX-045): contract.py valid with 26 HTTP examples and 14 unique operations; tests/contracts pass (18 new); dev.py check steps pass except the 2 existing Windows-only tests/tooling file-permission tests; ruff, ruff format and mypy (156 files) pass; npm run check passes (100 auditor and 55 taxpayer unit tests, both builds); auditor Playwright 54 pass (17 screenshot tests skipped by design); TAX-023 auditor harness 33 of 33 at 1440, 1024 and 390px. Status IN_REVIEW with review PR #158; the agent will not merge."
+    },
+    {
+      "criterion": 4,
+      "text": "docs/evidence/TAX-060: screenshots at 1440, 1024 and 390px, acting as supervisor, plus loading, denied (specialist, server 403), empty and ledger-broken states, captured in Edge after the merge (README lists them). Tables only, with no decorative charts; shared PageLayout, StatePanel and CaseStatusBadge; status shown as text plus colour. axe (WCAG 2 A/AA) finds no serious or critical violations and there is no page-wide horizontal scroll at all three widths, in both management.spec.ts and the TAX-023 matrix (management route; 33 of 33 auditor harness tests pass). The window control and focusable table regions are reachable by keyboard, with visible focus. Visual approval is left to the reviewer."
     }
   ],
   "notes": [

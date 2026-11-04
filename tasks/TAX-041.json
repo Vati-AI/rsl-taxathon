@@ -5,7 +5,7 @@
   "owner": "Leseli",
   "area": "apps/auditor-web",
   "phase": "pilot",
-  "status": "IN_PROGRESS",
+  "status": "IN_REVIEW",
   "priority": "P0",
   "depends_on": [
     "TAX-040",
@@ -13,7 +13,7 @@
   ],
   "claimed_by": "leseli-claude-20261104-041",
   "branch": "task/TAX-041",
-  "pr": null,
+  "pr": "https://github.com/Vati-AI/rsl-taxathon/pull/157",
   "scope": "Display evidence citations, page/record references, relationships and clearly marked disputed matches",
   "inputs": [
     "PROJECT.md",
@@ -27,19 +27,19 @@
   "acceptance": [
     {
       "text": "Display evidence citations, page/record references, relationships and clearly marked disputed matches",
-      "done": false
+      "done": true
     },
     {
       "text": "Browser tests navigate finding-to-source and show uncertain ownership without implying guilt",
-      "done": false
+      "done": true
     },
     {
       "text": "Record relevant tests and evidence, update task status and open a human-review PR",
-      "done": false
+      "done": true
     },
     {
       "text": "Follow docs/DESIGN_STANDARD.md; supply relevant viewport/state screenshots and keyboard/accessibility evidence for human visual review",
-      "done": false
+      "done": true
     }
   ],
   "verification": "Browser tests navigate finding-to-source and show uncertain ownership without implying guilt",
@@ -49,11 +49,32 @@
     "update-project-task",
     "finish-task"
   ],
-  "evidence": [],
+  "evidence": [
+    {
+      "criterion": 1,
+      "text": "Case detail has Evidence, Relationships and Findings tabs and a record page (/auditor/cases/:caseId/evidence/:evidenceId). Evidence and entities load through listEvidence/listEntities (src/api/caseRecords.ts); findings come from the one listFindings client in src/api/review.ts (TAX-042), whose parser now also checks citation hashes and locators, finding kinds and the approval flag. Citations show document, version and page/record locator and link only when the cited SHA-256 matches the stored original. Relationships show parties, ownership and payments from FtM entities; yente candidates are labelled unreviewed/confirmed/rejected with 'A similarity score is not identity'; ownership cited by an unresolved finding is marked 'Uncertain: records disagree' with every stake shown as recorded. Discrepancies and missing evidence are separate groups. Fixture: listEvidence/listEntities from integration/api/fixtures/case_records.json; the TAX-041 findings are seeds in case_review.json, and every served citation resolves to a stored hash. After merging TAX-042: 76 auditor unit tests and 66 contract tests pass."
+    },
+    {
+      "criterion": 2,
+      "text": "apps/auditor-web/e2e/evidence.spec.ts (Playwright, Edge, fixture server): a finding citation opens the record page at 'Cited location: Page 3' with the full SHA-256, and 'Back to the finding' returns focus to that finding; a record locator (row 4) is followed by keyboard only; three ownership rows are marked 'Uncertain: records disagree' with 60%, 55% and 40% shown as recorded, and the page contains none of fraud/guilt/evasion/suspicious/offence/wrongdoing/abuse; discrepancies and missing evidence are separate groups; superseded version, failed extraction, empty, unknown and denied states. After merging TAX-042: auditor browser suites 41 passed (desktop and review projects; 17 opt-in screenshot captures skipped); tests/frontend harness 93 passed at 1440, 1024 and 390 px."
+    },
+    {
+      "criterion": 3,
+      "text": "npm run check passes (lint, format, typecheck, unit tests, both builds, frontend-test typecheck). With the venv Python: validate, contract.py (24 examples), contracts (66), integration, data, ai and backend pass; ruff check passes; mypy passes on 149 files. tests/tooling has 2 existing Windows-only file-permission failures (0o666 vs 0o600) unrelated to this change. Review PR #157."
+    },
+    {
+      "criterion": 4,
+      "text": "docs/evidence/TAX-041 (recaptured after merging TAX-042): evidence, relationships and findings tabs and two record pages at 1440/1024/390 px; loading, empty, denied, unavailable and not-found states at 1440/390 px; focus on a citation link and focus returned to a finding (Edge, Windows). axe WCAG 2 A/AA and 2.1 AA: no serious or critical violations on the three tabs and two record pages. Wide tables scroll inside labelled focusable regions. Visual approval is left to the reviewer."
+    }
+  ],
   "notes": [
     {
       "at": "2026-11-04T11:20:21.316310+00:00",
       "text": "Claimed by leseli-claude-20261104-041"
+    },
+    {
+      "at": "2026-11-04T19:19:22.813287+00:00",
+      "text": "Agent leseli-claude-20261104-041 finished implementation and opened review (https://github.com/Vati-AI/rsl-taxathon/pull/157). Cross-review requested from Kananelo or Keletso. All data is fixture-backed and synthetic."
     }
   ]
 }
