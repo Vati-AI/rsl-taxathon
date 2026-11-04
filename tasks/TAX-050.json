@@ -5,14 +5,14 @@
   "owner": "Gupta",
   "area": "ai",
   "phase": "pilot",
-  "status": "BACKLOG",
+  "status": "IN_PROGRESS",
   "priority": "P0",
   "depends_on": [
     "TAX-048",
     "TAX-024"
   ],
-  "claimed_by": null,
-  "branch": null,
+  "claimed_by": "claude-gupta-20261104-tax050",
+  "branch": "task/TAX-050",
   "pr": null,
   "scope": "Reconcile foreign charges/contracts/payments with declared tax treatment and flag unresolved trail",
   "inputs": [
@@ -46,5 +46,10 @@
     "finish-task"
   ],
   "evidence": [],
-  "notes": []
+  "notes": [
+    {
+      "at": "2026-11-04T08:52:21.011516+00:00",
+      "text": "Claimed by claude-gupta-20261104-tax050"
+    }
+  ]
 }
