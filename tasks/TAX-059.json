@@ -26,15 +26,15 @@
   "acceptance": [
     {
       "text": "Record reads, writes, approvals, overrides and reviewer identity; model review-only integrity signals",
-      "done": false
+      "done": true
     },
     {
       "text": "Test unauthorized override, immutable audit history and restricted supervisor access",
-      "done": false
+      "done": true
     },
     {
       "text": "Record relevant tests and evidence, update task status and open a human-review PR",
-      "done": false
+      "done": true
     }
   ],
   "verification": "Test unauthorized override, immutable audit history and restricted supervisor access",
@@ -44,7 +44,20 @@
     "update-project-task",
     "finish-task"
   ],
-  "evidence": [],
+  "evidence": [
+    {
+      "criterion": 1,
+      "text": "Vati Audit Event becomes the tenant ledger: category (read/write/approval/override/denied), target_actor, reason and a per-tenant SHA-256 hash chain (chain_seq, prev_hash, entry_hash, unique chain_key), sealed in audit/ledger.py and re-checked by the controller. Recorded: every TAX-046 decision and evidence-request event with actor and role (approvals carry the reviewer), case.read (get_case_review_state), evidence.read (get_evidence), ledger.read, supervisor overrides (override.record, reason 20-2000 chars) and every refused decision, override or ledger action as <action>.denied. Review-only integrity signals (repeated_overrides, repeated_separation_of_duties_attempts, ledger_integrity) carry status review_only, change nothing and are withheld from the supervisor they concern. Supervisor read contract for TAX-060: get_ledger, verify_ledger, get_integrity_signals, get_ledger_summary. Post-sync patch seals TAX-046 events. ADR-015."
+    },
+    {
+      "criterion": 2,
+      "text": "audit/test_service.py and audit/test_ledger.py (39 Frappe-free tests, pass): unauthorised override by auditor, specialist, service or taxpayer is refused and kept as override.record.denied; a supervisor overriding their own work is refused and kept; repeated refused self-approval is kept as decision.approve.denied and raises a review-only signal; immutable history: edited, rehashed, removed and duplicated entries are reported by verify_chain without echoing content; restricted supervisor access: ledger entries, verify, signals and summary refuse every non-supervisor role (refusal recorded), a supervisor of another tenant sees nothing of this tenant, and a supervisor never sees signals about themselves. Bench tests in audit/test_ledger_bench.py (edit/delete/forged insert refused, direct database edit detected, Desk read supervisor-only, patch sealing) are written for frappe_dev.py verify and were NOT run: Docker is not installed on this machine."
+    },
+    {
+      "criterion": 3,
+      "text": "Run with the venv Python (python3 is absent here): validate.py, compileall, tests/data 3, tests/integration 94, tests/ai refund 29 and imported 19, contract.py, tests/contracts 44, backend 241 (36 skipped bench) all pass; ruff check and format pass on the quality sources; mypy passes on 126 files. tests/tooling: 41 of 43 pass; the 2 failures check Unix 0600 modes of generated Jube/OpenAleph env files, which Windows cannot represent, unrelated to this change. Review PR opened for Edga (backend area owner)."
+    }
+  ],
   "notes": [
     {
       "at": "2026-11-04T09:25:26.768195+00:00",
