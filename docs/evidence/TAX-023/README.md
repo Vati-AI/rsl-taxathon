@@ -23,9 +23,9 @@ password was used.
 ## Results (`results.json`)
 
 `npm run test:frontend:browser`: **66 passed, 0 failed, 0 flaky**; the 9 skipped
-are the opt-in visual tests (run separately below). `results.json` is the
-Playwright JSON report of that run, summarised (run started
-2026-11-04T09:29Z). Runs on the final merged branch are listed in the PR.
+are the opt-in visual tests (run separately below). Same result in two full
+runs: before and after merging `main` at 2ad25f2. `results.json` is the
+Playwright JSON report of the final run on `308205b`, summarised.
 
 | Spec               | 1440px | 1024px | 390px |
 | ------------------ | ------ | ------ | ----- |

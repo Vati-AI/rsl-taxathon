@@ -1,7 +1,8 @@
 {
  "generated_by": "npm run test:frontend:browser (Playwright 1.64.1 JSON reporter, summarised)",
  "browser": "Microsoft Edge 156.0.4314.50 on Windows 11",
- "started_at": "2026-11-04T09:29:06.034Z",
+ "branch_commit": "308205b (task/TAX-023 merged with main 2ad25f2)",
+ "started_at": "2026-11-04T09:54:43.341Z",
  "stats": {
   "expected": 66,
   "unexpected": 0,
