@@ -99,7 +99,7 @@ class RefundClaimPortalTests(IntegrationTestCase):
         cls.tp_b = cls.taxpayer(cls.t1, "Synthetic Border Retail", "430001002")
         cls.tp_c = cls.taxpayer(cls.t2, "Synthetic Highland Imports", "430001001")
         cls.users = {}
-        grants = [
+        grants: list[tuple[str, str, policy.Role, str | None]] = [
             ("taxpayer-a", cls.t1, policy.TAXPAYER, cls.tp_a),
             ("taxpayer-b", cls.t1, policy.TAXPAYER, cls.tp_b),
             ("taxpayer-c", cls.t2, policy.TAXPAYER, cls.tp_c),

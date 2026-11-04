@@ -113,9 +113,9 @@ defineExpose({ focusPicker });
       <li
         v-for="item in uploads.items"
         :key="item.id"
-        class="flex flex-wrap items-start justify-between gap-3 p-4"
+        class="flex flex-col gap-3 p-4 sm:flex-row sm:items-start sm:justify-between"
       >
-        <div class="min-w-0 flex-1">
+        <div class="min-w-0 sm:flex-1">
           <p class="break-all text-base font-medium text-ink-gray-9">{{ item.name }}</p>
           <p class="mt-0.5 text-sm text-ink-gray-6">
             {{ documentTypeLabel(item.documentType) }} · {{ formatSize(item.size) }}

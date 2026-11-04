@@ -112,7 +112,9 @@ def validate_claim(raw: Mapping[str, Any], today: datetime.date) -> ClaimRequest
 
     period = _text(raw.get("period"))
     if period is None:
-        errors.append(FieldError("period", "required", "Enter the tax period, for example 2026-09."))
+        errors.append(
+            FieldError("period", "required", "Enter the tax period, for example 2026-09.")
+        )
     elif not _MONTH.fullmatch(period):
         errors.append(
             FieldError(

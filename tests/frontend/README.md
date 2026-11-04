@@ -39,17 +39,18 @@ responses are small JSON and still come from it, including its access rules.
 
 ## What is in here
 
-| File                                 | Purpose                                                                                |
-| ------------------------------------ | -------------------------------------------------------------------------------------- |
-| `playwright.config.ts`               | One project per width: `desktop-1440`, `tablet-1024`, `mobile-390`.                    |
-| `support/matrix.ts`                  | Viewport, route and keyboard test matrix for both portals.                             |
-| `support/sessions.ts`                | Role/session mocks (below).                                                            |
-| `support/checks.ts`                  | axe (WCAG 2.1 A/AA, serious/critical), reflow and focus helpers.                       |
-| `support/warmup.ts`                  | Visits taxpayer routes once so Vite's first-load reload stays out of tests.            |
-| `support/auditor-preview.config.mts` | Vite preview of the built auditor with `/api` sent to the fixture API.                 |
-| `auditor.spec.ts`                    | Positive navigation, denied access, keyboard, axe/reflow matrix.                       |
-| `taxpayer.spec.ts`                   | Positive navigation, guest and API-denied access, logout, keyboard, axe/reflow matrix. |
-| `visual.spec.ts`                     | Opt-in screenshots and baseline comparison (below).                                    |
+| File                                 | Purpose                                                                                                                                                                 |
+| ------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `playwright.config.ts`               | One project per width: `desktop-1440`, `tablet-1024`, `mobile-390`.                                                                                                     |
+| `support/matrix.ts`                  | Viewport, route and keyboard test matrix for both portals.                                                                                                              |
+| `support/sessions.ts`                | Role/session mocks (below).                                                                                                                                             |
+| `support/checks.ts`                  | axe (WCAG 2.1 A/AA, serious/critical), reflow and focus helpers.                                                                                                        |
+| `support/warmup.ts`                  | Visits taxpayer routes once so Vite's first-load reload stays out of tests.                                                                                             |
+| `support/auditor-preview.config.mts` | Vite preview of the built auditor with `/api` sent to the fixture API.                                                                                                  |
+| `auditor.spec.ts`                    | Positive navigation, denied access, keyboard, axe/reflow matrix.                                                                                                        |
+| `taxpayer.spec.ts`                   | Positive navigation, guest and API-denied access, logout, keyboard, axe/reflow matrix.                                                                                  |
+| `visual.spec.ts`                     | Opt-in screenshots and baseline comparison (below).                                                                                                                     |
+| `claim.spec.ts`                      | TAX-043 VAT refund claim: send, duplicate retry, invalid documents, cross-scope evidence, keyboard, axe/reflow. `CAPTURE_SCREENSHOTS=1` writes `docs/evidence/TAX-043`. |
 
 ## Session mocks
 
@@ -67,6 +68,19 @@ Everything is answered inside the test browser; no account or password exists.
   - `no-membership`: signed in but not linked to a taxpayer; refused with 403.
   - `revoked`: the portal loaded, then the membership was removed; data calls
     are refused.
+
+  TAX-043 adds `vati_tax.evidence.api.upload_evidence` and
+  `vati_tax.portal.api.submit_refund_claim`. The upload mock requires the
+  session's `X-Vati-Tenant-ID` and refuses files the way TAX-032 reports it
+  (HTTP 422 with the `code:reason` message title); content checks the browser
+  cannot make are keyed off the file name (`renamed…` → `extension_mismatch`,
+  `broken…` → `malformed_document`). The claim mock replays the same
+  idempotency key with the same answers and refuses changed answers
+  (`idempotency_conflict`). Tests can set `dropNextSendResponse` (store the
+  claim, then drop the response) or `rejectEvidenceOnSend` (the server's
+  evidence-ownership refusal). The server rules themselves are tested on a
+  Frappe site by `vati_tax/portal/test_refund_claim_bench.py`.
+
 - **Auditor workspace**: the fixture API (`scripts/fixture_api.py`, TAX-040)
   has one signed-in officer principal scoped to one synthetic tenant. Nothing
   is faked in the browser:

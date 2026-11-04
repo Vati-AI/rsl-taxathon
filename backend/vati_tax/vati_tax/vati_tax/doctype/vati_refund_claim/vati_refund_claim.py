@@ -22,7 +22,9 @@ REASONS = ("excess_input_vat", "zero_rated_supplies", "other")
 EVIDENCE = "Vati Evidence"
 
 
-def foreign_evidence_ids(tenant_id: str, taxpayer_id: str, evidence_ids: Iterable[str]) -> list[str]:
+def foreign_evidence_ids(
+    tenant_id: str, taxpayer_id: str, evidence_ids: Iterable[str]
+) -> list[str]:
     """The IDs that are not evidence of this tenant and taxpayer.
 
     A missing ID and another taxpayer's (or tenant's) evidence are reported the
