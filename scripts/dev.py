@@ -142,6 +142,8 @@ def check():
         ],
         ["python3", "-m", "unittest", "discover", "-s", "tests/data", "-v"],
         ["python3", "-m", "unittest", "discover", "-s", "tests/tooling", "-v"],
+        # TAX-048 deterministic refund checks; graph tests skip without LangGraph.
+        ["python3", "-m", "unittest", "discover", "-s", "tests/ai", "-p", "test_refund*.py"],
         ["python3", "integration/api/contract.py"],
         ["python3", "-m", "unittest", "discover", "-s", "tests/contracts", "-v"],
         # Frappe-free app logic (portal boundary/fixtures); bench tests cover the rest.
