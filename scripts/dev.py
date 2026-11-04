@@ -4,11 +4,17 @@ import argparse
 import json
 import re
 import subprocess
+import sys
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
-from urllib.parse import urlsplit
+from urllib.parse import parse_qs, urlsplit
 
 ROOT = Path(__file__).resolve().parents[1]
+if str(ROOT / "scripts") not in sys.path:
+    sys.path.insert(0, str(ROOT / "scripts"))
+
+import fixture_api  # noqa: E402
+
 # Built Vue auditor app (`npm run build:auditor`). Optional: without a build the
 # starter page is served so the fixture environment stays dependency-free.
 AUDITOR_DIST = ROOT / "apps/auditor-web/dist"
@@ -75,7 +81,21 @@ def payload(path):
 
 class Handler(SimpleHTTPRequestHandler):
     def do_GET(self):
-        path = urlsplit(self.path).path
+        url = urlsplit(self.path)
+        path = url.path
+        if path.startswith("/api/v1/"):
+            # Contract-shaped fixture operations (TAX-040); first value wins per query key.
+            query = {k: v[0] for k, v in parse_qs(url.query, keep_blank_values=True).items()}
+            code, extra, data = fixture_api.handle("GET", path, dict(self.headers), query)
+            body = json.dumps(data).encode()
+            self.send_response(code)
+            self.send_header("Content-Type", "application/json")
+            for name, value in extra.items():
+                self.send_header(name, value)
+            self.send_header("Content-Length", str(len(body)))
+            self.end_headers()
+            self.wfile.write(body)
+            return
         if path.startswith("/api/"):
             code, data = payload(path)
             body = json.dumps(data).encode()
@@ -119,9 +139,13 @@ def check():
             "backend/vati_tax/vati_tax",
             "ai",
             "integration/api",
+            "integration/jube",
         ],
         ["python3", "-m", "unittest", "discover", "-s", "tests/data", "-v"],
         ["python3", "-m", "unittest", "discover", "-s", "tests/tooling", "-v"],
+        ["python3", "-m", "unittest", "discover", "-s", "tests/integration", "-v"],
+        # TAX-048 deterministic refund checks; graph tests skip without LangGraph.
+        ["python3", "-m", "unittest", "discover", "-s", "tests/ai", "-p", "test_refund*.py"],
         ["python3", "integration/api/contract.py"],
         ["python3", "-m", "unittest", "discover", "-s", "tests/contracts", "-v"],
         # Frappe-free app logic (portal boundary/fixtures); bench tests cover the rest.

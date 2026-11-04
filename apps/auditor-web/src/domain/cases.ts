@@ -1,44 +1,107 @@
-import type { FixtureCase } from '../api/fixtures';
+import type { Case, CaseStatus, RefundLane, ServiceLink, TaxpayerType } from '../api/vati';
 import { compareDecimal } from './money';
 
-export type BadgeTheme = 'gray' | 'blue' | 'green' | 'amber' | 'red';
+export type BadgeTheme = 'gray' | 'blue' | 'green' | 'amber' | 'red' | 'violet';
 
-const SCENARIOS: Record<string, string> = {
-  legitimate_refund: 'Legitimate unusual refund',
-  related_party_risk: 'Related-party charges',
-  ambiguous_service: 'Employment or consultancy',
-  imported_services_gap: 'Imported services evidence gap',
-  unverified_legal_route: 'No verified legal route',
+// Status is a projection of the Jube workflow. Colours mark where a case is in
+// processing; none of them is a verdict about the taxpayer.
+const STATUSES: Record<CaseStatus, { label: string; theme: BadgeTheme }> = {
+  RECEIVED: { label: 'Received', theme: 'gray' },
+  VALIDATING: { label: 'Validating', theme: 'gray' },
+  INVESTIGATING: { label: 'Investigating', theme: 'blue' },
+  AWAITING_EVIDENCE: { label: 'Awaiting evidence', theme: 'amber' },
+  AWAITING_HUMAN: { label: 'Awaiting officer review', theme: 'violet' },
+  RESOLVED: { label: 'Resolved', theme: 'green' },
+  FAILED_PROCESSING: { label: 'Processing failed', theme: 'red' },
 };
 
-// Review lanes are routing signals for an officer, never verdicts, so no lane
-// uses the red "danger" theme. Keys come from the shared fixture contract.
-const REVIEW_LANES: Record<string, { label: string; theme: BadgeTheme }> = {
-  human_clearance: { label: 'Officer clearance', theme: 'green' },
-  targeted_evidence_request: { label: 'Targeted evidence request', theme: 'amber' },
-  specialist_review: { label: 'Specialist review', theme: 'blue' },
-  policy_gap_review: { label: 'Policy gap review', theme: 'gray' },
+const LANES: Record<RefundLane, string> = {
+  fast: 'Fast',
+  standard: 'Standard',
+  targeted: 'Targeted',
 };
 
-function formatKey(key: string): string {
+const TAXPAYER_TYPES: Record<TaxpayerType, string> = {
+  individual: 'Individual',
+  company: 'Company',
+  partnership: 'Partnership',
+  trust: 'Trust',
+  other: 'Other entity',
+};
+
+const SERVICES: Record<string, string> = {
+  frappe: 'Taxpayer portal (Frappe)',
+  jube: 'Case management (Jube)',
+  docling: 'Document extraction (Docling)',
+  openaleph: 'Evidence index (OpenAleph)',
+  yente: 'Entity matching (yente)',
+  langgraph: 'Investigation workflow (LangGraph)',
+};
+
+const SYNC_ERRORS: Record<string, string> = {
+  upstream_timeout: 'timed out',
+  upstream_unavailable: 'was unavailable',
+};
+
+export function formatKey(key: string): string {
   const text = key.replaceAll('_', ' ').trim();
   return text ? text[0].toUpperCase() + text.slice(1) : 'Unknown';
 }
 
-export function scenarioLabel(key: string): string {
-  return SCENARIOS[key] ?? formatKey(key);
+export function statusInfo(status: CaseStatus) {
+  return STATUSES[status] ?? { label: formatKey(status), theme: 'gray' as BadgeTheme };
 }
 
-export function reviewLane(key: string): { label: string; theme: BadgeTheme } {
-  return REVIEW_LANES[key] ?? { label: formatKey(key), theme: 'gray' };
+export function laneLabel(lane: RefundLane | null): string {
+  return lane ? LANES[lane] : 'Not set';
 }
 
-export type SortKey = 'id' | 'name' | 'scenario' | 'refund_claim' | 'supported_refund' | 'expected';
+export function taxpayerTypeLabel(type: TaxpayerType): string {
+  return TAXPAYER_TYPES[type] ?? formatKey(type);
+}
+
+export function serviceLabel(service: string): string {
+  return SERVICES[service] ?? formatKey(service);
+}
+
+export interface ProcessingState {
+  kind: 'ok' | 'pending' | 'failed';
+  /** Short, user-facing explanation; empty when processing is complete. */
+  text: string;
+  failures: ServiceLink[];
+}
+
+/** Summarise processing from the case status and its service sync states. */
+export function processingState(item: Case): ProcessingState {
+  const failures = item.service_links.filter((link) => link.sync.state === 'failed');
+  const pending = item.service_links.filter((link) => link.sync.state === 'pending');
+  if (failures.length || item.status === 'FAILED_PROCESSING') {
+    const text = failures.length
+      ? failures
+          .map((link) => {
+            const what = SYNC_ERRORS[link.sync.error_code ?? ''] ?? 'failed';
+            return `${serviceLabel(link.service)} ${what}`;
+          })
+          .join('; ')
+      : 'Processing failed';
+    return { kind: 'failed', text, failures };
+  }
+  if (pending.length || item.status === 'RECEIVED' || item.status === 'VALIDATING') {
+    const text = pending.length
+      ? `Waiting for ${pending.map((link) => serviceLabel(link.service)).join(', ')}`
+      : 'Processing';
+    return { kind: 'pending', text, failures: [] };
+  }
+  return { kind: 'ok', text: '', failures: [] };
+}
+
+export type SortKey =
+  'display_id' | 'taxpayer' | 'status' | 'refund_lane' | 'refund_claim' | 'updated_at';
 export type SortDirection = 'asc' | 'desc';
 
 export interface QueueQuery {
   search: string;
-  scenario: string;
+  status: string;
   lane: string;
   sort: SortKey;
   direction: SortDirection;
@@ -47,42 +110,51 @@ export interface QueueQuery {
 }
 
 export interface QueuePage {
-  rows: FixtureCase[];
+  rows: Case[];
   total: number;
   page: number;
   pageCount: number;
 }
 
-export function queuePage(cases: FixtureCase[], query: QueueQuery): QueuePage {
+function sortValue(item: Case, key: SortKey): string {
+  switch (key) {
+    case 'taxpayer':
+      return item.taxpayer.display_name;
+    case 'status':
+      return statusInfo(item.status).label;
+    case 'refund_lane':
+      return item.refund_lane ?? '';
+    case 'updated_at':
+      return item.updated_at;
+    default:
+      return item.display_id;
+  }
+}
+
+export function queuePage(cases: Case[], query: QueueQuery): QueuePage {
   const needle = query.search.trim().toLocaleLowerCase();
   const filtered = cases.filter(
     (item) =>
       (!needle ||
-        item.id.toLocaleLowerCase().includes(needle) ||
-        item.name.toLocaleLowerCase().includes(needle)) &&
-      (!query.scenario || item.scenario === query.scenario) &&
-      (!query.lane || item.expected === query.lane),
+        item.display_id.toLocaleLowerCase().includes(needle) ||
+        item.taxpayer.display_name.toLocaleLowerCase().includes(needle)) &&
+      (!query.status || item.status === query.status) &&
+      (!query.lane ||
+        (query.lane === 'none' ? item.refund_lane === null : item.refund_lane === query.lane)),
   );
   const factor = query.direction === 'asc' ? 1 : -1;
   const sorted = [...filtered].sort((a, b) => {
-    const key = query.sort;
-    if (key === 'refund_claim' || key === 'supported_refund') {
+    if (query.sort === 'refund_claim') {
+      const left = a.refund_claim?.amount ?? null;
+      const right = b.refund_claim?.amount ?? null;
       // Missing amounts stay last whatever the direction.
-      if (a[key] === null || b[key] === null) return compareDecimal(a[key], b[key]);
-      return factor * compareDecimal(a[key], b[key]);
+      if (left === null || right === null) return compareDecimal(left, right);
+      return factor * compareDecimal(left, right);
     }
-    const left =
-      key === 'scenario'
-        ? scenarioLabel(a[key])
-        : key === 'expected'
-          ? reviewLane(a[key]).label
-          : a[key];
-    const right =
-      key === 'scenario'
-        ? scenarioLabel(b[key])
-        : key === 'expected'
-          ? reviewLane(b[key]).label
-          : b[key];
+    const left = sortValue(a, query.sort);
+    const right = sortValue(b, query.sort);
+    if (query.sort === 'refund_lane' && (!left || !right))
+      return left === right ? 0 : left ? -1 : 1;
     return factor * left.localeCompare(right, undefined, { numeric: true });
   });
   const pageCount = Math.max(1, Math.ceil(sorted.length / query.pageSize));
@@ -96,12 +168,13 @@ export function queuePage(cases: FixtureCase[], query: QueueQuery): QueuePage {
   };
 }
 
-export function laneCounts(
-  cases: FixtureCase[],
-): { key: string; label: string; theme: BadgeTheme; count: number }[] {
-  const counts = new Map<string, number>();
-  for (const item of cases) counts.set(item.expected, (counts.get(item.expected) ?? 0) + 1);
-  return [...counts.entries()]
-    .map(([key, count]) => ({ key, count, ...reviewLane(key) }))
-    .sort((a, b) => b.count - a.count || a.label.localeCompare(b.label));
+/** Counts per status in display order, omitting statuses with no cases. */
+export function statusCounts(cases: Case[]) {
+  return (Object.keys(STATUSES) as CaseStatus[])
+    .map((status) => ({
+      status,
+      ...statusInfo(status),
+      count: cases.filter((item) => item.status === status).length,
+    }))
+    .filter((entry) => entry.count > 0);
 }

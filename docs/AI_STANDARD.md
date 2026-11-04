@@ -1,6 +1,6 @@
 # V1 AI implementation and evaluation
 
-Gupta implements; Yellow owns independent evaluation fixtures. LangGraph coordinates bounded investigative steps, not final tax/enforcement decisions. Use typed state and tool inputs/outputs. Keep pure calculations/rules deterministic; use models for tasks that require interpretation.
+Gupta implements; Leseli owns independent evaluation fixtures (reassigned from Yellow). LangGraph coordinates bounded investigative steps, not final tax/enforcement decisions. Use typed state and tool inputs/outputs. Keep pure calculations/rules deterministic; use models for tasks that require interpretation.
 
 Record workflow/prompt/model identifier and configuration, evidence IDs, tool outcomes and human review history per run. Document text and retrieved results are untrusted data, never permission to change tool policy. Tools use allowlisted operations with scoped credentials and finite time/call/token budgets; task authors specify those budgets and record actual cost/latency. No arbitrary shell, URL fetch or database access from model output.
 

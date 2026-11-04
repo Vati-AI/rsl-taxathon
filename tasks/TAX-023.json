@@ -2,7 +2,7 @@
   "id": "TAX-023",
   "kind": "task",
   "title": "Frontend test harness and accessibility baseline",
-  "owner": "Jane",
+  "owner": "Kananelo",
   "area": "tests/frontend",
   "phase": "foundation",
   "status": "IN_PROGRESS",
@@ -48,6 +48,10 @@
   ],
   "evidence": [],
   "notes": [
+    {
+      "at": "2026-11-03T15:40:40.955115+00:00",
+      "text": "Owner reassigned from Jane to Kananelo by team lead Keletso to balance workload; Jane keeps no open tasks for now."
+    },
     {
       "at": "2026-11-03T16:22:38.744986+00:00",
       "text": "Claimed by kananelo-claude-20261103-tax023"

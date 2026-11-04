@@ -1,0 +1,33 @@
+{
+  "name": "list_cases_empty_queue",
+  "operation_id": "listCases",
+  "scenario": "SYN-005",
+  "synthetic": true,
+  "description": "A filter with no matching cases returns an empty page with 200, not an error.",
+  "request": {
+    "method": "GET",
+    "path": "/api/v1/cases",
+    "headers": {
+      "Authorization": "Bearer synthetic-dev-token-not-a-secret",
+      "X-Vati-Tenant-ID": "10000000-0000-4000-8000-000000000001",
+      "X-Correlation-ID": "c0000000-0000-4000-8000-000000000020"
+    },
+    "query": {
+      "assigned_to": "me",
+      "status": "RESOLVED"
+    }
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "X-Correlation-ID": "c0000000-0000-4000-8000-000000000020"
+    },
+    "body": {
+      "data": [],
+      "meta": {
+        "next_cursor": null,
+        "has_more": false
+      }
+    }
+  }
+}

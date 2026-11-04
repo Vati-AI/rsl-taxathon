@@ -1,7 +1,6 @@
 # frontend-qa
 
-Owner: Jane (reassignment to Kananelo proposed in PR #106). See `tasks/README.md`
-for work and `docs/ARCHITECTURE.md` for boundaries.
+Owner: Kananelo (reassigned from Jane). See `tasks/README.md` for work and `docs/ARCHITECTURE.md` for boundaries.
 
 Cross-portal browser harness from TAX-023. It checks the auditor workspace and
 the taxpayer portal at the three design-standard widths (docs/DESIGN_STANDARD.md)

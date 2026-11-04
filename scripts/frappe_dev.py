@@ -1,14 +1,43 @@
-"""Initialize/start an isolated Frappe developer site; never touches existing sites."""
+"""Initialize/start/verify an isolated Frappe developer site; never touches existing sites."""
 
 import argparse
 import json
 import os
+import re
 import secrets
 import subprocess
+import time
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 COMPOSE = ["docker", "compose", "-f", "docker-compose.frappe.yml"]
+DEFAULT_PROJECT = "rsl-taxathon-frappe-dev"
+PROJECT_RE = re.compile(r"^rsl-taxathon-frappe-[a-z0-9-]+$")
+VERIFY_SITE_RE = re.compile(r"^verify-[0-9]{8}t[0-9]{6}\.localhost$")
+
+
+def configure(project: str, http_port: int, socketio_port: int) -> list[str]:
+    """Select an isolated Compose project and loopback ports for this checkout.
+
+    Defaults keep the documented stack; another checkout passes its own project and ports so
+    it never recreates containers that a different checkout mounted.
+    """
+    if not PROJECT_RE.match(project):
+        raise SystemExit("Project must look like rsl-taxathon-frappe-<name> (lowercase, digits, -)")
+    for port in (http_port, socketio_port):
+        if not 1024 < port < 65536:
+            raise SystemExit("Ports must be between 1025 and 65535")
+    os.environ["FRAPPE_HTTP_PORT"] = str(http_port)
+    os.environ["FRAPPE_SOCKETIO_PORT"] = str(socketio_port)
+    return ["docker", "compose", "-p", project, "-f", "docker-compose.frappe.yml"]
+
+
+def verify_site_name(now: float | None = None) -> str:
+    """A unique, disposable site name; verify refuses to create or drop anything else."""
+    stamp = time.strftime("%Y%m%dt%H%M%S", time.gmtime(now))
+    name = f"verify-{stamp}.localhost"
+    assert VERIFY_SITE_RE.match(name)
+    return name
 
 
 def run(args, **kwargs):
@@ -62,17 +91,98 @@ with open('/workspace/bench.log', 'a') as log:
 """
 
 
+VERIFY = r"""
+import json, os, re, subprocess, sys, pathlib
+root = pathlib.Path('/workspace/frappe-bench')
+site = os.environ['VERIFY_SITE']
+if not re.match(r'^verify-[0-9]{8}t[0-9]{6}\.localhost$', site):
+    sys.exit('Refusing: verify only creates/drops disposable verify-* sites')
+pw = os.environ['TAXATHON_DB_ROOT_PASSWORD']
+python = str(root / 'env/bin/python')
+def cmd(args, capture=True):
+    result = subprocess.run(args, cwd=root, text=True, capture_output=capture)
+    if result.returncode:
+        sys.stderr.write((result.stdout or '')[-2000:] + (result.stderr or '')[-2000:])
+        sys.exit('Verification step failed: ' + ' '.join(args[:5]))
+    return result.stdout if capture else ''
+report = {'site': site}
+created = False
+try:
+    if (root / 'sites' / site).exists():
+        sys.exit('Verification site already exists; refusing to reuse it')
+    cmd(['bench', 'new-site', site, '--db-root-password', pw, '--admin-password',
+         os.environ['VERIFY_ADMIN_PASSWORD'], '--mariadb-user-host-login-scope=%'])
+    created = True
+    cmd(['bench', '--site', site, 'install-app', 'vati_tax'])
+    report['installed_apps'] = cmd(['bench', '--site', site, 'list-apps', '--format', 'json']).strip()
+    for n in (1, 2):
+        cmd(['bench', '--site', site, 'migrate'])
+        report[f'migrate_{n}'] = 'ok'
+    report['health'] = cmd(['bench', '--site', site, 'execute', 'vati_tax.api.health']).strip()
+    report['module_defs'] = cmd(['bench', '--site', site, 'execute', 'frappe.get_all', '--kwargs',
+        json.dumps({'doctype': 'Module Def', 'filters': {'app_name': 'vati_tax'}, 'pluck': 'name'})]).strip()
+    report['import'] = cmd([python, '-c', 'import vati_tax, vati_tax.api, vati_tax.hooks, '
+        'vati_tax.portal.access, vati_tax.www.taxpayer; print(vati_tax.__version__ if hasattr(vati_tax, "__version__") else "ok")']).strip()
+    app = root / 'apps' / 'vati_tax'
+    tests = subprocess.run([python, '-m', 'unittest', 'discover', '-s', str(app / 'vati_tax'),
+        '-t', str(app), '-p', 'test_*.py'], cwd=root, text=True, capture_output=True)
+    report['app_tests_exit'] = tests.returncode
+    report['app_tests_summary'] = [l for l in tests.stderr.splitlines() if l.startswith(('Ran ', 'OK', 'FAILED'))]
+finally:
+    if created and os.environ.get('VERIFY_KEEP') != '1':
+        cmd(['bench', 'drop-site', site, '--force', '--no-backup', '--db-root-password', pw])
+        report['dropped_after_verify'] = True
+print(json.dumps(report, indent=2))
+if report.get('app_tests_exit'):
+    sys.exit('vati_tax tests failed')
+"""
+
+
+def read_env_values():
+    content = (ROOT / ".env").read_text()
+    return dict(
+        line.split("=", 1)
+        for line in content.splitlines()
+        if "=" in line and not line.startswith("#")
+    )
+
+
+def verify(keep: bool) -> None:
+    """Clean-site proof: install vati_tax on a new site, migrate twice, import, run app tests."""
+    values = read_env_values()
+    env = os.environ.copy()
+    env.update(
+        TAXATHON_DB_ROOT_PASSWORD=values["FRAPPE_DB_PASSWORD"],
+        VERIFY_ADMIN_PASSWORD=secrets.token_urlsafe(24),
+        VERIFY_SITE=verify_site_name(),
+        VERIFY_KEEP="1" if keep else "0",
+    )
+    command = COMPOSE + ["exec", "-T"]
+    for key in ["TAXATHON_DB_ROOT_PASSWORD", "VERIFY_ADMIN_PASSWORD", "VERIFY_SITE", "VERIFY_KEEP"]:
+        command += ["-e", key]
+    run(command + ["frappe", "python", "-c", VERIFY], env=env)
+
+
 def main():
+    global COMPOSE
     p = argparse.ArgumentParser()
-    p.add_argument("command", choices=["init", "start", "status"])
+    p.add_argument("command", choices=["init", "start", "status", "verify"])
+    p.add_argument("--project", default=DEFAULT_PROJECT, help="Compose project for this checkout")
+    p.add_argument("--http-port", type=int, default=58000)
+    p.add_argument("--socketio-port", type=int, default=59000)
+    p.add_argument("--keep", action="store_true", help="verify: keep the disposable site")
     a = p.parse_args()
+    COMPOSE = configure(a.project, a.http_port, a.socketio_port)
     if a.command == "status":
         run(COMPOSE + ["ps"])
+        return
+    if a.command == "verify":
+        verify(a.keep)
         return
     if a.command == "start":
         run(COMPOSE + ["exec", "-d", "frappe", "python", "-c", START])
         print(
-            "Developer start requested; check http://127.0.0.1:58000 and container /workspace/bench.log"
+            f"Developer start requested; check http://127.0.0.1:{a.http_port} and container /workspace/bench.log"
         )
         return
     subprocess.check_call(["python3", "scripts/dev_env.py"], cwd=ROOT)

@@ -1,5 +1,5 @@
 import { onBeforeUnmount, shallowRef, watch, type WatchSource } from 'vue';
-import { ApiError } from '../api/fixtures';
+import { ApiError } from '../api/errors';
 
 export type LoadState<T> =
   { status: 'loading' } | { status: 'ready'; data: T } | { status: 'error'; error: ApiError };

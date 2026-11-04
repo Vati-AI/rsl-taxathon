@@ -2,14 +2,20 @@
 
 Owner: Leseli. See `tasks/README.md` for work and `docs/ARCHITECTURE.md` for boundaries.
 
-Officer-facing Vue 3 + TypeScript + Frappe UI app (ADR-004). It reads the
-synthetic fixture contract only (docs/API_CONTRACTS.md); live services and
-investigation actions arrive with later tasks.
+Officer-facing Vue 3 + TypeScript + Frappe UI app (ADR-004). It reads the Vati
+`/api/v1` contract (`listCases`, `getCase`, `getTaxpayer`; ADR-005) through
+`src/api/vati.ts`, served from synthetic fixtures by `scripts/dev.py serve`.
+Live services and investigation actions arrive with later tasks.
 
-Screens: overview (review lanes), case queue (search/filter/sort/pagination),
-case detail skeleton (evidence, entities and findings shown as not available in
-fixture mode), component showcase (`/auditor/showcase`). Shared tokens live in
-`apps/shared/design`.
+Screens: overview (assigned cases by status, failed-processing alert), my case
+queue (search, status and refund-lane filters, sorting, pagination, selection
+reasons and processing state), case detail (selection reasons, taxpayer
+summary, per-service processing; evidence, entities and findings shown as not
+available in fixture mode), taxpayer profile, component showcase
+(`/auditor/showcase`). Shared tokens live in `apps/shared/design`.
+
+The request tenant comes from `src/session.ts` (fixture tenant unless
+`VITE_VATI_TENANT_ID` is set); the server, not this header, decides access.
 
 ```sh
 npm ci
@@ -24,4 +30,4 @@ Browser tests: install a browser once with `npx playwright install chromium`,
 or on Windows use the installed Edge with `PLAYWRIGHT_CHANNEL=msedge`. Set
 `PYTHON` if `python3` is not on PATH. Review screenshots:
 `CAPTURE_SCREENSHOTS=1 npm run test:auditor:browser -- screenshots` writes to
-`docs/evidence/TAX-020`.
+`docs/evidence/TAX-040` (TAX-020's first baseline stays in `docs/evidence/TAX-020`).

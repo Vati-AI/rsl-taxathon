@@ -36,6 +36,11 @@
         "tenant_id": "10000000-0000-4000-8000-000000000001",
         "display_id": "SYN-001",
         "taxpayer_id": "20000000-0000-4000-8000-000000000001",
+        "taxpayer": {
+          "taxpayer_id": "20000000-0000-4000-8000-000000000001",
+          "display_name": "Synthetic Mountain Wholesale",
+          "taxpayer_type": "company"
+        },
         "submission_id": "30000000-0000-4000-8000-000000000001",
         "status": "RECEIVED",
         "status_authority": "jube",
@@ -46,6 +51,7 @@
         },
         "refund_lane": null,
         "assigned_officer_id": null,
+        "selection_reasons": [],
         "service_links": [
           {
             "service": "frappe",

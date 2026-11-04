@@ -1,0 +1,125 @@
+{
+  "ruleset_id": "vati-synthetic-tax-risk",
+  "ruleset_version": "1.0.0",
+  "synthetic": true,
+  "status": "synthetic_prototype",
+  "description": "Explainable synthetic tax-risk indicators for the TAX-024 pilot scenarios. A signal asks for human review or evidence; it is never a tax assessment, refund decision, fraud finding or legal conclusion.",
+  "currency": "LSL",
+  "non_claims": [
+    "tax_assessment",
+    "refund_denial_or_payment",
+    "fraud_or_intent",
+    "legal_violation",
+    "enforcement_recommendation"
+  ],
+  "jube_model": {
+    "name": "Vati synthetic tax risk v1",
+    "entry_name": "CaseId",
+    "entry_field": "case_id",
+    "reference_date_name": "ReferenceDate",
+    "reference_date_field": "reference_date",
+    "gateway": {
+      "name": "TR-GATEWAY-ALL v1.0.0",
+      "coder_rule_script": "Return True",
+      "description": "Jube evaluates activation rules only after a gateway rule matches; every synthetic return is admitted."
+    }
+  },
+  "features": [
+    {
+      "name": "refund_claim",
+      "jube_name": "RefundClaim",
+      "type": "money",
+      "derivation": "return.refund_claim"
+    },
+    {
+      "name": "claimed_input_vat",
+      "jube_name": "ClaimedInputVat",
+      "type": "money",
+      "derivation": "return.input_vat_claimed"
+    },
+    {
+      "name": "documented_input_vat",
+      "jube_name": "DocumentedInputVat",
+      "type": "money",
+      "derivation": "Sum of vat_amount over purchase invoices"
+    },
+    {
+      "name": "unsupported_input_vat",
+      "jube_name": "UnsupportedInputVat",
+      "type": "money",
+      "derivation": "claimed_input_vat minus documented_input_vat (may be negative)"
+    },
+    {
+      "name": "related_party_purchase_net",
+      "jube_name": "RelatedPartyPurchaseNet",
+      "type": "money",
+      "derivation": "Sum of net_amount over purchase invoices whose contract is marked related_party"
+    },
+    {
+      "name": "consecutive_loss_periods",
+      "jube_name": "ConsecutiveLossPeriods",
+      "type": "integer",
+      "derivation": "Length of the run of consecutive loss quarters in loss_periods ending at the return period (0 when the return period is not a loss period)"
+    },
+    {
+      "name": "imported_service_unverified_count",
+      "jube_name": "ImportedServiceUnverifiedCount",
+      "type": "integer",
+      "derivation": "Count of purchase invoices with vat_status treatment_unverified"
+    }
+  ],
+  "rules": [
+    {
+      "rule_id": "TR-VAT-REFUND-MISMATCH",
+      "version": "1.0.0",
+      "family": "vat_refund_mismatch",
+      "title": "VAT refund claim exceeds documented input VAT",
+      "applies_when": {"feature": "refund_claim", "operator": ">", "value": "0.00"},
+      "condition": {"feature": "unsupported_input_vat", "operator": ">", "value": "0.00"},
+      "signal_code": "refund_claim_exceeds_documented_input_vat",
+      "cleared_code": "refund_arithmetic_matches_documents",
+      "cleared_condition": {"feature": "unsupported_input_vat", "operator": "==", "value": "0.00"},
+      "inputs": ["refund_claim", "claimed_input_vat", "documented_input_vat", "unsupported_input_vat"],
+      "evidence": "return_and_vat_bearing_purchase_invoices",
+      "explanation": "Claimed input VAT {claimed_input_vat} exceeds VAT shown on the supplied purchase invoices {documented_input_vat} by {unsupported_input_vat}. Request the missing supporting invoices; this is not a refund decision.",
+      "cleared_explanation": "Claimed input VAT {claimed_input_vat} equals VAT shown on the supplied purchase invoices {documented_input_vat}. Arithmetic support only; a human still clears the refund.",
+      "never_implies": ["unsupported_refund_amount_is_abuse", "refund_denial", "proven_abuse"]
+    },
+    {
+      "rule_id": "TR-RELATED-PARTY-FEES",
+      "version": "1.0.0",
+      "family": "related_party_fees",
+      "title": "Purchases from a disclosed related party",
+      "condition": {"feature": "related_party_purchase_net", "operator": ">", "value": "0.00"},
+      "signal_code": "related_party_transaction",
+      "inputs": ["related_party_purchase_net"],
+      "evidence": "related_party_contracts_and_invoices",
+      "explanation": "Purchases of {related_party_purchase_net} (net) were made under a contract marked related-party. Pricing, benefit and intent are not established; ask for the service agreement and pricing basis.",
+      "never_implies": ["transfer_pricing_violation", "fraudulent_intent", "proven_abuse"]
+    },
+    {
+      "rule_id": "TR-PERSISTENT-LOSSES",
+      "version": "1.0.0",
+      "family": "persistent_losses",
+      "title": "Losses in consecutive periods",
+      "condition": {"feature": "consecutive_loss_periods", "operator": ">=", "value": "3"},
+      "signal_code": "consecutive_loss_periods",
+      "inputs": ["consecutive_loss_periods"],
+      "evidence": "return",
+      "explanation": "The synthetic return history shows {consecutive_loss_periods} consecutive loss periods ending in the return period. Losses can be legitimate; ask for the business explanation.",
+      "never_implies": ["fraudulent_intent", "proven_abuse"]
+    },
+    {
+      "rule_id": "TR-IMPORTED-SERVICE-GAP",
+      "version": "1.0.0",
+      "family": "imported_service_gap",
+      "title": "Imported service with unverified tax treatment",
+      "condition": {"feature": "imported_service_unverified_count", "operator": ">", "value": "0"},
+      "signal_code": "imported_service_treatment_unverified",
+      "inputs": ["imported_service_unverified_count"],
+      "evidence": "unverified_imported_service_contracts_and_invoices",
+      "explanation": "{imported_service_unverified_count} purchase invoice(s) for imported services carry no verified VAT or withholding treatment. Request the treatment evidence; no liability is established.",
+      "never_implies": ["withholding_tax_liability_established", "noncompliance_established", "proven_abuse"]
+    }
+  ]
+}

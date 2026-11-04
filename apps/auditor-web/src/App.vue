@@ -49,7 +49,7 @@ function reloadPage() {
               :active="section === 'overview'"
             />
             <SidebarItem
-              label="Case queue"
+              label="My case queue"
               icon="lucide-list-checks"
               :route="{ name: 'queue' }"
               :active="section === 'cases'"

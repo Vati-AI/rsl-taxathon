@@ -1,0 +1,208 @@
+{
+  "name": "list_cases_assigned_queue",
+  "operation_id": "listCases",
+  "scenario": "SYN-002",
+  "synthetic": true,
+  "description": "The officer's assigned queue, first page: each case carries selection reasons (routing signals, not findings) and a taxpayer summary. Includes a failed-processing case whose extraction timed out and a case still validating.",
+  "request": {
+    "method": "GET",
+    "path": "/api/v1/cases",
+    "headers": {
+      "Authorization": "Bearer synthetic-dev-token-not-a-secret",
+      "X-Vati-Tenant-ID": "10000000-0000-4000-8000-000000000001",
+      "X-Correlation-ID": "c0000000-0000-4000-8000-000000000018"
+    },
+    "query": {
+      "assigned_to": "me",
+      "limit": "3"
+    }
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "X-Correlation-ID": "c0000000-0000-4000-8000-000000000018"
+    },
+    "body": {
+      "data": [
+        {
+          "case_id": "40000000-0000-4000-8000-000000000001",
+          "tenant_id": "10000000-0000-4000-8000-000000000001",
+          "display_id": "SYN-001",
+          "taxpayer_id": "20000000-0000-4000-8000-000000000001",
+          "taxpayer": {
+            "taxpayer_id": "20000000-0000-4000-8000-000000000001",
+            "display_name": "Synthetic Mountain Wholesale",
+            "taxpayer_type": "company"
+          },
+          "submission_id": "30000000-0000-4000-8000-000000000001",
+          "status": "AWAITING_HUMAN",
+          "status_authority": "jube",
+          "version": 5,
+          "refund_claim": {
+            "amount": "15000.00",
+            "currency": "LSL"
+          },
+          "refund_lane": "fast",
+          "assigned_officer_id": "80000000-0000-4000-8000-000000000001",
+          "selection_reasons": [
+            {
+              "code": "refund_above_usual_pattern",
+              "summary": "Refund claim is larger than this taxpayer's previous claims; supporting invoices are on file.",
+              "source": "jube"
+            }
+          ],
+          "service_links": [
+            {
+              "service": "frappe",
+              "external_type": "Tax Submission",
+              "external_id": "VT-SUB-0001",
+              "sync": {
+                "state": "synced",
+                "last_attempt_at": "2026-11-03T10:00:01Z",
+                "error_code": null
+              }
+            },
+            {
+              "service": "jube",
+              "external_type": "case",
+              "external_id": "syn-jube-3001",
+              "sync": {
+                "state": "synced",
+                "last_attempt_at": "2026-11-03T10:00:02Z",
+                "error_code": null
+              }
+            }
+          ],
+          "created_at": "2026-11-03T10:00:00Z",
+          "updated_at": "2026-11-03T11:40:00Z",
+          "synthetic": true
+        },
+        {
+          "case_id": "40000000-0000-4000-8000-000000000002",
+          "tenant_id": "10000000-0000-4000-8000-000000000001",
+          "display_id": "SYN-002",
+          "taxpayer_id": "20000000-0000-4000-8000-000000000002",
+          "taxpayer": {
+            "taxpayer_id": "20000000-0000-4000-8000-000000000002",
+            "display_name": "Synthetic Border Retail",
+            "taxpayer_type": "company"
+          },
+          "submission_id": "30000000-0000-4000-8000-000000000002",
+          "status": "INVESTIGATING",
+          "status_authority": "jube",
+          "version": 4,
+          "refund_claim": {
+            "amount": "25000.00",
+            "currency": "LSL"
+          },
+          "refund_lane": "targeted",
+          "assigned_officer_id": "80000000-0000-4000-8000-000000000001",
+          "selection_reasons": [
+            {
+              "code": "related_party_charges",
+              "summary": "Management fees are paid to a company that shares a director with the taxpayer.",
+              "source": "jube"
+            },
+            {
+              "code": "persistent_reported_losses",
+              "summary": "Losses have been reported for several consecutive periods.",
+              "source": "jube"
+            }
+          ],
+          "service_links": [
+            {
+              "service": "frappe",
+              "external_type": "Tax Submission",
+              "external_id": "VT-SUB-0002",
+              "sync": {
+                "state": "synced",
+                "last_attempt_at": "2026-11-03T10:05:01Z",
+                "error_code": null
+              }
+            },
+            {
+              "service": "jube",
+              "external_type": "case",
+              "external_id": "syn-jube-3002",
+              "sync": {
+                "state": "synced",
+                "last_attempt_at": "2026-11-03T10:05:02Z",
+                "error_code": null
+              }
+            },
+            {
+              "service": "langgraph",
+              "external_type": "investigation_run",
+              "external_id": "syn-run-0002",
+              "sync": {
+                "state": "synced",
+                "last_attempt_at": "2026-11-03T12:00:00Z",
+                "error_code": null
+              }
+            }
+          ],
+          "created_at": "2026-11-03T10:05:00Z",
+          "updated_at": "2026-11-03T12:00:00Z",
+          "synthetic": true
+        },
+        {
+          "case_id": "40000000-0000-4000-8000-000000000003",
+          "tenant_id": "10000000-0000-4000-8000-000000000001",
+          "display_id": "SYN-003",
+          "taxpayer_id": "20000000-0000-4000-8000-000000000003",
+          "taxpayer": {
+            "taxpayer_id": "20000000-0000-4000-8000-000000000003",
+            "display_name": "Synthetic Valley Services",
+            "taxpayer_type": "company"
+          },
+          "submission_id": "30000000-0000-4000-8000-000000000003",
+          "status": "AWAITING_HUMAN",
+          "status_authority": "jube",
+          "version": 6,
+          "refund_claim": {
+            "amount": "0.00",
+            "currency": "LSL"
+          },
+          "refund_lane": null,
+          "assigned_officer_id": "80000000-0000-4000-8000-000000000001",
+          "selection_reasons": [
+            {
+              "code": "worker_classification_ambiguity",
+              "summary": "Regular payments to individuals resemble both employment and consultancy arrangements.",
+              "source": "jube"
+            }
+          ],
+          "service_links": [
+            {
+              "service": "frappe",
+              "external_type": "Tax Submission",
+              "external_id": "VT-SUB-0003",
+              "sync": {
+                "state": "synced",
+                "last_attempt_at": "2026-11-03T10:00:01Z",
+                "error_code": null
+              }
+            },
+            {
+              "service": "jube",
+              "external_type": "case",
+              "external_id": "syn-jube-3003",
+              "sync": {
+                "state": "synced",
+                "last_attempt_at": "2026-11-03T10:00:01Z",
+                "error_code": null
+              }
+            }
+          ],
+          "created_at": "2026-11-03T10:00:00Z",
+          "updated_at": "2026-11-03T12:30:00Z",
+          "synthetic": true
+        }
+      ],
+      "meta": {
+        "next_cursor": "3",
+        "has_more": true
+      }
+    }
+  }
+}

@@ -1,0 +1,58 @@
+{
+  "name": "get_taxpayer_related_party",
+  "operation_id": "getTaxpayer",
+  "scenario": "SYN-002",
+  "synthetic": true,
+  "description": "Taxpayer context for a related-party case: masked identifier, sector and the open cases this officer may see (including one assigned to another officer in the same tenant).",
+  "request": {
+    "method": "GET",
+    "path": "/api/v1/taxpayers/20000000-0000-4000-8000-000000000002",
+    "headers": {
+      "Authorization": "Bearer synthetic-dev-token-not-a-secret",
+      "X-Vati-Tenant-ID": "10000000-0000-4000-8000-000000000001",
+      "X-Correlation-ID": "c0000000-0000-4000-8000-000000000019"
+    }
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "X-Correlation-ID": "c0000000-0000-4000-8000-000000000019"
+    },
+    "body": {
+      "data": {
+        "taxpayer_id": "20000000-0000-4000-8000-000000000002",
+        "tenant_id": "10000000-0000-4000-8000-000000000001",
+        "display_name": "Synthetic Border Retail",
+        "taxpayer_type": "company",
+        "tin_masked": "******4102",
+        "registered_on": "2018-07-16",
+        "sector": "Retail trade",
+        "service_links": [
+          {
+            "service": "frappe",
+            "external_type": "Taxpayer",
+            "external_id": "VT-TP-0002",
+            "sync": {
+              "state": "synced",
+              "last_attempt_at": "2026-11-03T09:00:00Z",
+              "error_code": null
+            }
+          }
+        ],
+        "synthetic": true,
+        "open_cases": [
+          {
+            "case_id": "40000000-0000-4000-8000-000000000002",
+            "display_id": "SYN-002",
+            "status": "INVESTIGATING"
+          },
+          {
+            "case_id": "40000000-0000-4000-8000-000000000008",
+            "display_id": "SYN-008",
+            "status": "INVESTIGATING"
+          }
+        ]
+      }
+    }
+  }
+}

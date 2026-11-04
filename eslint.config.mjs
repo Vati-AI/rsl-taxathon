@@ -49,6 +49,8 @@ export default [
       }
     },
     rules: {
+      // A leading underscore marks an intentionally unused parameter (e.g. typed mock signatures).
+      "@typescript-eslint/no-unused-vars": ["error", { argsIgnorePattern: "^_" }],
       // Formatting is owned by Prettier.
       "vue/max-attributes-per-line": "off",
       "vue/singleline-html-element-content-newline": "off",

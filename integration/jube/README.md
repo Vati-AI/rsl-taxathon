@@ -5,7 +5,7 @@ Risk evaluation and operational investigation case management. Owner: Keletso; L
 - Upstream: https://github.com/jube-home/aml-fraud-transaction-monitoring (AGPL-3.0, kept external, never copied here)
 - Official documentation: https://www.jube.io/docs/GettingStarted/DeployingWithDocker/
 - Configuration: `JUBE_BASE_URL`
-- Status: isolated development stack running and smoke-tested (TAX-025). No Vati adapter yet (TAX-034/035), so there is no product integration.
+- Status: isolated development stack running and smoke-tested (TAX-025). Versioned synthetic tax-risk rules configured and verified on the local stack (TAX-035). No case lifecycle adapter yet (TAX-034), so there is no product integration.
 
 ## Run it (TAX-025)
 
@@ -65,5 +65,35 @@ All routes below require `Bearer` (JWT from login) or `ApiKey`. Request/response
 | Cases | `GET/POST/PUT /api/Case/`, `GET /api/Case/{id}`, `POST /api/Case/CreateFromCaseKeyValue` |
 | Case notes and files | `POST /api/CaseNote/`, `/api/CaseNote/ByCaseKeyValue`, `POST /api/CaseFile/Upload`, `/api/CaseFile/ByCaseKeyValue` |
 | Case workflow/state configuration | `/api/CaseWorkflow/…`, `/api/CaseWorkflowAction/…`, `/api/CaseWorkflowDisplay/…` |
+
+## Explainable tax-risk rules (TAX-035)
+
+`rules/tax_risk_rules.v1.json` is the reviewable source of truth: ruleset version, per-rule semantic versions, the derived inputs, conditions, evidence selectors, explanations and what each signal never implies. `tax_risk.py` validates it, derives inputs from linked synthetic records (`data/synthetic/tax024_records.json`), evaluates every rule deterministically and renders the Jube scripts and payload from the same conditions, so the two cannot drift.
+
+```sh
+python3 scripts/jube_rules.py evaluate            # no Jube needed; --full prints every rule result
+python3 scripts/jube_rules.py apply --approve-local
+python3 scripts/jube_rules.py verify              # invokes Jube per scenario, compares activations
+```
+
+| Rule | Version | Condition | Signal / cleared code | Evidence |
+|---|---|---|---|---|
+| `TR-VAT-REFUND-MISMATCH` | 1.0.0 | refund claim > 0 and claimed input VAT − invoice VAT > 0 | `refund_claim_exceeds_documented_input_vat` / `refund_arithmetic_matches_documents` | return + VAT-bearing purchase invoices |
+| `TR-RELATED-PARTY-FEES` | 1.0.0 | net purchases under related-party contracts > 0 | `related_party_transaction` | related contracts + invoices |
+| `TR-PERSISTENT-LOSSES` | 1.0.0 | consecutive loss quarters ending at the return period ≥ 3 | `consecutive_loss_periods` | return |
+| `TR-IMPORTED-SERVICE-GAP` | 1.0.0 | purchase invoices with `vat_status` `treatment_unverified` > 0 | `imported_service_treatment_unverified` | contracts + invoices |
+
+Each result records `ruleset_version`, `rule_version`, outcome (`signal`, `cleared`, `no_signal`, `not_applicable`), input values as decimal strings, evidence IDs and a SHA-256 digest of the source record. Signals request human review or evidence; they are not assessments, refund decisions, fraud findings or legal conclusions. SYN-003's classification gap and SYN-005's policy gap are deliberately not rule signals (TAX-051 and TAX-052).
+
+Expected outcomes: SYN-001 cleared; SYN-002 refund mismatch + related party + losses; SYN-003 none; SYN-004 refund mismatch + imported service; SYN-005 cleared.
+
+How it maps to Jube (locked source, docs `Configuration/Models` and `Concepts/MakerChecker`):
+
+- One model, `Vati synthetic tax risk v1`, entry `$.case_id`. Each derived input is a Request XPath (float for money, integer for counts). Jube receives decimal strings and compares them as doubles. Integral thresholds keep that comparison exact for these values; the Python evaluator uses `Decimal` and stays the reference.
+- A `Return True` gateway rule (`TR-GATEWAY-ALL v1.0.0`) is required, because Jube evaluates activation rules only after a gateway rule matches.
+- Activation rules are coder scripts (`ruleScriptTypeId` 2) named `RULE-ID vX.Y.Z`. A changed rule is updated in place, so Jube keeps its own version history. Case creation is off; cases belong to the TAX-034 adapter.
+- Jube's maker-checker loads only approved entities. `--approve-local` approves as `Administrator` using the landlord self-approval privilege, on the local synthetic stack only. A shared deployment needs a separate human checker.
+- Invocation is admitted only for a user with a live API key whose role is granted the model. `apply` provisions `vati-tax-risk-invoker`, whose role has no permissions and only this model grant. Its key goes only to the ignored `.local/jube.env` (`JUBE_TAX_RISK_API_KEY`). Keys missing from that file cannot be recovered and are revoked before a new one is made. Observed limitation (2026-11-04): with this key Jube still answers `GET /api/EntityAnalysisModel/`, the model's activation rules and `GET /api/UserRegistry/` with 200 and data; `/api/Case/` returns an empty list. So the key is narrower than `Administrator`, but it does not grant read-only least privilege. Before any shared deployment, TAX-034 must review Jube's read permissions for API-key users. A wrong key on invoke returns 401.
+- Jube cannot hold evidence IDs, explanations or decimal-exact amounts on a rule. Those stay in the Vati evaluator output; Jube reports which versioned rule names fired.
 
 Next tasks: TAX-034 (case lifecycle adapter mapping Vati `case_id`/`service_links` to Jube case keys) and TAX-035 (tax-risk model configuration). Use a least-privilege Jube user or API key for the adapter, not `Administrator`.
