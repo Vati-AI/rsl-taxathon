@@ -5,14 +5,14 @@
   "owner": "Leseli",
   "area": "apps/auditor-web",
   "phase": "pilot",
-  "status": "BACKLOG",
+  "status": "IN_PROGRESS",
   "priority": "P0",
   "depends_on": [
     "TAX-040",
     "TAX-046"
   ],
-  "claimed_by": null,
-  "branch": null,
+  "claimed_by": "leseli-claude-20261104-042",
+  "branch": "task/TAX-042",
   "pr": null,
   "scope": "Present reviewed clearance, evidence request and specialist referral with rationale and stale-version checks",
   "inputs": [
@@ -50,5 +50,10 @@
     "finish-task"
   ],
   "evidence": [],
-  "notes": []
+  "notes": [
+    {
+      "at": "2026-11-04T10:37:35.759690+00:00",
+      "text": "Claimed by leseli-claude-20261104-042"
+    }
+  ]
 }
