@@ -5,7 +5,7 @@
   "owner": "Leseli",
   "area": "apps/auditor-web",
   "phase": "pilot",
-  "status": "IN_REVIEW",
+  "status": "DONE",
   "priority": "P0",
   "depends_on": [
     "TAX-040",
@@ -75,6 +75,10 @@
     {
       "at": "2026-11-04T18:36:48.257042+00:00",
       "text": "Agent leseli-claude-20261104-042 finished implementation and opened review (https://github.com/Vati-AI/rsl-taxathon/pull/156). Finish steps done by hand because task.py finish calls python3, which is not on this machine; dev.py check and quality.py steps were run one by one with the venv Python (2 known Windows-only tooling failures). Frappe site tests not run: Docker daemon not running."
+    },
+    {
+      "at": "2026-11-04T23:46:48.841054+00:00",
+      "text": "Verified implementation PR #156 merged (51d1192, 2026-11-04T19:16Z); all acceptance criteria and evidence recorded."
     }
   ]
 }
