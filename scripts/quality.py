@@ -14,6 +14,8 @@ SOURCES = [
     "backend/vati_tax/vati_tax",
     "ai",
     "integration/api",
+    "integration/jube",
+    "tests/integration",
 ]
 
 

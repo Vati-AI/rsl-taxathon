@@ -139,9 +139,11 @@ def check():
             "backend/vati_tax/vati_tax",
             "ai",
             "integration/api",
+            "integration/jube",
         ],
         ["python3", "-m", "unittest", "discover", "-s", "tests/data", "-v"],
         ["python3", "-m", "unittest", "discover", "-s", "tests/tooling", "-v"],
+        ["python3", "-m", "unittest", "discover", "-s", "tests/integration", "-v"],
         # TAX-048 deterministic refund checks; graph tests skip without LangGraph.
         ["python3", "-m", "unittest", "discover", "-s", "tests/ai", "-p", "test_refund*.py"],
         ["python3", "integration/api/contract.py"],

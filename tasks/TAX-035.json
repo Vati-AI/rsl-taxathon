@@ -5,15 +5,15 @@
   "owner": "Keletso",
   "area": "integration",
   "phase": "pilot",
-  "status": "BACKLOG",
+  "status": "IN_REVIEW",
   "priority": "P0",
   "depends_on": [
     "TAX-025",
     "TAX-024"
   ],
-  "claimed_by": null,
-  "branch": null,
-  "pr": null,
+  "claimed_by": "keletso-claude-code-tax035",
+  "branch": "task/TAX-035",
+  "pr": "https://github.com/Vati-AI/rsl-taxathon/pull/112",
   "scope": "Configure versioned synthetic rules for refund mismatch, related-party fees, losses and imported-service gaps",
   "inputs": [
     "PROJECT.md",
@@ -27,15 +27,15 @@
   "acceptance": [
     {
       "text": "Configure versioned synthetic rules for refund mismatch, related-party fees, losses and imported-service gaps",
-      "done": false
+      "done": true
     },
     {
       "text": "All five scenarios produce expected signals/non-signals with rule versions and input evidence",
-      "done": false
+      "done": true
     },
     {
       "text": "Record relevant tests and evidence, update task status and open a human-review PR",
-      "done": false
+      "done": true
     }
   ],
   "verification": "All five scenarios produce expected signals/non-signals with rule versions and input evidence",
@@ -45,6 +45,28 @@
     "update-project-task",
     "finish-task"
   ],
-  "evidence": [],
-  "notes": []
+  "evidence": [
+    {
+      "criterion": 1,
+      "text": "integration/jube/rules/tax_risk_rules.v1.json (ruleset 1.0.0, synthetic) defines TR-VAT-REFUND-MISMATCH, TR-RELATED-PARTY-FEES, TR-PERSISTENT-LOSSES and TR-IMPORTED-SERVICE-GAP, each v1.0.0, with inputs, conditions, evidence selectors, explanations and never_implies. scripts/jube_rules.py apply --approve-local created model 'Vati synthetic tax risk v1', 7 request XPaths, gateway TR-GATEWAY-ALL v1.0.0 and 4 activation rules named 'RULE-ID v1.0.0' on the local Jube stack (source 01c4afd). It approved them via Jube maker-checker (local landlord self-approval) and provisioned a dedicated invoke user whose API key is stored only in the ignored .local/jube.env. A second apply reported 0 created and 0 updated."
+    },
+    {
+      "criterion": 2,
+      "text": "Deterministic evaluator: SYN-001 cleared refund_arithmetic_matches_documents [RET-SYN-001, INV-SYN-001-01/02]; SYN-002 signals refund_claim_exceeds_documented_input_vat (unsupported LSL 15000.00), related_party_transaction [CTR-SYN-002-01, INV-SYN-002-01] and consecutive_loss_periods (3); SYN-003 none (refund rule not_applicable); SYN-004 signals refund mismatch (LSL 3000.00, [RET-SYN-004, INV-SYN-004-01]) and imported_service_treatment_unverified [CTR-SYN-004-02, INV-SYN-004-02]; SYN-005 cleared. Codes and evidence IDs equal the TAX-024 expected_findings within rule scope, and no expected_non_finding is produced. Each result records ruleset_version, rule_version, input values and a sha256 record digest. Live check 2026-11-04: scripts/jube_rules.py verify invoked the Jube model for all 5 scenarios (HTTP 200) and got match=true. Jube activations: SYN-002 the 3 expected rules, SYN-004 the 2 expected rules, SYN-001/003/005 none."
+    },
+    {
+      "criterion": 3,
+      "text": "tests/integration/test_jube_tax_risk.py: 17 passed. It covers scenario signals/non-signals, evidence alignment with TAX-024, versions/provenance, determinism, loss-run edge cases, ruleset validation failures, Jube script/payload rendering, idempotent apply with in-place version update, and verify mismatch detection. tests/integration was added to dev.py check. python3 scripts/dev.py check passed; python3 scripts/quality.py (ruff, ruff format, mypy incl. integration/jube, npm check) passed. PR opened via scripts/task.py finish."
+    }
+  ],
+  "notes": [
+    {
+      "at": "2026-11-03T19:29:22.734860+00:00",
+      "text": "Claimed by keletso-claude-code-tax035"
+    },
+    {
+      "at": "2026-11-04T03:58:58.997742+00:00",
+      "text": "Agent finished implementation and opened human review"
+    }
+  ]
 }
