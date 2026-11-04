@@ -156,6 +156,8 @@ def check():
         ["python3", "-m", "unittest", "discover", "-s", "tests/ai", "-p", "test_related*.py"],
         # TAX-051 work-arrangement checks; checkpoint playbook tests skip without LangGraph.
         ["python3", "-m", "unittest", "discover", "-s", "tests/ai", "-p", "test_work*.py"],
+        # TAX-061 playbook registry checks skip without LangGraph and its SQLite checkpointer.
+        ["python3", "-m", "unittest", "discover", "-s", "tests/ai", "-p", "test_playbook*.py"],
         ["python3", "integration/api/contract.py"],
         ["python3", "-m", "unittest", "discover", "-s", "tests/contracts", "-v"],
         # Frappe-free app logic (portal boundary/fixtures); bench tests cover the rest.
