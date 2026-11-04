@@ -2,7 +2,7 @@
   "id": "TAX-046",
   "kind": "task",
   "title": "Human decisions and evidence request authorization",
-  "owner": "Edga",
+  "owner": "Leseli",
   "area": "backend",
   "phase": "pilot",
   "status": "BACKLOG",
@@ -47,5 +47,10 @@
     "finish-task"
   ],
   "evidence": [],
-  "notes": []
+  "notes": [
+    {
+      "at": "2026-11-04T09:25:26.768195+00:00",
+      "text": "Owner reassigned from Edga to Leseli with Edga's agreement, so Leseli can take the path to TAX-041, TAX-042 and TAX-060."
+    }
+  ]
 }
