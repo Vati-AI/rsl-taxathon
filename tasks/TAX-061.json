@@ -5,14 +5,14 @@
   "owner": "Gupta",
   "area": "ai",
   "phase": "pilot",
-  "status": "BACKLOG",
+  "status": "IN_PROGRESS",
   "priority": "P0",
   "depends_on": [
     "TAX-047",
     "TAX-052"
   ],
-  "claimed_by": null,
-  "branch": null,
+  "claimed_by": "claude-gupta-20261104-tax061",
+  "branch": "task/TAX-061",
   "pr": null,
   "scope": "Version tools/playbooks with approval status, allowed operations and provenance requirements",
   "inputs": [
@@ -46,5 +46,10 @@
     "finish-task"
   ],
   "evidence": [],
-  "notes": []
+  "notes": [
+    {
+      "at": "2026-11-04T13:47:45.392179+00:00",
+      "text": "Claimed by claude-gupta-20261104-tax061"
+    }
+  ]
 }
