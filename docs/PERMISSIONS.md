@@ -39,6 +39,8 @@ A `DocShare` can only target a user whose scope already reaches the document, so
 
 Server-set fields (reference, version, submission time, period dates, keys, net VAT, masked TIN) are refused when a client changes them. Submitted figures cannot change.
 
+A `Vati Refund Claim` may reference only `Vati Evidence` of its own tenant and taxpayer in `evidence_ids` (TAX-043). A missing ID and another taxpayer's or tenant's evidence are refused the same way (422 `invalid_reference`), so a claim cannot probe for other records. The portal method `vati_tax.portal.api.submit_refund_claim` acts only for the caller's own taxpayer membership.
+
 ## Action matrix
 
 Callers check actions with `permissions.require_action(action, tenant_id, taxpayer_id=..., proposed_by=...)`. `vati_tax.identity.api.get_access_scope` lists the caller's allowed actions for the header tenant.
