@@ -35,6 +35,7 @@ Callers check actions with `permissions.require_action(action, tenant_id, taxpay
 | `submission.create`, `evidence.respond` | own taxpayer | | | | |
 | `submission.read` | own taxpayer | yes | yes | yes | yes |
 | `case.read`, `evidence.read` | | yes | yes | yes | yes |
+| `evidence.register` (TAX-032) | own taxpayer | yes | yes | yes | yes |
 | `investigation.request`, `finding.review` | | yes | yes | yes | |
 | `draft.record` (agent drafts for human review) | | yes | yes | yes | yes |
 | `evidence_request.authorise`*, `specialist.refer`* | | yes | | yes | |
@@ -56,3 +57,7 @@ bench --site taxathon.localhost execute vati_tax.identity.provision.grant_member
 ```
 
 The taxpayer above owns fixture `SUB-SYN-0001`. `portal/fixtures.py` maps every portal fixture to its synthetic owner.
+
+## Evidence (TAX-032)
+
+`Vati Evidence` and `Vati Evidence Extraction` follow the record-isolation convention (`tenant_id` + `taxpayer_id`). Officers and services read evidence in their tenant. A taxpayer reads only evidence it uploaded itself (`if_owner`), never officer uploads or extraction revisions. Only a service identity records extraction revisions (`integration.callback`). The evidence source is bound to the role: `taxpayer_portal` for taxpayers, `officer_upload` for officers, `synthetic_fixture` for officers or services. Evidence originals are private Files that nobody can make public, move, edit or delete through Frappe. See [ADR-010](decisions/ADR-010-evidence-storage-provenance.md).
