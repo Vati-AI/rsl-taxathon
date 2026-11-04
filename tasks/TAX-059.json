@@ -5,13 +5,13 @@
   "owner": "Leseli",
   "area": "backend",
   "phase": "pilot",
-  "status": "BACKLOG",
+  "status": "IN_PROGRESS",
   "priority": "P0",
   "depends_on": [
     "TAX-046"
   ],
-  "claimed_by": null,
-  "branch": null,
+  "claimed_by": "leseli-claude-20261104-059",
+  "branch": "task/TAX-059",
   "pr": null,
   "scope": "Record reads, writes, approvals, overrides and reviewer identity; model review-only integrity signals",
   "inputs": [
@@ -49,6 +49,10 @@
     {
       "at": "2026-11-04T09:25:26.768195+00:00",
       "text": "Owner reassigned from Edga to Leseli with Edga's agreement, so Leseli can take the path to TAX-041, TAX-042 and TAX-060."
+    },
+    {
+      "at": "2026-11-04T10:37:41.405416+00:00",
+      "text": "Claimed by leseli-claude-20261104-059"
     }
   ]
 }
