@@ -5,14 +5,14 @@
   "owner": "Gupta",
   "area": "ai",
   "phase": "expansion",
-  "status": "BACKLOG",
+  "status": "IN_PROGRESS",
   "priority": "P1",
   "depends_on": [
     "TAX-061",
     "TAX-059"
   ],
-  "claimed_by": null,
-  "branch": null,
+  "claimed_by": "claude-gupta-20261104-tax064",
+  "branch": "task/TAX-064",
   "pr": null,
   "scope": "Detect repeated approved action sequences and propose versioned workflows for supervisor review",
   "inputs": [
@@ -46,5 +46,10 @@
     "finish-task"
   ],
   "evidence": [],
-  "notes": []
+  "notes": [
+    {
+      "at": "2026-11-04T17:11:03.879609+00:00",
+      "text": "Claimed by claude-gupta-20261104-tax064"
+    }
+  ]
 }
