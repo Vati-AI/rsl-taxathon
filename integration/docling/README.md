@@ -5,7 +5,7 @@ Document extraction API. Owner: Keletso; LangGraph implementation is owned by Gu
 - Upstream: https://github.com/docling-project/docling-serve (MIT)
 - Official documentation: https://github.com/docling-project/docling-serve/blob/main/docs/usage.md
 - Configuration: `DOCLING_BASE_URL`
-- Status: authenticated, bounded development service running offline with local model artifacts and smoke-tested (TAX-028). No Vati extraction adapter yet (TAX-038).
+- Status: authenticated, bounded development service running offline with local model artifacts and smoke-tested (TAX-028). Vati extraction adapter in `extraction_adapter.py` (TAX-038), tested against a contract-faithful fake; **not yet run against the live service** (see below).
 
 ## Run it (TAX-028)
 
@@ -55,3 +55,17 @@ The smoke test renders a **two-page image-only (scanned) synthetic invoice** ins
 - Use only `/v1/convert/file` (multipart). Do not expose `/v1/convert/source`: it fetches URLs, and Vati must not fetch arbitrary URLs.
 - Keep the original file's SHA-256 on the Vati side (Docling does not return it). Map Docling `prov[].page_no` plus `bbox` to the contract's `EvidenceLocator.page`.
 - Long documents should use Docling's async endpoints (`/v1/convert/file/async`, then poll), within the 300 s document deadline.
+
+## Extraction adapter (TAX-038)
+
+`integration/docling/extraction_adapter.py` converts one stored evidence document and records an append-only extraction revision through `vati_tax.evidence.store.record_extraction` (ADR-011), running as the service identity.
+
+- Routes from the locked source (`external/docling`, `docling_serve/app.py`, 9c058db): `POST /v1/convert/file/async` (multipart, sent once per attempt; not idempotent), `GET /v1/status/poll/{task_id}?wait=N` (404 = task lost), `GET /v1/result/{task_id}` (404 until done; `{"failure": ...}` for a failed task). `/v1/convert/source` is never used.
+- Input checks before any request: canonical tenant/evidence UUIDs, one of the five contract media types, 1 byte to 25 MiB, and the bytes' SHA-256 equal to the evidence hash.
+- Status mapping (body `status`, not HTTP code): `success` -> `success`; `partial_success` -> `partial` (`partial_extraction`); `failure` -> `failure` (`docling_policy_rejected` for the `policy` category, else `docling_failure`); `skipped` -> `failure` (`docling_skipped`); task failure / empty content -> `failure`. A failure carries an error code and no items.
+- Items: each located text element (`label`, `page`, `bbox`, `element_ref` such as `#/texts/1`) and each table cell (`label: table_cell`, `record: tables/{t}/r{row}/c{col}`, cell bbox or the table's). Elements without a page are dropped (not citable); invalid bboxes are dropped while keeping the page. Output beyond the store limits (5,000 items, 2,000,000 characters) is recorded as `partial` with `extraction_truncated`.
+- Retry safety: a `JobStore` keyed by tenant, evidence, SHA-256, extractor version and options keeps the Docling task so a restarted worker resumes polling instead of converting again; a lost task clears it so the next attempt resubmits. The revision is recorded with a deterministic idempotency key, so a repeated recording replays the same revision. `InMemoryJobStore` is for development; a deployment needs a durable store (TAX-033 outbox).
+- Limits follow docs/API_STANDARD.md: 30 s request timeout, at most 3 attempts with backoff for safe GETs (honouring `Retry-After`), 300 s document deadline (a deadline keeps the job for resumption). 401/403 are not retried. Errors use the contract `ErrorResponse` with `service: docling` and never include the key, document text or Docling bodies.
+- Configuration: `AdapterConfig.build(base_url=DOCLING_BASE_URL, api_key=DOCLING_API_KEY)` refuses plain HTTP off loopback, a missing key and out-of-range limits at startup.
+
+**Live verification still needed.** `tests/integration/test_docling_extraction.py` runs against a fake that follows the locked routes and the recorded TAX-028 smoke output. The adapter has not been run against the live container (the implementing machine had Docker stopped and under 5 GB free disk). With the service up (`python3 scripts/docling_dev.py up`), convert the TAX-028 synthetic invoice through `DoclingExtractionAdapter.extract` with `HttpTransport` and confirm OCR text on page 1 and the 4x3 table cells on page 2 before marking the integration connected.

@@ -142,6 +142,7 @@ def check():
             "integration/jube",
             "integration/followthemoney",
             "integration/openaleph",
+            "integration/docling",
         ],
         ["python3", "-m", "unittest", "discover", "-s", "tests/data", "-v"],
         ["python3", "-m", "unittest", "discover", "-s", "tests/tooling", "-v"],
