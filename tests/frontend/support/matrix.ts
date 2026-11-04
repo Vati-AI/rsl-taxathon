@@ -52,6 +52,12 @@ export const AUDITOR_ROUTES: MatrixRoute[] = [
     heading: 'SYN-002 · Synthetic Border Retail',
   },
   {
+    // TAX-042 decision, evidence request and referral page.
+    name: 'case-review',
+    path: `/auditor/cases/${syn002.case_id}/review`,
+    heading: 'Review and decide · SYN-002',
+  },
+  {
     name: 'taxpayer',
     path: `/auditor/taxpayers/${syn002.taxpayer_id}`,
     heading: 'Synthetic Border Retail',

@@ -101,7 +101,8 @@ class Handler(SimpleHTTPRequestHandler):
 
     def do_POST(self):
         if not urlsplit(self.path).path.startswith("/api/v1/"):
-            self.send_error(404)
+            # Only contract fixture operations accept POST; everything else is read-only.
+            self.send_error(501, "Unsupported method")
             return
         try:
             length = int(self.headers.get("Content-Length") or 0)

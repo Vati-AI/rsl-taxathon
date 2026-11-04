@@ -9,7 +9,7 @@ const root = path.resolve(__dirname, '../..');
 const port = Number(process.env.AUDITOR_E2E_PORT ?? 58091);
 // Review actions change in-memory fixture state (TAX-042), so they run against
 // their own fixture server and never disturb the queue counts the other specs assert.
-const reviewPort = Number(process.env.AUDITOR_REVIEW_E2E_PORT ?? 58092);
+const reviewPort = Number(process.env.AUDITOR_REVIEW_E2E_PORT ?? 58095);
 const python = process.env.PYTHON ?? 'python3';
 const server = (p: number) => ({
   command: `${python} scripts/dev.py serve --port ${p}`,

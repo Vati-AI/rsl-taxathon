@@ -27,11 +27,11 @@
   "acceptance": [
     {
       "text": "Present reviewed clearance, evidence request and specialist referral with rationale and stale-version checks",
-      "done": false
+      "done": true
     },
     {
       "text": "Verify keyboard confirmation, permission denial and no irreversible action from agent suggestions",
-      "done": false
+      "done": true
     },
     {
       "text": "Record relevant tests and evidence, update task status and open a human-review PR",
@@ -39,7 +39,7 @@
     },
     {
       "text": "Follow docs/DESIGN_STANDARD.md; supply relevant viewport/state screenshots and keyboard/accessibility evidence for human visual review",
-      "done": false
+      "done": true
     }
   ],
   "verification": "Verify keyboard confirmation, permission denial and no irreversible action from agent suggestions",
@@ -49,7 +49,20 @@
     "update-project-task",
     "finish-task"
   ],
-  "evidence": [],
+  "evidence": [
+    {
+      "criterion": 1,
+      "text": "Review page /auditor/cases/{id}/review (DecisionPanel and forms): officer clearance (close outcomes need a cited finding), evidence request (requestEvidence) and specialist referral (new refer_to_specialist outcome, needs specialist.refer; Jube escalate). Every action carries the rationale or reason the officer wrote and the case version and Jube status they viewed (expected_version, expected_case_status); stale views, a case moved in Jube, an open decision and expired proposals are refused with an explanation and a reload, keeping the text. Contract: getCaseReview, proposeDecision, reviewDecision added to openapi.json (ADR-016) with 4 examples; contract.py valid (24 examples). Fixture: scripts/fixture_review.py, 13 tests in tests/contracts/test_fixture_review.py."
+    },
+    {
+      "criterion": 2,
+      "text": "e2e/review.spec.ts (8 tests, Edge 156): keyboard-only referral (Enter opens the confirmation, Escape sends nothing, Enter on Propose sends exactly one POST); agent suggestion 'Use as a starting point' only fills the form and sends nothing; server-side 403 shown with no retry; specialist not offered evidence requests or referrals; proposer cannot approve, a different supervisor approves; stale view refused (409) with text kept; expired proposal refused; retry after a lost response reuses the Idempotency-Key and records one decision. Unit: DecisionPanel.test.ts (6) and api/review.test.ts (7). Backend: test_engine.py referral permission and viewer actions per role; 243 backend tests pass."
+    },
+    {
+      "criterion": 4,
+      "text": "Screenshots in docs/evidence/TAX-042 at 1440/1024/390px (screens) and 1440/390px (confirmation, stale refusal, validation errors, supervisor approve and reject, specialist permissions), Edge 156 via Playwright; README there lists keyboard and accessibility checks. axe WCAG 2 A/AA: no violations on the review page and open dialog. TAX-023 harness: case-review route added to the matrix; no serious axe violations or page-wide horizontal scroll at all three widths (69 passed). Shared components and tokens reused (frappe-ui Dialog, Button, Textarea, Select, Badge, Alert; StatePanel). Not done: 200% zoom check and screen reader pass. Visual approval is for the area owner."
+    }
+  ],
   "notes": [
     {
       "at": "2026-11-04T10:37:35.759690+00:00",

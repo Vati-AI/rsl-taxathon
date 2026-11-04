@@ -364,7 +364,11 @@ class ReviewStore:
         return 200, {}, {"data": data}
 
     def _listFindings(self, who, case, params, headers, body) -> Response:  # noqa: N802
-        return 200, {}, {"data": self._findings(case), "meta": {"next_cursor": None, "has_more": False}}
+        return (
+            200,
+            {},
+            {"data": self._findings(case), "meta": {"next_cursor": None, "has_more": False}},
+        )
 
     def _proposeDecision(self, who, case, params, headers, body) -> Response:  # noqa: N802
         self._require(who, "decision.propose")

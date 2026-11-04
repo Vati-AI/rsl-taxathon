@@ -64,6 +64,24 @@ class FixtureServerTests(unittest.TestCase):
             urlopen(Request(self.base + "/api/cases", data=b"{}", method="POST"))
         self.assertEqual(501, result.exception.code)
 
+    def test_review_operations_accept_json_and_reject_malformed_bodies(self):
+        from urllib.request import Request
+
+        case = "40000000-0000-4000-8000-000000000003"
+        tenant = {"X-Vati-Tenant-ID": "10000000-0000-4000-8000-000000000001"}
+        with urlopen(Request(f"{self.base}/api/v1/cases/{case}/review", headers=tenant)) as res:
+            body = json.loads(res.read())
+            self.assertEqual(res.headers["X-Vati-Mode"], "fixture")
+        self.assertEqual(body["data"]["case_id"], case)
+        headers = {**tenant, "Idempotency-Key": "tooling-test-malformed-1"}
+        bad = Request(
+            f"{self.base}/api/v1/cases/{case}/decisions", data=b"{not json", headers=headers
+        )
+        with self.assertRaises(HTTPError) as result:
+            urlopen(bad)
+        self.assertEqual(400, result.exception.code)
+        self.assertEqual(json.loads(result.exception.read())["error"]["code"], "invalid_request")
+
 
 class BuiltAuditorServingTests(unittest.TestCase):
     def setUp(self):

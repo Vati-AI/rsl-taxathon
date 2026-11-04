@@ -87,9 +87,12 @@ The taxpayer above owns fixture `SUB-SYN-0001`. `portal/fixtures.py` maps every 
 | Record an agent draft | any `draft.record` role | never executable; approving it is `agent_only_decision` |
 | Propose | auditor, specialist, supervisor (`decision.propose`) | service or taxpayer; another decision on the case is open; stale `expected_version`; Jube status differs from `expected_case_status`; prohibited or unknown outcome; closing without a citation; evidence outside the tenant or taxpayer |
 | Approve or reject | a supervisor who did not propose it (`decision.approve`) | proposer, auditor, specialist or service; not `proposed`; stale `expected_version`; proposal older than 72 hours; Jube status changed since proposal |
+| Refer to a specialist (`refer_to_specialist`, TAX-042) | auditor, supervisor (`decision.propose` and `specialist.refer`) | specialist, service or taxpayer; then as Propose. An internal escalation in Jube, never a referral outside the tax office |
 | Withdraw | the proposer | anyone else |
 | Retry the Jube call | supervisor or service (`decision.execute`) | not approved; already synced (replay); final failure; approval older than 24 hours |
 | Authorise an evidence request | auditor, supervisor (`evidence_request.authorise`) | specialist, service or taxpayer; stale `expected_version`; case without a taxpayer; due date not in the next 180 days |
+
+`get_case_review_state` also returns `viewer` (TAX-042): the caller and the review actions they may take on the case. `decision.approve` is listed only when an open proposal exists that the caller did not make. It is a hint for the auditor screen; each action is authorised again when sent.
 
 ## Audit ledger and separation of duties (TAX-059)
 
