@@ -56,6 +56,7 @@ export const AUDITOR_ROUTES: MatrixRoute[] = [
     path: `/auditor/taxpayers/${syn002.taxpayer_id}`,
     heading: 'Synthetic Border Retail',
   },
+  { name: 'management', path: '/auditor/management', heading: 'Management dashboard' },
   { name: 'showcase', path: '/auditor/showcase', heading: 'Component showcase' },
   { name: 'not-found', path: '/auditor/no-such-page', heading: 'Page not found' },
 ];

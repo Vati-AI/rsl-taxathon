@@ -1,0 +1,148 @@
+{
+  "name": "get_management_summary",
+  "operation_id": "getManagementSummary",
+  "scenario": "SYN-001",
+  "synthetic": true,
+  "description": "A supervisor reads measured workload and assurance figures for the last 30 days. Every ratio carries its denominator; one closed case without a recorded outcome is excluded and listed in missing_data. A review signal about the viewing supervisor is withheld and only counted.",
+  "request": {
+    "method": "GET",
+    "path": "/api/v1/management/summary",
+    "headers": {
+      "Authorization": "Bearer synthetic-dev-token-not-a-secret",
+      "X-Vati-Tenant-ID": "10000000-0000-4000-8000-000000000001",
+      "X-Correlation-ID": "c0000000-0000-4000-8000-000000000021"
+    },
+    "query": {
+      "window_days": "30"
+    }
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "X-Correlation-ID": "c0000000-0000-4000-8000-000000000021"
+    },
+    "body": {
+      "data": {
+        "tenant_id": "10000000-0000-4000-8000-000000000001",
+        "generated_at": "2026-11-04T12:00:00Z",
+        "window": {
+          "since": "2026-10-05T12:00:00Z",
+          "until": "2026-11-04T12:00:00Z",
+          "days": 30
+        },
+        "workload": {
+          "open_cases": 9,
+          "unassigned_open_cases": 1,
+          "by_status": [
+            {
+              "status": "RECEIVED",
+              "count": 1
+            },
+            {
+              "status": "VALIDATING",
+              "count": 1
+            },
+            {
+              "status": "INVESTIGATING",
+              "count": 2
+            },
+            {
+              "status": "AWAITING_EVIDENCE",
+              "count": 1
+            },
+            {
+              "status": "AWAITING_HUMAN",
+              "count": 3
+            },
+            {
+              "status": "FAILED_PROCESSING",
+              "count": 1
+            }
+          ],
+          "by_officer": [
+            {
+              "officer_id": "80000000-0000-4000-8000-000000000001",
+              "display_name": "Synthetic Officer A",
+              "open_cases": 7,
+              "awaiting_officer_review": 3
+            },
+            {
+              "officer_id": "80000000-0000-4000-8000-000000000002",
+              "display_name": "Synthetic Officer B",
+              "open_cases": 1,
+              "awaiting_officer_review": 0
+            }
+          ]
+        },
+        "elapsed": {
+          "open_case_age": {
+            "count": 9,
+            "excluded": 0,
+            "median_hours": "25.8",
+            "p90_hours": "26.5",
+            "max_hours": "26.5"
+          },
+          "time_to_close": {
+            "count": 6,
+            "excluded": 1,
+            "median_hours": "103.3",
+            "p90_hours": "170.5",
+            "max_hours": "170.5"
+          }
+        },
+        "unresolved_evidence": {
+          "outstanding_requests": 3,
+          "overdue_requests": 1,
+          "cases_with_outstanding_requests": 2,
+          "open_cases_awaiting_evidence": 1
+        },
+        "closure_outcomes": {
+          "closed_in_window": 7,
+          "without_recorded_outcome": 1,
+          "no_further_action": {
+            "numerator": 3,
+            "denominator": 6
+          },
+          "after_correction": {
+            "numerator": 3,
+            "denominator": 6
+          }
+        },
+        "legal_route_coverage": {
+          "verified_by_reviewer": {
+            "numerator": 3,
+            "denominator": 7
+          },
+          "unverified": 3,
+          "no_verified_route": 1
+        },
+        "assurance": {
+          "available": true,
+          "ledger_intact": true,
+          "entries": 14,
+          "overrides": 3,
+          "refusals": 2,
+          "distinct_actors": 3,
+          "review_signals": [
+            {
+              "kind": "repeated_overrides",
+              "count": 1
+            }
+          ],
+          "withheld_about_viewer": 1
+        },
+        "missing_data": [
+          {
+            "metric": "time_to_close",
+            "detail": "1 closed case has no creation time and is not in the time to close."
+          },
+          {
+            "metric": "closure_outcomes",
+            "detail": "1 closed case has no recorded decision outcome and is excluded from both ratios."
+          }
+        ],
+        "synthetic": true
+      }
+    }
+  }
+}

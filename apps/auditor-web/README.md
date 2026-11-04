@@ -11,7 +11,10 @@ Screens: overview (assigned cases by status, failed-processing alert), my case
 queue (search, status and refund-lane filters, sorting, pagination, selection
 reasons and processing state), case detail (selection reasons, taxpayer
 summary, per-service processing; evidence, entities and findings shown as not
-available in fixture mode), taxpayer profile, component showcase
+available in fixture mode), taxpayer profile, management dashboard (`/auditor/management`, supervisors
+only: workload, elapsed time, unresolved evidence, closures with no further
+action, legal-route coverage and audit ledger assurance from
+`getManagementSummary`, ADR-020), component showcase
 (`/auditor/showcase`). Shared tokens live in `apps/shared/design`.
 
 The request tenant comes from `src/session.ts` (fixture tenant unless
@@ -31,3 +34,5 @@ or on Windows use the installed Edge with `PLAYWRIGHT_CHANNEL=msedge`. Set
 `PYTHON` if `python3` is not on PATH. Review screenshots:
 `CAPTURE_SCREENSHOTS=1 npm run test:auditor:browser -- screenshots` writes to
 `docs/evidence/TAX-040` (TAX-020's first baseline stays in `docs/evidence/TAX-020`).
+`CAPTURE_SCREENSHOTS=1 npm run test:auditor:browser -- management` writes the
+management dashboard screens to `docs/evidence/TAX-060`.

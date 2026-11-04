@@ -8,6 +8,7 @@
 | createCase | `POST /api/v1/cases` |
 | getCase | `GET /api/v1/cases/{case_id}` |
 | getTaxpayer | `GET /api/v1/taxpayers/{taxpayer_id}` |
+| getManagementSummary | `GET /api/v1/management/summary` |
 | startInvestigation | `POST /api/v1/cases/{case_id}/investigate` |
 | listEvidence | `GET /api/v1/cases/{case_id}/evidence` |
 | registerDocument | `POST /api/v1/cases/{case_id}/documents` |
@@ -26,9 +27,11 @@ Rules every implementation must keep (see [ADR-003](../../docs/decisions/ADR-003
 
 `listCases`, `getTaxpayer`, `selection_reasons` and the embedded taxpayer summary were added for the auditor queue (TAX-040, [ADR-005](../../docs/decisions/ADR-005-case-queue-contract.md)). Selection reasons are routing signals, never findings.
 
+`getManagementSummary` (TAX-060, [ADR-020](../../docs/decisions/ADR-020-management-summary-contract.md)) gives supervisors measured workload and assurance counts. Anyone else gets `403 forbidden`. Every ratio carries its denominator, gaps are listed in `missing_data`, and review signals are counted by kind only.
+
 ## Fixture server
 
-`python3 scripts/dev.py serve` serves `listCases`, `getCase` and `getTaxpayer` from the synthetic `fixtures/auditor_queue.json` (`scripts/fixture_api.py`). Requests are checked with `contract.check_request`; the fixture principal sees one tenant (any other is `403 tenant_scope_denied`). Responses carry `X-Vati-Mode: fixture`. Other operations return `404` "This operation has no fixture data." rather than invented data.
+`python3 scripts/dev.py serve` serves `listCases`, `getCase` and `getTaxpayer` from the synthetic `fixtures/auditor_queue.json` (`scripts/fixture_api.py`). Requests are checked with `contract.check_request`; the fixture principal sees one tenant (any other is `403 tenant_scope_denied`). It also measures `getManagementSummary` from those cases plus `fixtures/management.json` (closed cases, outcomes, evidence requests, findings and ledger events, the ledger read with the TAX-059 functions); the fixture principal holds the supervisor role there. Responses carry `X-Vati-Mode: fixture`. Other operations return `404` "This operation has no fixture data." rather than invented data.
 
 ## Examples and checks
 

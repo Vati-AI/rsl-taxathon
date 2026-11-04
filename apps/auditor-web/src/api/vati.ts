@@ -132,7 +132,7 @@ function errorFrom(status: number, body: unknown, fallbackReference: string): Ap
   return new ApiError('invalid', 'The request was not accepted by the case service.', options);
 }
 
-async function request(
+export async function request(
   path: string,
   query: Record<string, string>,
   fetchImpl: Fetch,

@@ -55,6 +55,14 @@ function reloadPage() {
               :active="section === 'cases'"
             />
           </SidebarSection>
+          <SidebarSection label="Supervision">
+            <SidebarItem
+              label="Management dashboard"
+              icon="lucide-gauge"
+              :route="{ name: 'management' }"
+              :active="section === 'management'"
+            />
+          </SidebarSection>
           <SidebarSection label="Design">
             <SidebarItem
               label="Component showcase"

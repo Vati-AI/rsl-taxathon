@@ -21,7 +21,8 @@
     { "name": "findings" },
     { "name": "investigations" },
     { "name": "evidence-requests" },
-    { "name": "taxpayers" }
+    { "name": "taxpayers" },
+    { "name": "management" }
   ],
   "paths": {
     "/api/v1/cases": {
@@ -367,6 +368,62 @@
           "503": { "$ref": "#/components/responses/DependencyUnavailable" }
         }
       }
+    },
+    "/api/v1/management/summary": {
+      "get": {
+        "operationId": "getManagementSummary",
+        "tags": [
+          "management"
+        ],
+        "summary": "Read measured workload and assurance figures for supervisors.",
+        "description": "Supervisor-only (TAX-029 Vati Supervisor role in the selected tenant); any other principal gets 403 forbidden with no data. Figures are measured from records, never estimated: workload and evidence are point-in-time, closures and ledger counts cover the window. Every ratio carries its denominator. Gaps are listed in missing_data. Reading the ledger is itself recorded (TAX-059).",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/TenantHeader"
+          },
+          {
+            "$ref": "#/components/parameters/CorrelationIdHeader"
+          },
+          {
+            "$ref": "#/components/parameters/WindowDaysQuery"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Management summary.",
+            "headers": {
+              "X-Correlation-ID": {
+                "$ref": "#/components/headers/CorrelationId"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ManagementSummaryEnvelope"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthenticated"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          },
+          "503": {
+            "$ref": "#/components/responses/DependencyUnavailable"
+          }
+        }
+      }
     }
   },
   "components": {
@@ -378,6 +435,17 @@
       }
     },
     "parameters": {
+      "WindowDaysQuery": {
+        "name": "window_days",
+        "in": "query",
+        "required": false,
+        "schema": {
+          "type": "string",
+          "pattern": "^([1-9]|[1-9][0-9]|[12][0-9]{2}|3[0-5][0-9]|36[0-5])$",
+          "default": "30"
+        },
+        "description": "Reporting window in days, 1-365, ending at generated_at. Default 30."
+      },
       "TenantHeader": {
         "name": "X-Vati-Tenant-ID",
         "in": "header",
@@ -953,6 +1021,440 @@
         "additionalProperties": false,
         "required": ["data"],
         "properties": { "data": { "$ref": "#/components/schemas/EvidenceRequest" } }
+      },
+      "Ratio": {
+        "type": "object",
+        "description": "A measured proportion. The rate is numerator / denominator. A denominator of 0 means there is nothing to measure: show 'no data', never 0%.",
+        "additionalProperties": false,
+        "required": [
+          "numerator",
+          "denominator"
+        ],
+        "properties": {
+          "numerator": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "denominator": {
+            "type": "integer",
+            "minimum": 0
+          }
+        }
+      },
+      "DurationStats": {
+        "type": "object",
+        "description": "Elapsed-time distribution measured from case timestamps.",
+        "additionalProperties": false,
+        "required": [
+          "count",
+          "excluded",
+          "median_hours",
+          "p90_hours",
+          "max_hours"
+        ],
+        "properties": {
+          "count": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Records measured."
+          },
+          "excluded": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Records in scope that lacked a needed timestamp and were not measured."
+          },
+          "median_hours": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "pattern": "^(0|[1-9][0-9]*)\\.[0-9]$",
+            "description": "Hours as a decimal string with one decimal place; null when count is 0."
+          },
+          "p90_hours": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "pattern": "^(0|[1-9][0-9]*)\\.[0-9]$",
+            "description": "Nearest-rank 90th percentile; null when count is 0."
+          },
+          "max_hours": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "pattern": "^(0|[1-9][0-9]*)\\.[0-9]$",
+            "description": "Hours as a decimal string with one decimal place; null when count is 0."
+          }
+        }
+      },
+      "ManagementSummary": {
+        "type": "object",
+        "description": "Management workload and assurance measures for one tenant, computed from case, decision, evidence-request, finding and audit-ledger records. Counts only: no taxpayer or document content, and no per-officer integrity detail.",
+        "additionalProperties": false,
+        "required": [
+          "tenant_id",
+          "generated_at",
+          "window",
+          "workload",
+          "elapsed",
+          "unresolved_evidence",
+          "closure_outcomes",
+          "legal_route_coverage",
+          "assurance",
+          "missing_data",
+          "synthetic"
+        ],
+        "properties": {
+          "tenant_id": {
+            "$ref": "#/components/schemas/Uuid"
+          },
+          "generated_at": {
+            "$ref": "#/components/schemas/Timestamp"
+          },
+          "window": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "since",
+              "until",
+              "days"
+            ],
+            "properties": {
+              "since": {
+                "$ref": "#/components/schemas/Timestamp"
+              },
+              "until": {
+                "$ref": "#/components/schemas/Timestamp"
+              },
+              "days": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 365
+              }
+            }
+          },
+          "workload": {
+            "type": "object",
+            "description": "Point-in-time open workload at generated_at.",
+            "additionalProperties": false,
+            "required": [
+              "open_cases",
+              "unassigned_open_cases",
+              "by_status",
+              "by_officer"
+            ],
+            "properties": {
+              "open_cases": {
+                "type": "integer",
+                "minimum": 0,
+                "description": "Cases not RESOLVED, as projected from Jube."
+              },
+              "unassigned_open_cases": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "by_status": {
+                "type": "array",
+                "maxItems": 7,
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "status",
+                    "count"
+                  ],
+                  "properties": {
+                    "status": {
+                      "$ref": "#/components/schemas/CaseStatus"
+                    },
+                    "count": {
+                      "type": "integer",
+                      "minimum": 0
+                    }
+                  }
+                }
+              },
+              "by_officer": {
+                "type": "array",
+                "maxItems": 500,
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "officer_id",
+                    "display_name",
+                    "open_cases",
+                    "awaiting_officer_review"
+                  ],
+                  "properties": {
+                    "officer_id": {
+                      "$ref": "#/components/schemas/Uuid"
+                    },
+                    "display_name": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 140
+                    },
+                    "open_cases": {
+                      "type": "integer",
+                      "minimum": 0
+                    },
+                    "awaiting_officer_review": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "description": "Open cases in AWAITING_HUMAN."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "elapsed": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "open_case_age",
+              "time_to_close"
+            ],
+            "properties": {
+              "open_case_age": {
+                "$ref": "#/components/schemas/DurationStats",
+                "description": "generated_at minus created_at for open cases."
+              },
+              "time_to_close": {
+                "$ref": "#/components/schemas/DurationStats",
+                "description": "Closure time minus created_at for cases closed in the window."
+              }
+            }
+          },
+          "unresolved_evidence": {
+            "type": "object",
+            "description": "Point-in-time evidence requests (Frappe is the authority).",
+            "additionalProperties": false,
+            "required": [
+              "outstanding_requests",
+              "overdue_requests",
+              "cases_with_outstanding_requests",
+              "open_cases_awaiting_evidence"
+            ],
+            "properties": {
+              "outstanding_requests": {
+                "type": "integer",
+                "minimum": 0,
+                "description": "Evidence requests recorded or sent and not yet responded to or withdrawn."
+              },
+              "overdue_requests": {
+                "type": "integer",
+                "minimum": 0,
+                "description": "Outstanding requests whose due date is before generated_at."
+              },
+              "cases_with_outstanding_requests": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "open_cases_awaiting_evidence": {
+                "type": "integer",
+                "minimum": 0,
+                "description": "Open cases in AWAITING_EVIDENCE."
+              }
+            }
+          },
+          "closure_outcomes": {
+            "type": "object",
+            "description": "Cases closed in the window, by approved decision outcome (TAX-046).",
+            "additionalProperties": false,
+            "required": [
+              "closed_in_window",
+              "without_recorded_outcome",
+              "no_further_action",
+              "after_correction"
+            ],
+            "properties": {
+              "closed_in_window": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "without_recorded_outcome": {
+                "type": "integer",
+                "minimum": 0,
+                "description": "Closed cases with no approved decision outcome; excluded from both ratios."
+              },
+              "no_further_action": {
+                "$ref": "#/components/schemas/Ratio",
+                "description": "Closed with close_no_further_action over closed cases with a recorded outcome: selected cases where review found nothing to correct (false positives). A measure of selection, never a judgement on an officer or taxpayer."
+              },
+              "after_correction": {
+                "$ref": "#/components/schemas/Ratio",
+                "description": "Closed with close_after_correction over the same denominator."
+              }
+            }
+          },
+          "legal_route_coverage": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "verified_by_reviewer",
+              "unverified",
+              "no_verified_route"
+            ],
+            "properties": {
+              "verified_by_reviewer": {
+                "$ref": "#/components/schemas/Ratio",
+                "description": "Findings whose legal route a reviewer verified, over all findings on open cases and cases closed in the window."
+              },
+              "unverified": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "no_verified_route": {
+                "type": "integer",
+                "minimum": 0,
+                "description": "Findings with no verified legal route (policy gap)."
+              }
+            }
+          },
+          "assurance": {
+            "description": "Audit ledger assurance from the TAX-059 ledger reads for the window. Signals are review prompts, never findings; signals about the viewing supervisor are withheld and only counted.",
+            "anyOf": [
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "available",
+                  "ledger_intact",
+                  "entries",
+                  "overrides",
+                  "refusals",
+                  "distinct_actors",
+                  "review_signals",
+                  "withheld_about_viewer"
+                ],
+                "properties": {
+                  "available": {
+                    "const": true
+                  },
+                  "ledger_intact": {
+                    "type": "boolean"
+                  },
+                  "entries": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "overrides": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "refusals": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "description": "Entries in the denied category."
+                  },
+                  "distinct_actors": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "review_signals": {
+                    "type": "array",
+                    "maxItems": 3,
+                    "items": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "kind",
+                        "count"
+                      ],
+                      "properties": {
+                        "kind": {
+                          "type": "string",
+                          "enum": [
+                            "repeated_overrides",
+                            "repeated_separation_of_duties_attempts",
+                            "ledger_integrity"
+                          ]
+                        },
+                        "count": {
+                          "type": "integer",
+                          "minimum": 1
+                        }
+                      }
+                    }
+                  },
+                  "withheld_about_viewer": {
+                    "type": "integer",
+                    "minimum": 0
+                  }
+                }
+              },
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "available",
+                  "reason"
+                ],
+                "properties": {
+                  "available": {
+                    "const": false
+                  },
+                  "reason": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 500
+                  }
+                }
+              }
+            ]
+          },
+          "missing_data": {
+            "type": "array",
+            "maxItems": 20,
+            "description": "Known gaps in the measured data, so the view never presents a partial number as complete.",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "metric",
+                "detail"
+              ],
+              "properties": {
+                "metric": {
+                  "type": "string",
+                  "enum": [
+                    "workload",
+                    "open_case_age",
+                    "time_to_close",
+                    "unresolved_evidence",
+                    "closure_outcomes",
+                    "legal_route_coverage",
+                    "assurance"
+                  ]
+                },
+                "detail": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 500
+                }
+              }
+            }
+          },
+          "synthetic": {
+            "type": "boolean"
+          }
+        }
+      },
+      "ManagementSummaryEnvelope": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "data"
+        ],
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/ManagementSummary"
+          }
+        }
       },
       "ErrorCode": {
         "type": "string",
