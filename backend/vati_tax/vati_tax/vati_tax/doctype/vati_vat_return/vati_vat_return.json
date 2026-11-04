@@ -1,0 +1,191 @@
+{
+ "actions": [],
+ "autoname": "field:vat_return_id",
+ "creation": "2026-11-04 12:00:00.000000",
+ "description": "Declared VAT return figures (TAX-031), one per vat_return submission.",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "vat_return_id",
+  "submission_id",
+  "tenant_id",
+  "taxpayer_id",
+  "period",
+  "currency",
+  "figures_section",
+  "taxable_supplies",
+  "output_vat",
+  "column_break_figures",
+  "taxable_purchases",
+  "input_vat",
+  "net_vat"
+ ],
+ "fields": [
+  {
+   "description": "UUID, generated if omitted. The document name.",
+   "fieldname": "vat_return_id",
+   "fieldtype": "Data",
+   "label": "VAT Return ID",
+   "length": 36,
+   "reqd": 1,
+   "set_only_once": 1,
+   "unique": 1
+  },
+  {
+   "fieldname": "submission_id",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Submission",
+   "options": "Vati Submission",
+   "reqd": 1,
+   "search_index": 1,
+   "set_only_once": 1,
+   "unique": 1
+  },
+  {
+   "fieldname": "tenant_id",
+   "fieldtype": "Link",
+   "in_standard_filter": 1,
+   "label": "Tenant",
+   "options": "Vati Tenant",
+   "reqd": 1,
+   "search_index": 1,
+   "set_only_once": 1
+  },
+  {
+   "fieldname": "taxpayer_id",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Taxpayer",
+   "options": "Vati Taxpayer",
+   "reqd": 1,
+   "search_index": 1,
+   "set_only_once": 1
+  },
+  {
+   "description": "Copied from the submission.",
+   "fieldname": "period",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Tax Period",
+   "length": 7,
+   "read_only": 1
+  },
+  {
+   "default": "LSL",
+   "fieldname": "currency",
+   "fieldtype": "Data",
+   "label": "Currency",
+   "length": 3,
+   "read_only": 1
+  },
+  {
+   "fieldname": "figures_section",
+   "fieldtype": "Section Break",
+   "label": "Declared figures (LSL)"
+  },
+  {
+   "fieldname": "taxable_supplies",
+   "fieldtype": "Currency",
+   "label": "Taxable Supplies",
+   "non_negative": 1,
+   "options": "currency",
+   "reqd": 1
+  },
+  {
+   "fieldname": "output_vat",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Output VAT",
+   "non_negative": 1,
+   "options": "currency",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_figures",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "taxable_purchases",
+   "fieldtype": "Currency",
+   "label": "Taxable Purchases",
+   "non_negative": 1,
+   "options": "currency",
+   "reqd": 1
+  },
+  {
+   "fieldname": "input_vat",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Input VAT",
+   "non_negative": 1,
+   "options": "currency",
+   "reqd": 1
+  },
+  {
+   "description": "Output VAT minus input VAT; negative is a refund position.",
+   "fieldname": "net_vat",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Net VAT",
+   "options": "currency",
+   "read_only": 1
+  }
+ ],
+ "index_web_pages_for_search": 0,
+ "links": [],
+ "modified": "2026-11-04 12:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Vati Tax",
+ "name": "Vati VAT Return",
+ "naming_rule": "By fieldname",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "export": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "read": 1,
+   "role": "Vati Taxpayer",
+   "write": 1
+  },
+  {
+   "export": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Vati Auditor"
+  },
+  {
+   "export": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Vati Specialist"
+  },
+  {
+   "export": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Vati Supervisor"
+  },
+  {
+   "read": 1,
+   "role": "Vati Service"
+  }
+ ],
+ "search_fields": "submission_id,period",
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "submission_id",
+ "track_changes": 1
+}

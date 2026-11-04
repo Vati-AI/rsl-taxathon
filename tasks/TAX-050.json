@@ -5,15 +5,15 @@
   "owner": "Gupta",
   "area": "ai",
   "phase": "pilot",
-  "status": "BACKLOG",
+  "status": "IN_REVIEW",
   "priority": "P0",
   "depends_on": [
     "TAX-048",
     "TAX-024"
   ],
-  "claimed_by": null,
-  "branch": null,
-  "pr": null,
+  "claimed_by": "claude-gupta-20261104-tax050",
+  "branch": "task/TAX-050",
+  "pr": "https://github.com/Vati-AI/rsl-taxathon/pull/128",
   "scope": "Reconcile foreign charges/contracts/payments with declared tax treatment and flag unresolved trail",
   "inputs": [
     "PROJECT.md",
@@ -27,15 +27,15 @@
   "acceptance": [
     {
       "text": "Reconcile foreign charges/contracts/payments with declared tax treatment and flag unresolved trail",
-      "done": false
+      "done": true
     },
     {
       "text": "Known synthetic gap produces targeted evidence questions; statutory treatment remains unverified pending expert review",
-      "done": false
+      "done": true
     },
     {
       "text": "Record relevant tests and evidence, update task status and open a human-review PR",
-      "done": false
+      "done": true
     }
   ],
   "verification": "Known synthetic gap produces targeted evidence questions; statutory treatment remains unverified pending expert review",
@@ -45,6 +45,28 @@
     "update-project-task",
     "finish-task"
   ],
-  "evidence": [],
-  "notes": []
+  "evidence": [
+    {
+      "criterion": 1,
+      "text": "ai/tools/imported_services.py traces each imported-service charge (explicit supplier_residence=non_resident or TAX-024 vat_status=treatment_unverified marker) through contract -> invoice -> payment (+declared withholding) -> declared VAT/withholding treatment with Decimal-only amounts; gaps vs discrepancies are separated and unresolved_trail/unresolved_trail_amount flag the trail. ai/workflows/imported_services_playbook.py wraps it as a case-scoped TAX-022 tool plus review -> propose_evidence_request LangGraph nodes. SYN-004: INV-SYN-004-02 contract linked, payment reconciled (LSL 50000.00), VAT and withholding treatment not declared -> unresolved trail LSL 50000.00. Other four scenarios: no imported charges, no finding."
+    },
+    {
+      "criterion": 2,
+      "text": "SYN-004 produces an advisory targeted_evidence_request with three neutral taxpayer questions (vat_treatment, withholding, service_performance) each citing CTR-SYN-004-02 and INV-SYN-004-02, status draft_requires_officer_approval; statutory_treatment.status=unverified_pending_expert_review, legal_conclusion/enforcement_conclusion/decision null; none of the TAX-024 expected non-findings emitted. Through the TAX-052 gate the finding is unverified_route and a proven_abuse action is blocked. Tests: .venv-ai pytest tests/ai 99 passed (12 new pure + 7 new graph: tenant isolation, fail-closed malformed money without leaking content, replay without duplicates, step budget, one-cent shortfall, Decimal sums, charge budget). ai.smoke passed; scripts/quality.py Python ruff/mypy pass."
+    },
+    {
+      "criterion": 3,
+      "text": "Tests and evidence recorded on task/TAX-050 (criteria 1-2). Branch refreshed from main and pushed explicitly; human-review PR https://github.com/Vati-AI/rsl-taxathon/pull/128 opened with checks and Windows-only environment exceptions documented. Agent will not merge."
+    }
+  ],
+  "notes": [
+    {
+      "at": "2026-11-04T08:52:21.011516+00:00",
+      "text": "Claimed by claude-gupta-20261104-tax050"
+    },
+    {
+      "at": "2026-11-04T09:23:12.346670+00:00",
+      "text": "Agent finished implementation and opened human review. task.py finish steps run individually: its dev.py check/quality.py gate fails on this Windows checkout only (POSIX file-mode tooling tests; CRLF vs Prettier), documented in the PR."
+    }
+  ]
 }

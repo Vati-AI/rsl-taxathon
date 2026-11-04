@@ -1,0 +1,116 @@
+{
+ "actions": [],
+ "creation": "2026-11-04 12:00:00.000000",
+ "description": "One extracted item with its page/record locator and bounding box (TAX-032).",
+ "doctype": "DocType",
+ "editable_grid": 0,
+ "engine": "InnoDB",
+ "field_order": [
+  "item_index",
+  "label",
+  "element_ref",
+  "page",
+  "record",
+  "extracted_field",
+  "bbox_left",
+  "bbox_top",
+  "bbox_right",
+  "bbox_bottom",
+  "coord_origin",
+  "text",
+  "text_sha256"
+ ],
+ "fields": [
+  {
+   "fieldname": "item_index",
+   "fieldtype": "Int",
+   "in_list_view": 1,
+   "label": "Item"
+  },
+  {
+   "fieldname": "label",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Label",
+   "length": 32,
+   "reqd": 1
+  },
+  {
+   "fieldname": "element_ref",
+   "fieldtype": "Data",
+   "label": "Element Ref",
+   "length": 128
+  },
+  {
+   "fieldname": "page",
+   "fieldtype": "Int",
+   "in_list_view": 1,
+   "label": "Page"
+  },
+  {
+   "fieldname": "record",
+   "fieldtype": "Data",
+   "label": "Record Locator",
+   "length": 255
+  },
+  {
+   "fieldname": "extracted_field",
+   "fieldtype": "Data",
+   "label": "Field",
+   "length": 64
+  },
+  {
+   "fieldname": "bbox_left",
+   "fieldtype": "Float",
+   "label": "BBox Left",
+   "precision": "6"
+  },
+  {
+   "fieldname": "bbox_top",
+   "fieldtype": "Float",
+   "label": "BBox Top",
+   "precision": "6"
+  },
+  {
+   "fieldname": "bbox_right",
+   "fieldtype": "Float",
+   "label": "BBox Right",
+   "precision": "6"
+  },
+  {
+   "fieldname": "bbox_bottom",
+   "fieldtype": "Float",
+   "label": "BBox Bottom",
+   "precision": "6"
+  },
+  {
+   "fieldname": "coord_origin",
+   "fieldtype": "Data",
+   "label": "Coord Origin",
+   "length": 10
+  },
+  {
+   "fieldname": "text",
+   "fieldtype": "Long Text",
+   "label": "Text"
+  },
+  {
+   "fieldname": "text_sha256",
+   "fieldtype": "Data",
+   "label": "Text SHA-256",
+   "length": 64
+  }
+ ],
+ "index_web_pages_for_search": 0,
+ "istable": 1,
+ "links": [],
+ "modified": "2026-11-04 12:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Vati Tax",
+ "name": "Vati Extraction Provenance",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": []
+}

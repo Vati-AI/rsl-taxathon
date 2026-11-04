@@ -11,8 +11,8 @@
     "source_status": "locked_source_fetched_on_setup_machine",
     "local_url": "http://127.0.0.1:55501",
     "source_commit": "01c4afdbcdb186cc36b128ed79283d544cfb9ec9",
-    "evidence": "TAX-025: integration/jube/README.md (auth, denied access, Swagger, resource use)",
-    "adapter_status": "not_implemented"
+    "evidence": "TAX-025: integration/jube/README.md (auth, denied access, Swagger, resource use); TAX-034: case lifecycle contract run in the same README",
+    "adapter_status": "case_lifecycle_contract_tested_not_wired"
   },
   "openaleph": {
     "upstream": "https://github.com/openaleph/openaleph",

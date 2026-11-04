@@ -1,0 +1,237 @@
+{
+ "actions": [],
+ "autoname": "field:extraction_id",
+ "creation": "2026-11-04 12:00:00.000000",
+ "description": "Append-only extraction revision of one evidence document with page/bbox provenance (TAX-032).",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "extraction_id",
+  "tenant_id",
+  "taxpayer_id",
+  "evidence_id",
+  "document_sha256",
+  "revision",
+  "supersedes_extraction_id",
+  "column_break_status",
+  "status",
+  "error_code",
+  "error_category",
+  "extractor",
+  "extractor_version",
+  "page_count",
+  "item_count",
+  "recorded_at",
+  "provenance_section",
+  "items",
+  "keys_section",
+  "registration_key",
+  "request_digest",
+  "revision_key"
+ ],
+ "fields": [
+  {
+   "fieldname": "extraction_id",
+   "fieldtype": "Data",
+   "label": "Extraction ID",
+   "length": 36,
+   "reqd": 1,
+   "set_only_once": 1,
+   "unique": 1
+  },
+  {
+   "fieldname": "tenant_id",
+   "fieldtype": "Data",
+   "in_standard_filter": 1,
+   "label": "Tenant ID",
+   "length": 36,
+   "reqd": 1,
+   "search_index": 1,
+   "set_only_once": 1
+  },
+  {
+   "fieldname": "taxpayer_id",
+   "fieldtype": "Data",
+   "label": "Taxpayer ID",
+   "length": 36,
+   "reqd": 1,
+   "search_index": 1,
+   "set_only_once": 1
+  },
+  {
+   "fieldname": "evidence_id",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Evidence",
+   "options": "Vati Evidence",
+   "reqd": 1,
+   "search_index": 1,
+   "set_only_once": 1
+  },
+  {
+   "description": "SHA-256 of the evidence this revision read; equals the evidence hash.",
+   "fieldname": "document_sha256",
+   "fieldtype": "Data",
+   "label": "Document SHA-256",
+   "length": 64,
+   "reqd": 1,
+   "set_only_once": 1
+  },
+  {
+   "fieldname": "revision",
+   "fieldtype": "Int",
+   "in_list_view": 1,
+   "label": "Revision",
+   "reqd": 1,
+   "set_only_once": 1
+  },
+  {
+   "fieldname": "supersedes_extraction_id",
+   "fieldtype": "Link",
+   "label": "Supersedes",
+   "options": "Vati Evidence Extraction",
+   "set_only_once": 1
+  },
+  {
+   "fieldname": "column_break_status",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Status",
+   "options": "success\npartial\nfailure",
+   "reqd": 1,
+   "set_only_once": 1
+  },
+  {
+   "fieldname": "error_code",
+   "fieldtype": "Data",
+   "label": "Error Code",
+   "length": 64,
+   "set_only_once": 1
+  },
+  {
+   "fieldname": "error_category",
+   "fieldtype": "Data",
+   "label": "Error Category",
+   "length": 32,
+   "set_only_once": 1
+  },
+  {
+   "fieldname": "extractor",
+   "fieldtype": "Select",
+   "label": "Extractor",
+   "options": "docling\nsynthetic_fixture",
+   "reqd": 1,
+   "set_only_once": 1
+  },
+  {
+   "fieldname": "extractor_version",
+   "fieldtype": "Data",
+   "label": "Extractor Version",
+   "length": 64,
+   "reqd": 1,
+   "set_only_once": 1
+  },
+  {
+   "fieldname": "page_count",
+   "fieldtype": "Int",
+   "label": "Page Count",
+   "set_only_once": 1
+  },
+  {
+   "fieldname": "item_count",
+   "fieldtype": "Int",
+   "label": "Item Count",
+   "set_only_once": 1
+  },
+  {
+   "fieldname": "recorded_at",
+   "fieldtype": "Datetime",
+   "label": "Recorded At (UTC)",
+   "reqd": 1,
+   "set_only_once": 1
+  },
+  {
+   "fieldname": "provenance_section",
+   "fieldtype": "Section Break",
+   "label": "Provenance"
+  },
+  {
+   "fieldname": "items",
+   "fieldtype": "Table",
+   "label": "Items",
+   "options": "Vati Extraction Provenance"
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "keys_section",
+   "fieldtype": "Section Break",
+   "label": "Uniqueness keys"
+  },
+  {
+   "description": "SHA-256 of tenant and extraction idempotency key.",
+   "fieldname": "registration_key",
+   "fieldtype": "Data",
+   "label": "Registration Key",
+   "length": 64,
+   "read_only": 1,
+   "unique": 1
+  },
+  {
+   "fieldname": "request_digest",
+   "fieldtype": "Data",
+   "label": "Request Digest",
+   "length": 64,
+   "read_only": 1
+  },
+  {
+   "fieldname": "revision_key",
+   "fieldtype": "Data",
+   "label": "Revision Key",
+   "length": 64,
+   "read_only": 1,
+   "unique": 1
+  }
+ ],
+ "in_create": 1,
+ "index_web_pages_for_search": 0,
+ "links": [],
+ "modified": "2026-11-04 12:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Vati Tax",
+ "name": "Vati Evidence Extraction",
+ "naming_rule": "By fieldname",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "export": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager"
+  },
+  {
+   "read": 1,
+   "role": "Vati Auditor"
+  },
+  {
+   "read": 1,
+   "role": "Vati Specialist"
+  },
+  {
+   "read": 1,
+   "role": "Vati Supervisor"
+  },
+  {
+   "read": 1,
+   "role": "Vati Service"
+  }
+ ],
+ "search_fields": "evidence_id,status",
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "evidence_id"
+}

@@ -6,6 +6,7 @@ Never prints secrets, never deletes volumes and never touches other Compose proj
 from __future__ import annotations
 
 import argparse
+import contextlib
 import json
 import secrets
 import subprocess
@@ -14,7 +15,7 @@ import time
 import urllib.error
 import urllib.request
 from pathlib import Path
-from typing import Any
+from typing import Any, Callable, Iterator
 
 ROOT = Path(__file__).resolve().parents[1]
 ENV_FILE = ROOT / ".local" / "jube.env"
@@ -149,6 +150,51 @@ def login() -> str:
         raise SystemExit(f"Jube login failed with HTTP {status}; response not shown")
     print("Changed the default Administrator password to the generated local secret")
     return token
+
+
+@contextlib.contextmanager
+def admin_in_tenant(
+    token: str, name: str, description: str, call: Callable[..., tuple[int, Any]] = request
+) -> Iterator[int]:
+    """Switch Administrator into the named non-landlord tenant (created once), then switch back.
+
+    Jube scopes models, cases, roles and users to the caller's current tenant. Administrator
+    stays a landlord user (its role lives in tenant 1), so it may create and enter tenants;
+    users whose role belongs to a non-landlord tenant get only their role's permissions.
+    """
+    status, current = call("GET", "/api/UserInTenant/GetCurrentTenantRegistry", token=token)
+    if status != 200 or not isinstance(current, dict):
+        raise SystemExit(f"Reading the current Jube tenant failed with HTTP {status}")
+
+    def find() -> dict[str, Any] | None:
+        status, tenants = call("GET", "/api/TenantRegistry/", token=token)
+        if status != 200 or not isinstance(tenants, list):
+            raise SystemExit(f"Listing Jube tenants failed with HTTP {status}")
+        return next((t for t in tenants if t.get("name") == name), None)
+
+    tenant = find()
+    if tenant is None:
+        body = {"name": name, "description": description, "active": True}
+        status, _ = call("POST", "/api/TenantRegistry/", body, token)
+        tenant = find()
+        if status not in (200, 201) or tenant is None:
+            raise SystemExit(f"Creating Jube tenant failed with HTTP {status}")
+    if tenant.get("id") == 1:
+        raise SystemExit("Refusing to use the landlord tenant for Vati identities")
+    previous = int(current["tenantRegistryId"])
+
+    def switch(tenant_id: int) -> None:
+        body = {"user": DEFAULT_ADMIN[0], "tenantRegistryId": tenant_id}
+        status, _ = call("PUT", "/api/UserInTenant/", body, token)
+        if status not in (200, 204):
+            raise SystemExit(f"Switching Administrator's Jube tenant failed with HTTP {status}")
+
+    switch(int(tenant["id"]))
+    try:
+        yield int(tenant["id"])
+    finally:
+        if previous != int(tenant["id"]):
+            switch(previous)
 
 
 def smoke() -> dict[str, Any]:

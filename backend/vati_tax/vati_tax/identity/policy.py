@@ -54,6 +54,9 @@ SUBMISSION_READ: Final = "submission.read"
 EVIDENCE_RESPOND: Final = "evidence.respond"
 CASE_READ: Final = "case.read"
 EVIDENCE_READ: Final = "evidence.read"
+# Register an original document as evidence (TAX-032): taxpayers for their own
+# taxpayer only, officers and services inside their tenant.
+EVIDENCE_REGISTER: Final = "evidence.register"
 INVESTIGATION_REQUEST: Final = "investigation.request"
 FINDING_REVIEW: Final = "finding.review"
 EVIDENCE_REQUEST_AUTHORISE: Final = "evidence_request.authorise"
@@ -72,6 +75,7 @@ ACTION_ROLES: Final[dict[str, frozenset[Role]]] = {
     EVIDENCE_RESPOND: frozenset({TAXPAYER}),
     CASE_READ: frozenset({AUDITOR, SPECIALIST, SUPERVISOR, SERVICE}),
     EVIDENCE_READ: frozenset({AUDITOR, SPECIALIST, SUPERVISOR, SERVICE}),
+    EVIDENCE_REGISTER: frozenset({TAXPAYER, AUDITOR, SPECIALIST, SUPERVISOR, SERVICE}),
     INVESTIGATION_REQUEST: frozenset({AUDITOR, SPECIALIST, SUPERVISOR}),
     FINDING_REVIEW: frozenset({AUDITOR, SPECIALIST, SUPERVISOR}),
     EVIDENCE_REQUEST_AUTHORISE: frozenset({AUDITOR, SUPERVISOR}),
@@ -102,7 +106,7 @@ HUMAN_ONLY_ACTIONS: Final[frozenset[str]] = frozenset(
 )
 # Actions on a taxpayer's own records; taxpayers need a matching taxpayer_id.
 TAXPAYER_OWNED_ACTIONS: Final[frozenset[str]] = frozenset(
-    {SUBMISSION_CREATE, SUBMISSION_READ, EVIDENCE_RESPOND}
+    {SUBMISSION_CREATE, SUBMISSION_READ, EVIDENCE_RESPOND, EVIDENCE_REGISTER}
 )
 # The approver must differ from the proposer (separation of duties).
 SEPARATION_OF_DUTIES: Final[frozenset[str]] = frozenset({DECISION_APPROVE})
