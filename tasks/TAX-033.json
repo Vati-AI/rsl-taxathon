@@ -5,13 +5,13 @@
   "owner": "Edga",
   "area": "backend",
   "phase": "pilot",
-  "status": "BACKLOG",
+  "status": "IN_PROGRESS",
   "priority": "P0",
   "depends_on": [
     "TAX-030"
   ],
-  "claimed_by": null,
-  "branch": null,
+  "claimed_by": "keletso-claude-code",
+  "branch": "task/TAX-033",
   "pr": null,
   "scope": "Implement persisted delivery attempts, retry limits and dead-letter/manual-retry state",
   "inputs": [
@@ -45,5 +45,14 @@
     "finish-task"
   ],
   "evidence": [],
-  "notes": []
+  "notes": [
+    {
+      "at": "2026-11-04T08:26:20.950348+00:00",
+      "text": "Claimed by keletso-claude-code"
+    },
+    {
+      "at": "2026-11-04T08:26:20.950743+00:00",
+      "text": "Implemented by keletso-claude-code on Keletso's instruction (2026-11-04); owner Edga unchanged"
+    }
+  ]
 }
