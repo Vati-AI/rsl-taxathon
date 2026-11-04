@@ -101,6 +101,155 @@
       "producer": "langgraph_run",
       "producer_version": "policy_gap_gate@1",
       "hours_ago": 90
+    },
+    {
+      "finding_id": "70000000-0000-4000-8000-000000000021",
+      "case_id": "40000000-0000-4000-8000-000000000002",
+      "kind": "observed_fact",
+      "category": "related_party",
+      "explanation": "Contract CTR-SYN-002-01 records a disclosed related-party supply of shared logistics services from Synthetic Group Holdings, invoiced at LSL 87,200.00.",
+      "evidence_refs": [
+        {
+          "evidence_id": "50000000-0000-4000-8000-000000000021",
+          "document_sha256": "2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a",
+          "locator": {
+            "page": 1,
+            "record": null
+          }
+        },
+        {
+          "evidence_id": "50000000-0000-4000-8000-000000000022",
+          "document_sha256": "2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b",
+          "locator": {
+            "page": 1,
+            "record": null
+          }
+        }
+      ],
+      "unresolved_amount": null,
+      "confidence": "high",
+      "alternative_explanations": [],
+      "legal_route": {
+        "status": "unverified",
+        "citation": null,
+        "verified_by": null
+      },
+      "proposed_action": {
+        "type": "none",
+        "requires_human_approval": true
+      },
+      "producer": "langgraph_run",
+      "producer_version": "related_party_review@1",
+      "hours_ago": 24
+    },
+    {
+      "finding_id": "70000000-0000-4000-8000-000000000022",
+      "case_id": "40000000-0000-4000-8000-000000000002",
+      "kind": "contradictory_evidence",
+      "category": "related_party",
+      "explanation": "Two records give different shareholdings for Synthetic Group Holdings in Synthetic Border Retail: 60% in the company register extract and 55% in the 2024 annual return. With the 40% individual holding in the annual return, the recorded stakes add up to more than 100%. The records have not been reconciled.",
+      "evidence_refs": [
+        {
+          "evidence_id": "50000000-0000-4000-8000-000000000025",
+          "document_sha256": "2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e",
+          "locator": {
+            "page": null,
+            "record": "row 4"
+          }
+        },
+        {
+          "evidence_id": "50000000-0000-4000-8000-000000000026",
+          "document_sha256": "2f2f2f2f2f2f2f2f2f2f2f2f2f2f2f2f2f2f2f2f2f2f2f2f2f2f2f2f2f2f2f2f",
+          "locator": {
+            "page": 3,
+            "record": null
+          }
+        }
+      ],
+      "unresolved_amount": null,
+      "confidence": "medium",
+      "alternative_explanations": [
+        "The register extract may predate a share transfer recorded in the annual return.",
+        "One of the records may contain a data-entry error."
+      ],
+      "legal_route": {
+        "status": "unverified",
+        "citation": null,
+        "verified_by": null
+      },
+      "proposed_action": {
+        "type": "request_evidence",
+        "requires_human_approval": true
+      },
+      "producer": "langgraph_run",
+      "producer_version": "related_party_review@1",
+      "hours_ago": 24
+    },
+    {
+      "finding_id": "70000000-0000-4000-8000-000000000024",
+      "case_id": "40000000-0000-4000-8000-000000000002",
+      "kind": "inference",
+      "category": "related_party",
+      "explanation": "Reported losses in three consecutive periods alongside related-party charges may merit specialist review of pricing. Pricing has not been established.",
+      "evidence_refs": [
+        {
+          "evidence_id": "50000000-0000-4000-8000-000000000021",
+          "document_sha256": "2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a",
+          "locator": {
+            "page": 2,
+            "record": null
+          }
+        }
+      ],
+      "unresolved_amount": null,
+      "confidence": "low",
+      "alternative_explanations": [
+        "Losses may reflect market conditions unrelated to the related-party supply."
+      ],
+      "legal_route": {
+        "status": "unverified",
+        "citation": null,
+        "verified_by": null
+      },
+      "proposed_action": {
+        "type": "specialist_review",
+        "requires_human_approval": true
+      },
+      "producer": "langgraph_run",
+      "producer_version": "related_party_review@1",
+      "hours_ago": 24
+    },
+    {
+      "finding_id": "70000000-0000-4000-8000-000000000040",
+      "case_id": "40000000-0000-4000-8000-000000000004",
+      "kind": "observed_fact",
+      "category": "imported_services",
+      "explanation": "Synthetic invoice records a foreign consulting service of LSL 3000.00.",
+      "evidence_refs": [
+        {
+          "evidence_id": "50000000-0000-4000-8000-000000000004",
+          "document_sha256": "4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c",
+          "locator": {
+            "page": 1,
+            "record": null
+          }
+        }
+      ],
+      "unresolved_amount": null,
+      "confidence": "high",
+      "alternative_explanations": [],
+      "legal_route": {
+        "status": "unverified",
+        "citation": null,
+        "verified_by": null
+      },
+      "proposed_action": {
+        "type": "none",
+        "requires_human_approval": true
+      },
+      "producer": "langgraph_run",
+      "producer_version": "imported_services_review@1",
+      "hours_ago": 24
     }
   ],
   "decisions": [

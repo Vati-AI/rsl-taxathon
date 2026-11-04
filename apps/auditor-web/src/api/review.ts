@@ -110,22 +110,41 @@ export interface CaseReview {
 export type ProposedActionType =
   'none' | 'human_clearance' | 'request_evidence' | 'specialist_review' | 'policy_gap_review';
 
+export const FINDING_KINDS = [
+  'observed_fact',
+  'inference',
+  'missing_evidence',
+  'unverified_evidence',
+  'contradictory_evidence',
+] as const;
+export type FindingKind = (typeof FINDING_KINDS)[number];
+
+export interface EvidenceLocator {
+  page: number | null;
+  record: string | null;
+}
+
+/** A cited source: the stored original's SHA-256 plus a page or record locator (TAX-041). */
+export interface EvidenceRef {
+  evidence_id: string;
+  document_sha256: string;
+  locator: EvidenceLocator;
+}
+
 export interface Finding {
   finding_id: string;
   case_id: string;
-  kind:
-    | 'observed_fact'
-    | 'inference'
-    | 'missing_evidence'
-    | 'unverified_evidence'
-    | 'contradictory_evidence';
+  kind: FindingKind;
   category: string;
   explanation: string;
-  evidence_refs: { evidence_id: string; locator: { page: number | null; record: string | null } }[];
+  evidence_refs: EvidenceRef[];
   unresolved_amount: Money | null;
   confidence: 'low' | 'medium' | 'high';
   alternative_explanations: string[];
-  legal_route: { status: 'unverified' | 'verified_by_reviewer' | 'no_verified_route' };
+  legal_route: {
+    status: 'unverified' | 'verified_by_reviewer' | 'no_verified_route';
+    citation: string | null;
+  };
   proposed_action: { type: ProposedActionType };
   producer: 'jube_rule' | 'langgraph_run' | 'officer';
   created_at: string;
@@ -259,6 +278,21 @@ export function parseCaseReview(value: unknown, caseId: string): CaseReview {
   };
 }
 
+const SHA256 = /^[0-9a-f]{64}$/;
+
+function parseRef(value: unknown): EvidenceRef {
+  if (!isRecord(value) || !isRecord(value.locator)) invalid('an evidence citation');
+  const { evidence_id: id, document_sha256: sha } = value;
+  if (typeof id !== 'string' || !UUID.test(id)) invalid('an evidence citation');
+  if (typeof sha !== 'string' || !SHA256.test(sha)) invalid('an evidence citation');
+  const { page, record } = value.locator;
+  if (page !== null && (typeof page !== 'number' || !Number.isInteger(page) || page < 1))
+    invalid('a page reference');
+  if (record !== null && (typeof record !== 'string' || record === ''))
+    invalid('a record reference');
+  return { evidence_id: id, document_sha256: sha, locator: { page, record } };
+}
+
 export function parseFinding(value: unknown, caseId: string): Finding {
   if (!isRecord(value) || !isRecord(value.proposed_action) || !isRecord(value.legal_route))
     invalid('a finding');
@@ -266,8 +300,23 @@ export function parseFinding(value: unknown, caseId: string): Finding {
   sameCase(value, caseId);
   if (!Array.isArray(value.evidence_refs) || !Array.isArray(value.alternative_explanations))
     invalid('a finding');
+  // Every proposed action needs officer approval; anything else is refused, not shown.
+  if (value.proposed_action.requires_human_approval !== true)
+    invalid('a proposed action without approval');
+  const citation = value.legal_route.citation ?? null;
+  if (citation !== null && typeof citation !== 'string') invalid('a legal citation');
   return {
     ...(value as unknown as Finding),
+    kind: oneOf(value.kind, FINDING_KINDS, 'a finding kind'),
+    evidence_refs: value.evidence_refs.map(parseRef),
+    legal_route: {
+      status: oneOf(
+        value.legal_route.status,
+        ['unverified', 'verified_by_reviewer', 'no_verified_route'],
+        'a legal route status',
+      ),
+      citation,
+    },
     unresolved_amount: money(value.unresolved_amount),
     confidence: oneOf(value.confidence, ['low', 'medium', 'high'], 'a confidence'),
     proposed_action: {
