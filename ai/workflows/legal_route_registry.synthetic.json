@@ -1,0 +1,67 @@
+{
+  "registry_version": "SYN-LRR-2026.11.0",
+  "synthetic": true,
+  "notice": "SYNTHETIC PLACEHOLDER REGISTRY. No entry is a Lesotho statute, regulation or RSL ruling. Identifiers, titles, versions, dates and reviewers are invented test fixtures. Real legal routes require independent RSL legal validation before product use.",
+  "entries": [
+    {
+      "authority_id": "SYN-PLACEHOLDER-AUTH-001",
+      "version": "2024.1",
+      "title": "Synthetic placeholder: input-credit documentation route (superseded fixture version)",
+      "effective_from": "2024-01-01",
+      "effective_to": "2024-12-31",
+      "verification_status": "reviewer_verified",
+      "reviewer": "SYN-REVIEWER-01",
+      "reviewed_on": "2024-01-15",
+      "finding_codes": ["refund_claim_exceeds_documented_input_vat"],
+      "synthetic": true
+    },
+    {
+      "authority_id": "SYN-PLACEHOLDER-AUTH-001",
+      "version": "2025.1",
+      "title": "Synthetic placeholder: input-credit documentation route",
+      "effective_from": "2025-01-01",
+      "effective_to": null,
+      "verification_status": "reviewer_verified",
+      "reviewer": "SYN-REVIEWER-01",
+      "reviewed_on": "2025-01-20",
+      "finding_codes": ["refund_claim_exceeds_documented_input_vat"],
+      "synthetic": true
+    },
+    {
+      "authority_id": "SYN-PLACEHOLDER-AUTH-001",
+      "version": "2026.2-draft",
+      "title": "Synthetic placeholder: draft amendment awaiting review",
+      "effective_from": "2026-07-01",
+      "effective_to": null,
+      "verification_status": "unverified",
+      "reviewer": null,
+      "reviewed_on": null,
+      "finding_codes": ["refund_claim_exceeds_documented_input_vat"],
+      "synthetic": true
+    },
+    {
+      "authority_id": "SYN-PLACEHOLDER-AUTH-002",
+      "version": "2025.1",
+      "title": "Synthetic placeholder: related-party supply route (not reviewed)",
+      "effective_from": "2025-01-01",
+      "effective_to": null,
+      "verification_status": "unverified",
+      "reviewer": null,
+      "reviewed_on": null,
+      "finding_codes": ["related_party_transaction", "consecutive_loss_periods"],
+      "synthetic": true
+    },
+    {
+      "authority_id": "SYN-PLACEHOLDER-AUTH-003",
+      "version": "2025.1",
+      "title": "Synthetic placeholder: imported-service treatment route (not reviewed)",
+      "effective_from": "2025-01-01",
+      "effective_to": null,
+      "verification_status": "unverified",
+      "reviewer": null,
+      "reviewed_on": null,
+      "finding_codes": ["imported_service_treatment_unverified"],
+      "synthetic": true
+    }
+  ]
+}
