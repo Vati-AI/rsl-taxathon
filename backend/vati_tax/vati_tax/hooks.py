@@ -14,6 +14,10 @@ permission_query_conditions = {"*": "vati_tax.identity.permissions.tenant_query_
 has_permission = {"*": "vati_tax.identity.permissions.tenant_has_permission"}
 doc_events = {"DocShare": {"validate": "vati_tax.identity.permissions.validate_share"}}
 
+# TAX-033: deliver committed outbox events every minute. Handlers are registered
+# per event type with `vati_outbox_handlers = {"<type>": "dotted.path"}`.
+scheduler_events = {"cron": {"* * * * *": ["vati_tax.outbox.worker.dispatch_scheduled"]}}
+
 # TAX-021: the Vue taxpayer portal owns client routes under /taxpayer; every
 # deep link renders the guarded www/taxpayer page.
 website_route_rules = [

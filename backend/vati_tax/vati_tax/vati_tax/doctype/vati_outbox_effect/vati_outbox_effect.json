@@ -1,0 +1,122 @@
+{
+ "actions": [],
+ "autoname": "hash",
+ "creation": "2026-11-04 12:00:00.000000",
+ "description": "Ledger of named side effects per event, so replays never repeat a completed call (TAX-033).",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "tenant_id",
+  "event",
+  "effect_name",
+  "state",
+  "idempotency_key",
+  "attempt_no",
+  "result_ref",
+  "completed_at",
+  "effect_key"
+ ],
+ "fields": [
+  {
+   "fieldname": "tenant_id",
+   "fieldtype": "Data",
+   "label": "Tenant ID",
+   "length": 36,
+   "reqd": 1,
+   "search_index": 1,
+   "set_only_once": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1
+  },
+  {
+   "fieldname": "event",
+   "fieldtype": "Link",
+   "label": "Event",
+   "options": "Vati Outbox Event",
+   "reqd": 1,
+   "search_index": 1,
+   "set_only_once": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "effect_name",
+   "fieldtype": "Data",
+   "label": "Effect",
+   "length": 64,
+   "reqd": 1,
+   "set_only_once": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "state",
+   "fieldtype": "Select",
+   "label": "State",
+   "reqd": 1,
+   "default": "started",
+   "in_list_view": 1,
+   "options": "started\ncompleted"
+  },
+  {
+   "fieldname": "idempotency_key",
+   "fieldtype": "Data",
+   "label": "Upstream Idempotency Key",
+   "length": 255,
+   "reqd": 1,
+   "set_only_once": 1
+  },
+  {
+   "fieldname": "attempt_no",
+   "fieldtype": "Int",
+   "label": "Started In Attempt",
+   "set_only_once": 1
+  },
+  {
+   "fieldname": "result_ref",
+   "fieldtype": "Data",
+   "label": "Result Reference",
+   "length": 255,
+   "description": "Upstream ID or reference returned by the effect; never content."
+  },
+  {
+   "fieldname": "completed_at",
+   "fieldtype": "Datetime",
+   "label": "Completed At (UTC)"
+  },
+  {
+   "fieldname": "effect_key",
+   "fieldtype": "Data",
+   "label": "Effect Key",
+   "length": 64,
+   "read_only": 1,
+   "unique": 1
+  }
+ ],
+ "in_create": 1,
+ "index_web_pages_for_search": 0,
+ "links": [],
+ "modified": "2026-11-04 12:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Vati Tax",
+ "name": "Vati Outbox Effect",
+ "naming_rule": "Random",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "export": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager"
+  },
+  {
+   "read": 1,
+   "report": 1,
+   "role": "Vati Supervisor"
+  }
+ ],
+ "search_fields": "event,effect_name",
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "effect_name",
+ "track_changes": 1
+}
