@@ -5,15 +5,15 @@
   "owner": "Keletso",
   "area": "integration",
   "phase": "pilot",
-  "status": "BACKLOG",
+  "status": "IN_PROGRESS",
   "priority": "P0",
   "depends_on": [
     "TAX-028",
     "TAX-032",
     "TAX-033"
   ],
-  "claimed_by": null,
-  "branch": null,
+  "claimed_by": "claude-gupta-20261104-tax038",
+  "branch": "task/TAX-038",
   "pr": null,
   "scope": "Handle authenticated file conversion, async polling, extraction provenance and retry-safe persistence",
   "inputs": [
@@ -47,5 +47,10 @@
     "finish-task"
   ],
   "evidence": [],
-  "notes": []
+  "notes": [
+    {
+      "at": "2026-11-04T13:55:23.383157+00:00",
+      "text": "Claimed by claude-gupta-20261104-tax038"
+    }
+  ]
 }
