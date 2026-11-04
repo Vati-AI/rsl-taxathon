@@ -140,6 +140,8 @@ def check():
             "ai",
             "integration/api",
             "integration/jube",
+            "integration/followthemoney",
+            "integration/openaleph",
         ],
         ["python3", "-m", "unittest", "discover", "-s", "tests/data", "-v"],
         ["python3", "-m", "unittest", "discover", "-s", "tests/tooling", "-v"],
