@@ -5,7 +5,7 @@
   "owner": "Keletso",
   "area": "integration",
   "phase": "pilot",
-  "status": "IN_REVIEW",
+  "status": "DONE",
   "priority": "P0",
   "depends_on": [
     "TAX-018",
@@ -68,6 +68,10 @@
     {
       "at": "2026-11-04T08:55:37.625542+00:00",
       "text": "Agent finished implementation and opened human review"
+    },
+    {
+      "at": "2026-11-04T09:34:20.440011+00:00",
+      "text": "Verified implementation PR #123 merged (4288e69, 2026-11-04T09:33Z); all acceptance criteria and evidence recorded."
     }
   ]
 }
