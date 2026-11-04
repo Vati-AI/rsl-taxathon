@@ -15,6 +15,8 @@ SOURCES = [
     "ai",
     "integration/api",
     "integration/jube",
+    "integration/followthemoney",
+    "integration/openaleph",
     "tests/integration",
 ]
 
