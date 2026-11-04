@@ -5,7 +5,7 @@
   "owner": "Leseli",
   "area": "integration",
   "phase": "pilot",
-  "status": "IN_REVIEW",
+  "status": "DONE",
   "priority": "P0",
   "depends_on": [
     "TAX-026",
@@ -80,6 +80,10 @@
     {
       "at": "2026-11-04T11:00:26.208178+00:00",
       "text": "Agent leseli-claude-20261104-036 finished implementation and opened review (https://github.com/Vati-AI/rsl-taxathon/pull/139) for Keletso as integration area owner. mypy left to CI (Smart App Control); real FtM library and live OpenAleph not run (see ADR-012)."
+    },
+    {
+      "at": "2026-11-04T11:13:13.030057+00:00",
+      "text": "Verified implementation PR #139 merged (84c401d, 2026-11-04T11:10Z); all acceptance criteria and evidence recorded."
     }
   ]
 }
