@@ -27,11 +27,11 @@
   "acceptance": [
     {
       "text": "Detect repeated approved action sequences and propose versioned workflows for supervisor review",
-      "done": false
+      "done": true
     },
     {
       "text": "No proposal auto-activates; compare suggested workflow against held-out case traces",
-      "done": false
+      "done": true
     },
     {
       "text": "Record relevant tests and evidence, update task status and open a human-review PR",
@@ -45,7 +45,16 @@
     "update-project-task",
     "finish-task"
   ],
-  "evidence": [],
+  "evidence": [
+    {
+      "criterion": 1,
+      "text": "ai/workflows/workflow_observation.py reads one tenant's TAX-059 audit-ledger entries (entry_view shape, optional approved-outcome detail) and builds per-case traces from approved work only (authorised evidence requests; approved decisions not followed by execution_failed); reads, denials, overrides, drafts, rejections and withdrawals never become steps and unrecognised detail is not trusted. Contiguous sequences (length 2-6) in >=3 training cases across >=2 distinct actors become maximal, versioned workflow_proposal records (proposal_id content digest, version 0.1.0, observer version, supporting ledger event IDs) for supervisor review."
+    },
+    {
+      "criterion": 2,
+      "text": "tests/ai/test_action_observation.py (11 tests) on genuine sealed TAX-059 MemoryLedger chains (verify_chain intact): every proposal is status proposed, auto_activate false, approved_by null; activate() refuses with activation_not_permitted; deterministic SHA-256 split keeps held-out cases out of training support; the common 3-step sequence is compared with 4 held-out cases (coverage 3/4, followed when started 3/4, one divergence named); insufficient holdout is reported not hidden; one-actor and rare sequences not proposed; deterministic and replay-safe under duplicate/reordered delivery; tenant mismatch, chain-position conflict and malformed entries fail closed. .venv-ai pytest tests/ai: 168 passed; ruff/mypy (148 files) pass."
+    }
+  ],
   "notes": [
     {
       "at": "2026-11-04T17:11:03.879609+00:00",
