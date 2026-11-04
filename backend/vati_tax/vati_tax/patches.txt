@@ -1,1 +1,6 @@
-# Versioned migrations will be added with DocTypes.
+[pre_model_sync]
+# Patches here run before DocType schema sync (data moves needed by the new schema).
+# Add one dotted path per line, e.g. vati_tax.patches.v0_2.rename_field, with a test.
+
+[post_model_sync]
+# Patches here run after schema sync (backfills that need the new columns).
