@@ -139,9 +139,11 @@ def check():
             "backend/vati_tax/vati_tax",
             "ai",
             "integration/api",
+            "integration/jube",
         ],
         ["python3", "-m", "unittest", "discover", "-s", "tests/data", "-v"],
         ["python3", "-m", "unittest", "discover", "-s", "tests/tooling", "-v"],
+        ["python3", "-m", "unittest", "discover", "-s", "tests/integration", "-v"],
         ["python3", "integration/api/contract.py"],
         ["python3", "-m", "unittest", "discover", "-s", "tests/contracts", "-v"],
         # Frappe-free app logic (portal boundary/fixtures); bench tests cover the rest.
