@@ -1,0 +1,148 @@
+{
+ "actions": [],
+ "autoname": "hash",
+ "creation": "2026-11-04 12:00:00.000000",
+ "description": "One persisted delivery attempt of an outbox event (TAX-033).",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "tenant_id",
+  "event",
+  "attempt_no",
+  "outcome",
+  "error_code",
+  "retryable",
+  "column_break_times",
+  "worker",
+  "lease_token",
+  "started_at",
+  "finished_at",
+  "next_attempt_at",
+  "attempt_key"
+ ],
+ "fields": [
+  {
+   "fieldname": "tenant_id",
+   "fieldtype": "Data",
+   "label": "Tenant ID",
+   "length": 36,
+   "reqd": 1,
+   "search_index": 1,
+   "set_only_once": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1
+  },
+  {
+   "fieldname": "event",
+   "fieldtype": "Link",
+   "label": "Event",
+   "options": "Vati Outbox Event",
+   "reqd": 1,
+   "search_index": 1,
+   "set_only_once": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "attempt_no",
+   "fieldtype": "Int",
+   "label": "Attempt",
+   "reqd": 1,
+   "set_only_once": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "outcome",
+   "fieldtype": "Select",
+   "label": "Outcome",
+   "reqd": 1,
+   "default": "started",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "options": "started\nsucceeded\nfailed\nlease_lost"
+  },
+  {
+   "fieldname": "error_code",
+   "fieldtype": "Data",
+   "label": "Error Code",
+   "length": 64
+  },
+  {
+   "fieldname": "retryable",
+   "fieldtype": "Check",
+   "label": "Retryable",
+   "default": "0"
+  },
+  {
+   "fieldname": "column_break_times",
+   "fieldtype": "Column Break",
+   "label": ""
+  },
+  {
+   "fieldname": "worker",
+   "fieldtype": "Data",
+   "label": "Worker",
+   "length": 140,
+   "set_only_once": 1
+  },
+  {
+   "fieldname": "lease_token",
+   "fieldtype": "Data",
+   "label": "Lease Token",
+   "length": 36,
+   "set_only_once": 1
+  },
+  {
+   "fieldname": "started_at",
+   "fieldtype": "Datetime",
+   "label": "Started At (UTC)",
+   "reqd": 1,
+   "set_only_once": 1
+  },
+  {
+   "fieldname": "finished_at",
+   "fieldtype": "Datetime",
+   "label": "Finished At (UTC)"
+  },
+  {
+   "fieldname": "next_attempt_at",
+   "fieldtype": "Datetime",
+   "label": "Next Attempt At (UTC)"
+  },
+  {
+   "fieldname": "attempt_key",
+   "fieldtype": "Data",
+   "label": "Attempt Key",
+   "length": 80,
+   "read_only": 1,
+   "unique": 1
+  }
+ ],
+ "in_create": 1,
+ "index_web_pages_for_search": 0,
+ "links": [],
+ "modified": "2026-11-04 12:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Vati Tax",
+ "name": "Vati Outbox Attempt",
+ "naming_rule": "Random",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "export": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager"
+  },
+  {
+   "read": 1,
+   "report": 1,
+   "role": "Vati Supervisor"
+  }
+ ],
+ "search_fields": "event,outcome",
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "event",
+ "track_changes": 1
+}
