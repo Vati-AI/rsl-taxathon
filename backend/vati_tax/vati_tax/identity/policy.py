@@ -71,6 +71,11 @@ PLAYBOOK_APPROVE: Final = "playbook.approve"
 DECISION_EXECUTE: Final = "decision.execute"
 INTEGRATION_CALLBACK: Final = "integration.callback"
 DRAFT_RECORD: Final = "draft.record"
+# Read the tenant audit ledger, its integrity check and review-only signals
+# (TAX-059). Supervisors only: the ledger shows every officer's reads.
+LEDGER_READ: Final = "ledger.read"
+# Record an authorised exception to a named control, with a reason (TAX-059).
+OVERRIDE_RECORD: Final = "override.record"
 
 ACTION_ROLES: Final[dict[str, frozenset[Role]]] = {
     SUBMISSION_CREATE: frozenset({TAXPAYER}),
@@ -93,6 +98,8 @@ ACTION_ROLES: Final[dict[str, frozenset[Role]]] = {
     # risk callbacks) and record agent drafts that a human must then review.
     INTEGRATION_CALLBACK: frozenset({SERVICE}),
     DRAFT_RECORD: frozenset({AUDITOR, SPECIALIST, SUPERVISOR, SERVICE}),
+    LEDGER_READ: frozenset({SUPERVISOR}),
+    OVERRIDE_RECORD: frozenset({SUPERVISOR}),
 }
 
 # Consequential human decisions. Never granted to a service identity, even if
@@ -106,6 +113,8 @@ HUMAN_ONLY_ACTIONS: Final[frozenset[str]] = frozenset(
         DECISION_APPROVE,
         CASE_ASSIGN,
         PLAYBOOK_APPROVE,
+        LEDGER_READ,
+        OVERRIDE_RECORD,
     }
 )
 # Actions on a taxpayer's own records; taxpayers need a matching taxpayer_id.

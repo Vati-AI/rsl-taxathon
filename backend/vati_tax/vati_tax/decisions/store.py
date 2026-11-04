@@ -32,6 +32,9 @@ from typing import Any
 
 import frappe
 
+from vati_tax.audit import ledger
+from vati_tax.audit import service as audit_service
+from vati_tax.audit import store as audit_store
 from vati_tax.decisions import engine, rules
 from vati_tax.decisions.engine import (
     AuditEvent,
@@ -327,34 +330,22 @@ class FrappeRepository:
     # audit events
 
     def append_event(self, event: AuditEvent) -> None:
-        doc = frappe.get_doc(
-            {
-                "doctype": AUDIT,
-                "event_id": event.event_id,
-                "tenant_id": event.tenant_id,
-                "taxpayer_id": event.taxpayer_id,
-                "case_id": event.case_id,
-                "sequence": event.sequence or 0,
-                "action": event.action,
-                "outcome": event.outcome,
-                "actor": event.actor,
-                "actor_role": event.actor_role,
-                "occurred_at": _naive(event.occurred_at),
-                "correlation_id": event.correlation_id,
-                "subject_type": event.subject_type,
-                "subject_id": event.subject_id,
-                "payload_hash": event.payload_hash,
-            }
-        )
+        # TAX-059: every event takes the next position in the tenant hash chain.
         try:
-            doc.insert(ignore_permissions=True)
-        except _UNIQUE as exc:
+            ledger.append(audit_store.FrappeLedger(), engine.to_ledger(event))
+        except ledger.Duplicate as exc:
             raise Duplicate(str(exc)) from exc
 
     def case_events(self, tenant_id: str, case_id: str) -> list[AuditEvent]:
         rows = frappe.get_all(
             AUDIT,
-            filters={"tenant_id": tenant_id, "case_id": case_id},
+            # The decision trail only: reads, overrides and refusals are
+            # supervisor-only ledger entries (TAX-059).
+            filters={
+                "tenant_id": tenant_id,
+                "case_id": case_id,
+                "category": ["in", ["write", "approval"]],
+            },
             fields=[
                 "name",
                 "taxpayer_id",
@@ -369,7 +360,7 @@ class FrappeRepository:
                 "payload_hash",
                 "outcome",
             ],
-            order_by="occurred_at asc, creation asc",
+            order_by="chain_seq asc",
         )
         return [
             AuditEvent(
@@ -415,11 +406,32 @@ def _log(action: str, view: dict[str, Any]) -> None:
     )
 
 
-def _guard(fn: Callable[[], dict[str, Any]]) -> dict[str, Any]:
-    try:
-        return fn()
-    except policy.ActionDenied as exc:
-        raise frappe.PermissionError(str(exc)) from exc
+def _safe_uuid(value: object) -> str | None:
+    return policy.canonical_uuid(value)
+
+
+def _guard(
+    ctx: engine.Context,
+    attempted_action: str,
+    subject_type: str,
+    subject_id: object,
+    fn: Callable[[], dict[str, Any]],
+    *,
+    case_id: object = None,
+) -> dict[str, Any]:
+    """Run ``fn``; a policy refusal is kept in the ledger (TAX-059) and re-raised."""
+    audit_ctx = audit_service.Context(
+        scope=ctx.scope, now=ctx.now, correlation_id=ctx.correlation_id
+    )
+    result: dict[str, Any] = audit_store.guarded(
+        audit_ctx,
+        attempted_action=attempted_action,
+        subject_type=subject_type,
+        subject_id=_safe_uuid(subject_id) or "invalid",
+        case_id=_safe_uuid(case_id),
+        fn=fn,
+    )
+    return result
 
 
 def record_draft(
@@ -432,9 +444,14 @@ def record_draft(
 ) -> dict[str, Any]:
     ctx = _context(tenant_id, correlation_id)
     view = _guard(
-        lambda: engine.record_draft(
+        ctx,
+        policy.DRAFT_RECORD,
+        "case",
+        case_id,
+        case_id=case_id,
+        fn=lambda: engine.record_draft(
             ctx, FrappeRepository(), case_id=case_id, body=body, idempotency_key=idempotency_key
-        )
+        ),
     )
     _log("record_draft", view)
     return view
@@ -450,14 +467,19 @@ def propose_decision(
 ) -> dict[str, Any]:
     ctx = _context(tenant_id, correlation_id)
     view = _guard(
-        lambda: engine.propose(
+        ctx,
+        policy.DECISION_PROPOSE,
+        "case",
+        case_id,
+        case_id=case_id,
+        fn=lambda: engine.propose(
             ctx,
             FrappeRepository(),
             lifecycle_for(ctx.scope.tenant_id),
             case_id=case_id,
             body=body,
             idempotency_key=idempotency_key,
-        )
+        ),
     )
     _log("propose_decision", view)
     return view
@@ -475,8 +497,13 @@ def review_decision(
     if action not in ("approve", "reject", "withdraw"):
         raise rules.InvalidMapping("Unknown review action.", "action", "unknown_action")
     ctx = _context(tenant_id, correlation_id)
+    attempted = policy.DECISION_PROPOSE if action == "withdraw" else policy.DECISION_APPROVE
     view = _guard(
-        lambda: engine.review(
+        ctx,
+        attempted,
+        "decision",
+        decision_id,
+        fn=lambda: engine.review(
             ctx,
             FrappeRepository(),
             lifecycle_for(ctx.scope.tenant_id),
@@ -484,7 +511,7 @@ def review_decision(
             decision_id=decision_id,
             body=body,
             idempotency_key=idempotency_key,
-        )
+        ),
     )
     _log(f"{action}_decision", view)
     return view
@@ -495,9 +522,13 @@ def retry_decision(
 ) -> dict[str, Any]:
     ctx = _context(tenant_id, correlation_id)
     view = _guard(
-        lambda: engine.retry_execution(
+        ctx,
+        policy.DECISION_EXECUTE,
+        "decision",
+        decision_id,
+        fn=lambda: engine.retry_execution(
             ctx, FrappeRepository(), lifecycle_for(ctx.scope.tenant_id), decision_id=decision_id
-        )
+        ),
     )
     _log("retry_decision", view)
     return view
@@ -513,9 +544,14 @@ def authorise_evidence_request(
 ) -> dict[str, Any]:
     ctx = _context(tenant_id, correlation_id)
     view = _guard(
-        lambda: engine.authorise_evidence_request(
+        ctx,
+        policy.EVIDENCE_REQUEST_AUTHORISE,
+        "case",
+        case_id,
+        case_id=case_id,
+        fn=lambda: engine.authorise_evidence_request(
             ctx, FrappeRepository(), case_id=case_id, body=body, idempotency_key=idempotency_key
-        )
+        ),
     )
     _log("authorise_evidence_request", view)
     return view
@@ -523,4 +559,20 @@ def authorise_evidence_request(
 
 def case_review_state(*, tenant_id: str, case_id: str) -> dict[str, Any]:
     ctx = _context(tenant_id, None)
-    return _guard(lambda: engine.case_review_state(ctx, FrappeRepository(), case_id=case_id))
+    state = _guard(
+        ctx,
+        policy.CASE_READ,
+        "case",
+        case_id,
+        case_id=case_id,
+        fn=lambda: engine.case_review_state(ctx, FrappeRepository(), case_id=case_id),
+    )
+    # TAX-059: who read the case is recorded (and committed: this is a GET).
+    audit_store.record_read(
+        audit_service.Context(scope=ctx.scope, now=ctx.now, correlation_id=ctx.correlation_id),
+        action="case.read",
+        subject_type="case",
+        subject_id=state["case_id"],
+        case_id=state["case_id"],
+    )
+    return state

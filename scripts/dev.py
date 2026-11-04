@@ -150,6 +150,8 @@ def check():
         ["python3", "-m", "unittest", "discover", "-s", "tests/ai", "-p", "test_refund*.py"],
         # TAX-050 imported-services checks; playbook graph tests skip without LangGraph.
         ["python3", "-m", "unittest", "discover", "-s", "tests/ai", "-p", "test_imported*.py"],
+        # TAX-047 checkpoint/resume tests skip without the LangGraph SQLite checkpointer.
+        ["python3", "-m", "unittest", "discover", "-s", "tests/ai", "-p", "test_human*.py"],
         ["python3", "integration/api/contract.py"],
         ["python3", "-m", "unittest", "discover", "-s", "tests/contracts", "-v"],
         # Frappe-free app logic (portal boundary/fixtures); bench tests cover the rest.
