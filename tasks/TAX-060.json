@@ -5,7 +5,7 @@
   "owner": "Leseli",
   "area": "apps/auditor-web",
   "phase": "pilot",
-  "status": "IN_PROGRESS",
+  "status": "IN_REVIEW",
   "priority": "P0",
   "depends_on": [
     "TAX-040",
@@ -13,7 +13,7 @@
   ],
   "claimed_by": "leseli-claude-20261104-060",
   "branch": "task/TAX-060",
-  "pr": null,
+  "pr": "https://github.com/Vati-AI/rsl-taxathon/pull/158",
   "scope": "Display workload, elapsed time, unresolved evidence, false positives and legal-route coverage from measured data",
   "inputs": [
     "PROJECT.md",
@@ -35,7 +35,7 @@
     },
     {
       "text": "Record relevant tests and evidence, update task status and open a human-review PR",
-      "done": false
+      "done": true
     },
     {
       "text": "Follow docs/DESIGN_STANDARD.md; supply relevant viewport/state screenshots and keyboard/accessibility evidence for human visual review",
@@ -61,12 +61,20 @@
     {
       "criterion": 4,
       "text": "docs/evidence/TAX-060: screenshots at 1440, 1024 and 390px plus loading, denied, empty and ledger-broken states, captured in Edge (README lists them). Tables only, with no decorative charts; shared PageLayout, StatePanel and CaseStatusBadge; status shown as text plus colour. axe (WCAG 2 A/AA) finds no serious or critical violations and there is no page-wide horizontal scroll at all three widths, in both management.spec.ts and the TAX-023 matrix (management route added; 30 of 30 auditor harness tests pass). The window control and focusable table regions are reachable by keyboard, with visible focus. Visual approval is left to the reviewer."
+    },
+    {
+      "criterion": 3,
+      "text": "Tests and results recorded under criteria 1, 2 and 4 (contract 22 examples; tests/contracts incl. 17 new; dev.py check steps pass except the 2 existing Windows-only tests/tooling file-permission tests; ruff, mypy and npm run check pass; auditor Playwright 34 pass; TAX-023 auditor harness 30 of 30). Status set to IN_REVIEW and review PR #158 opened; the agent will not merge."
     }
   ],
   "notes": [
     {
       "at": "2026-11-04T11:21:28.749416+00:00",
       "text": "Claimed by leseli-claude-20261104-060"
+    },
+    {
+      "at": "2026-11-04T19:25:41.216983+00:00",
+      "text": "Agent leseli-claude-20261104-060 finished implementation and opened review (https://github.com/Vati-AI/rsl-taxathon/pull/158). Contract change (getManagementSummary, ADR-020) for Keletso; ledger read usage for Edga. quality.py steps run individually because the worktree has no .venv-dev of its own."
     }
   ]
 }
