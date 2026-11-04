@@ -27,11 +27,11 @@
   "acceptance": [
     {
       "text": "Separate observed risk from reviewer-verified legal route, authority version and policy-gap classification",
-      "done": false
+      "done": true
     },
     {
       "text": "No-route scenario never creates an enforcement conclusion; fabricated or unverified citations are rejected",
-      "done": false
+      "done": true
     },
     {
       "text": "Record relevant tests and evidence, update task status and open a human-review PR",
@@ -45,7 +45,16 @@
     "update-project-task",
     "finish-task"
   ],
-  "evidence": [],
+  "evidence": [
+    {
+      "criterion": 1,
+      "text": "ai/workflows/legal_routes.py loads the versioned synthetic registry ai/workflows/legal_route_registry.synthetic.json (registry_version SYN-LRR-2026.11.0; each entry has SYN-PLACEHOLDER-AUTH id, version, effective_from/to, verification_status, reviewer/reviewed_on; loader refuses non-placeholder ids, unmarked entries, verified-without-synthetic-reviewer and unverified-with-review). ai/workflows/policy_gap_gate.py emits per finding a separate observed_risk block (case-record evidence, unresolved evidence IDs) and legal_route block (verified_route/unverified_route/no_route, as_of, registry and authority version audit record, rejected citations) plus policy_gap. Covered by tests/ai/test_policy_gap_gate.py (41 passed)."
+    },
+    {
+      "criterion": 2,
+      "text": "scratch .venv with ai/requirements.lock + pytest: python -m pytest tests/ai -q -> 51 passed (41 new TAX-052, 10 TAX-022). SYN-005 no-route scenario through the TAX-022 graph with a fabricated citation and enforcement_recommended proposal yields no_route/policy_gap_review, citation_not_in_registry rejection, blocked action, enforcement_conclusion None, data.enforcement_conclusions [] and no TAX-024 expected_non_findings emitted. Parametrized rejection of not-in-registry, wrong version, superseded/not-yet-effective version, unverified status, non-applicable and malformed citations; enforcement actions blocked even with a verified route; all five TAX-024 scenarios classified without enforcement; replay idempotent; malformed finding and exhausted step budget fail closed."
+    }
+  ],
   "notes": [
     {
       "at": "2026-11-03T19:47:49.087454+00:00",
