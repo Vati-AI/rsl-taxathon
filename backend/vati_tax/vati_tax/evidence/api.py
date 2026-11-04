@@ -12,6 +12,7 @@ from typing import Any, NoReturn
 
 import frappe
 
+from vati_tax.audit import store as audit_store
 from vati_tax.evidence import rules, store
 from vati_tax.ids.canonical import MappingError
 
@@ -70,9 +71,18 @@ def upload_evidence(
 
 @frappe.whitelist(methods=["GET"])
 def get_evidence(evidence_id: str) -> dict[str, Any]:
+    tenant_id = store.permissions.request_tenant_header() or ""
     try:
-        return store.get_evidence(
-            tenant_id=store.permissions.request_tenant_header() or "", evidence_id=evidence_id
-        )
+        view = store.get_evidence(tenant_id=tenant_id, evidence_id=evidence_id)
     except MappingError as exc:
         _raise(exc)
+    # TAX-059: who read which evidence is kept in the tenant audit ledger.
+    audit_store.record_read(
+        audit_store.context(tenant_id),
+        action="evidence.read",
+        subject_type="evidence",
+        subject_id=view["evidence_id"],
+        case_id=view.get("case_id"),
+        taxpayer_id=view.get("taxpayer_id"),
+    )
+    return view

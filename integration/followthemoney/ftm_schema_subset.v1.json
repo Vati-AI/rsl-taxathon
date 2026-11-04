@@ -1,0 +1,434 @@
+{
+  "range_schemata": [
+    "Asset",
+    "Contract",
+    "Document",
+    "LegalEntity",
+    "Thing"
+  ],
+  "schemata": {
+    "Company": {
+      "abstract": false,
+      "edge": false,
+      "is_a": [
+        "Asset",
+        "Company",
+        "LegalEntity",
+        "Organization",
+        "Thing",
+        "Value"
+      ],
+      "properties": {
+        "country": {
+          "defined_in": "Thing",
+          "type": "country"
+        },
+        "idNumber": {
+          "defined_in": "LegalEntity",
+          "type": "identifier"
+        },
+        "incorporationDate": {
+          "defined_in": "LegalEntity",
+          "type": "date"
+        },
+        "name": {
+          "defined_in": "Thing",
+          "type": "name"
+        },
+        "notes": {
+          "defined_in": "Thing",
+          "type": "text"
+        },
+        "registrationNumber": {
+          "defined_in": "LegalEntity",
+          "type": "identifier"
+        },
+        "taxNumber": {
+          "defined_in": "LegalEntity",
+          "type": "identifier"
+        }
+      },
+      "required": [
+        "name"
+      ]
+    },
+    "Contract": {
+      "abstract": false,
+      "edge": false,
+      "is_a": [
+        "Asset",
+        "Contract",
+        "Thing",
+        "Value"
+      ],
+      "properties": {
+        "authority": {
+          "defined_in": "Contract",
+          "range": "LegalEntity",
+          "type": "entity"
+        },
+        "contractDate": {
+          "defined_in": "Contract",
+          "type": "date"
+        },
+        "description": {
+          "defined_in": "Thing",
+          "type": "text"
+        },
+        "name": {
+          "defined_in": "Thing",
+          "type": "name"
+        },
+        "proof": {
+          "defined_in": "Thing",
+          "range": "Document",
+          "type": "entity"
+        },
+        "title": {
+          "defined_in": "Contract",
+          "type": "string"
+        }
+      },
+      "required": [
+        "title"
+      ]
+    },
+    "ContractAward": {
+      "abstract": false,
+      "edge": true,
+      "is_a": [
+        "ContractAward",
+        "Interest",
+        "Interval",
+        "Value"
+      ],
+      "properties": {
+        "contract": {
+          "defined_in": "ContractAward",
+          "range": "Contract",
+          "type": "entity"
+        },
+        "proof": {
+          "defined_in": "Interval",
+          "range": "Document",
+          "type": "entity"
+        },
+        "recordId": {
+          "defined_in": "Interval",
+          "type": "string"
+        },
+        "role": {
+          "defined_in": "Interest",
+          "type": "string"
+        },
+        "supplier": {
+          "defined_in": "ContractAward",
+          "range": "LegalEntity",
+          "type": "entity"
+        }
+      },
+      "required": [
+        "contract",
+        "supplier"
+      ]
+    },
+    "Document": {
+      "abstract": false,
+      "edge": false,
+      "is_a": [
+        "Analyzable",
+        "Document",
+        "Thing"
+      ],
+      "properties": {
+        "date": {
+          "defined_in": "Document",
+          "type": "date"
+        },
+        "fileName": {
+          "defined_in": "Document",
+          "type": "string"
+        },
+        "fileSize": {
+          "defined_in": "Document",
+          "type": "number"
+        },
+        "mimeType": {
+          "defined_in": "Document",
+          "type": "mimetype"
+        },
+        "title": {
+          "defined_in": "Document",
+          "type": "string"
+        }
+      },
+      "required": [
+        "fileName"
+      ]
+    },
+    "LegalEntity": {
+      "abstract": false,
+      "edge": false,
+      "is_a": [
+        "LegalEntity",
+        "Thing"
+      ],
+      "properties": {
+        "country": {
+          "defined_in": "Thing",
+          "type": "country"
+        },
+        "idNumber": {
+          "defined_in": "LegalEntity",
+          "type": "identifier"
+        },
+        "name": {
+          "defined_in": "Thing",
+          "type": "name"
+        },
+        "notes": {
+          "defined_in": "Thing",
+          "type": "text"
+        },
+        "registrationNumber": {
+          "defined_in": "LegalEntity",
+          "type": "identifier"
+        },
+        "taxNumber": {
+          "defined_in": "LegalEntity",
+          "type": "identifier"
+        }
+      },
+      "required": [
+        "name"
+      ]
+    },
+    "Ownership": {
+      "abstract": false,
+      "edge": true,
+      "is_a": [
+        "Interest",
+        "Interval",
+        "Ownership"
+      ],
+      "properties": {
+        "asset": {
+          "defined_in": "Ownership",
+          "range": "Asset",
+          "type": "entity"
+        },
+        "description": {
+          "defined_in": "Interval",
+          "type": "text"
+        },
+        "endDate": {
+          "defined_in": "Interval",
+          "type": "date"
+        },
+        "owner": {
+          "defined_in": "Ownership",
+          "range": "LegalEntity",
+          "type": "entity"
+        },
+        "ownershipType": {
+          "defined_in": "Ownership",
+          "type": "string"
+        },
+        "percentage": {
+          "defined_in": "Ownership",
+          "type": "string"
+        },
+        "proof": {
+          "defined_in": "Interval",
+          "range": "Document",
+          "type": "entity"
+        },
+        "recordId": {
+          "defined_in": "Interval",
+          "type": "string"
+        },
+        "startDate": {
+          "defined_in": "Interval",
+          "type": "date"
+        }
+      },
+      "required": [
+        "asset",
+        "owner"
+      ]
+    },
+    "Payment": {
+      "abstract": false,
+      "edge": true,
+      "is_a": [
+        "Interval",
+        "Payment",
+        "Value"
+      ],
+      "properties": {
+        "amount": {
+          "defined_in": "Value",
+          "type": "number"
+        },
+        "beneficiary": {
+          "defined_in": "Payment",
+          "range": "LegalEntity",
+          "type": "entity"
+        },
+        "contract": {
+          "defined_in": "Payment",
+          "range": "Contract",
+          "type": "entity"
+        },
+        "currency": {
+          "defined_in": "Value",
+          "type": "string"
+        },
+        "date": {
+          "defined_in": "Interval",
+          "type": "date"
+        },
+        "payer": {
+          "defined_in": "Payment",
+          "range": "LegalEntity",
+          "type": "entity"
+        },
+        "proof": {
+          "defined_in": "Interval",
+          "range": "Document",
+          "type": "entity"
+        },
+        "purpose": {
+          "defined_in": "Payment",
+          "type": "text"
+        },
+        "recordId": {
+          "defined_in": "Interval",
+          "type": "string"
+        }
+      },
+      "required": [
+        "beneficiary",
+        "payer"
+      ]
+    },
+    "Person": {
+      "abstract": false,
+      "edge": false,
+      "is_a": [
+        "LegalEntity",
+        "Person",
+        "Thing"
+      ],
+      "properties": {
+        "birthDate": {
+          "defined_in": "Person",
+          "type": "date"
+        },
+        "country": {
+          "defined_in": "Thing",
+          "type": "country"
+        },
+        "firstName": {
+          "defined_in": "Person",
+          "type": "string"
+        },
+        "idNumber": {
+          "defined_in": "LegalEntity",
+          "type": "identifier"
+        },
+        "lastName": {
+          "defined_in": "Person",
+          "type": "string"
+        },
+        "name": {
+          "defined_in": "Thing",
+          "type": "name"
+        },
+        "nationality": {
+          "defined_in": "Person",
+          "type": "country"
+        },
+        "notes": {
+          "defined_in": "Thing",
+          "type": "text"
+        },
+        "taxNumber": {
+          "defined_in": "LegalEntity",
+          "type": "identifier"
+        }
+      },
+      "required": [
+        "name"
+      ]
+    },
+    "UnknownLink": {
+      "abstract": false,
+      "edge": true,
+      "is_a": [
+        "Interest",
+        "Interval",
+        "UnknownLink"
+      ],
+      "properties": {
+        "date": {
+          "defined_in": "Interval",
+          "type": "date"
+        },
+        "description": {
+          "defined_in": "Interval",
+          "type": "text"
+        },
+        "object": {
+          "defined_in": "UnknownLink",
+          "range": "Thing",
+          "type": "entity"
+        },
+        "proof": {
+          "defined_in": "Interval",
+          "range": "Document",
+          "type": "entity"
+        },
+        "recordId": {
+          "defined_in": "Interval",
+          "type": "string"
+        },
+        "role": {
+          "defined_in": "Interest",
+          "type": "string"
+        },
+        "subject": {
+          "defined_in": "UnknownLink",
+          "range": "Thing",
+          "type": "entity"
+        }
+      },
+      "required": [
+        "object",
+        "subject"
+      ]
+    }
+  },
+  "source": {
+    "commit": "c8c457a5c80fcf3ebe134f49b8dc60b417f0b860",
+    "files_sha256": {
+      "Analyzable.yaml": "fd7ca801d49e646cef3814dfd7262f97c7b7660759fd76a1429fec0903eea9b6",
+      "Asset.yaml": "4767e82009a65429d138639053d577ed02204c33101456ef9e8e64b5dd1cbc31",
+      "Company.yaml": "1df46f6c226c3db64ebfefec75214bbd048f928584064b07e50f5dcaf8baeebc",
+      "Contract.yaml": "eebb33c7c8e58f130f7c8b696f814af6e91afa874aa66c8056696d23cee43fd3",
+      "ContractAward.yaml": "81c5cc61d28ff65aae87700e69473aefe0dab71cc453e8d9b07fa05eafd07508",
+      "Document.yaml": "647b22b1445377cd64e652306d97b3c8b4d5942ff395119ca4cde0efb6b06700",
+      "Interest.yaml": "f81f1872606517795e634027849ad2c2ac57defb01f4756f8c98bc3a2c22dabb",
+      "Interval.yaml": "5b7ace75e9c6dbc91c93fbe53e6719e2852cb055551eabd836e930d54664bcf3",
+      "LegalEntity.yaml": "fe126dbc8b05d025644c5d5d5065b8af889cad765b8d327ae187a1d3d2bdf113",
+      "Organization.yaml": "d6e98da914e4e15ba900d365e2546579af5a78c1b35646b1303177bab17ca55d",
+      "Ownership.yaml": "41be2e5f2fde0bc26327cc8283dbb534b9cc33c1e6617e0d2bf0306ff62418c3",
+      "Payment.yaml": "af2dd6767ac4eff974b55d6e1acfb7f15f727eed3911a65e7ea72722b73a6fbd",
+      "Person.yaml": "d361fa60f2888bb24398e328e21dc3f0c66a8abc1c20e224d0cc2a47f0c534d8",
+      "Thing.yaml": "f52fb57622ea92a8432c24303ce0a4414c1f9142c20ef755fed7a9db115ae824",
+      "UnknownLink.yaml": "44ee342b36b510cee6fa6941dacc6519daa7223a55574b2a6c074278552b4929",
+      "Value.yaml": "991b73a6076373c234b404a090ecb4af8b1c9651ebb66038d34ad54cf75f7896"
+    },
+    "repository": "https://github.com/opensanctions/followthemoney"
+  }
+}
