@@ -5,7 +5,7 @@
   "owner": "Leseli",
   "area": "apps/auditor-web",
   "phase": "pilot",
-  "status": "IN_PROGRESS",
+  "status": "IN_REVIEW",
   "priority": "P0",
   "depends_on": [
     "TAX-040",
@@ -13,7 +13,7 @@
   ],
   "claimed_by": "leseli-claude-20261104-041",
   "branch": "task/TAX-041",
-  "pr": null,
+  "pr": "https://github.com/Vati-AI/rsl-taxathon/pull/157",
   "scope": "Display evidence citations, page/record references, relationships and clearly marked disputed matches",
   "inputs": [
     "PROJECT.md",
@@ -71,6 +71,10 @@
     {
       "at": "2026-11-04T11:20:21.316310+00:00",
       "text": "Claimed by leseli-claude-20261104-041"
+    },
+    {
+      "at": "2026-11-04T19:19:22.813287+00:00",
+      "text": "Agent leseli-claude-20261104-041 finished implementation and opened review (https://github.com/Vati-AI/rsl-taxathon/pull/157). Cross-review requested from Kananelo or Keletso. All data is fixture-backed and synthetic."
     }
   ]
 }
