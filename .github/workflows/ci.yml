@@ -78,3 +78,9 @@ jobs:
       - run: python -m unittest discover -s tests/ai -p 'test_refund*.py' -v
         env:
           LANGSMITH_TRACING: 'false'
+      - run: python -m unittest discover -s tests/ai -p 'test_imported*.py' -v
+        env:
+          LANGSMITH_TRACING: 'false'
+      - run: python -m unittest discover -s tests/ai -p 'test_human*.py' -v
+        env:
+          LANGSMITH_TRACING: 'false'
