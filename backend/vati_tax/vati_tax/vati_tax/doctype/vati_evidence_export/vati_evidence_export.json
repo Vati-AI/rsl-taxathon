@@ -1,0 +1,198 @@
+{
+ "actions": [],
+ "autoname": "field:export_id",
+ "creation": "2026-11-04 18:00:00.000000",
+ "description": "Scoped evidence export request, its supervisor decision and the frozen hash/provenance manifest (TAX-062). No document content is stored or exported here.",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "export_id",
+  "tenant_id",
+  "case_id",
+  "status",
+  "version",
+  "purpose",
+  "recipient",
+  "reason",
+  "evidence_ids",
+  "request_section",
+  "requested_by",
+  "requested_at",
+  "request_digest",
+  "decision_section",
+  "decided_by",
+  "decided_at",
+  "decision_reason",
+  "manifest_section",
+  "manifest_sha256",
+  "manifest"
+ ],
+ "fields": [
+  {
+   "fieldname": "export_id",
+   "fieldtype": "Data",
+   "label": "Export ID",
+   "length": 36,
+   "reqd": 1,
+   "unique": 1,
+   "set_only_once": 1
+  },
+  {
+   "fieldname": "tenant_id",
+   "fieldtype": "Data",
+   "label": "Tenant ID",
+   "length": 36,
+   "reqd": 1,
+   "search_index": 1,
+   "set_only_once": 1,
+   "in_standard_filter": 1
+  },
+  {
+   "fieldname": "case_id",
+   "fieldtype": "Data",
+   "label": "Case ID",
+   "length": 36,
+   "reqd": 1,
+   "search_index": 1,
+   "set_only_once": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "label": "Status",
+   "options": "requested\napproved\nrejected",
+   "reqd": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1
+  },
+  {
+   "fieldname": "version",
+   "fieldtype": "Int",
+   "label": "Version",
+   "reqd": 1,
+   "default": "1"
+  },
+  {
+   "fieldname": "purpose",
+   "fieldtype": "Select",
+   "label": "Purpose",
+   "options": "supervisory_review\nspecialist_review\ntaxpayer_copy\nauthorised_disclosure",
+   "reqd": 1,
+   "set_only_once": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "recipient",
+   "fieldtype": "Data",
+   "label": "Recipient",
+   "length": 200,
+   "reqd": 1,
+   "set_only_once": 1
+  },
+  {
+   "fieldname": "reason",
+   "fieldtype": "Long Text",
+   "label": "Reason",
+   "reqd": 1,
+   "set_only_once": 1
+  },
+  {
+   "fieldname": "evidence_ids",
+   "fieldtype": "Long Text",
+   "label": "Evidence IDs (JSON)",
+   "reqd": 1,
+   "set_only_once": 1
+  },
+  {
+   "fieldname": "request_section",
+   "fieldtype": "Section Break",
+   "label": "Request"
+  },
+  {
+   "fieldname": "requested_by",
+   "fieldtype": "Data",
+   "label": "Requested By",
+   "length": 140,
+   "reqd": 1,
+   "set_only_once": 1
+  },
+  {
+   "fieldname": "requested_at",
+   "fieldtype": "Datetime",
+   "label": "Requested At (UTC)",
+   "reqd": 1,
+   "set_only_once": 1
+  },
+  {
+   "fieldname": "request_digest",
+   "fieldtype": "Data",
+   "label": "Request Digest",
+   "length": 64,
+   "read_only": 1,
+   "set_only_once": 1
+  },
+  {
+   "fieldname": "decision_section",
+   "fieldtype": "Section Break",
+   "label": "Decision"
+  },
+  {
+   "fieldname": "decided_by",
+   "fieldtype": "Data",
+   "label": "Decided By",
+   "length": 140
+  },
+  {
+   "fieldname": "decided_at",
+   "fieldtype": "Datetime",
+   "label": "Decided At (UTC)"
+  },
+  {
+   "fieldname": "decision_reason",
+   "fieldtype": "Long Text",
+   "label": "Decision Reason"
+  },
+  {
+   "fieldname": "manifest_section",
+   "fieldtype": "Section Break",
+   "label": "Manifest",
+   "collapsible": 1
+  },
+  {
+   "fieldname": "manifest_sha256",
+   "fieldtype": "Data",
+   "label": "Manifest SHA-256",
+   "length": 64,
+   "read_only": 1
+  },
+  {
+   "fieldname": "manifest",
+   "fieldtype": "Long Text",
+   "label": "Manifest (JSON)",
+   "read_only": 1,
+   "description": "Frozen at approval. Read it through vati_tax.exports.api.get_export_manifest so the read is authorised and recorded."
+  }
+ ],
+ "in_create": 1,
+ "index_web_pages_for_search": 0,
+ "links": [],
+ "modified": "2026-11-04 18:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Vati Tax",
+ "name": "Vati Evidence Export",
+ "naming_rule": "By fieldname",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "read": 1,
+   "report": 1,
+   "role": "System Manager"
+  }
+ ],
+ "search_fields": "case_id,status,purpose",
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "purpose"
+}

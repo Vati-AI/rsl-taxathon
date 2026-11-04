@@ -45,6 +45,7 @@ SUBJECT_TYPES: Final[tuple[str, ...]] = (
     "case",
     "ledger",
     "control",
+    "export",  # TAX-062 evidence export requests
 )
 
 # Decision and evidence-request actions (TAX-046) and their ledger category.
@@ -57,10 +58,16 @@ _ACTION_CATEGORY: Final[dict[str, Category]] = {
     "decision.executed": "write",
     "decision.execution_failed": "write",
     "evidence_request.recorded": "write",
+    # TAX-062: an export is requested (write) and authorised or refused (approval).
+    "export.requested": "write",
+    "export.approved": "approval",
+    "export.rejected": "approval",
 }
 
 # Refused attempts that break separation of duties when repeated.
-SOD_DENIALS: Final[frozenset[str]] = frozenset({"decision.approve", "override.record"})
+SOD_DENIALS: Final[frozenset[str]] = frozenset(
+    {"decision.approve", "override.record", "export.approve"}
+)
 
 REVIEW_ONLY_NOTE: Final = (
     "A review signal for an authorised supervisor. It is not a finding against any "
