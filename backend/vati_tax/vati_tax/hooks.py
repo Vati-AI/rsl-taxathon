@@ -11,8 +11,16 @@ app_license = "Proprietary"
 before_install = "vati_tax.identity.install.before_install"
 before_migrate = "vati_tax.identity.install.before_migrate"
 permission_query_conditions = {"*": "vati_tax.identity.permissions.tenant_query_conditions"}
-has_permission = {"*": "vati_tax.identity.permissions.tenant_has_permission"}
-doc_events = {"DocShare": {"validate": "vati_tax.identity.permissions.validate_share"}}
+has_permission = {
+    "*": "vati_tax.identity.permissions.tenant_has_permission",
+    # TAX-032: evidence originals cannot be edited or deleted through File.
+    "File": "vati_tax.evidence.store.file_has_permission",
+}
+doc_events = {
+    "DocShare": {"validate": "vati_tax.identity.permissions.validate_share"},
+    # TAX-032: an evidence file stays private and in place.
+    "File": {"before_validate": "vati_tax.evidence.store.guard_evidence_file"},
+}
 
 # TAX-021: the Vue taxpayer portal owns client routes under /taxpayer; every
 # deep link renders the guarded www/taxpayer page.
