@@ -27,11 +27,11 @@
   "acceptance": [
     {
       "text": "Add restricted evidence upload/reference, SHA-256, source/page locator and append-only extraction revisions",
-      "done": false
+      "done": true
     },
     {
       "text": "Reject oversized/disallowed uploads; test permission checks and unchanged original hash across revisions",
-      "done": false
+      "done": true
     },
     {
       "text": "Record relevant tests and evidence, update task status and open a human-review PR",
@@ -45,7 +45,16 @@
     "update-project-task",
     "finish-task"
   ],
-  "evidence": [],
+  "evidence": [
+    {
+      "criterion": 1,
+      "text": "Vati Evidence (private File, server-computed SHA-256 re-read from disk, supersedes/lineage versions), Vati Evidence Extraction (append-only success/partial/failure revisions citing the original hash) and Vati Extraction Provenance (page/record locator + bbox) in commit 62fa2e2; ADR-010. frappe_dev.py verify on disposable site verify-20261104t091217 (tax019 stack): install, migrate x2, 47 site-backed tests OK incl. 12 in vati_tax.evidence.test_evidence_bench; site dropped."
+    },
+    {
+      "criterion": 2,
+      "text": "test_evidence_bench: oversized (25 MiB+1), empty, .exe, .html, extension/media-type mismatch and malformed PDF rejected with nothing stored; taxpayer B, same taxpayer UUID in tenant 2 and tenant-2 auditor refused read/list/get/File access; taxpayer refused other taxpayer/tenant/officer source; only tenant service records extractions; 3 extraction revisions keep the evidence SHA-256 and verify_integrity stays intact; evidence/extraction updates and deletes refused; File public/delete refused (removing File hooks made that test fail). 14 Frappe-free rule tests in evidence/test_rules.py; dev.py check and quality.py pass."
+    }
+  ],
   "notes": [
     {
       "at": "2026-11-04T08:34:10.875638+00:00",
