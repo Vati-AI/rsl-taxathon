@@ -5,7 +5,7 @@
   "owner": "Edga",
   "area": "backend",
   "phase": "pilot",
-  "status": "IN_REVIEW",
+  "status": "DONE",
   "priority": "P0",
   "depends_on": [
     "TAX-030"
@@ -70,6 +70,10 @@
     {
       "at": "2026-11-04T09:01:57.368725+00:00",
       "text": "Agent finished implementation and opened human review"
+    },
+    {
+      "at": "2026-11-04T10:07:52.318230+00:00",
+      "text": "Verified merge of #124 on 2026-11-04"
     }
   ]
 }
