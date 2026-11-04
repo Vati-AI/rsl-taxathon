@@ -18,11 +18,12 @@ from langgraph.graph import END, START, StateGraph
 from langgraph.graph.state import CompiledStateGraph
 from langgraph.types import Command, interrupt
 
-from ai.tools.contracts import ToolInvocationContext, ToolResultEnvelope, tool_failure, tool_success
+from ai.tools.contracts import ToolInvocationContext, ToolResultEnvelope, tool_failure
 from ai.tools.refund_reconciliation import RefundDataError
 from ai.tools.work_arrangement import CLASSIFICATION_STATUS, review_work_arrangement
 from ai.workflows.fake_graph import InvestigationTool, _validate_result
 from ai.workflows.human_checkpoints import ResumeRejected, action_digest
+from ai.workflows.record_playbook import make_record_tool
 from ai.workflows.refund_lanes import RefundRecordSource
 from ai.workflows.state import InvestigationState
 
@@ -53,44 +54,12 @@ class SpecialistState(InvestigationState):
 
 def make_work_arrangement_tool(source: RefundRecordSource) -> InvestigationTool:
     """Build a case-scoped TAX-022 tool that structures work-arrangement facts."""
-
-    def work_arrangement_review_tool(context: ToolInvocationContext) -> ToolResultEnvelope:
-        scope = {
-            "tool_name": TOOL_NAME,
-            "tenant_id": context["tenant_id"],
-            "case_id": context["case_id"],
-            "run_id": context["run_id"],
-            "correlation_id": context["correlation_id"],
-        }
-        record = source(context["tenant_id"], context["case_id"])
-        if record is None:
-            return tool_failure(
-                **scope,
-                code="case_records_not_found",
-                message="No records are available for this case.",
-                retryable=False,
-            )
-        if record.get("case_id") not in (None, context["case_id"]):
-            return tool_failure(
-                **scope,
-                code="tool_scope_mismatch",
-                message="Records did not match the active investigation.",
-                retryable=False,
-            )
-        try:
-            review = review_work_arrangement(record)
-        except RefundDataError as error:
-            # Stable code only; record content stays out of the envelope.
-            return tool_failure(
-                **scope,
-                code=error.code,
-                message="Work-arrangement records could not be reviewed.",
-                retryable=False,
-            )
-        return tool_success(**scope, data=review)
-
-    work_arrangement_review_tool.__name__ = TOOL_NAME
-    return work_arrangement_review_tool
+    return make_record_tool(
+        source,
+        tool_name=TOOL_NAME,
+        review=review_work_arrangement,
+        failure_message="Work-arrangement records could not be reviewed.",
+    )
 
 
 def check_specialist_resume(
