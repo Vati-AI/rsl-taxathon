@@ -5,7 +5,7 @@
   "owner": "Leseli",
   "area": "ai",
   "phase": "pilot",
-  "status": "IN_REVIEW",
+  "status": "DONE",
   "priority": "P0",
   "depends_on": [
     "TAX-036",
@@ -72,6 +72,10 @@
     {
       "at": "2026-11-05T01:01:21.913508+00:00",
       "text": "Agent leseli-claude-20261105-053 finished implementation and opened review (https://github.com/Vati-AI/rsl-taxathon/pull/166). Hosted model not used (none approved); deterministic template model with validated output. Design in ADR-021."
+    },
+    {
+      "at": "2026-11-05T01:08:44.670809+00:00",
+      "text": "Verified implementation PR #166 merged (648c4dd, 2026-11-05T01:07Z); all acceptance criteria and evidence recorded."
     }
   ]
 }
