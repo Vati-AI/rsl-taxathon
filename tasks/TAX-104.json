@@ -5,14 +5,14 @@
   "owner": "Leseli",
   "area": "apps/auditor-web",
   "phase": "pilot",
-  "status": "IN_PROGRESS",
+  "status": "IN_REVIEW",
   "priority": "P1",
   "depends_on": [
     "TAX-055"
   ],
   "claimed_by": "leseli-claude-20261105-104",
   "branch": "task/TAX-104",
-  "pr": null,
+  "pr": "https://github.com/Vati-AI/rsl-taxathon/pull/254",
   "scope": "Fix the two open auditor-app defects recorded in docs/evidence/TAX-055/README.md: field-error colour contrast and the wrong disabled-suggestion reason on resolved cases",
   "inputs": [
     "PROJECT.md",
@@ -36,7 +36,7 @@
     },
     {
       "text": "Record relevant tests and evidence, update task status and open a human-review PR",
-      "done": false
+      "done": true
     }
   ],
   "verification": "On a resolved case the disabled 'Use as a starting point' explains that the case is resolved, not that a decision is waiting; tests assert both fixes and the auditor e2e and TAX-055 suites pass",
@@ -54,6 +54,10 @@
     {
       "criterion": 2,
       "text": "DecisionPanel passes the reason to SuggestionList: 'This case is resolved.' on a resolved case, 'Another decision on this case is waiting for approval.' while one is open. Asserted by two new DecisionPanel.test.ts unit tests, review.spec.ts (case 1 after approval) and scenarios.spec.ts SYN-001 after approval. npm run check pass (auditor 113 unit tests, taxpayer 72); auditor e2e (Edge) 66 passed, 17 skipped; TAX-055 scenarios 21 passed (--workers=2); whole tests/frontend 195 passed, 9 skipped (--workers=2). Screens: docs/evidence/TAX-104/resolved-suggestion-*.png, waiting-suggestion-1440.png."
+    },
+    {
+      "criterion": 3,
+      "text": "Evidence and screenshots (Edge, 1440/1024/390) in docs/evidence/TAX-104/README.md; local check results recorded in the task and in PR #254 because hosted CI is unavailable; task set IN_REVIEW with PR #254; Kellybrackets (Keletso) requested as reviewer."
     }
   ],
   "notes": [
@@ -64,6 +68,10 @@
     {
       "at": "2026-11-05T13:50:06.787232+00:00",
       "text": "Claimed by leseli-claude-20261105-104"
+    },
+    {
+      "at": "2026-11-05T20:13:18.038135+00:00",
+      "text": "PR #254 opened: field errors now #941f1f (8.48:1 on white), KNOWN_A11Y_ISSUES entry removed, resolved cases explain the disabled suggestion. Local checks pass (npm run check, auditor e2e 66 passed, tests/frontend 195 passed with --workers=2, validate.py); mypy not run locally."
     }
   ]
 }
