@@ -97,6 +97,12 @@ WORKFLOW_READ: Final = "workflow.read"
 CHALLENGE_LODGE: Final = "challenge.lodge"
 CHALLENGE_REVIEW: Final = "challenge.review"
 CHALLENGE_READ: Final = "challenge.read"
+# Correction reminders (TAX-078). An auditor or supervisor records a reminder
+# for a taxpayer from an approved decision that recorded an omission, and can
+# correct or withdraw it; the taxpayer reads only its own active reminders.
+REMINDER_RECORD: Final = "reminder.record"
+REMINDER_CORRECT: Final = "reminder.correct"
+REMINDER_READ: Final = "reminder.read"
 
 ACTION_ROLES: Final[dict[str, frozenset[Role]]] = {
     SUBMISSION_CREATE: frozenset({TAXPAYER}),
@@ -130,6 +136,9 @@ ACTION_ROLES: Final[dict[str, frozenset[Role]]] = {
     CHALLENGE_LODGE: frozenset({TAXPAYER, AUDITOR, SUPERVISOR}),
     CHALLENGE_REVIEW: frozenset({SUPERVISOR}),
     CHALLENGE_READ: frozenset({TAXPAYER, AUDITOR, SPECIALIST, SUPERVISOR, SERVICE}),
+    REMINDER_RECORD: frozenset({AUDITOR, SUPERVISOR}),
+    REMINDER_CORRECT: frozenset({AUDITOR, SUPERVISOR}),
+    REMINDER_READ: frozenset({TAXPAYER, AUDITOR, SPECIALIST, SUPERVISOR}),
 }
 
 # Consequential human decisions. Never granted to a service identity, even if
@@ -151,6 +160,8 @@ HUMAN_ONLY_ACTIONS: Final[frozenset[str]] = frozenset(
         WORKFLOW_ACTIVATE,
         CHALLENGE_LODGE,
         CHALLENGE_REVIEW,
+        REMINDER_RECORD,
+        REMINDER_CORRECT,
     }
 )
 # Actions on a taxpayer's own records; taxpayers need a matching taxpayer_id.
@@ -162,6 +173,7 @@ TAXPAYER_OWNED_ACTIONS: Final[frozenset[str]] = frozenset(
         EVIDENCE_REGISTER,
         CHALLENGE_LODGE,
         CHALLENGE_READ,
+        REMINDER_READ,
     }
 )
 # The approver must differ from the proposer (separation of duties).

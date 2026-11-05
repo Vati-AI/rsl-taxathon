@@ -57,6 +57,17 @@ come from `vati_tax.portal.api.review_refund_claim` (the TAX-048 reconciliation)
 they are guidance only and never block sending. Rules: `src/lib/schedule.ts`
 mirrors `vati_tax/submissions/invoices.py`.
 
+## Correction reminders (TAX-078)
+
+On the first step of a new claim, a "From your earlier claims" panel lists the
+taxpayer's own reminders from reviewed omissions in earlier claims
+(`vati_tax.portal.api.get_correction_reminders`). It shows a title, the
+officer's explanation and when it was noted or last updated, and it is absent
+for a first-time claimant. On **Review and send**, a prompt that a reminder
+covers is labelled "Also noted on an earlier claim". Reminders are guidance
+only: they never block sending, and if they cannot be loaded the claim can
+still be filled in and sent. Helpers: `src/lib/reminders.ts`.
+
 ## Evidence requests (TAX-045)
 
 `/taxpayer/requests` lists the taxpayer's own evidence requests with
