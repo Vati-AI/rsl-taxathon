@@ -5,7 +5,7 @@
   "owner": "Leseli",
   "area": "integration",
   "phase": "pilot",
-  "status": "IN_REVIEW",
+  "status": "DONE",
   "priority": "P0",
   "depends_on": [
     "TAX-027",
@@ -71,6 +71,10 @@
     {
       "at": "2026-11-05T01:19:14.316593+00:00",
       "text": "Agent leseli-claude-20261105-037 finished implementation and opened review (https://github.com/Vati-AI/rsl-taxathon/pull/170); Keletso asked to review as integration area owner."
+    },
+    {
+      "at": "2026-11-05T01:32:18.541337+00:00",
+      "text": "Verified implementation PR #170 merged (c374320, 2026-11-05T01:29Z); all acceptance criteria and evidence recorded."
     }
   ]
 }
