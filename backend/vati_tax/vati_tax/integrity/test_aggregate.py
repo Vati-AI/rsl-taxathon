@@ -1,4 +1,4 @@
-"""Frappe-free tests for the TAX-077 restricted aggregates (ADR-031).
+"""Frappe-free tests for the TAX-077 restricted aggregates (ADR-036).
 
 Covers the task's verification: policy exposure is kept apart from
 noncompliance, signals from accusations, and aggregation privacy holds (small
@@ -39,14 +39,18 @@ ACCUSATORY = (
 )
 
 
-def gap(code: str, taxpayer: int, *, review: str = "confirmed_by_reviewer", days_ago: int = 3) -> dict[str, Any]:
+def gap(
+    code: str, taxpayer: int, *, review: str = "confirmed_by_reviewer", days_ago: int = 3
+) -> dict[str, Any]:
     return {
         "code": code,
         "case_id": str(uuid.uuid4()),
         "taxpayer_id": f"27000000-0000-4000-8000-{taxpayer:012d}",
         "legal_route_status": "no_verified_route",
         "gap_review": review,
-        "reviewed_at": NOW - datetime.timedelta(days=days_ago) if review != "pending_review" else None,
+        "reviewed_at": NOW - datetime.timedelta(days=days_ago)
+        if review != "pending_review"
+        else None,
     }
 
 
@@ -187,8 +191,16 @@ class IntegrityTests(unittest.TestCase):
         # The viewer has three overrides: a repeated_overrides signal about the viewer.
         events += [override("evidence_due_date", VIEWER, "o2@example.test") for _ in range(2)]
         events += [
-            {"action": "decision.approve.denied", "actor": "o9@example.test", "actor_role": "auditor"},
-            {"action": "decision.approve.denied", "actor": "o9@example.test", "actor_role": "auditor"},
+            {
+                "action": "decision.approve.denied",
+                "actor": "o9@example.test",
+                "actor_role": "auditor",
+            },
+            {
+                "action": "decision.approve.denied",
+                "actor": "o9@example.test",
+                "actor_role": "auditor",
+            },
             {
                 "action": "challenge.reviewed",
                 "outcome": "overturned",

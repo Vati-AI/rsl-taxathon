@@ -133,7 +133,10 @@ class PrivacyTests(unittest.TestCase):
         recorders: dict[str, set[str]] = {}
         officers: dict[str, set[str]] = {}
         for event in FIXTURE["ledger_events"]:
-            if event["action"].startswith("override.") and event["occurred_at"] >= result["window"]["since"]:
+            if (
+                event["action"].startswith("override.")
+                and event["occurred_at"] >= result["window"]["since"]
+            ):
                 control = event["action"].removeprefix("override.")
                 recorders.setdefault(control, set()).add(event["actor"])
                 officers.setdefault(control, set()).add(event["target_actor"])
@@ -201,7 +204,11 @@ class LedgerTests(unittest.TestCase):
         result = review(ledger_available=False)
         self.assertEqual(result["override_patterns"], {"status": "unavailable"})
         self.assertEqual(result["missing_data"][0]["metric"], "integrity")
-        status, headers, body = 200, {"X-Correlation-ID": CORRELATION, "X-Vati-Mode": "fixture"}, {"data": result}
+        status, headers, body = (
+            200,
+            {"X-Correlation-ID": CORRELATION, "X-Vati-Mode": "fixture"},
+            {"data": result},
+        )
         self.assertEqual(conforms({}, status, headers, body), [])
 
     def test_window_moves_window_figures(self):

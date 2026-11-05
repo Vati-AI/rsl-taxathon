@@ -1,4 +1,4 @@
-"""Restricted policy-gap and integrity aggregates for management review (TAX-077, ADR-031).
+"""Restricted policy-gap and integrity aggregates for management review (TAX-077, ADR-036).
 
 Frappe-free, so the Vati service and the fixture API apply the same rules.
 
@@ -94,9 +94,7 @@ def suppress(cells: Sequence[Cell], k: int, combined_label: str) -> dict[str, An
         _merge(total, cell)
     if not cells or total.smallest_group() < k:
         return {"status": "insufficient_volume", "rows": [], "combined": None}
-    visible = sorted(
-        (c for c in cells if c.smallest_group() >= k), key=lambda c: (-c.count, c.key)
-    )
+    visible = sorted((c for c in cells if c.smallest_group() >= k), key=lambda c: (-c.count, c.key))
     small = [c for c in cells if c.smallest_group() < k]
     combined: Cell | None = None
     combined_keys: list[str] = []
@@ -111,7 +109,9 @@ def suppress(cells: Sequence[Cell], k: int, combined_label: str) -> dict[str, An
             visible.remove(weakest)
             _merge(combined, weakest)
             combined_keys.append(weakest.key)
-    rows = [{"key": c.key, "label": c.label, "count": c.count, "cases": len(c.cases)} for c in visible]
+    rows = [
+        {"key": c.key, "label": c.label, "count": c.count, "cases": len(c.cases)} for c in visible
+    ]
     combined_row = (
         None
         if combined is None
@@ -126,7 +126,9 @@ def suppress(cells: Sequence[Cell], k: int, combined_label: str) -> dict[str, An
     return {"status": "available", "rows": rows, "combined": combined_row}
 
 
-def _in_window(value: datetime.datetime | None, since: datetime.datetime, until: datetime.datetime) -> bool:
+def _in_window(
+    value: datetime.datetime | None, since: datetime.datetime, until: datetime.datetime
+) -> bool:
     return value is not None and since <= value <= until
 
 
@@ -248,7 +250,7 @@ def review_signal_counts(
 def integrity_review(
     *,
     tenant_id: str,
-    gaps: Iterable[Mapping[str, Any]],
+    gaps: Iterable[Mapping[str, Any]] | None,
     gap_labels: Mapping[str, str],
     entries: Sequence[ledger.LedgerEntry] | None,
     viewer: str,
@@ -256,31 +258,51 @@ def integrity_review(
     window_days: int,
     min_group_size: int = MIN_GROUP_SIZE,
 ) -> dict[str, Any]:
-    """The full restricted review body. ``entries`` None means the ledger could not be read."""
+    """The full restricted review body.
+
+    ``gaps`` None means no reviewed-findings store is available (in Frappe until
+    TAX-086 lands); ``entries`` None means the ledger could not be read. Either is
+    reported as ``unavailable`` with a ``missing_data`` note, never as zero.
+    """
     if not 1 <= window_days <= 365:
         raise ValueError("window_days must be between 1 and 365")
     until = now.astimezone(datetime.UTC).replace(microsecond=0)
     since = until - datetime.timedelta(days=window_days)
     missing: list[dict[str, str]] = []
-    exposure = policy_exposure(
-        gaps, labels=gap_labels, since=since, until=until, min_group_size=min_group_size
-    )
-    if exposure.pop("unlabelled_codes"):
+    exposure: dict[str, Any]
+    if gaps is None:
+        exposure = {"status": "unavailable"}
         missing.append(
             {
                 "metric": "policy_exposure",
-                "detail": "Some policy areas have no description on record and are shown by a generic name.",
+                "detail": "Reviewed policy-gap findings are not stored in this environment yet.",
             }
         )
+    else:
+        exposure = policy_exposure(
+            gaps, labels=gap_labels, since=since, until=until, min_group_size=min_group_size
+        )
+        if exposure.pop("unlabelled_codes"):
+            missing.append(
+                {
+                    "metric": "policy_exposure",
+                    "detail": "Some policy areas have no description on record and are shown by a generic name.",
+                }
+            )
     if entries is None:
         overrides: dict[str, Any] = {"status": "unavailable"}
         signals: dict[str, Any] = {"status": "unavailable"}
         ledger_check: dict[str, Any] = {"available": False}
         missing.append(
-            {"metric": "integrity", "detail": "The audit ledger is not available in this environment."}
+            {
+                "metric": "integrity",
+                "detail": "The audit ledger is not available in this environment.",
+            }
         )
     else:
-        overrides = override_patterns(entries, since=since, until=until, min_group_size=min_group_size)
+        overrides = override_patterns(
+            entries, since=since, until=until, min_group_size=min_group_size
+        )
         signals = review_signal_counts(entries, now=until, viewer=viewer, window_days=window_days)
         ledger_check = {"available": True, "intact": ledger.verify_chain(entries)["intact"]}
     return {

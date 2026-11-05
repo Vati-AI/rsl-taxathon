@@ -2890,7 +2890,7 @@
       },
       "IntegrityUnavailable": {
         "type": "object",
-        "description": "The audit ledger could not be read; see missing_data.",
+        "description": "This source could not be read in this environment (the audit ledger, or the case findings store before TAX-086); see missing_data.",
         "additionalProperties": false,
         "required": [
           "status"
@@ -2958,7 +2958,7 @@
       },
       "IntegrityReview": {
         "type": "object",
-        "description": "Restricted management review of policy gaps and integrity patterns (TAX-077, ADR-031). Aggregates only; no person is identified.",
+        "description": "Restricted management review of policy gaps and integrity patterns (TAX-077, ADR-036). Aggregates only; no person is identified.",
         "additionalProperties": false,
         "required": [
           "tenant_id",
@@ -3010,7 +3010,14 @@
             "type": "string"
           },
           "policy_exposure": {
-            "$ref": "#/components/schemas/PolicyExposure"
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/PolicyExposure"
+              },
+              {
+                "$ref": "#/components/schemas/IntegrityUnavailable"
+              }
+            ]
           },
           "override_patterns": {
             "anyOf": [

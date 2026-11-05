@@ -64,6 +64,12 @@ function reloadPage() {
               :route="{ name: 'management' }"
               :active="section === 'management'"
             />
+            <SidebarItem
+              label="Integrity review"
+              icon="lucide-shield-check"
+              :route="{ name: 'integrity' }"
+              :active="section === 'integrity'"
+            />
           </SidebarSection>
           <SidebarSection label="Design">
             <SidebarItem

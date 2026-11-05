@@ -1,4 +1,4 @@
-"""Fixture data for getIntegrityReview (TAX-077, ADR-031).
+"""Fixture data for getIntegrityReview (TAX-077, ADR-036).
 
 Reads integration/api/fixtures/integrity.json, seals its ledger events into one
 tenant chain with the real TAX-059 code, and builds the response with the
@@ -47,7 +47,9 @@ def ledger_entries(tenant_id: str, events: list[dict[str, Any]]) -> list[Any]:
     store = ledger.MemoryLedger()
     for index, event in enumerate(events):
         key = f"{index}|{event['action']}|{event['occurred_at']}"
-        outcome = event.get("outcome") or ("denied" if event["action"].endswith(".denied") else "ok")
+        outcome = event.get("outcome") or (
+            "denied" if event["action"].endswith(".denied") else "ok"
+        )
         ledger.append(
             store,
             ledger.Unsealed(

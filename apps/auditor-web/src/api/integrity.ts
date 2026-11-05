@@ -1,5 +1,5 @@
 /**
- * getIntegrityReview (GET /api/v1/management/integrity, TAX-077, ADR-031):
+ * getIntegrityReview (GET /api/v1/management/integrity, TAX-077, ADR-036):
  * restricted policy-gap and integrity aggregates for supervisors. The server
  * refuses anyone else with 403, which the view shows as a denied state.
  *
@@ -49,7 +49,8 @@ export type PolicyExposure =
       pending_review: number;
       areas: [];
       combined: null;
-    };
+    }
+  | { status: 'unavailable' };
 export type OverridePatterns =
   | {
       status: 'available';
@@ -165,8 +166,10 @@ export function parseIntegrityReview(value: unknown): IntegrityReview {
   if (count(data.min_group_size) < 2) invalid();
 
   const exposure = record(data.policy_exposure);
-  count(exposure.pending_review);
-  table(exposure, 'confirmed_gaps', 'areas');
+  if (exposure.status !== 'unavailable') {
+    count(exposure.pending_review);
+    table(exposure, 'confirmed_gaps', 'areas');
+  }
 
   const overrides = record(data.override_patterns);
   if (overrides.status !== 'unavailable') table(overrides, 'total_overrides', 'by_control');

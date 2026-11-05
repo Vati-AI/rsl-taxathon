@@ -537,7 +537,9 @@ def _dispatch(
         )
         if body_or_error == "forbidden":
             return _error("forbidden", correlation, fixture_integrity.FORBIDDEN_MESSAGE)
-        result = body_or_error if isinstance(body_or_error, str) else (200, {}, {"data": body_or_error})
+        result = (
+            body_or_error if isinstance(body_or_error, str) else (200, {}, {"data": body_or_error})
+        )
     else:
         # Contract operations without fixture data are absent here, never invented.
         return _error("not_found", correlation, "This operation has no fixture data.")
