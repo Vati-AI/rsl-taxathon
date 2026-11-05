@@ -40,3 +40,16 @@ Ownership conflicts are flagged, never resolved. Both records stay mapped and bo
 `bundle_from_tax024` builds a bundle from a synthetic TAX-024 scenario record. It refuses records that are not marked synthetic.
 
 Writing to OpenAleph is in `integration/openaleph/entity_ingest.py`.
+
+## Scheme, ownership and intermediary graph (TAX-074)
+
+`scheme_graph.py` builds one deterministic graph per (tenant, case) from FtM entities ([ADR-026](../../docs/decisions/ADR-026-scheme-ownership-intermediary-graph.md)). Its input, `scheme_graph_input.v1`, is a TAX-036 bundle plus `directorships`, `representations` (advisers and intermediaries), `schemes`, `scheme_participants`, evidence-backed `case_scheme_links` and the `extraction_revisions` the citations come from. These map to FtM `Directorship`, `Representation`, `Project` and `ProjectParticipant`.
+
+- Nodes are `case`, `party` and `scheme`. The edges are `legal_ownership` (direct), `beneficial_ownership` (beneficial or ultimate), `indirect_ownership`, `ownership_type_unstated`, `directorship`, `adviser_to`, `intermediary_for`, `scheme_participation`, `case_subject` and `case_scheme_link`.
+- One source record makes one edge. Each edge keeps the source record, the FtM entity digest and each citation's evidence ID, SHA-256, locator and extraction revision. Records that disagree stay separate edges and are listed as `unresolved` contradictions.
+- No risk or fraud labels exist, and the input cannot add them (`risk_label_not_allowed`). `connections` returns described paths with `interpretation: null`. Assessment goes to officer review (`finding.review`).
+- `SchemeGraphStore.neighbourhood` / `connections` read one case's graph for a `case.read` role, with depth, node and path limits and `meta.truncated` flags. A replay is a no-op, and a changed record is an `idempotency_conflict`.
+
+```sh
+python3 -m unittest tests/integration/test_scheme_graph.py -v   # fixtures: data/synthetic/tax074_scheme_graph.json
+```

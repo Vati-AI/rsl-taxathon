@@ -200,6 +200,11 @@ class MappingTests(unittest.TestCase):
             "UnknownLink": 1,
             "Payment": 1,
             "Document": 2,
+            # TAX-074 scheme graph schemata; a TAX-036 bundle never emits them.
+            "Directorship": 0,
+            "Representation": 0,
+            "Project": 0,
+            "ProjectParticipant": 0,
         }
         self.assertEqual(counts, expected)
         self.assertEqual(result.conflicts, [])
