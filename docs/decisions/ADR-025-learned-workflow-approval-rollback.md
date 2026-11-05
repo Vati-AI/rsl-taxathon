@@ -1,4 +1,4 @@
-# ADR-023: Learned-workflow approval, activation history and rollback
+# ADR-025: Learned-workflow approval, activation history and rollback
 
 Status: proposed (TAX-065, pending review)
 Owner and task: Edga (owner), TAX-065; implemented by edga-claude-code-20261105-065
@@ -33,6 +33,6 @@ Verification performed: 20 Frappe-free tests in `workflows/test_service.py` cove
 - rollback restoring the previous approved version, and repeated rollbacks walking back;
 - tenant isolation and an intact ledger.
 
-Removing separation of duties, the approved-only or active-only execution check, or the rollback target each makes the suite fail. Site-backed tests are in `workflows/test_workflows_bench.py`; see the PR for the `scripts/frappe_dev.py verify` result.
+Removing separation of duties, the approved-only or active-only execution check, or the rollback target each makes the suite fail. Site-backed tests are in `workflows/test_workflows_bench.py`. They were **not run**: on 2026-11-05 `scripts/frappe_dev.py init` for an isolated stack failed twice on the setup machine, first because three MariaDB stacks were initialising at once and then because the disk ran out of space during the Frappe install. Run `scripts/frappe_dev.py verify` before relying on the Frappe binding.
 
 Consequences and revisit trigger: the LangGraph worker must call `check_workflow_execution` before running any learned workflow, and must still pause for officer approval at every consequential step (TAX-047). TAX-077 can add workflow overrides to its integrity views (`override.playbook_step`). Revisit when learned workflows become executable LangGraph playbooks (bind the approval to a TAX-061 registry entry and its digest), or when activation needs a holdout threshold rather than a recorded acknowledgement (TAX-056/066).

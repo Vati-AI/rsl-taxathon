@@ -132,7 +132,7 @@ Retention is metadata only (`pilot-synthetic-unverified-1`, `policy_verified: fa
 
 ## Learned workflows (TAX-065)
 
-A TAX-064 workflow proposal becomes a `Vati Workflow Version` (`proposed`). A supervisor decides it, a supervisor puts it in force, and every activation and rollback is appended to `Vati Workflow Activation`. Both DocTypes are tenant-scoped. Staff read them in Desk; nothing is written there, and neither can be edited after the fact or deleted. Every step and refusal is sealed into the audit ledger (subject type `workflow`). See [ADR-023](decisions/ADR-023-learned-workflow-approval-rollback.md).
+A TAX-064 workflow proposal becomes a `Vati Workflow Version` (`proposed`). A supervisor decides it, a supervisor puts it in force, and every activation and rollback is appended to `Vati Workflow Activation`. Both DocTypes are tenant-scoped. Staff read them in Desk; nothing is written there, and neither can be edited after the fact or deleted. Every step and refusal is sealed into the audit ledger (subject type `workflow`). See [ADR-025](decisions/ADR-025-learned-workflow-approval-rollback.md).
 
 | Step | Who | Refused when |
 | --- | --- | --- |
