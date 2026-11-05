@@ -402,7 +402,9 @@ function durationRows(elapsed: { open_case_age: DurationStats; time_to_close: Du
             </p>
             <p class="mt-2 text-sm text-ink-gray-5">
               Signals are prompts for a supervisor to look. They are not findings about anyone and
-              change nothing. Details are in the restricted integrity views.
+              change nothing. Aggregates by kind are in the
+              <RouterLink :to="{ name: 'integrity' }" class="underline">integrity review</RouterLink
+              >.
             </p>
           </div>
         </template>

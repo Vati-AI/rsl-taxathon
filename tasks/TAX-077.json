@@ -5,7 +5,7 @@
   "owner": "Leseli",
   "area": "apps/auditor-web",
   "phase": "expansion",
-  "status": "IN_PROGRESS",
+  "status": "IN_REVIEW",
   "priority": "P1",
   "depends_on": [
     "TAX-052",
@@ -14,7 +14,7 @@
   ],
   "claimed_by": "leseli-claude-20261105-077",
   "branch": "task/TAX-077",
-  "pr": null,
+  "pr": "https://github.com/Vati-AI/rsl-taxathon/pull/240",
   "scope": "Aggregate verified policy gaps and unusual override patterns for restricted management review",
   "inputs": [
     "PROJECT.md",
@@ -28,19 +28,19 @@
   "acceptance": [
     {
       "text": "Aggregate verified policy gaps and unusual override patterns for restricted management review",
-      "done": false
+      "done": true
     },
     {
       "text": "Separate policy exposure from noncompliance and signals from accusations; validate aggregation privacy",
-      "done": false
+      "done": true
     },
     {
       "text": "Record relevant tests and evidence, update task status and open a human-review PR",
-      "done": false
+      "done": true
     },
     {
       "text": "Follow docs/DESIGN_STANDARD.md; supply relevant viewport/state screenshots and keyboard/accessibility evidence for human visual review",
-      "done": false
+      "done": true
     }
   ],
   "verification": "Separate policy exposure from noncompliance and signals from accusations; validate aggregation privacy",
@@ -50,11 +50,32 @@
     "update-project-task",
     "finish-task"
   ],
-  "evidence": [],
+  "evidence": [
+    {
+      "criterion": 1,
+      "text": "vati_tax.integrity.aggregate builds the restricted review: reviewer-confirmed no_verified_route findings by policy area (pending ones only counted), overrides by control from the TAX-059 ledger, review signals by kind (incl. TAX-069 overturned decisions) and the ledger check. Served by integrity/service.py + integrity/api.py (Frappe, supervisors only via ledger.read, refusals and reads recorded) and by the fixture API (getIntegrityReview, examples 46/47). ADR-036. Tests: integrity/test_aggregate.py 22 OK, integrity/test_service.py 7 OK, tests/contracts/test_integrity_review.py 16 OK, contract.py valid (47 examples)."
+    },
+    {
+      "criterion": 2,
+      "text": "Policy exposure note says it describes the rules and is not a finding of noncompliance; override note says counts are not a measure of any officer; signals are review prompts counted by kind only. Privacy: every cell must cover at least min_group_size (3) people (taxpayers; recorders and affected officers), small cells combined with a complementary rule so no hidden cell can be derived, insufficient_volume returns no counts, no logins/IDs/subjects returned, signals about the viewer withheld, no drill-down. Server refuses auditor, specialist, service and taxpayer before computing and records ledger.read.denied (test_service). Client parser refuses login-like text, subjects, non-adding totals and disguised combined rows (integrity.test.ts 11 OK). Accusatory wording checked absent in backend and browser tests."
+    },
+    {
+      "criterion": 3,
+      "text": "Local (CI blocked by org billing): validate.py, compileall, tests/data 3, tests/integration 241, all dev.py tests/ai patterns, risk_calibration --check PASS, contract.py, tests/contracts 129, backend 450 (43 skipped), ruff check, mypy 235 files clean, npm run check (lint, prettier, typecheck, auditor 111 unit, taxpayer 72, builds). tests/tooling: 3 Windows-only 0o600 permission failures (jube_dev, openaleph_dev, frappe_dev), unrelated. Frappe site verify not run: no DocType or permission changed."
+    },
+    {
+      "criterion": 4,
+      "text": "docs/evidence/TAX-077: supervisor view at 1440/1024/390, denied auditor and specialist, insufficient volume and unavailable states. e2e/integrity.spec.ts 11 OK in Edge: no serious axe violations (WCAG 2 A/AA) and no page-wide scroll at 1440/1024/390, keyboard reaches window control and both table regions with visible focus. Bars are aria-hidden; tables carry the figures (accessible fallback); bars hidden below sm so counts show at 390. TAX-023 harness includes the page at three widths (176 passed; 1 unrelated queue-page check flaked under load and passed on rerun). Visual approval left to the reviewer."
+    }
+  ],
   "notes": [
     {
       "at": "2026-11-05T08:48:46.039520+00:00",
       "text": "Claimed by leseli-claude-20261105-077"
+    },
+    {
+      "at": "2026-11-05T12:59:09.894046+00:00",
+      "text": "Implementation finished and review PR #240 opened (ADR-036). Edga asked to review the ledger use and Frappe endpoint; Kananelo or Keletso the screens. CI blocked by org billing; local results in the PR."
     }
   ]
 }

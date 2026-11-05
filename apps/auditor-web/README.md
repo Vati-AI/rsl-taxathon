@@ -22,7 +22,10 @@ reject or withdraw, refer to a specialist, request evidence, agent suggestions
 and the review trail; every action is confirmed in a dialog first), taxpayer
 profile, management dashboard (`/auditor/management`, supervisors only:
 workload, elapsed time, unresolved evidence, closures with no further action,
-legal-route coverage and audit ledger assurance), component showcase
+legal-route coverage and audit ledger assurance), integrity review
+(`/auditor/management/integrity`, supervisors only: policy exposure by policy
+area, overrides by control and review signals by kind, aggregates only with
+small groups combined; ADR-036), component showcase
 (`/auditor/showcase`). Shared tokens live in `apps/shared/design`.
 
 The request tenant comes from `src/session.ts` (fixture tenant unless
@@ -49,7 +52,8 @@ or on Windows use the installed Edge with `PLAYWRIGHT_CHANNEL=msedge`. Set
 `-- screenshots-evidence` writes the TAX-041 evidence and relationship screens to
 `docs/evidence/TAX-041`, `-- review-screenshots` writes the review page states
 to `docs/evidence/TAX-042`, and `-- management` writes the management dashboard
-screens to `docs/evidence/TAX-060`. Review actions run in their own Playwright
+screens to `docs/evidence/TAX-060`; `-- integrity` writes the integrity review
+screens to `docs/evidence/TAX-077`. Review actions run in their own Playwright
 project against a second fixture server (port 58095, `AUDITOR_REVIEW_E2E_PORT`),
 so they never change the data the other specs check. The management dashboard
 only reads, so its spec uses the main fixture server.
