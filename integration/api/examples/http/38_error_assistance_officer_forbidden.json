@@ -1,0 +1,35 @@
+{
+  "name": "error_assistance_officer_forbidden",
+  "operation_id": "explainValidationResults",
+  "scenario": "SYN-001",
+  "synthetic": true,
+  "description": "An officer session cannot use the taxpayer assistant (taxpayer context only).",
+  "request": {
+    "method": "POST",
+    "path": "/api/v1/taxpayers/20000000-0000-4000-8000-000000000001/assistance/validation-explanations",
+    "headers": {
+      "Authorization": "Bearer synthetic-dev-token-not-a-secret",
+      "X-Vati-Tenant-ID": "10000000-0000-4000-8000-000000000001",
+      "X-Correlation-ID": "c0000000-0000-4000-8000-000000000032",
+      "Idempotency-Key": "auditor:explain:30000000-0011:v1"
+    },
+    "body": {
+      "submission_id": "30000000-0000-4000-8000-000000000011"
+    }
+  },
+  "response": {
+    "status": 403,
+    "headers": {
+      "X-Correlation-ID": "c0000000-0000-4000-8000-000000000032"
+    },
+    "body": {
+      "error": {
+        "code": "forbidden",
+        "message": "This operation is not available to you.",
+        "retryable": false,
+        "correlation_id": "c0000000-0000-4000-8000-000000000032",
+        "service": "vati"
+      }
+    }
+  }
+}

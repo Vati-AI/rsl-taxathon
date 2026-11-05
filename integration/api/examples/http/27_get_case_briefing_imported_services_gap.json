@@ -1,0 +1,216 @@
+{
+  "name": "get_case_briefing_imported_services_gap",
+  "operation_id": "getCaseBriefing",
+  "scenario": "SYN-004",
+  "synthetic": true,
+  "description": "Officer reads the cited briefing: every statement resolves to evidence or a search, a removed conclusion is listed, the hosted model is disclosed and the run waits for a human decision.",
+  "request": {
+    "method": "GET",
+    "path": "/api/v1/cases/40000000-0000-4000-8000-000000000004/briefing",
+    "headers": {
+      "Authorization": "Bearer synthetic-dev-token-not-a-secret",
+      "X-Vati-Tenant-ID": "10000000-0000-4000-8000-000000000001",
+      "X-Correlation-ID": "c0000000-0000-4000-8000-000000000027"
+    }
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "X-Correlation-ID": "c0000000-0000-4000-8000-000000000027"
+    },
+    "body": {
+      "data": {
+        "briefing_id": "b0000000-0000-4000-8000-000000000004",
+        "case_id": "40000000-0000-4000-8000-000000000004",
+        "tenant_id": "10000000-0000-4000-8000-000000000001",
+        "run_id": "90000000-0000-4000-8000-000000000004",
+        "case_version": 5,
+        "producer": "langgraph_run",
+        "producer_version": "tax053-briefing-v1",
+        "workflow_version": "imported_services_review@1",
+        "prompt_version": "tax053-briefing-instructions-v1",
+        "sections": {
+          "what_happened": [
+            {
+              "kind": "observed_fact",
+              "text": "Invoice records a foreign consulting service; amount: LSL 3000.00.",
+              "refs": [
+                {
+                  "type": "evidence",
+                  "citation_id": "50000000-0000-4000-8000-000000000004#item-0001",
+                  "evidence_ref": {
+                    "evidence_id": "50000000-0000-4000-8000-000000000004",
+                    "document_sha256": "4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c",
+                    "locator": {
+                      "page": 1,
+                      "record": null
+                    }
+                  }
+                }
+              ],
+              "action": null
+            }
+          ],
+          "what_was_checked": [
+            {
+              "kind": "check",
+              "text": "Searched 1 document for the imported service and its invoice.",
+              "refs": [
+                {
+                  "type": "search",
+                  "search_id": "search-01"
+                }
+              ],
+              "action": null
+            },
+            {
+              "kind": "check",
+              "text": "Searched 1 document for withholding or reverse-charge records.",
+              "refs": [
+                {
+                  "type": "search",
+                  "search_id": "search-02"
+                }
+              ],
+              "action": null
+            }
+          ],
+          "what_is_explained": [],
+          "what_is_unresolved": [
+            {
+              "kind": "missing_information",
+              "text": "No withholding or reverse-charge record was found in the case documents.",
+              "refs": [
+                {
+                  "type": "search",
+                  "search_id": "search-02"
+                }
+              ],
+              "action": null
+            }
+          ],
+          "next_action": [
+            {
+              "kind": "proposed_action",
+              "text": "Ask the taxpayer for withholding or reverse-charge records for this service.",
+              "refs": [
+                {
+                  "type": "search",
+                  "search_id": "search-02"
+                }
+              ],
+              "action": "request_evidence"
+            }
+          ]
+        },
+        "rejected_statements": [
+          {
+            "section": "what_is_unresolved",
+            "index": 1,
+            "reason": "conclusion_not_allowed"
+          }
+        ],
+        "searches": [
+          {
+            "search_id": "search-01",
+            "question_id": "imported_service",
+            "topic": "Imported service invoice",
+            "terms": [
+              "consulting",
+              "foreign",
+              "invoice"
+            ],
+            "documents_searched": 1,
+            "citation_ids": [
+              "50000000-0000-4000-8000-000000000004#item-0001"
+            ]
+          },
+          {
+            "search_id": "search-02",
+            "question_id": "withholding_record",
+            "topic": "Withholding or reverse charge",
+            "terms": [
+              "withholding",
+              "reverse",
+              "charge"
+            ],
+            "documents_searched": 1,
+            "citation_ids": []
+          }
+        ],
+        "evidence_ids": [
+          "50000000-0000-4000-8000-000000000004"
+        ],
+        "documents_in_scope": 1,
+        "instruction_like_items": 0,
+        "search_digest": "6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e",
+        "analysis_provenance": {
+          "provider": "groq",
+          "model_id": "openai/gpt-oss-120b",
+          "configured_model_id": "openai/gpt-oss-120b",
+          "role": "reasoning",
+          "task": "case_briefing",
+          "prompt_version": "tax053-briefing-instructions-v1",
+          "settings": {
+            "temperature": 0,
+            "response_format": "json_object",
+            "max_output_tokens": 2048,
+            "timeout_s": 30
+          },
+          "fallback_level": 0,
+          "fallback_level_name": "hosted",
+          "fell_back": false,
+          "attempts": [
+            {
+              "level": 0,
+              "name": "hosted",
+              "provider": "groq",
+              "model_id": "openai/gpt-oss-120b",
+              "outcome": "ok",
+              "http_status": 200,
+              "latency_ms": 2140
+            }
+          ],
+          "latency_ms": 2210,
+          "token_usage": {
+            "input": 1830,
+            "output": 412,
+            "total": 2242
+          },
+          "validation": {
+            "status": "passed",
+            "reason": null,
+            "rejected_statements": 1
+          },
+          "router_version": "tax089-router-v1"
+        },
+        "disclosure": {
+          "source": "hosted_model",
+          "provider": "groq",
+          "model_id": "openai/gpt-oss-120b",
+          "fell_back": false,
+          "advisory_only": true
+        },
+        "checkpoint": {
+          "run_status": "awaiting_human",
+          "awaiting_human": true,
+          "interrupt": {
+            "type": "approval_required",
+            "action_id": "draft-90000000-0000-4000-8000-000000000004",
+            "kind": "request_further_evidence",
+            "case_version": 5,
+            "payload_digest": "7f7f7f7f7f7f7f7f7f7f7f7f7f7f7f7f7f7f7f7f7f7f7f7f7f7f7f7f7f7f7f7f",
+            "proposed_by": "agent:imported_services_review@1",
+            "resume_requires": "approved_decision",
+            "last_rejection": null
+          }
+        },
+        "decision": null,
+        "legal_conclusion": null,
+        "enforcement_conclusion": null,
+        "requires_officer_approval": true,
+        "created_at": "2026-11-03T13:02:00Z"
+      }
+    }
+  }
+}

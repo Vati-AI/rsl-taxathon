@@ -1,0 +1,65 @@
+{
+  "name": "get_evidence_response_draft_imported_services",
+  "operation_id": "getEvidenceResponseDraft",
+  "scenario": "SYN-004",
+  "synthetic": true,
+  "description": "The taxpayer reopens their saved draft; it is still unsent.",
+  "request": {
+    "method": "GET",
+    "path": "/api/v1/taxpayers/20000000-0000-4000-8000-000000000004/assistance/evidence-response-drafts/f1000000-0000-4000-8000-000000000004",
+    "headers": {
+      "Authorization": "Bearer synthetic-taxpayer-token-not-a-secret",
+      "X-Vati-Tenant-ID": "10000000-0000-4000-8000-000000000001",
+      "X-Correlation-ID": "c0000000-0000-4000-8000-000000000035"
+    }
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "X-Correlation-ID": "c0000000-0000-4000-8000-000000000035"
+    },
+    "body": {
+      "data": {
+        "draft_id": "f1000000-0000-4000-8000-000000000004",
+        "tenant_id": "10000000-0000-4000-8000-000000000001",
+        "taxpayer_id": "20000000-0000-4000-8000-000000000004",
+        "request_id": "a0000000-0000-4000-8000-000000000004",
+        "status": "draft",
+        "version": 1,
+        "due_date": "2026-11-24",
+        "request_summary": "RSL asks for proof that withholding or reverse-charge VAT was handled for the foreign consulting service on your invoice.",
+        "items": [
+          {
+            "item_number": 1,
+            "document_type": "other",
+            "plain_language_request": "A document showing withholding or reverse-charge treatment of the consulting service.",
+            "match": "matched",
+            "proposed_documents": [
+              {
+                "evidence_id": "50000000-0000-4000-8000-000000000041",
+                "document_sha256": "4d4d4d4d4d4d4d4d4d4d4d4d4d4d4d4d4d4d4d4d4d4d4d4d4d4d4d4d4d4d4d4d",
+                "locator": {
+                  "page": 1,
+                  "record": null
+                },
+                "file_name": "synthetic-withholding-0004.pdf"
+              }
+            ],
+            "missing_explanation": null
+          }
+        ],
+        "proposed_message": "Attached is the withholding record for the consulting service.",
+        "disclosure": {
+          "source": "mock_fixture",
+          "provider": "mock",
+          "model_id": "mock-fast-fixture-v1",
+          "fell_back": false,
+          "advisory_only": true
+        },
+        "created_at": "2026-11-10T09:05:00Z",
+        "confirmation": null,
+        "sent_to_rsl": false
+      }
+    }
+  }
+}

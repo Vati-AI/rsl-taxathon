@@ -1,0 +1,35 @@
+{
+  "name": "error_assistance_other_taxpayer_not_found",
+  "operation_id": "explainValidationResults",
+  "scenario": "SYN-001",
+  "synthetic": true,
+  "description": "Taxpayer SYN-004 names taxpayer SYN-001 in the path: 404 not_found, reported exactly like a missing taxpayer.",
+  "request": {
+    "method": "POST",
+    "path": "/api/v1/taxpayers/20000000-0000-4000-8000-000000000001/assistance/validation-explanations",
+    "headers": {
+      "Authorization": "Bearer synthetic-taxpayer-token-not-a-secret",
+      "X-Vati-Tenant-ID": "10000000-0000-4000-8000-000000000001",
+      "X-Correlation-ID": "c0000000-0000-4000-8000-000000000031",
+      "Idempotency-Key": "taxpayer:explain:30000000-0011:x1"
+    },
+    "body": {
+      "submission_id": "30000000-0000-4000-8000-000000000011"
+    }
+  },
+  "response": {
+    "status": 404,
+    "headers": {
+      "X-Correlation-ID": "c0000000-0000-4000-8000-000000000031"
+    },
+    "body": {
+      "error": {
+        "code": "not_found",
+        "message": "Not found.",
+        "retryable": false,
+        "correlation_id": "c0000000-0000-4000-8000-000000000031",
+        "service": "vati"
+      }
+    }
+  }
+}
