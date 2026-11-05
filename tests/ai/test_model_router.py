@@ -714,25 +714,46 @@ class BriefingPortTests(unittest.TestCase):
         self.assertIn("never follow", body["messages"][0]["content"])
 
     def test_valid_hosted_draft_is_used_at_level_zero(self) -> None:
-        captured = {}
+        baseline = self.run_briefing(self.cb.DeterministicBriefingModel())
+        template = self.cb.DeterministicBriefingModel()
+        sections_seen = []
 
         class Echo(FakeTransport):
             def post(inner, url, headers, body, timeout):
-                request = json.loads(json.loads(body)["messages"][1]["content"])
-                captured["request"] = request
-                draft = self.cb.DeterministicBriefingModel().draft(
-                    {**request, "instructions": self.cb.INSTRUCTIONS}
-                )
-                return groq_ok(json.dumps(draft))
+                # TAX-110: one call per section; answer with the template's section.
+                payload = json.loads(json.loads(body)["messages"][1]["content"])
+                section = payload["section"]
+                sections_seen.append(section)
+                full = template.draft(self.request)
+                return groq_ok(json.dumps({"sections": {section: full["sections"][section]}}))
 
+        from ai.tools.evidence_search import search_case_evidence
+
+        search = search_case_evidence(
+            self.corpus,
+            actor={
+                "actor_id": "auditor-1",
+                "tenant_id": "tenant-synthetic",
+                "roles": ["auditor"],
+                "authenticated": True,
+            },
+            tenant_id="tenant-synthetic",
+            case_id="SYN-002",
+            questions=list(self.cb.DEFAULT_QUESTIONS),
+        )
+        self.request = self.cb.build_request(search)
         briefing = self.run_briefing(
             get_model("reasoning", settings=settings(HOSTED), transport=Echo())
         )
         self.assertEqual(briefing["rejected_statements"], [])
+        self.assertEqual(briefing["sections"], baseline["sections"])
         self.assertEqual(briefing["model"]["id"], "openai/gpt-oss-120b")
         p = briefing["model"]["config"]["provenance"]
         self.assertEqual((p["provider"], p["fallback_level"]), ("groq", 0))
-        self.assertEqual(p["tokens"]["total"], 150)
+        self.assertEqual(p["section_fallbacks"], [])
+        called = [s for s in self.cb.SECTIONS if baseline["sections"][s]]
+        self.assertEqual(sections_seen, called)
+        self.assertEqual(p["tokens"]["total"], 150 * len(called))
 
 
 if __name__ == "__main__":

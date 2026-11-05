@@ -44,7 +44,7 @@ from ai.models.providers import (
     UrllibTransport,
 )
 
-ROUTER_VERSION = "tax089-router-v1"
+ROUTER_VERSION = "tax110-router-v2"
 TEMPLATE_MODEL_ID = "deterministic-template-v1"
 LEVELS = {"hosted": 0, "mock": 0, "local": 1, "template": 2}
 
@@ -223,11 +223,41 @@ class RoutedModel:
 
     # --- ports --------------------------------------------------------------------
 
-    def draft(self, request: Mapping[str, Any]) -> object:
-        """``BriefingModel`` port (TAX-053): a validated briefing draft or the template's."""
-        from ai.models.briefing import briefing_task
+    def draft(
+        self,
+        request: Mapping[str, Any],
+        *,
+        complete: Callable[[CompletionTask], ModelOutput] | None = None,
+    ) -> object:
+        """``BriefingModel`` port (TAX-053): a briefing drafted section by section.
 
-        return self.complete(briefing_task(request)).output
+        Each section is one bounded ``complete`` call that is validated and falls
+        back to the template on its own (TAX-110); the merged provenance, with a
+        record per section, becomes ``last_provenance``. ``complete`` lets a caller
+        (the paced live harness) route each section call through itself.
+        """
+        from ai.models.briefing import draft_by_section
+
+        draft, provenance = draft_by_section(complete or self.complete, request, role=self.role)
+        self.last_provenance = provenance
+        self.model_id = str(provenance["model_id"])
+        self.config = self._config()
+        return draft
+
+    def estimate_tokens(self, task: CompletionTask) -> int:
+        """Tokens a provider may charge for ``task``: input (about 4 chars/token) plus
+        the output budget. Used to pace live runs before the call (TAX-110)."""
+        budget = self._settings.budget
+        max_tokens = min(
+            task.max_output_tokens or budget.max_output_tokens, budget.max_output_tokens
+        )
+        try:
+            chars = len(task.instructions) + len(
+                Prompt(task.instructions, task.payload, max_tokens, budget.timeout_s).user_text()
+            )
+        except (TypeError, ValueError):
+            chars = 0
+        return chars // 4 + max_tokens
 
     def complete(self, task: CompletionTask) -> ModelOutput:
         budget = self._settings.budget
@@ -261,6 +291,9 @@ class RoutedModel:
                 attempts.append({**entry, "outcome": "invalid_input"})
                 continue
             if networked:
+                # What a rate limiter may charge even when no usage comes back (TAX-110).
+                entry["request_chars"] = payload_chars
+                entry["max_output_tokens"] = max_tokens
                 if payload_chars > budget.max_input_chars:
                     attempts.append({**entry, "outcome": "input_budget_exceeded"})
                     continue
@@ -284,6 +317,7 @@ class RoutedModel:
                         **entry,
                         "outcome": error.reason,
                         "http_status": error.http_status,
+                        "error_code": error.error_code,
                         "observed_model_id": error.observed_model_id,
                         "latency_ms": _ms(self._clock() - t0),
                         "tokens": error.tokens,
@@ -292,7 +326,13 @@ class RoutedModel:
                 continue
             except Exception:  # an adapter bug must not stop the chain
                 attempts.append(
-                    {**entry, "outcome": "provider_error", "latency_ms": _ms(self._clock() - t0)}
+                    {
+                        **entry,
+                        "outcome": "provider_error",
+                        "http_status": None,
+                        "error_code": "adapter_exception",
+                        "latency_ms": _ms(self._clock() - t0),
+                    }
                 )
                 continue
             finally:

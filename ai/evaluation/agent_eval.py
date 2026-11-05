@@ -61,7 +61,7 @@ from datetime import date
 from pathlib import Path
 from typing import Any, cast
 
-from ai.models import get_model
+from ai.models import RoutedModel, get_model
 
 ROOT = Path(__file__).resolve().parents[2]
 FIXTURES_PATH = ROOT / "data/synthetic/tax056_evaluation_fixtures.json"
@@ -1066,13 +1066,27 @@ def _auditor() -> dict[str, Any]:
     }
 
 
+# Briefing fields whose content a hosted or local model writes (TAX-110).
+MODEL_WRITTEN_BRIEFING_FIELDS = ("sections", "rejected_statements", "evidence_ids")
+
+
 def _briefing_content(briefing: Mapping[str, Any] | None) -> Any:
-    """A briefing without run-time model measurements (latency, attempts)."""
+    """A briefing without run-time model measurements (latency, attempts).
+
+    When a hosted or local model wrote any section, the text is stochastic, so
+    determinism is measured on the deterministic part only (searches, digest,
+    scope, flags), as for the TAX-097 interpretations; mock and template output
+    is compared in full.
+    """
     if briefing is None:
         return None
-    return {
+    content = {
         k: v for k, v in briefing.items() if k not in ("model", "analysis_provenance", "disclosure")
     }
+    provenance = briefing.get("analysis_provenance") or {}
+    if provenance.get("fallback_level_name") in ("hosted", "local"):
+        content = {k: v for k, v in content.items() if k not in MODEL_WRITTEN_BRIEFING_FIELDS}
+    return content
 
 
 def evaluate_case_briefing(
@@ -1862,6 +1876,92 @@ def render_text(report: Mapping[str, Any]) -> str:
 LIVE_TOKENS_PER_MINUTE = 6500
 LIVE_ESTIMATED_CALL_TOKENS = 2500
 LIVE_MIN_GAP_S = 2.5
+# After an HTTP 429 without a usable reset header, the role waits this long.
+LIVE_RATE_LIMIT_PAUSE_S = 30.0
+LIVE_MAX_PAUSE_S = 61.0
+_DURATION_UNITS = {"h": 3600.0, "m": 60.0, "s": 1.0, "ms": 0.001}
+
+
+def parse_duration(value: object) -> float | None:
+    """Seconds from ``retry-after`` (``"7"``) or Groq resets (``"2m59.56s"``, ``"120ms"``)."""
+    if not isinstance(value, str) or not value.strip():
+        return None
+    text = value.strip()
+    try:
+        return max(0.0, float(text))
+    except ValueError:
+        pass
+    total, number, index = 0.0, "", 0
+    while index < len(text):
+        char = text[index]
+        if char.isdigit() or char == ".":
+            number += char
+            index += 1
+            continue
+        unit = "ms" if text.startswith("ms", index) else char
+        if not number or unit not in _DURATION_UNITS:
+            return None
+        try:
+            total += float(number) * _DURATION_UNITS[unit]
+        except ValueError:
+            return None
+        number = ""
+        index += len(unit)
+    return None if number else total
+
+
+def charged_tokens(provenance: Mapping[str, Any]) -> int:
+    """Tokens a provider may have charged for one call, failed attempts included.
+
+    Every attempt sent to a hosted provider counts: its reported total when the
+    provider returned usage, otherwise the request estimate (input characters / 4
+    plus the requested output budget), because a failed call reports no usage
+    but still counts against the per-minute limit (TAX-097 saw HTTP 429s).
+    """
+    charged = 0
+    for attempt in provenance.get("attempts") or []:
+        if not isinstance(attempt, Mapping) or attempt.get("name") != "hosted":
+            continue
+        if "latency_ms" not in attempt:
+            continue  # refused before sending (budget, unconfigured)
+        tokens = attempt.get("tokens")
+        reported = None
+        if isinstance(tokens, Mapping):
+            reported = tokens.get("total")
+            if not isinstance(reported, int):
+                parts = [
+                    n for n in (tokens.get("input"), tokens.get("output")) if isinstance(n, int)
+                ]
+                reported = sum(parts) if parts else None
+        if isinstance(reported, int) and reported > 0:
+            charged += reported
+            continue
+        chars, output = attempt.get("request_chars"), attempt.get("max_output_tokens")
+        if isinstance(chars, int) and isinstance(output, int):
+            charged += chars // 4 + output
+        else:
+            charged += LIVE_ESTIMATED_CALL_TOKENS
+    tokens = provenance.get("tokens")
+    total = tokens.get("total") if isinstance(tokens, Mapping) else None
+    return max(charged, total if isinstance(total, int) else 0)
+
+
+def rate_limit_pause(provenance: Mapping[str, Any]) -> float | None:
+    """Seconds to hold a role after an HTTP 429 in this call, else ``None``."""
+    limited = any(
+        isinstance(a, Mapping) and a.get("outcome") == "rate_limited"
+        for a in provenance.get("attempts") or []
+    )
+    if not limited:
+        return None
+    headers = provenance.get("rate_limit")
+    headers = headers if isinstance(headers, Mapping) else {}
+    known = [
+        wait
+        for name in ("retry-after", "x-ratelimit-reset-tokens", "x-ratelimit-reset-requests")
+        if (wait := parse_duration(headers.get(name))) is not None
+    ]
+    return min(max(known), LIVE_MAX_PAUSE_S) if known else LIVE_RATE_LIMIT_PAUSE_S
 
 
 class _RecordedModel:
@@ -1881,12 +1981,18 @@ class _RecordedModel:
         return cast(Mapping[str, object], self._inner.config)
 
     def complete(self, task: Any) -> Any:
-        self._owner.wait(self.role)
+        estimate = getattr(self._inner, "estimate_tokens", None)
+        self._owner.wait(
+            self.role, estimate(task) if callable(estimate) else LIVE_ESTIMATED_CALL_TOKENS
+        )
         result = self._inner.complete(task)
         self._owner.record(self.role, result.provenance)
         return result
 
     def draft(self, request: Mapping[str, Any]) -> object:
+        if isinstance(self._inner, RoutedModel):
+            # TAX-110: one paced, recorded call per briefing section.
+            return self._inner.draft(request, complete=self.complete)
         self._owner.wait(self.role)
         draft = self._inner.draft(request)
         self._owner.record(self.role, self._inner.last_provenance or {})
@@ -1908,38 +2014,50 @@ class LiveModels:
         self._sleep = sleep
         self._window: dict[str, list[tuple[float, int]]] = {}
         self._last: dict[str, float] = {}
+        self._hold_until: dict[str, float] = {}
         self.label = ""
         self.calls: list[dict[str, Any]] = []
+        self.slept_s = 0.0
 
     def __call__(self, role: str) -> _RecordedModel:
         return _RecordedModel(self._factory(role), self)
 
-    def wait(self, role: str) -> None:
+    def wait(self, role: str, estimate: int = LIVE_ESTIMATED_CALL_TOKENS) -> None:
+        """Block until ``role`` has room for ``estimate`` tokens in the last minute.
+
+        The window holds every call's charged tokens, failed calls included, and
+        a role is held after an HTTP 429 until the provider's reset (TAX-110).
+        """
         while True:
             now = self._clock()
             window = [(t, n) for t, n in self._window.get(role, []) if now - t < 60]
             self._window[role] = window
             used = sum(n for _, n in window)
             gap = now - self._last.get(role, -1e9)
-            if (
-                used + LIVE_ESTIMATED_CALL_TOKENS <= LIVE_TOKENS_PER_MINUTE
-                and gap >= LIVE_MIN_GAP_S
-            ):
+            held = self._hold_until.get(role, -1e9) - now
+            fits = not window or used + estimate <= LIVE_TOKENS_PER_MINUTE
+            if fits and gap >= LIVE_MIN_GAP_S and held <= 0:
                 break
             oldest = min((t for t, _ in window), default=now)
-            pause = max(LIVE_MIN_GAP_S - gap, 60 - (now - oldest) if window else 0.0, 0.5)
-            self._sleep(min(pause, 61.0))
+            pause = max(
+                LIVE_MIN_GAP_S - gap,
+                60 - (now - oldest) if window and not fits else 0.0,
+                held,
+                0.5,
+            )
+            pause = min(pause, LIVE_MAX_PAUSE_S)
+            self.slept_s += pause
+            self._sleep(pause)
         self._last[role] = self._clock()
 
     def record(self, role: str, provenance: Mapping[str, Any]) -> None:
         tokens = provenance.get("tokens") or {}
-        attempt_tokens = sum(
-            int((a.get("tokens") or {}).get("total") or 0)
-            for a in provenance.get("attempts") or []
-            if isinstance(a, Mapping)
-        )
-        used = int(tokens.get("total") or 0) if isinstance(tokens, Mapping) else 0
-        self._window.setdefault(role, []).append((self._clock(), max(used, attempt_tokens)))
+        charged = charged_tokens(provenance)
+        now = self._clock()
+        self._window.setdefault(role, []).append((now, charged))
+        pause = rate_limit_pause(provenance)
+        if pause is not None:
+            self._hold_until[role] = max(self._hold_until.get(role, 0.0), now + pause)
         self.calls.append(
             {
                 "label": self.label,
@@ -1958,8 +2076,12 @@ class LiveModels:
                             "provider",
                             "outcome",
                             "http_status",
+                            "error_code",
                             "validation",
                             "latency_ms",
+                            "tokens",
+                            "request_chars",
+                            "max_output_tokens",
                         )
                         if k in a
                     }
@@ -1968,11 +2090,61 @@ class LiveModels:
                 ],
                 "latency_ms": provenance.get("latency_ms"),
                 "tokens": dict(tokens) if isinstance(tokens, Mapping) else None,
-                "tokens_all_attempts": max(used, attempt_tokens),
+                "tokens_charged": charged,
                 "validation": provenance.get("validation"),
                 "rate_limit": provenance.get("rate_limit"),
             }
         )
+
+
+def _median(values: list[int]) -> int | None:
+    ordered = sorted(values)
+    return ordered[len(ordered) // 2] if ordered else None
+
+
+def summarize_live_calls(calls: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
+    """Per task: calls, level used, first-attempt outcomes (with HTTP status and
+    provider error code), latency and charged tokens. Every call is counted."""
+    tasks: dict[str, dict[str, Any]] = {}
+    for call in calls:
+        item = tasks.setdefault(
+            str(call.get("task")),
+            {
+                "role": call.get("role"),
+                "calls": 0,
+                "levels": {},
+                "first_attempt": {},
+                "latency_ms": [],
+                "tokens_charged": 0,
+            },
+        )
+        item["calls"] += 1
+        level = str(call.get("fallback_level_name"))
+        item["levels"][level] = item["levels"].get(level, 0) + 1
+        attempts = [a for a in call.get("attempts") or [] if isinstance(a, Mapping)]
+        if attempts:
+            first = attempts[0]
+            label = str(first.get("outcome"))
+            if first.get("validation"):
+                label += f"({first['validation']})"
+            if first.get("http_status") not in (None, 200):
+                label += f" http={first['http_status']}"
+            if first.get("error_code"):
+                label += f" code={first['error_code']}"
+            item["first_attempt"][label] = item["first_attempt"].get(label, 0) + 1
+        if isinstance(call.get("latency_ms"), int):
+            item["latency_ms"].append(call["latency_ms"])
+        item["tokens_charged"] += int(call.get("tokens_charged") or 0)
+    for item in tasks.values():
+        latencies = item.pop("latency_ms")
+        item["latency_ms"] = {"median": _median(latencies), "max": max(latencies, default=None)}
+        level0 = item["levels"].get("hosted", 0) + item["levels"].get("mock", 0)
+        item["level0_share"] = round(level0 / item["calls"], 3)
+    return {
+        "calls": len(calls),
+        "tokens_charged": sum(int(c.get("tokens_charged") or 0) for c in calls),
+        "tasks": dict(sorted(tasks.items())),
+    }
 
 
 def main(argv: Sequence[str] | None = None) -> int:
@@ -1998,9 +2170,12 @@ def main(argv: Sequence[str] | None = None) -> int:
     )
     if live is not None:
         report["live_model_calls"] = live.calls
+        report["live_summary"] = summarize_live_calls(live.calls)
+        report["live_summary"]["pacer_wait_s"] = round(live.slept_s, 1)
     print(render_text(report))
     if live is not None:
         print(f"live model calls: {len(live.calls)}")
+        print(json.dumps(report["live_summary"], indent=2, sort_keys=True))
     if args.json:
         args.json.write_text(json.dumps(report, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     return 1 if args.check and report["gate"] != "pass" else 0
