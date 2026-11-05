@@ -5,12 +5,12 @@
   "owner": "Keletso",
   "area": "integration",
   "phase": "foundation",
-  "status": "IN_PROGRESS",
+  "status": "IN_REVIEW",
   "priority": "P0",
   "depends_on": [],
   "claimed_by": "codex-ci-recovery-20261105",
   "branch": "task/TAX-084",
-  "pr": null,
+  "pr": "https://github.com/Vati-AI/rsl-taxathon/pull/180",
   "scope": "Reduce superseded hosted CI work and document verified local checks for PRs 174\u2013177 during the included-usage block; preserve checks and human review.",
   "inputs": [
     ".github/workflows/ci.yml",
@@ -57,6 +57,10 @@
       "at": "2026-11-05T05:16:27.778913+00:00",
       "text": "Claimed by codex-ci-recovery-20261105"
     },
-    "User chose local checks while waiting for included usage reset; no permanent self-hosted runner or paid usage will be enabled."
+    "User chose local checks while waiting for included usage reset; no permanent self-hosted runner or paid usage will be enabled.",
+    {
+      "at": "2026-11-05T05:32:31.093560+00:00",
+      "text": "Agent finished implementation and opened human review"
+    }
   ]
 }
