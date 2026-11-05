@@ -5,7 +5,7 @@
   "owner": "Leseli",
   "area": "integration",
   "phase": "pilot",
-  "status": "IN_PROGRESS",
+  "status": "IN_REVIEW",
   "priority": "P0",
   "depends_on": [
     "TAX-085",
@@ -16,7 +16,7 @@
   ],
   "claimed_by": "leseli-claude-20261105-087",
   "branch": "task/TAX-087",
-  "pr": null,
+  "pr": "https://github.com/Vati-AI/rsl-taxathon/pull/243",
   "scope": "Register outbox handlers and enqueue events from real entry points so a submitted claim and uploaded evidence flow to risk/case (Jube), extraction (Docling), entity indexing (OpenAleph/FtM) and screening (yente), with results written back to Frappe records",
   "inputs": [
     "PROJECT.md",
@@ -40,7 +40,7 @@
     },
     {
       "text": "Record relevant tests and evidence, update task status and open a human-review PR",
-      "done": false
+      "done": true
     }
   ],
   "verification": "Submitting SYN-001 and SYN-002 on a local site produces a Jube case, extraction records and indexed entities with no manual steps; replay and unavailable-service paths are tested and visible to operators",
@@ -58,6 +58,10 @@
     {
       "criterion": 2,
       "text": "Own Frappe stack rsl-taxathon-frappe-087 (fresh verify site on merged branch e073dbc): install and migrate x2 ok; 468 app tests OK; 424 Frappe-free OK; 183 site tests with only 1 error, in reminders/test_reminders_bench.py (TAX-078), which fails the same way on a clean origin/main baseline in the same stack (174 site tests, 2 failures + 1 error), so it predates this task. The 9 new pipeline site tests pass (also run alone: 9 OK). bench execute vati_tax.pipeline.demo.run on the verify site sent SYN-001 and SYN-002 through portal.api.submit_refund_claim with no manual step: 16 outbox events delivered, 0 failing; SYN-001 Jube case 9001, 3/3 extractions success, 9 entities indexed, 2 parties screened; SYN-002 Jube case 9002, 4/4 extractions success, 11 entities indexed, 3 parties screened, 1 candidate. All four services were fakes (no local Jube, Docling, OpenAleph or yente running; Docling/OpenAleph/yente fakes are transports into the real adapters). Bench tests cover replay (redelivered events make no second outward call and write no duplicate rows; re-enqueue replays), unavailable Docling (retry with docling_upstream_status, no effect row left, dead letter after 5 attempts, later steps wait, operator retry recovers), unavailable OpenAleph then yente (ledger kept), unconfigured service and missing service identity (retryable codes), and the operator view pipeline.api.case_status (System Manager only, tenant-scoped, IDs and codes only)."
+    },
+    {
+      "criterion": 3,
+      "text": "Tests and evidence recorded under criteria 1 and 2 (17 Frappe-free rule tests, 8 integration tests on the real adapters, 9 site tests; ruff, mypy, validate and the Frappe-free suites pass locally). Review PR #243 opened with Keletso and the backend code-owner team requested; conflict check against main and open PR #242 clean."
     }
   ],
   "notes": [
@@ -72,6 +76,10 @@
     {
       "at": "2026-11-05T11:41:55.121797+00:00",
       "text": "Claimed by leseli-claude-20261105-087"
+    },
+    {
+      "at": "2026-11-05T13:27:38.193190+00:00",
+      "text": "Implementation opened for review as #243 (ADR-037). Frappe verify in own stack: 183 site tests with 1 error, in the TAX-078 reminders tests, which also fail on a clean main baseline; SYN-001 and SYN-002 demo end to end with fakes."
     }
   ]
 }
