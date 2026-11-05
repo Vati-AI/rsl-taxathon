@@ -2,7 +2,7 @@
   "id": "TAX-108",
   "kind": "task",
   "title": "Configure and verify OpenAleph tax evidence and graph screens",
-  "owner": "Leseli",
+  "owner": "Keletso",
   "area": "integration",
   "phase": "pilot",
   "status": "BACKLOG",
@@ -34,11 +34,11 @@
       "done": false
     },
     {
-      "text": "Record deployed collection/entity/document/diagram navigation patterns and authentication requirements for TAX-106/109; capture configured screens, keyboard/accessibility checks and human review; identify any unsupported behavior rather than inventing routes.",
+      "text": "Record deployed collection/entity/document/diagram navigation patterns and authentication requirements for TAX-106/109; capture configured screens, keyboard/accessibility checks; identify any unsupported behavior rather than inventing routes.",
       "done": false
     },
     {
-      "text": "Record tests and limitations, update evidence and open a human-review PR; do not claim native runtime readiness from fixtures.",
+      "text": "Record tests and limitations, update evidence and open a PR; do not claim native runtime readiness from fixtures.",
       "done": false
     }
   ],
@@ -51,6 +51,11 @@
   ],
   "evidence": [],
   "notes": [
-    "Added by TAX-105 from user-requested complete frontend/native UI scope; not implemented or claimed."
-  ]
+    "Added by TAX-105 from user-requested complete frontend/native UI scope; not implemented or claimed.",
+    {
+      "at": "2026-11-05T14:08:21.889825+00:00",
+      "text": "Reassigned from Leseli to Keletso (single-developer delivery, ADR-038)"
+    }
+  ],
+  "sequence": 5
 }

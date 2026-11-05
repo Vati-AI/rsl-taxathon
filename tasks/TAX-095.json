@@ -12,7 +12,7 @@
   ],
   "claimed_by": "keletso-cover-claude-20261105-095",
   "branch": "task/TAX-095",
-  "pr": null,
+  "pr": "https://github.com/Vati-AI/rsl-taxathon/pull/248",
   "scope": "Make the RSL presentation runnable on the demo laptop: Frappe, Jube and the AI runtime live (ADR-031 hosted models with local/template fallback); Docling, OpenAleph and yente run beforehand with their results recorded and clearly labelled as recorded; one start command, a combined health page, restricted access and up-to-date service status docs",
   "inputs": [
     "PROJECT.md",
@@ -40,7 +40,7 @@
       "done": false
     },
     {
-      "text": "Record relevant tests and evidence, update task status and open a human-review PR",
+      "text": "Record relevant tests and evidence, update task status and open a PR",
       "done": false
     },
     {
@@ -73,6 +73,11 @@
     {
       "at": "2026-11-05T13:21:47.217153+00:00",
       "text": "Claimed by keletso-cover-claude-20261105-095"
+    },
+    {
+      "at": "2026-11-05T14:08:21.889825+00:00",
+      "text": "Implementation merged as #248 (2026-11-05T13:50:50Z): scripts/demo.py profile/status/memory/capture, docs/DEMO_LAPTOP.md, services.json and SETUP_STATUS.md. Not DONE: the cold-start rehearsal, memory measurement and rate-limit observations (criteria 2-3) have not been run."
     }
-  ]
+  ],
+  "sequence": 14
 }

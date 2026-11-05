@@ -1,7 +1,7 @@
 # Working while hosted CI is out of included usage
 
 GitHub Free remains the project plan. Local checks do not consume GitHub-hosted
-runner allowance. They do not clear failed hosted checks or replace human review.
+runner allowance. They do not clear failed hosted checks. Under ADR-038 they are the gate before the owner merges.
 Do not mark a blocked job successful, disable checks, or merge solely because the
 billing error prevented execution.
 

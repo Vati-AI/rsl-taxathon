@@ -2,7 +2,7 @@
   "id": "TAX-103",
   "kind": "task",
   "title": "Live-app end-to-end regression re-run",
-  "owner": "Kananelo",
+  "owner": "Keletso",
   "area": "tests/frontend",
   "phase": "pilot",
   "status": "BACKLOG",
@@ -43,7 +43,7 @@
       "done": false
     },
     {
-      "text": "Record relevant tests and evidence, update task status and open a human-review PR",
+      "text": "Record relevant tests and evidence, update task status and open a PR",
       "done": false
     },
     {
@@ -64,6 +64,11 @@
       "at": "2026-11-05T10:39:50.241416+00:00",
       "text": "Added 2026-11-05: TAX-055 was delivered against fixtures before the live apps existed; this is the live re-run TAX-058 needs."
     },
-    "TAX-105 scope clarification: Connected regression includes the real configured native screens and protected document access, not just mock portal APIs."
-  ]
+    "TAX-105 scope clarification: Connected regression includes the real configured native screens and protected document access, not just mock portal APIs.",
+    {
+      "at": "2026-11-05T14:08:21.889825+00:00",
+      "text": "Reassigned from Kananelo to Keletso (single-developer delivery, ADR-038)"
+    }
+  ],
+  "sequence": 15
 }

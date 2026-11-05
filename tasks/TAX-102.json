@@ -2,7 +2,7 @@
   "id": "TAX-102",
   "kind": "task",
   "title": "Taxpayer assistant scenarios, expected outcomes and leakage tests",
-  "owner": "Leseli",
+  "owner": "Keletso",
   "area": "data",
   "phase": "pilot",
   "status": "BACKLOG",
@@ -34,7 +34,7 @@
       "done": false
     },
     {
-      "text": "Record relevant tests and evidence, update task status and open a human-review PR",
+      "text": "Record relevant tests and evidence, update task status and open a PR",
       "done": false
     }
   ],
@@ -54,6 +54,11 @@
     {
       "at": "2026-11-05T10:39:50.241416+00:00",
       "text": "Owner moved from Yellow to Leseli by Keletso 2026-11-05: Leseli owns independent AI evaluation fixtures (TAX-056), which keeps these fixtures independent of the assistant implementation."
+    },
+    {
+      "at": "2026-11-05T14:08:21.889825+00:00",
+      "text": "Reassigned from Leseli to Keletso (single-developer delivery, ADR-038)"
     }
-  ]
+  ],
+  "sequence": 20
 }

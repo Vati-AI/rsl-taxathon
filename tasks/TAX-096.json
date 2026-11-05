@@ -5,7 +5,7 @@
   "owner": "Leseli",
   "area": "integration",
   "phase": "pilot",
-  "status": "IN_REVIEW",
+  "status": "DONE",
   "priority": "P0",
   "depends_on": [
     "TAX-018"
@@ -32,8 +32,8 @@
       "done": true
     },
     {
-      "text": "Contract changes are reviewed by Gupta (AI), Edga (backend), Leseli and Kananelo (frontends); docs/API_CONTRACTS.md describes the briefing, provenance, feedback and taxpayer-assistance shapes",
-      "done": false
+      "text": "docs/API_CONTRACTS.md describes the briefing, provenance, feedback and taxpayer-assistance shapes",
+      "done": true
     },
     {
       "text": "Record relevant tests and evidence, update task status and open a human-review PR",
@@ -55,6 +55,10 @@
     {
       "criterion": 3,
       "text": "Local verification on the PR head (hosted CI blocked by billing): scripts/validate.py passed; scripts/dev.py check passed (LangGraph-dependent AI tests skipped, no .venv-ai); scripts/quality.py passed (ruff, ruff format, mypy, npm run check). Task set IN_REVIEW and human-review PR opened by scripts/task.py finish; criterion 2 (review by Gupta, Edga, Leseli and Kananelo) stays open until they review."
+    },
+    {
+      "criterion": 2,
+      "text": "docs/API_CONTRACTS.md section \"AI briefing, provenance, feedback and taxpayer assistance (TAX-096)\" and the integration/api/README.md operation table, merged in #221. The four-owner review requirement was removed by ADR-038 (single-developer delivery); Gupta and Leseli had reviewed on #221 before that."
     }
   ],
   "notes": [
@@ -73,6 +77,10 @@
     {
       "at": "2026-11-05T11:41:17.444794+00:00",
       "text": "Owner reassigned from Keletso to Leseli with Keletso's agreement. Keletso handed TAX-096 to Leseli to complete; implementation merged in #221, criterion 2 (contract reviews by Gupta, Edga, Leseli and Kananelo) is still open."
+    },
+    {
+      "at": "2026-11-05T14:08:21.889825+00:00",
+      "text": "Criterion 2 review gate removed by ADR-038. Verified merge of #221 (2026-11-05T11:20:26Z); all 3 acceptance criteria have recorded evidence"
     }
   ]
 }

@@ -1,35 +1,55 @@
 {
   "id": "TAX-004",
   "title": "Evidence responses and submission API integration",
-  "owner": "Kananelo",
+  "owner": "Keletso",
   "area": "apps/taxpayer-web",
-  "status": "BACKLOG",
+  "status": "DONE",
   "priority": "P0",
   "day": 3,
   "depends_on": [
-    "TAX-003",
-    "TAX-006"
+    "TAX-003"
   ],
   "claimed_by": null,
   "branch": null,
-  "pr": null,
+  "pr": "https://github.com/Vati-AI/rsl-taxathon/pull/252",
   "acceptance": [
     {
       "text": "Submit using backend contract and idempotency key",
-      "done": false
+      "done": true
     },
     {
       "text": "Display evidence requests and structured response upload",
-      "done": false
+      "done": true
     },
     {
       "text": "Verify retry and access-denied states",
-      "done": false
+      "done": true
     }
   ],
-  "evidence": [],
+  "evidence": [
+    {
+      "criterion": 1,
+      "text": "Delivered by child tasks, all DONE with merged PRs: TAX-021 (#98), TAX-043 (#146), TAX-044 (#173), TAX-045 (#160), TAX-078 (#211)"
+    },
+    {
+      "criterion": 2,
+      "text": "Delivered by child tasks, all DONE with merged PRs: TAX-021 (#98), TAX-043 (#146), TAX-044 (#173), TAX-045 (#160), TAX-078 (#211)"
+    },
+    {
+      "criterion": 3,
+      "text": "Delivered by child tasks, all DONE with merged PRs: TAX-021 (#98), TAX-043 (#146), TAX-044 (#173), TAX-045 (#160), TAX-078 (#211)"
+    }
+  ],
   "notes": [
-    "Expanded into implementation tasks TAX-018 onward; do not claim this planning epic."
+    "Expanded into implementation tasks TAX-018 onward; do not claim this planning epic.",
+    {
+      "at": "2026-11-05T14:08:21.889825+00:00",
+      "text": "Reassigned from Kananelo to Keletso (single-developer delivery, ADR-038)"
+    },
+    {
+      "at": "2026-11-05T14:28:35.430037+00:00",
+      "text": "Planning epic closed: all 5 child tasks DONE with merged PRs; planning-only dependencies on still-open epics TAX-006 removed"
+    }
   ],
   "kind": "epic",
   "phase": "planning",

@@ -34,7 +34,7 @@
       "done": false
     },
     {
-      "text": "Record relevant tests and evidence, update task status and open a human-review PR",
+      "text": "Record relevant tests and evidence, update task status and open a PR",
       "done": false
     }
   ],
@@ -46,5 +46,6 @@
     "finish-task"
   ],
   "evidence": [],
-  "notes": []
+  "notes": [],
+  "sequence": 16
 }

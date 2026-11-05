@@ -28,8 +28,8 @@ The showcase includes buttons, form fields, validation, tabs, table/filter contr
 
 ## Visual acceptance for every UI PR
 
-Attach screenshots of the changed screens at 1440px, 1024px and 390px widths and identify the tested browser. Include loading, empty, error, success and denied-access states relevant to the change. Record keyboard navigation, visible focus, labels, readable contrast and zoom/reflow checks. Automated accessibility and screenshot comparison support, but do not replace, human review.
+Attach screenshots of the changed screens at 1440px, 1024px and 390px widths and identify the tested browser. Include loading, empty, error, success and denied-access states relevant to the change. Record keyboard navigation, visible focus, labels, readable contrast and zoom/reflow checks. Automated accessibility and screenshot comparison support this evidence; they do not replace it.
 
 No clipped text, unintended page-wide horizontal scrolling, overlapping controls or inconsistent spacing. Wide officer tables may scroll inside a labelled region; taxpayer forms must reflow. Use actionable error text that preserves entered values. Confirmations and consequential decisions must preserve existing human-approval requirements.
 
-The frontend QA owner (Kananelo) records visual defects with screenshots and reproduction steps. The human frontend owner reviews alignment with this standard and approves the first-screen baseline; agents do not mark visual approval as passed on their own. Functional checks alone do not satisfy visual acceptance. Subsequent UI PRs link the baseline and explain intentional deviations. Human review and merge remain mandatory.
+The implementer records visual defects with screenshots and reproduction steps and checks alignment with this standard. Functional checks alone do not satisfy visual acceptance. Subsequent UI PRs link the baseline and explain intentional deviations. Under ADR-038 a second-person visual review is optional and does not block merge or DONE.

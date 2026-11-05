@@ -61,6 +61,10 @@ python3 -m venv .venv-ai
 
 Locked Python dependencies support a model-free LangGraph smoke test. Model credentials are intentionally absent; add them only through an approved local/secret-store configuration when implementing model-backed tools. No external taxpayer data is sent by setup.
 
+## Demo laptop (TAX-095)
+
+`python scripts/demo.py up` starts only the reduced presentation profile: Frappe and Jube live, the ADR-031 model router in process, and Docling/OpenAleph/yente from recorded captures with provenance. `status` shows each service as live, recorded or unavailable. See [DEMO_LAPTOP.md](DEMO_LAPTOP.md). It is not native-UI acceptance for Jube or OpenAleph.
+
 ## Readiness states
 
 Source fetched, container configured, container running, site initialized, adapter implemented and end-to-end verified are distinct states. Update `integration/services.json` with actual evidence as tasks progress. Do not call the entire platform deployed because Docker started a database.
