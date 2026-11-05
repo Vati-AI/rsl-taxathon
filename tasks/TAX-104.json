@@ -5,13 +5,13 @@
   "owner": "Leseli",
   "area": "apps/auditor-web",
   "phase": "pilot",
-  "status": "BACKLOG",
+  "status": "IN_PROGRESS",
   "priority": "P1",
   "depends_on": [
     "TAX-055"
   ],
-  "claimed_by": null,
-  "branch": null,
+  "claimed_by": "leseli-claude-20261105-104",
+  "branch": "task/TAX-104",
   "pr": null,
   "scope": "Fix the two open auditor-app defects recorded in docs/evidence/TAX-055/README.md: field-error colour contrast and the wrong disabled-suggestion reason on resolved cases",
   "inputs": [
@@ -51,6 +51,10 @@
     {
       "at": "2026-11-05T10:39:50.241416+00:00",
       "text": "Added 2026-11-05: two product defects TAX-055 recorded for the auditor owner had no task."
+    },
+    {
+      "at": "2026-11-05T13:50:06.787232+00:00",
+      "text": "Claimed by leseli-claude-20261105-104"
     }
   ]
 }
