@@ -5,7 +5,7 @@
   "owner": "Keletso",
   "area": "integration",
   "phase": "expansion",
-  "status": "IN_PROGRESS",
+  "status": "IN_REVIEW",
   "priority": "P1",
   "depends_on": [
     "TAX-036",
@@ -13,7 +13,7 @@
   ],
   "claimed_by": "claude-keletso-tax074",
   "branch": "task/TAX-074",
-  "pr": null,
+  "pr": "https://github.com/Vati-AI/rsl-taxathon/pull/182",
   "scope": "Link taxpayer cases to schemes and model legal/beneficial ownership, advisers and conflicting sources",
   "inputs": [
     "PROJECT.md",
@@ -63,6 +63,10 @@
     {
       "at": "2026-11-05T05:25:49.269218+00:00",
       "text": "Claimed by claude-keletso-tax074"
+    },
+    {
+      "at": "2026-11-05T05:41:59.480984+00:00",
+      "text": "Agent finished implementation and opened human review"
     }
   ]
 }
