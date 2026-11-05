@@ -5,7 +5,7 @@
   "owner": "Kananelo",
   "area": "apps/taxpayer-web",
   "phase": "pilot",
-  "status": "IN_REVIEW",
+  "status": "DONE",
   "priority": "P0",
   "depends_on": [
     "TAX-039"
@@ -71,6 +71,10 @@
     {
       "at": "2026-11-05T09:54:48.783267+00:00",
       "text": "Live session, list and status; 167 bench tests and 16/16 live HTTP checks pass; full browser harness 159/159. CI blocked by org billing."
+    },
+    {
+      "at": "2026-11-05T10:29:17.697690+00:00",
+      "text": "Implementation PR #209 merged 2026-11-05T10:27:26Z by Hlompho28. GitHub Actions did not run (org billing block); verification is the local evidence recorded in the PR."
     }
   ]
 }
