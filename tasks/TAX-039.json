@@ -5,7 +5,7 @@
   "owner": "Leseli",
   "area": "integration",
   "phase": "pilot",
-  "status": "IN_PROGRESS",
+  "status": "IN_REVIEW",
   "priority": "P0",
   "depends_on": [
     "TAX-031",
@@ -15,7 +15,7 @@
   ],
   "claimed_by": "leseli-claude-20261105-039",
   "branch": "task/TAX-039",
-  "pr": null,
+  "pr": "https://github.com/Vati-AI/rsl-taxathon/pull/190",
   "scope": "Submit validated claims to risk/case services and mirror operational Jube state into taxpayer-safe Frappe status",
   "inputs": [
     "PROJECT.md",
@@ -73,6 +73,10 @@
     {
       "at": "2026-11-05T01:32:28.923849+00:00",
       "text": "Claimed by leseli-claude-20261105-039"
+    },
+    {
+      "at": "2026-11-05T08:00:34.478687+00:00",
+      "text": "Agent leseli-claude-20261105-039 finished implementation and opened review (#190). Frappe verify on a fresh site after merging main: migrate x2 ok, 161 site tests OK. Keletso (integration) and Edga (Frappe) asked to review."
     }
   ]
 }
