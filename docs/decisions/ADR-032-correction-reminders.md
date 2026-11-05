@@ -1,10 +1,10 @@
-# ADR-030: Correction reminders from reviewed omissions
+# ADR-032: Correction reminders from reviewed omissions
 
 Status: proposed (TAX-078, pending review)
 Owner and task: Kananelo (owner), TAX-078; implemented by kananelo-claude-20261105-078
 Date: 2026-11-05
 
-(ADR-028 and ADR-029 are already taken on main, so this takes ADR-030.)
+(ADR-028 to ADR-031 are taken on main or open branches, so this takes ADR-032.)
 
 Context and smallest prototype need: TAX-078 asks the taxpayer portal to offer "taxpayer-specific correction reminders from reviewed prior omissions with clear explanation", with "no cross-taxpayer history leakage" and so that "withdrawn/incorrect reminders can be corrected". The building blocks already exist:
 - TAX-044 (ADR-023) shows correction prompts before a claim is sent, from a fixed list of reconciliation codes.

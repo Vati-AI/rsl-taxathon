@@ -163,7 +163,7 @@ A permitted workflow only orders steps that were each approved before. Every ste
 
 ## Correction reminders (TAX-078)
 
-`Vati Correction Reminder` holds one taxpayer-facing reminder from a reviewed omission in an earlier claim. It is taxpayer-owned (`tenant_id` + `taxpayer_id`). Staff read it in Desk; taxpayers and services have no DocType permission. Taxpayers read their own active reminders through `vati_tax.portal.api.get_correction_reminders`, which returns no case or decision IDs, staff identities or history. A reminder is hidden while its decision is challenged or after any review overturned it (TAX-069). See [ADR-030](decisions/ADR-030-correction-reminders.md).
+`Vati Correction Reminder` holds one taxpayer-facing reminder from a reviewed omission in an earlier claim. It is taxpayer-owned (`tenant_id` + `taxpayer_id`). Staff read it in Desk; taxpayers and services have no DocType permission. Taxpayers read their own active reminders through `vati_tax.portal.api.get_correction_reminders`, which returns no case or decision IDs, staff identities or history. A reminder is hidden while its decision is challenged or after any review overturned it (TAX-069). See [ADR-032](decisions/ADR-032-correction-reminders.md).
 
 | Step | Who | Refused when |
 | --- | --- | --- |
