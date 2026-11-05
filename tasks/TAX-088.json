@@ -13,7 +13,8 @@
     "TAX-047",
     "TAX-053",
     "TAX-089",
-    "TAX-097"
+    "TAX-097",
+    "TAX-110"
   ],
   "claimed_by": null,
   "branch": null,
@@ -60,6 +61,10 @@
     {
       "at": "2026-11-05T10:07:38.336884+00:00",
       "text": "2026-11-05 (ADR-031): depends on the model router (TAX-089) and model-assisted agents (TAX-097)."
+    },
+    {
+      "at": "2026-11-05T13:54:18.678761+00:00",
+      "text": "2026-11-05: depends on TAX-110 so live cases get a model-drafted briefing, not only the template."
     }
   ]
 }

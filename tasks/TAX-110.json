@@ -1,0 +1,62 @@
+{
+  "id": "TAX-110",
+  "kind": "task",
+  "title": "Reliable hosted briefing and evidence reading within free-tier limits",
+  "owner": "Gupta",
+  "area": "ai",
+  "phase": "pilot",
+  "status": "BACKLOG",
+  "priority": "P0",
+  "depends_on": [
+    "TAX-097"
+  ],
+  "claimed_by": null,
+  "branch": null,
+  "pr": null,
+  "scope": "Follow-up to the TAX-097 live run, where 0/17 hosted briefings and 2/29 evidence readings reached the model (truncation at the 2,048-token budget, unrecorded HTTP errors, rate limits): make the hosted briefing and evidence interpretation succeed reliably on Groq/Gemini free tiers without weakening validation, fencing or fallback",
+  "inputs": [
+    "PROJECT.md",
+    "docs/ARCHITECTURE.md",
+    "docs/AI_STANDARD.md",
+    "docs/ENGINEERING_STANDARD.md",
+    "docs/decisions/ADR-031-ai-model-providers.md",
+    "docs/evidence/TAX-097",
+    "ai/models/router.py",
+    "ai/models/providers.py",
+    "ai/workflows/case_briefing.py",
+    "ai/workflows/interpretation.py",
+    "ai/evaluation/agent_eval.py"
+  ],
+  "acceptance": [
+    {
+      "text": "Hosted case briefing no longer truncates: draft section by section (or another bounded scheme) within the per-call output budget and Groq's 8,000 tokens/min; every section still passes validate_draft and falls back individually to the template; each fallback is recorded per section",
+      "done": false
+    },
+    {
+      "text": "Every failed hosted attempt records its HTTP status and provider error code (no key material); the pacer also counts failed calls so a live run does not hit HTTP 429 from its own pacing; evidence reading uses the fast role with a bounded output and the document role only for long documents",
+      "done": false
+    },
+    {
+      "text": "agent_eval --check passes offline; a recorded live run (3 x SYN-001..SYN-005) shows the hosted briefing and evidence reading actually used (level 0) in most calls, with citations, alternatives and injection resistance unchanged and every failure, latency and token count reported; the TAX-097 scoring fix is re-scored on this run",
+      "done": false
+    },
+    {
+      "text": "Record relevant tests and evidence, update task status and open a human-review PR",
+      "done": false
+    }
+  ],
+  "verification": "agent_eval --check passes offline; a recorded live run (3 x SYN-001..SYN-005) shows the hosted briefing and evidence reading actually used (level 0) in most calls, with citations, alternatives and injection resistance unchanged and every failure, latency and token count reported; the TAX-097 scoring fix is re-scored on this run",
+  "skills": [
+    "start-task",
+    "implement-change",
+    "update-project-task",
+    "finish-task"
+  ],
+  "evidence": [],
+  "notes": [
+    {
+      "at": "2026-11-05T13:54:18.678761+00:00",
+      "text": "Added 2026-11-05 from the TAX-097 live evaluation (PR #244): safety held, but the officer briefing always fell back to the template."
+    }
+  ]
+}
