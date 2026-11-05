@@ -27,15 +27,15 @@
   "acceptance": [
     {
       "text": "Define adapters for bank/mobile-money/foreign-payment/wallet evidence with permission and source provenance",
-      "done": false
+      "done": true
     },
     {
       "text": "Synthetic examples map activity without equating payment method to illegality; no live scraping",
-      "done": false
+      "done": true
     },
     {
       "text": "Record relevant tests and evidence, update task status and open a human-review PR",
-      "done": false
+      "done": true
     }
   ],
   "verification": "Synthetic examples map activity without equating payment method to illegality; no live scraping",
@@ -45,7 +45,20 @@
     "update-project-task",
     "finish-task"
   ],
-  "evidence": [],
+  "evidence": [
+    {
+      "criterion": 1,
+      "text": "integration/payment_channels: four offline CSV adapter contracts (bank_statement_csv.v1, mobile_money_csv.v1, foreign_payment_csv.v1, digital_wallet_csv.v1) and a payment_channel_submission.v1 envelope. Every record carries a permission (basis taxpayer_supplied/statutory_request/taxpayer_consent, reference, requester/approver, case/taxpayer/channel/account/period scope, granted/expires) checked against TAX-029 evidence.register/evidence.read/evidence_request.authorise roles, and provenance (channel, synthetic provider, evidence ID + SHA-256 verified against the bytes, line locator, retrieval method, received/recorded at, adapter ID/version). Immutable records, versioned corrections, Decimal money, supplied rates only, FtM Payment mapping with channel_links (ADR-027). tests/integration/test_payment_channels.py: 33 tests OK."
+    },
+    {
+      "criterion": 2,
+      "text": "Synthetic fixtures data/synthetic/tax079_payment_channels* (cash deposit/withdrawal, agent cash-in/out, foreign transfers, virtual asset) map to records and FtM Payments with no risk/score/signal/label field and interpretation null; tests assert labelling words never appear in records, analysis, FtM bundle or TAX-074 graph, are refused on input (risk_label_not_allowed), and that the same receipt via 10 method/channel variants yields no contradiction or gap. No network/process imports (AST test); adapters only parse supplied files; live connectors documented as needing legal authority and a separate reviewed change."
+    },
+    {
+      "criterion": 3,
+      "text": "python3 scripts/validate.py OK; python3 scripts/dev.py check OK (tests/integration 213 tests incl. 33 new); python3 scripts/quality.py OK (ruff, mypy 187 files, npm check). Mutations (skip scope/expiry/read-role/basis/SHA checks, add method-derived signal) each fail tests. PR opened for human review."
+    }
+  ],
   "notes": [
     {
       "at": "2026-11-05T06:15:08.734553+00:00",
