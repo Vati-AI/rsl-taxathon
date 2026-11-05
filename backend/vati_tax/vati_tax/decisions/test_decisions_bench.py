@@ -116,8 +116,15 @@ class DecisionBenchTests(IntegrationTestCase):
             tenant_id=self.t1, case_id=self.case_id, body=body, idempotency_key=key()
         )
 
-    def approve(self, decision_id: str, who: str = "supervisor", idem: str | None = None):
-        expected = self.version()
+    def approve(
+        self,
+        decision_id: str,
+        who: str = "supervisor",
+        idem: str | None = None,
+        expected: int | None = None,
+    ):
+        if expected is None:
+            expected = self.version()
         self.as_user(who)
         return store.review_decision(
             tenant_id=self.t1,
@@ -130,11 +137,14 @@ class DecisionBenchTests(IntegrationTestCase):
     def test_approved_decision_is_persisted_audited_and_executed_once(self):
         proposed = self.propose()
         idem = key()
-        approved = self.approve(proposed["decision_id"], idem=idem)
+        expected = self.version()
+        approved = self.approve(proposed["decision_id"], idem=idem, expected=expected)
         self.assertEqual(
             (approved["status"], approved["jube_sync"]["state"]), ("approved", "synced")
         )
-        again = self.approve(proposed["decision_id"], idem=idem)
+        # A retry after a lost response resends the identical request, including
+        # the case version the officer saw, even though approval has moved it on.
+        again = self.approve(proposed["decision_id"], idem=idem, expected=expected)
         self.assertTrue(again["replayed"])
         self.assertEqual(len(self.jube.calls), 1)
         frappe.set_user("Administrator")
@@ -212,8 +222,20 @@ class DecisionBenchTests(IntegrationTestCase):
             self.assertFalse(
                 frappe.has_permission(store.DECISION, "read", doc=proposed["decision_id"]), name
             )
-            self.assertEqual(frappe.get_list(store.DECISION, pluck="name"), [], name)
-            self.assertEqual(frappe.get_list(store.AUDIT, pluck="name"), [], name)
+            if name == "taxpayer":
+                # Taxpayers hold no Vati Decision role permission at all (ADR-013),
+                # so listing is refused rather than filtered to an empty page.
+                with self.assertRaises(frappe.PermissionError):
+                    frappe.get_list(store.DECISION, pluck="name")
+            else:
+                # An officer of another tenant may list decisions, but the tenant
+                # filter leaves nothing from this tenant.
+                self.assertEqual(frappe.get_list(store.DECISION, pluck="name"), [], name)
+            # TAX-059 (ADR-015): only supervisors may read the audit ledger, so a
+            # direct list is refused outright for both.
+            self.assertFalse(frappe.has_permission(store.AUDIT, "read"), name)
+            with self.assertRaises(frappe.PermissionError):
+                frappe.get_list(store.AUDIT, pluck="name")
 
     def test_records_cannot_be_edited_or_deleted(self):
         proposed = self.propose()

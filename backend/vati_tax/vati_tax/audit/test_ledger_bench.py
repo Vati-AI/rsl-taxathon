@@ -183,15 +183,25 @@ class LedgerBenchTests(IntegrationTestCase):
     # --- unauthorised override ------------------------------------------------------
 
     def test_unauthorised_override_is_refused_and_the_attempt_is_kept(self):
+        # Other tests share this tenant and their committed entries stay, so only
+        # look at what this test adds after the current chain head.
+        start = self.head_seq()
         for who in ("auditor", "service", "taxpayer"):
             with self.assertRaises(frappe.PermissionError):
                 self.override(who)
-        denied = self.entries(category="denied", action="override.record.denied")
+        denied = self.entries(
+            category="denied", action="override.record.denied", chain_seq=[">", start]
+        )
         self.assertEqual(
-            sorted(r.actor for r in denied[-3:]),
+            sorted(r.actor for r in denied),
             sorted(self.users[n] for n in ("auditor", "service", "taxpayer")),
         )
-        self.assertEqual(self.entries(category="override"), [])
+        self.assertEqual(self.entries(category="override", chain_seq=[">", start]), [])
+
+    def head_seq(self) -> int:
+        frappe.set_user("Administrator")
+        head = audit_store.FrappeLedger().head(self.t1)
+        return head.chain_seq if head is not None else 0
 
     def test_supervisor_override_on_own_work_is_refused(self):
         with self.assertRaises(frappe.PermissionError):
