@@ -28,11 +28,11 @@
   "acceptance": [
     {
       "text": "Generate structured what-happened/checked/explained/unresolved/next-action briefing with source references",
-      "done": false
+      "done": true
     },
     {
       "text": "Validate citation IDs exist, source permissions are enforced and tool/document prompt injection is ignored",
-      "done": false
+      "done": true
     },
     {
       "text": "Record relevant tests and evidence, update task status and open a human-review PR",
@@ -46,7 +46,16 @@
     "update-project-task",
     "finish-task"
   ],
-  "evidence": [],
+  "evidence": [
+    {
+      "criterion": 1,
+      "text": "ai/tools/evidence_search.py (case-scoped search, citation IDs that expand to contract EvidenceRef) and ai/workflows/case_briefing.py (search_evidence -> draft_briefing on the TAX-022 interface; BriefingModel port; deterministic template model) produce a briefing with the five sections what_happened, what_was_checked, what_is_explained, what_is_unresolved and next_action, where every statement carries references that resolve to this run. tests/ai/test_case_briefing.py: SYN-002 reports missing service-delivery evidence as unresolved missing information with an officer-approved request_evidence proposal; all five TAX-024 scenarios are fully cited with no rejected statements and no conclusions; output is reproducible. ADR-021."
+    },
+    {
+      "criterion": 2,
+      "text": "Citations: invented, cross-tenant, misplaced and malformed references are rejected with reason codes; fact and explanation sections must cite evidence; missing information cites only searches that found nothing and can't be worded as a discrepancy. Permissions: callers without evidence.read in the tenant (taxpayer, other tenant, unauthenticated, mixed scope) are refused before any document is read; only the active tenant and case are searched; superseded and unextracted documents are excluded; EVIDENCE_READ_ROLES is kept equal to vati_tax.identity.policy. Injection: document text is fenced in untrusted_evidence and flagged when instruction-like, and changes no scope, question or action; a model that obeys injected text is contained (all statements rejected); poisoned tool output from another tenant or case stops the run with tool_scope_mismatch. Also covered: step budget and a checkpointed replay that doesn't redraft. tests/ai/test_case_briefing_search.py 13 tests and test_case_briefing.py 14 tests pass with LangGraph 1.2.19 (locked); the full tests/ai suite (144 tests) passes."
+    }
+  ],
   "notes": [
     {
       "at": "2026-11-05T00:32:14.315046+00:00",
