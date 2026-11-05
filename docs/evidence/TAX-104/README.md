@@ -86,12 +86,14 @@ Tests asserting the text (accessible description of the disabled button):
 | `python scripts/validate.py`                                             | pass                                                            |
 
 With the default worker count, one scenarios run had two timeouts in SYN-003
-(1440) and SYN-004 (390) while waiting for dialogs; neither touches the changed
-code, and the same suite passed 21/21 with two workers. mypy was not run locally
-(blocked by Smart App Control); no Python changed.
+(1440) and SYN-004 (390) while waiting for dialogs; neither reaches the changed
+states (resolved case, field errors), and the same suite passed 21/21 with two workers. mypy and `scripts/dev.py check` were
+not run locally (Smart App Control blocks mypy; `dev.py` calls `python3`, which is
+not on PATH here); no Python changed.
 
 Screenshots were taken by a temporary Playwright script against the built app
 and the review fixture server; the script is not committed.
 
-Visual review of these screens by the frontend owner and QA (Kananelo or
-Keletso) is still required; this record does not mark visual approval.
+A second look at these screens (Kananelo or Keletso) is requested on the PR;
+under ADR-038 it is optional and does not block merge. This record does not
+claim visual approval.
