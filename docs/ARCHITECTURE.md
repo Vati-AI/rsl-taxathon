@@ -48,7 +48,7 @@ flowchart TB
   G --> R["get_model(role)"]
   R --> R1[reasoning: Groq GPT-OSS 120B]
   R --> R2[fast: Groq GPT-OSS 20B]
-  R --> R3[document: Gemini Flash]
+  R --> R3[document: Gemini 3.6 Flash]
   R -. fallback .-> R4[local open-weights model] -. fallback .-> R5[deterministic template]
   P --> V[Validator: citations resolve, no decisions or legal conclusions]
   R --> V
@@ -62,7 +62,7 @@ flowchart TB
 | Orchestration, state, tool calls, interrupts, human approval, resume | LangGraph |
 | `reasoning`: investigation reasoning, hypotheses, related-party analysis, briefings | Groq GPT-OSS 120B |
 | `fast`: classification, short summaries, evidence categorisation, routine tool selection, taxpayer explanations | Groq GPT-OSS 20B |
-| `document`: long contracts, financial statements, reasoning over Docling output | Gemini Flash (model ID pending, ADR-031) |
+| `document`: long contracts, financial statements, reasoning over Docling output | Gemini `gemini-3.6-flash` (ADR-031) |
 | Calculations, reconciliation, thresholds, rules, exact comparisons | Deterministic Python (mandatory, never an LLM) |
 | PDF/OCR/table parsing | Docling via the Vati API / TAX-038 adapter |
 | Keyless development and CI | `mock` provider (default) |
@@ -77,7 +77,7 @@ Two permission contexts share the router. **Investigation agents** (VAT refund, 
 | API contract (Keletso) | TAX-096 briefing, provenance and finding feedback | TAX-096 taxpayer assistance operations |
 | Backend (Edga, Keletso) | TAX-086 findings record with provenance and feedback, TAX-087, TAX-090 | TAX-100 taxpayer-scoped assistant service |
 | Frontend | TAX-093 briefing, model disclosure, feedback (Leseli) | TAX-101 portal assistant UI (Kananelo), TAX-078 |
-| Data / QA | TAX-024 scenarios, TAX-056 evaluation | TAX-102 assistant scenarios and leakage tests (Yellow) |
+| Data / QA | TAX-024 scenarios, TAX-056 evaluation | TAX-102 assistant scenarios and leakage tests (Leseli) |
 | Demo | TAX-094 seed, TAX-095 keys/quota/fallback, TAX-058 | same |
 
 ## Runtime and data separation
