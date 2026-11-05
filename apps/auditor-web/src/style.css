@@ -5,3 +5,12 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/*
+ * WCAG 1.4.3 text contrast: frappe-ui's field error text (text-ink-red-5, #e03434 on
+ * white) measures 4.45:1, below 4.5:1 (TAX-055). Use the darker step, matching the
+ * taxpayer portal (apps/taxpayer-web/src/styles.css, TAX-021). TAX-104.
+ */
+#app [data-slot='error'] {
+  color: var(--ink-red-8);
+}

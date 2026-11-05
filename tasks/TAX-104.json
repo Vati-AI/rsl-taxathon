@@ -5,14 +5,14 @@
   "owner": "Leseli",
   "area": "apps/auditor-web",
   "phase": "pilot",
-  "status": "IN_PROGRESS",
+  "status": "IN_REVIEW",
   "priority": "P1",
   "depends_on": [
     "TAX-055"
   ],
   "claimed_by": "leseli-claude-20261105-104",
   "branch": "task/TAX-104",
-  "pr": null,
+  "pr": "https://github.com/Vati-AI/rsl-taxathon/pull/254",
   "scope": "Fix the two open auditor-app defects recorded in docs/evidence/TAX-055/README.md: field-error colour contrast and the wrong disabled-suggestion reason on resolved cases",
   "inputs": [
     "PROJECT.md",
@@ -28,15 +28,15 @@
   "acceptance": [
     {
       "text": "Auditor field errors meet 4.5:1 contrast (e.g. the reject-reason error, currently #e03434 on white = 4.45:1) and the KNOWN_A11Y_ISSUES entry for it is removed",
-      "done": false
+      "done": true
     },
     {
       "text": "On a resolved case the disabled 'Use as a starting point' explains that the case is resolved, not that a decision is waiting; tests assert both fixes and the auditor e2e and TAX-055 suites pass",
-      "done": false
+      "done": true
     },
     {
       "text": "Record relevant tests and evidence, update task status and open a human-review PR",
-      "done": false
+      "done": true
     }
   ],
   "verification": "On a resolved case the disabled 'Use as a starting point' explains that the case is resolved, not that a decision is waiting; tests assert both fixes and the auditor e2e and TAX-055 suites pass",
@@ -46,7 +46,20 @@
     "update-project-task",
     "finish-task"
   ],
-  "evidence": [],
+  "evidence": [
+    {
+      "criterion": 1,
+      "text": "apps/auditor-web/src/style.css sets #app [data-slot='error'] to var(--ink-red-8). Measured in Edge with axe color-contrast: #941f1f on #ffffff = 8.48:1 for the SYN-005 reject-reason error at 1440/1024/390, the propose rationale error, the evidence-request message error and the three showcase errors (8.1:1 on the #f8fafc canvas; before the fix #e03434 = 4.26:1 there). Custom text-ink-red-7 errors measure 6.4:1. KNOWN_A11Y_ISSUES entry for #reject-reason-error removed from tests/frontend/support/checks.ts; new smoke.spec.ts contrast test fails without the rule and passes with it. Screens: docs/evidence/TAX-104/field-error-*.png."
+    },
+    {
+      "criterion": 2,
+      "text": "DecisionPanel passes the reason to SuggestionList: 'This case is resolved.' on a resolved case, 'Another decision on this case is waiting for approval.' while one is open. Asserted by two new DecisionPanel.test.ts unit tests, review.spec.ts (case 1 after approval) and scenarios.spec.ts SYN-001 after approval. npm run check pass (auditor 113 unit tests, taxpayer 72); auditor e2e (Edge) 66 passed, 17 skipped; TAX-055 scenarios 21 passed (--workers=2); whole tests/frontend 195 passed, 9 skipped (--workers=2). Screens: docs/evidence/TAX-104/resolved-suggestion-*.png, waiting-suggestion-1440.png."
+    },
+    {
+      "criterion": 3,
+      "text": "Evidence and screenshots (Edge, 1440/1024/390) in docs/evidence/TAX-104/README.md; local check results recorded in the task and in PR #254 because hosted CI is unavailable; task set IN_REVIEW with PR #254; Kellybrackets (Keletso) requested as reviewer."
+    }
+  ],
   "notes": [
     {
       "at": "2026-11-05T10:39:50.241416+00:00",
@@ -55,6 +68,10 @@
     {
       "at": "2026-11-05T13:50:06.787232+00:00",
       "text": "Claimed by leseli-claude-20261105-104"
+    },
+    {
+      "at": "2026-11-05T20:13:18.038135+00:00",
+      "text": "PR #254 opened: field errors now #941f1f (8.48:1 on white), KNOWN_A11Y_ISSUES entry removed, resolved cases explain the disabled suggestion. Local checks pass (npm run check, auditor e2e 66 passed, tests/frontend 195 passed with --workers=2, validate.py); mypy not run locally."
     }
   ]
 }

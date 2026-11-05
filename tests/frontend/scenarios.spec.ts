@@ -230,6 +230,13 @@ test.describe('five scenario routes: auditor workspace (TAX-055)', () => {
       page.getByText('This case is resolved. No further decision can be proposed.'),
     ).toBeVisible();
     await expect(caseStatus(page, 'Resolved')).toBeVisible();
+    // The disabled suggestion gives the real reason: nothing is waiting (TAX-104).
+    const use = page
+      .getByRole('region', { name: 'Suggestions to consider' })
+      .getByRole('button', { name: 'Use as a starting point' })
+      .first();
+    await expect(use).toBeDisabled();
+    await expect(use).toHaveAccessibleDescription('This case is resolved.');
     await accessible(page);
     await shot(page, 'syn-001-7-resolved', w);
   });

@@ -15,17 +15,6 @@ export const KNOWN_A11Y_ISSUES = [
       'WCAG 2.5.3 Label in Name: the showcase loading demo shows "Show loading" but is ' +
       'named "Saving" (apps/auditor-web/src/views/ShowcaseView.vue, TAX-020/TAX-040).',
   },
-  {
-    // Found by the TAX-055 SYN-005 route; the only auditor field error it exercises.
-    path: '/auditor/cases/40000000-0000-4000-8000-000000000005/review',
-    rule: 'color-contrast',
-    target: '#reject-reason-error',
-    note:
-      "WCAG 1.4.3 Contrast: frappe-ui's field error text (text-ink-red-5, #e03434 on white) " +
-      'measures 4.45:1, below 4.5:1. The taxpayer portal already overrides it with ' +
-      '--ink-red-8 (apps/taxpayer-web/src/styles.css, TAX-021); the auditor app has no such rule ' +
-      '(apps/auditor-web/src/style.css). Owner: auditor frontend.',
-  },
 ] as const;
 
 /** Serious or critical WCAG 2.1 A/AA violations on the current page, minus recorded known issues. */
