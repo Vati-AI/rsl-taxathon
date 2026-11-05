@@ -5,7 +5,7 @@
   "owner": "Kananelo",
   "area": "apps/taxpayer-web",
   "phase": "expansion",
-  "status": "IN_REVIEW",
+  "status": "DONE",
   "priority": "P1",
   "depends_on": [
     "TAX-044",
@@ -79,6 +79,10 @@
     {
       "at": "2026-11-05T10:22:24.150797+00:00",
       "text": "Implementation PR #211 opened for human review"
+    },
+    {
+      "at": "2026-11-05T12:27:48+00:00",
+      "text": "Verified merge of #211 (2026-11-05T10:49:38Z); all four acceptance criteria have recorded evidence"
     }
   ]
 }
