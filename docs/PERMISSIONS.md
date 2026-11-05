@@ -64,6 +64,9 @@ Callers check actions with `permissions.require_action(action, tenant_id, taxpay
 | `export.request`* (TAX-062: request a scoped evidence export) | | yes | yes | yes | |
 | `export.approve`* (TAX-062: authorise or refuse an export) | | | | yes, not own request | |
 | `export.read`* (TAX-062: export status; manifest for requester and approver only) | | yes | yes | yes | |
+| `challenge.lodge`* (TAX-069: object to an approved decision or appeal an objection outcome) | own taxpayer | yes, on the taxpayer's behalf | | yes, on the taxpayer's behalf | |
+| `challenge.review`* (TAX-069: record the reviewed outcome) | | | | yes, not on a decision or challenge they took part in | |
+| `challenge.read` (TAX-069: decision, challenges and final outcome) | own taxpayer | yes | yes | yes | yes |
 | `integration.callback` | | | | | yes |
 
 \* Human-only. A service identity is refused these actions even if the matrix is widened by mistake. Stale approvals, idempotent decision records and the Jube transition are TAX-046 (see Decisions below).
@@ -125,3 +128,14 @@ An export hands named evidence of one case to a named recipient. It produces a f
 | Read the retention policy (`get_retention_policy`) | auditor, specialist, supervisor | taxpayer or service |
 
 Retention is metadata only (`pilot-synthetic-unverified-1`, `policy_verified: false`). Nothing is disposed of automatically. A site's `vati_retention_days` can only add a `review_after` date, and the audit ledger is permanent.
+
+## Objections, appeals and final outcomes (TAX-069)
+
+`Vati Decision Challenge` is one objection to an approved `Vati Decision`, or one appeal against the reviewed outcome of that decision's objection. It is taxpayer-owned (`tenant_id` + `taxpayer_id`). Officers and services read it in Desk; taxpayers have no DocType permission and use `vati_tax.challenges.api`, which hides staff identities. Nothing in this flow changes the decision, its evidence or earlier ledger entries. An overturned outcome asks for a new decision through TAX-046 and raises a review-only `decision_overturned` signal, withheld from the original decider. No deadline or statutory route is enforced (`legal_route_verified: false`). See [ADR-023](decisions/ADR-023-objections-appeals-final-outcomes.md).
+
+| Step | Who | Refused when |
+| --- | --- | --- |
+| Lodge an objection (`lodge_challenge`, `stage: objection`) | the decision's taxpayer, or an auditor or supervisor on its behalf (`challenge.lodge`) | specialist, service or another taxpayer (`not_found`); decision not approved; another challenge to it still open; the decision already has an objection; cited evidence not the taxpayer's. The refusal is recorded |
+| Lodge an appeal (`stage: appeal`) | as above | objection not yet reviewed; objection overturned or withdrawn; already appealed; parent is not an objection. The refusal is recorded |
+| Review (`review_challenge`) | a supervisor (`challenge.review`) | the decision's proposer or approver, the lodger, or for an appeal the objection's reviewer; auditor, specialist, service or taxpayer; unknown outcome; reason shorter than 20 characters; stale `expected_version`; already reviewed; decision changed since lodging. The refusal is recorded |
+| Read the history (`get_challenge_history`) | the taxpayer (own), staff, service (`challenge.read`) | another taxpayer or tenant (`not_found`). The read is recorded |
