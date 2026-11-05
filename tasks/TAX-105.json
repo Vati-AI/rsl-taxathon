@@ -1,0 +1,45 @@
+{
+  "id": "TAX-105",
+  "kind": "task",
+  "title": "Verify and define complete frontend and native UI integration scope",
+  "owner": "Keletso",
+  "area": "integration",
+  "phase": "pilot",
+  "status": "READY",
+  "priority": "P0",
+  "depends_on": [],
+  "claimed_by": null,
+  "branch": null,
+  "pr": null,
+  "scope": "Verify code and locked upstream sources; document agreed full screens, Frappe login, native Jube/OpenAleph navigation, adaptation, permissions and acceptance; add missing executable follow-ups without claiming runtime completion.",
+  "inputs": [
+    "PROJECT_SCOPE.md",
+    "docs/ARCHITECTURE.md",
+    "docs/reference/TECHNICAL_SUMMARY.md",
+    "docs/DESIGN_STANDARD.md"
+  ],
+  "acceptance": [
+    {
+      "text": "Record source-backed findings and distinguish live observations from historical evidence",
+      "done": false
+    },
+    {
+      "text": "Define complete screen, login, navigation and service-authority requirements",
+      "done": false
+    },
+    {
+      "text": "Add missing owned tasks and link integrated acceptance to native-screen work",
+      "done": false
+    }
+  ],
+  "verification": "Review scope and task dependency consistency; run workspace and quality checks; no documentation-wording tests.",
+  "skills": [
+    "start-task",
+    "implement-change",
+    "finish-task"
+  ],
+  "evidence": [],
+  "notes": [
+    "User requested verification and scope update covering the frontend and premade UI discussion. New task bootstrapped on local main only because start-task requires an existing task; main is not pushed."
+  ]
+}
