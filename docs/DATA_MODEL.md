@@ -30,4 +30,6 @@ Evidence is append-only: corrections create a new version with a supersedes poin
 
 TAX-074 derives a per-(tenant, case) scheme, ownership and intermediary graph from the FtM entities. Legal, beneficial, director, adviser and intermediary links are separate edge types, each backed by one source record and its evidence. Conflicting records stay separate, and nothing carries a risk label ([ADR-026](decisions/ADR-026-scheme-ownership-intermediary-graph.md)).
 
+TAX-079 defines offline adapter contracts for supplied bank-statement, mobile-money, foreign-payment and digital-wallet files (`integration/payment_channels`). Each line becomes an immutable `payment_channel_record.v1`. It carries a lawful-access permission (basis, approval reference, requester/approver, scope, expiry) and provenance (channel, synthetic provider, evidence ID and SHA-256, retrieval method, received time, adapter version). Lines map to FtM `Payment`. Payment method never produces a label or signal. Live connectors are out of scope ([ADR-027](decisions/ADR-027-lawful-payment-channel-contracts.md)).
+
 Jube is operational Case authority. Frappe implements users, tax submissions, requests and approved decision records. Vati stores cross-service links and delivery state. See ADR-001.

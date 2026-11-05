@@ -169,6 +169,7 @@ def check():
             "integration/api",
             "integration/jube",
             "integration/followthemoney",
+            "integration/payment_channels",
             "integration/openaleph",
             "integration/docling",
             "integration/yente",

@@ -1,0 +1,362 @@
+{
+  "description": "TAX-079 synthetic payment-channel submissions: one invented taxpayer's bank statements, mobile-money statement, foreign-payment advice and digital-wallet export, each with a lawful-access permission and provenance. Synthetic only; names, account references, providers and the SYNC asset are invented.",
+  "synthetic": true,
+  "submissions": [
+    {
+      "file": "bank-statement-2026q1.csv",
+      "actor": {
+        "user_id": "tp-user-maluti",
+        "role": "taxpayer",
+        "tenant_id": "10000000-0000-4000-8000-000000000001",
+        "taxpayer_id": "79100000-0000-4000-8000-000000000001"
+      },
+      "as_of": "2026-04-02T08:16:00Z",
+      "envelope": {
+        "version": "payment_channel_submission.v1",
+        "synthetic": true,
+        "tenant_id": "10000000-0000-4000-8000-000000000001",
+        "case_id": "79000000-0000-4000-8000-000000000001",
+        "taxpayer_id": "79100000-0000-4000-8000-000000000001",
+        "account_holder": {
+          "record_id": "TP-MALUTI",
+          "name": "Maluti Synthetic Weaving (Pty) Ltd",
+          "kind": "company"
+        },
+        "record_set_id": "RS-BANK-2026Q1",
+        "record_set_version": 1,
+        "supersedes": null,
+        "correction_reason": null,
+        "permission": {
+          "basis": "taxpayer_supplied",
+          "reference": "SUB-2026-0101",
+          "requested_by": {
+            "user_id": "tp-user-maluti",
+            "role": "taxpayer",
+            "taxpayer_id": "79100000-0000-4000-8000-000000000001"
+          },
+          "approved_by": null,
+          "legal_authority": null,
+          "scope": {
+            "case_id": "79000000-0000-4000-8000-000000000001",
+            "taxpayer_id": "79100000-0000-4000-8000-000000000001",
+            "channels": [
+              "bank_statement"
+            ],
+            "account_refs": [
+              "SYN-ACC-0001"
+            ],
+            "period_start": "2026-01-01",
+            "period_end": "2026-03-31"
+          },
+          "granted_at": "2026-04-02T08:00:00Z",
+          "expires_at": "2026-10-02T08:00:00Z"
+        },
+        "provenance": {
+          "channel": "bank_statement",
+          "document_format": "bank_statement_csv.v1",
+          "provider": {
+            "provider_id": "SYN-BANK-01",
+            "name": "Synthetic Bank One",
+            "synthetic": true
+          },
+          "evidence": {
+            "evidence_id": "79200000-0000-4000-8000-000000000001",
+            "document_sha256": "e60b7ff84cb291efe633f7f91d220fde00f92068de0032266f5bb4d790a93c3e",
+            "file_name": "bank-statement-2026q1.csv",
+            "media_type": "text/csv",
+            "size": 719
+          },
+          "retrieval_method": "taxpayer_upload",
+          "received_at": "2026-04-02T08:15:00Z"
+        }
+      }
+    },
+    {
+      "file": "bank-statement-2026-mar-apr.csv",
+      "actor": {
+        "user_id": "svc-outbox",
+        "role": "service",
+        "tenant_id": "10000000-0000-4000-8000-000000000001",
+        "taxpayer_id": null
+      },
+      "as_of": "2026-05-11T10:05:00Z",
+      "envelope": {
+        "version": "payment_channel_submission.v1",
+        "synthetic": true,
+        "tenant_id": "10000000-0000-4000-8000-000000000001",
+        "case_id": "79000000-0000-4000-8000-000000000001",
+        "taxpayer_id": "79100000-0000-4000-8000-000000000001",
+        "account_holder": {
+          "record_id": "TP-MALUTI",
+          "name": "Maluti Synthetic Weaving (Pty) Ltd",
+          "kind": "company"
+        },
+        "record_set_id": "RS-BANK-2026MA",
+        "record_set_version": 1,
+        "supersedes": null,
+        "correction_reason": null,
+        "permission": {
+          "basis": "statutory_request",
+          "reference": "ER-2026-0042",
+          "requested_by": {
+            "user_id": "officer-a1",
+            "role": "auditor",
+            "taxpayer_id": null
+          },
+          "approved_by": {
+            "user_id": "supervisor-s1",
+            "role": "supervisor",
+            "taxpayer_id": null
+          },
+          "legal_authority": {
+            "reference": "Authority recorded on evidence request ER-2026-0042",
+            "status": "unverified"
+          },
+          "scope": {
+            "case_id": "79000000-0000-4000-8000-000000000001",
+            "taxpayer_id": "79100000-0000-4000-8000-000000000001",
+            "channels": [
+              "bank_statement"
+            ],
+            "account_refs": [
+              "SYN-ACC-0001"
+            ],
+            "period_start": "2026-03-01",
+            "period_end": "2026-04-30"
+          },
+          "granted_at": "2026-05-04T09:00:00Z",
+          "expires_at": "2026-08-04T09:00:00Z"
+        },
+        "provenance": {
+          "channel": "bank_statement",
+          "document_format": "bank_statement_csv.v1",
+          "provider": {
+            "provider_id": "SYN-BANK-01",
+            "name": "Synthetic Bank One",
+            "synthetic": true
+          },
+          "evidence": {
+            "evidence_id": "79200000-0000-4000-8000-000000000002",
+            "document_sha256": "3d3e0b9a7d37ed56b853a6a04c2464b38d16f8eabee272c857bb4d34410160ac",
+            "file_name": "bank-statement-2026-mar-apr.csv",
+            "media_type": "text/csv",
+            "size": 632
+          },
+          "retrieval_method": "statutory_response",
+          "received_at": "2026-05-11T10:00:00Z"
+        }
+      }
+    },
+    {
+      "file": "mobile-money-2026q1.csv",
+      "actor": {
+        "user_id": "officer-a1",
+        "role": "auditor",
+        "tenant_id": "10000000-0000-4000-8000-000000000001",
+        "taxpayer_id": null
+      },
+      "as_of": "2026-04-20T13:31:00Z",
+      "envelope": {
+        "version": "payment_channel_submission.v1",
+        "synthetic": true,
+        "tenant_id": "10000000-0000-4000-8000-000000000001",
+        "case_id": "79000000-0000-4000-8000-000000000001",
+        "taxpayer_id": "79100000-0000-4000-8000-000000000001",
+        "account_holder": {
+          "record_id": "TP-MALUTI",
+          "name": "Maluti Synthetic Weaving (Pty) Ltd",
+          "kind": "company"
+        },
+        "record_set_id": "RS-MM-2026Q1",
+        "record_set_version": 1,
+        "supersedes": null,
+        "correction_reason": null,
+        "permission": {
+          "basis": "taxpayer_consent",
+          "reference": "CONSENT-2026-0007",
+          "requested_by": {
+            "user_id": "officer-a1",
+            "role": "auditor",
+            "taxpayer_id": null
+          },
+          "approved_by": {
+            "user_id": "tp-user-maluti",
+            "role": "taxpayer",
+            "taxpayer_id": "79100000-0000-4000-8000-000000000001"
+          },
+          "legal_authority": null,
+          "scope": {
+            "case_id": "79000000-0000-4000-8000-000000000001",
+            "taxpayer_id": "79100000-0000-4000-8000-000000000001",
+            "channels": [
+              "mobile_money"
+            ],
+            "account_refs": [
+              "SYN-MM-0001"
+            ],
+            "period_start": "2026-01-01",
+            "period_end": "2026-03-31"
+          },
+          "granted_at": "2026-04-15T07:00:00Z",
+          "expires_at": "2026-07-15T07:00:00Z"
+        },
+        "provenance": {
+          "channel": "mobile_money",
+          "document_format": "mobile_money_csv.v1",
+          "provider": {
+            "provider_id": "SYN-MMO-01",
+            "name": "Synthetic Mobile Money",
+            "synthetic": true
+          },
+          "evidence": {
+            "evidence_id": "79200000-0000-4000-8000-000000000003",
+            "document_sha256": "12b0f30547e2f6530c85646f1ea087a04d5693e09f8662c338d0e3e92667d391",
+            "file_name": "mobile-money-2026q1.csv",
+            "media_type": "text/csv",
+            "size": 632
+          },
+          "retrieval_method": "consented_provider_file",
+          "received_at": "2026-04-20T13:30:00Z"
+        }
+      }
+    },
+    {
+      "file": "foreign-payments-2026q1.csv",
+      "actor": {
+        "user_id": "officer-a1",
+        "role": "auditor",
+        "tenant_id": "10000000-0000-4000-8000-000000000001",
+        "taxpayer_id": null
+      },
+      "as_of": "2026-04-09T11:02:00Z",
+      "envelope": {
+        "version": "payment_channel_submission.v1",
+        "synthetic": true,
+        "tenant_id": "10000000-0000-4000-8000-000000000001",
+        "case_id": "79000000-0000-4000-8000-000000000001",
+        "taxpayer_id": "79100000-0000-4000-8000-000000000001",
+        "account_holder": {
+          "record_id": "TP-MALUTI",
+          "name": "Maluti Synthetic Weaving (Pty) Ltd",
+          "kind": "company"
+        },
+        "record_set_id": "RS-FX-2026Q1",
+        "record_set_version": 1,
+        "supersedes": null,
+        "correction_reason": null,
+        "permission": {
+          "basis": "taxpayer_supplied",
+          "reference": "VISIT-2026-0003",
+          "requested_by": {
+            "user_id": "officer-a1",
+            "role": "auditor",
+            "taxpayer_id": null
+          },
+          "approved_by": null,
+          "legal_authority": null,
+          "scope": {
+            "case_id": "79000000-0000-4000-8000-000000000001",
+            "taxpayer_id": "79100000-0000-4000-8000-000000000001",
+            "channels": [
+              "foreign_payment"
+            ],
+            "account_refs": [
+              "SYN-ACC-0001"
+            ],
+            "period_start": "2026-01-01",
+            "period_end": "2026-03-31"
+          },
+          "granted_at": "2026-04-09T10:30:00Z",
+          "expires_at": "2026-10-09T10:30:00Z"
+        },
+        "provenance": {
+          "channel": "foreign_payment",
+          "document_format": "foreign_payment_csv.v1",
+          "provider": {
+            "provider_id": "SYN-BANK-01",
+            "name": "Synthetic Bank One",
+            "synthetic": true
+          },
+          "evidence": {
+            "evidence_id": "79200000-0000-4000-8000-000000000004",
+            "document_sha256": "7db97672d2d131093f0f80409435f32ce84db35aaf010ea6f103d2ad0ca269ab",
+            "file_name": "foreign-payments-2026q1.csv",
+            "media_type": "text/csv",
+            "size": 740
+          },
+          "retrieval_method": "officer_upload",
+          "received_at": "2026-04-09T11:00:00Z"
+        }
+      }
+    },
+    {
+      "file": "digital-wallet-2026q1.csv",
+      "actor": {
+        "user_id": "tp-user-maluti",
+        "role": "taxpayer",
+        "tenant_id": "10000000-0000-4000-8000-000000000001",
+        "taxpayer_id": "79100000-0000-4000-8000-000000000001"
+      },
+      "as_of": "2026-04-03T09:01:00Z",
+      "envelope": {
+        "version": "payment_channel_submission.v1",
+        "synthetic": true,
+        "tenant_id": "10000000-0000-4000-8000-000000000001",
+        "case_id": "79000000-0000-4000-8000-000000000001",
+        "taxpayer_id": "79100000-0000-4000-8000-000000000001",
+        "account_holder": {
+          "record_id": "TP-MALUTI",
+          "name": "Maluti Synthetic Weaving (Pty) Ltd",
+          "kind": "company"
+        },
+        "record_set_id": "RS-WAL-2026Q1",
+        "record_set_version": 1,
+        "supersedes": null,
+        "correction_reason": null,
+        "permission": {
+          "basis": "taxpayer_supplied",
+          "reference": "SUB-2026-0102",
+          "requested_by": {
+            "user_id": "tp-user-maluti",
+            "role": "taxpayer",
+            "taxpayer_id": "79100000-0000-4000-8000-000000000001"
+          },
+          "approved_by": null,
+          "legal_authority": null,
+          "scope": {
+            "case_id": "79000000-0000-4000-8000-000000000001",
+            "taxpayer_id": "79100000-0000-4000-8000-000000000001",
+            "channels": [
+              "digital_wallet"
+            ],
+            "account_refs": [
+              "SYN-WAL-0001"
+            ],
+            "period_start": "2026-01-01",
+            "period_end": "2026-03-31"
+          },
+          "granted_at": "2026-04-03T08:45:00Z",
+          "expires_at": "2026-10-03T08:45:00Z"
+        },
+        "provenance": {
+          "channel": "digital_wallet",
+          "document_format": "digital_wallet_csv.v1",
+          "provider": {
+            "provider_id": "SYN-WALLET-01",
+            "name": "Synthetic Wallet Service",
+            "synthetic": true
+          },
+          "evidence": {
+            "evidence_id": "79200000-0000-4000-8000-000000000005",
+            "document_sha256": "25e0b4ab9778d8df42deda51ee7376d73743b7f10a53d2549c9b5330d6ed00d6",
+            "file_name": "digital-wallet-2026q1.csv",
+            "media_type": "text/csv",
+            "size": 562
+          },
+          "retrieval_method": "taxpayer_upload",
+          "received_at": "2026-04-03T09:00:00Z"
+        }
+      }
+    }
+  ]
+}
