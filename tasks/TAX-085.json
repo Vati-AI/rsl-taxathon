@@ -5,14 +5,14 @@
   "owner": "Keletso",
   "area": "integration",
   "phase": "pilot",
-  "status": "BACKLOG",
+  "status": "IN_PROGRESS",
   "priority": "P0",
   "depends_on": [
     "TAX-034",
     "TAX-038"
   ],
-  "claimed_by": null,
-  "branch": null,
+  "claimed_by": "claude-keletso-tax085",
+  "branch": "task/TAX-085",
   "pr": null,
   "scope": "Make the integration adapters (Jube case lifecycle, Jube tax risk, Docling, OpenAleph/FtM, yente) importable inside the Frappe bench without their heavy dependencies, and provide the site-config factories (e.g. vati_case_lifecycle) with secrets read from ignored local config",
   "inputs": [
@@ -52,6 +52,10 @@
     {
       "at": "2026-11-05T06:39:04.925015+00:00",
       "text": "Added 2026-11-05 after a runtime gap analysis for the RSL demo: the component code existed but this link was not wired at runtime and no task covered it."
+    },
+    {
+      "at": "2026-11-05T10:41:51.919885+00:00",
+      "text": "Claimed by claude-keletso-tax085"
     }
   ]
 }
