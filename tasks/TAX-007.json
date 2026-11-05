@@ -9,7 +9,7 @@
   "depends_on": [],
   "claimed_by": null,
   "branch": null,
-  "pr": "PENDING",
+  "pr": "https://github.com/Vati-AI/rsl-taxathon/pull/252",
   "acceptance": [
     {
       "text": "Define workflow state with case_id, evidence_ids and workflow version",

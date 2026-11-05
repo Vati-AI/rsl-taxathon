@@ -11,7 +11,7 @@
   ],
   "claimed_by": null,
   "branch": null,
-  "pr": "PENDING",
+  "pr": "https://github.com/Vati-AI/rsl-taxathon/pull/252",
   "acceptance": [
     {
       "text": "Submit using backend contract and idempotency key",
