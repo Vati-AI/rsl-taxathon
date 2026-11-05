@@ -3,28 +3,41 @@
   "title": "Frontend QA plan and browser fixtures",
   "owner": "Keletso",
   "area": "tests/frontend",
-  "status": "BACKLOG",
+  "status": "DONE",
   "priority": "P0",
   "day": 1,
   "depends_on": [],
   "claimed_by": null,
   "branch": null,
-  "pr": null,
+  "pr": "https://github.com/Vati-AI/rsl-taxathon/pull/252",
   "acceptance": [
     {
       "text": "Create test matrix for both portals including mobile and keyboard access",
-      "done": false
+      "done": true
     },
     {
       "text": "Document expected loading, error, empty and permission states",
-      "done": false
+      "done": true
     },
     {
       "text": "Agree accessible labels, focus handling and readable evidence layout",
-      "done": false
+      "done": true
     }
   ],
-  "evidence": [],
+  "evidence": [
+    {
+      "criterion": 1,
+      "text": "Delivered by child tasks, all DONE with merged PRs: TAX-023 (#135), TAX-055 (#188), TAX-082 (#245)"
+    },
+    {
+      "criterion": 2,
+      "text": "Delivered by child tasks, all DONE with merged PRs: TAX-023 (#135), TAX-055 (#188), TAX-082 (#245)"
+    },
+    {
+      "criterion": 3,
+      "text": "Delivered by child tasks, all DONE with merged PRs: TAX-023 (#135), TAX-055 (#188), TAX-082 (#245)"
+    }
+  ],
   "notes": [
     "Expanded into implementation tasks TAX-018 onward; do not claim this planning epic.",
     {
@@ -34,6 +47,10 @@
     {
       "at": "2026-11-05T14:08:21.889825+00:00",
       "text": "Reassigned from Kananelo to Keletso (single-developer delivery, ADR-038)"
+    },
+    {
+      "at": "2026-11-05T14:28:35.430037+00:00",
+      "text": "Planning epic closed: all 3 child tasks DONE with merged PRs"
     }
   ],
   "kind": "epic",

@@ -3,33 +3,50 @@
   "title": "LangGraph workflow and tool contracts",
   "owner": "Keletso",
   "area": "ai",
-  "status": "BACKLOG",
+  "status": "DONE",
   "priority": "P0",
   "day": 1,
   "depends_on": [],
   "claimed_by": null,
   "branch": null,
-  "pr": null,
+  "pr": "https://github.com/Vati-AI/rsl-taxathon/pull/252",
   "acceptance": [
     {
       "text": "Define workflow state with case_id, evidence_ids and workflow version",
-      "done": false
+      "done": true
     },
     {
       "text": "Implement fixture-backed bounded tools and structured finding output",
-      "done": false
+      "done": true
     },
     {
       "text": "Persist checkpoints and interrupt before human actions",
-      "done": false
+      "done": true
     }
   ],
-  "evidence": [],
+  "evidence": [
+    {
+      "criterion": 1,
+      "text": "Delivered by child tasks, all DONE with merged PRs: TAX-022 (#93), TAX-047 (#138), TAX-048 (#110), TAX-049 (#147), TAX-050 (#128), TAX-051 (#148), TAX-052 (#111), TAX-053 (#166), TAX-061 (#151), TAX-064 (#154), TAX-067 (#204), TAX-068 (#193), TAX-070 (#205), TAX-071 (#194), TAX-075 (#208), TAX-080 (#218)"
+    },
+    {
+      "criterion": 2,
+      "text": "Delivered by child tasks, all DONE with merged PRs: TAX-022 (#93), TAX-047 (#138), TAX-048 (#110), TAX-049 (#147), TAX-050 (#128), TAX-051 (#148), TAX-052 (#111), TAX-053 (#166), TAX-061 (#151), TAX-064 (#154), TAX-067 (#204), TAX-068 (#193), TAX-070 (#205), TAX-071 (#194), TAX-075 (#208), TAX-080 (#218)"
+    },
+    {
+      "criterion": 3,
+      "text": "Delivered by child tasks, all DONE with merged PRs: TAX-022 (#93), TAX-047 (#138), TAX-048 (#110), TAX-049 (#147), TAX-050 (#128), TAX-051 (#148), TAX-052 (#111), TAX-053 (#166), TAX-061 (#151), TAX-064 (#154), TAX-067 (#204), TAX-068 (#193), TAX-070 (#205), TAX-071 (#194), TAX-075 (#208), TAX-080 (#218)"
+    }
+  ],
   "notes": [
     "Expanded into implementation tasks TAX-018 onward; do not claim this planning epic.",
     {
       "at": "2026-11-05T14:08:21.889825+00:00",
       "text": "Reassigned from Gupta to Keletso (single-developer delivery, ADR-038)"
+    },
+    {
+      "at": "2026-11-05T14:28:35.430037+00:00",
+      "text": "Planning epic closed: all 16 child tasks DONE with merged PRs"
     }
   ],
   "kind": "epic",

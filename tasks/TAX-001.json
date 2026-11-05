@@ -3,33 +3,50 @@
   "title": "Auditor dashboard and case shell",
   "owner": "Keletso",
   "area": "apps/auditor-web",
-  "status": "BACKLOG",
+  "status": "DONE",
   "priority": "P0",
   "day": 1,
   "depends_on": [],
   "claimed_by": null,
   "branch": null,
-  "pr": null,
+  "pr": "https://github.com/Vati-AI/rsl-taxathon/pull/252",
   "acceptance": [
     {
       "text": "Render case list and case detail from agreed fixtures",
-      "done": false
+      "done": true
     },
     {
       "text": "Provide loading, empty and error states",
-      "done": false
+      "done": true
     },
     {
       "text": "Show risk reason, unresolved amount and evidence panel",
-      "done": false
+      "done": true
     }
   ],
-  "evidence": [],
+  "evidence": [
+    {
+      "criterion": 1,
+      "text": "Delivered by child tasks, all DONE with merged PRs: TAX-020 (#91), TAX-040 (#108), TAX-041 (#157), TAX-042 (#156), TAX-060 (#158), TAX-077 (#240)"
+    },
+    {
+      "criterion": 2,
+      "text": "Delivered by child tasks, all DONE with merged PRs: TAX-020 (#91), TAX-040 (#108), TAX-041 (#157), TAX-042 (#156), TAX-060 (#158), TAX-077 (#240)"
+    },
+    {
+      "criterion": 3,
+      "text": "Delivered by child tasks, all DONE with merged PRs: TAX-020 (#91), TAX-040 (#108), TAX-041 (#157), TAX-042 (#156), TAX-060 (#158), TAX-077 (#240)"
+    }
+  ],
   "notes": [
     "Expanded into implementation tasks TAX-018 onward; do not claim this planning epic.",
     {
       "at": "2026-11-05T14:08:21.889825+00:00",
       "text": "Reassigned from Leseli to Keletso (single-developer delivery, ADR-038)"
+    },
+    {
+      "at": "2026-11-05T14:28:35.430037+00:00",
+      "text": "Planning epic closed: all 6 child tasks DONE with merged PRs"
     }
   ],
   "kind": "epic",
