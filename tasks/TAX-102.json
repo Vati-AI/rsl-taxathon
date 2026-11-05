@@ -5,13 +5,13 @@
   "owner": "Leseli",
   "area": "data",
   "phase": "pilot",
-  "status": "BACKLOG",
+  "status": "IN_PROGRESS",
   "priority": "P1",
   "depends_on": [
     "TAX-024"
   ],
-  "claimed_by": null,
-  "branch": null,
+  "claimed_by": "leseli-claude-20261105-102",
+  "branch": "task/TAX-102",
   "pr": null,
   "scope": "Independently define synthetic taxpayer-side scenarios and expected outcomes before assistant tuning: a 15-invoice upload with known problem invoices (wrong totals, duplicates, wrong period, missing document), an RSL evidence request with matched and missing items, and adversarial cases (injection in invoices, attempts to obtain risk scores or other taxpayers' data, requests to change declared figures)",
   "inputs": [
@@ -62,6 +62,10 @@
     {
       "at": "2026-11-05T20:21:40.300086+00:00",
       "text": "Reassigned from Keletso to Leseli at Keletso's request (ADR-038 exception, like TAX-104)"
+    },
+    {
+      "at": "2026-11-05T20:45:33.904352+00:00",
+      "text": "Claimed by leseli-claude-20261105-102"
     }
   ],
   "sequence": 20
