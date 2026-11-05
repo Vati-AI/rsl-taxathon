@@ -1,0 +1,57 @@
+{
+  "persona": "supervisor-first-day",
+  "description": "A supervisor on their first day: find decisions waiting for approval, approve one, then check workload.",
+  "mode": "pointer",
+  "viewport": "tablet-1024",
+  "browser": "msedge",
+  "tasks": [
+    {
+      "id": "find-approval",
+      "goal": "Find a decision that is waiting for my approval",
+      "completed": true,
+      "actions": 4,
+      "tabStops": 0,
+      "typed": 0,
+      "klmSeconds": 11.9,
+      "wallMs": 7984,
+      "route": [
+        "Acting as (fixture): Supervisor",
+        "Overview: Awaiting officer review",
+        "SYN-001",
+        "Review and decide"
+      ],
+      "friction": [
+        "Neither the overview nor the queue shows which of the 3 \"Awaiting officer review\" cases has a decision waiting for approval"
+      ]
+    },
+    {
+      "id": "approve",
+      "goal": "Approve the decision",
+      "completed": true,
+      "actions": 2,
+      "tabStops": 0,
+      "typed": 0,
+      "klmSeconds": 5.3,
+      "wallMs": 682,
+      "route": [
+        "Approve…",
+        "Approve and apply in Jube"
+      ],
+      "friction": []
+    },
+    {
+      "id": "read-workload",
+      "goal": "Find how many evidence requests are overdue",
+      "completed": true,
+      "actions": 1,
+      "tabStops": 0,
+      "typed": 0,
+      "klmSeconds": 2.7,
+      "wallMs": 3055,
+      "route": [
+        "nav: Management dashboard"
+      ],
+      "friction": []
+    }
+  ]
+}

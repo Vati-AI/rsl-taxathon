@@ -49,6 +49,7 @@ responses are small JSON and still come from it, including its access rules.
 | `support/auditor-preview.config.mts` | Vite preview of the built auditor with `/api` sent to the fixture API.                                                                                                                                                                                               |
 | `support/claim-flow.ts`              | Taxpayer claim steps (TAX-043/044) shared by `claim.spec.ts` and `scenarios.spec.ts`.                                                                                                                                                                                |
 | `support/fixture-api.ts`             | Starts a fresh fixture API for one test and routes that page's `/api/v1` to it (below).                                                                                                                                                                              |
+| `support/proxy.ts`                   | Scripted proxy users for TAX-082: counted actions and Tab stops, Keystroke-Level Model estimates, friction notes (below).                                                                                                                                            |
 | `auditor.spec.ts`                    | Positive navigation, denied access, keyboard, axe/reflow matrix.                                                                                                                                                                                                     |
 | `taxpayer.spec.ts`                   | Positive navigation, guest and API-denied access, logout, keyboard, axe/reflow matrix.                                                                                                                                                                               |
 | `visual.spec.ts`                     | Opt-in screenshots and baseline comparison (below).                                                                                                                                                                                                                  |
@@ -56,6 +57,7 @@ responses are small JSON and still come from it, including its access rules.
 | `reminders.spec.ts`                  | TAX-078 correction reminders: earlier-claim reminders on the claim form, no panel for first-time claimants, load failure that never blocks the claim, recurring pre-submission prompts labelled, axe/reflow. `CAPTURE_SCREENSHOTS=1` writes `docs/evidence/TAX-078`. |
 | `responses.spec.ts`                  | TAX-045 evidence request responses: allowlisted statuses, structured answers, retry, read-only states, concealed requests, keyboard, axe/reflow. `CAPTURE_SCREENSHOTS=1` writes `docs/evidence/TAX-045`.                                                             |
 | `scenarios.spec.ts`                  | TAX-055 end-to-end regression: the five scenario routes (SYN-001 to SYN-005) from queue to recorded outcome, the taxpayer journey from claim to evidence response, and forced-colours/reduced-motion states. `CAPTURE_SCREENSHOTS=1` writes `docs/evidence/TAX-055`. |
+| `onboarding.spec.ts`                 | TAX-082 persona onboarding walkthroughs: six personas reach their goals from the portal entrance using only what is on screen. `RECORD_DIR` writes the measurements; `CAPTURE_SCREENSHOTS=1` writes `docs/evidence/TAX-082`.                                         |
 
 ## Session mocks
 
@@ -137,6 +139,25 @@ portals are not connected in fixture mode**: an evidence request recorded on
 the auditor side is not delivered to the taxpayer mock, so each half is tested
 against its own synthetic source. A connected run needs the Frappe and Vati
 services (TAX-058).
+
+## Persona onboarding walkthroughs (TAX-082)
+
+`onboarding.spec.ts` measures whether a first-time user can reach each goal
+through the screens alone. A scripted proxy (`support/proxy.ts`) starts at the
+portal entrance, never types a URL after that, and only uses links, buttons and
+fields by their accessible names. Pointer proxies count actions; keyboard
+proxies count every Tab stop. Effort is a Keystroke-Level Model estimate, not
+an observed human time.
+
+A walkthrough fails only when a goal cannot be completed. Friction (for
+example "21 Tab stops to reach a control", or a page that does not mention an
+open evidence request) is recorded in the measurements, not asserted, because
+it is review evidence. Findings and proposed remediation are in
+`docs/evidence/TAX-082/README.md`.
+
+```sh
+RECORD_DIR=docs/evidence/TAX-082/metrics CAPTURE_SCREENSHOTS=1   npm run test:frontend:browser -- onboarding
+```
 
 ## Accessibility scan and known issues
 
