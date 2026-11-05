@@ -1,0 +1,177 @@
+{
+ "actions": [],
+ "autoname": "hash",
+ "creation": "2026-11-05 12:00:00.000000",
+ "description": "yente match candidates for one case party on one dataset version (TAX-087, ADR-036). Candidates are proposals awaiting officer review (TAX-037); nothing here confirms or merges an identity. Written only by vati_tax.pipeline.",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "tenant_id",
+  "case_id",
+  "entity_id",
+  "entity_schema",
+  "dataset",
+  "dataset_version",
+  "candidate_count",
+  "above_threshold",
+  "ambiguous",
+  "candidates_json",
+  "retrieved_at",
+  "trace_section",
+  "event_id",
+  "correlation_id",
+  "result_key"
+ ],
+ "fields": [
+  {
+   "fieldname": "tenant_id",
+   "fieldtype": "Data",
+   "label": "Tenant ID",
+   "length": 36,
+   "reqd": 1,
+   "search_index": 1,
+   "set_only_once": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1
+  },
+  {
+   "fieldname": "case_id",
+   "fieldtype": "Data",
+   "label": "Case ID",
+   "length": 36,
+   "reqd": 1,
+   "search_index": 1,
+   "set_only_once": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1
+  },
+  {
+   "fieldname": "entity_id",
+   "fieldtype": "Data",
+   "label": "Party Entity ID",
+   "length": 64,
+   "reqd": 1,
+   "set_only_once": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "entity_schema",
+   "fieldtype": "Data",
+   "label": "Schema",
+   "length": 40,
+   "set_only_once": 1
+  },
+  {
+   "fieldname": "dataset",
+   "fieldtype": "Data",
+   "label": "Dataset",
+   "length": 64,
+   "reqd": 1,
+   "set_only_once": 1
+  },
+  {
+   "fieldname": "dataset_version",
+   "fieldtype": "Data",
+   "label": "Dataset Version",
+   "length": 64,
+   "reqd": 1,
+   "set_only_once": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "candidate_count",
+   "fieldtype": "Int",
+   "label": "Candidates",
+   "set_only_once": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "above_threshold",
+   "fieldtype": "Int",
+   "label": "Above Threshold",
+   "set_only_once": 1
+  },
+  {
+   "fieldname": "ambiguous",
+   "fieldtype": "Check",
+   "label": "Ambiguous",
+   "default": "0",
+   "set_only_once": 1
+  },
+  {
+   "fieldname": "candidates_json",
+   "fieldtype": "Long Text",
+   "label": "Candidates (MatchCandidate JSON)",
+   "set_only_once": 1
+  },
+  {
+   "fieldname": "retrieved_at",
+   "fieldtype": "Datetime",
+   "label": "Retrieved At (UTC)",
+   "set_only_once": 1
+  },
+  {
+   "fieldname": "trace_section",
+   "fieldtype": "Section Break",
+   "label": "Trace"
+  },
+  {
+   "fieldname": "event_id",
+   "fieldtype": "Data",
+   "label": "Outbox Event",
+   "length": 36,
+   "set_only_once": 1
+  },
+  {
+   "fieldname": "correlation_id",
+   "fieldtype": "Data",
+   "label": "Correlation ID",
+   "length": 36,
+   "set_only_once": 1
+  },
+  {
+   "fieldname": "result_key",
+   "fieldtype": "Data",
+   "label": "Result Key",
+   "length": 64,
+   "reqd": 1,
+   "unique": 1,
+   "set_only_once": 1,
+   "hidden": 1
+  }
+ ],
+ "in_create": 1,
+ "index_web_pages_for_search": 0,
+ "links": [],
+ "modified": "2026-11-05 12:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Vati Tax",
+ "name": "Vati Screening Result",
+ "naming_rule": "Random",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "export": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager"
+  },
+  {
+   "read": 1,
+   "role": "Vati Auditor"
+  },
+  {
+   "read": 1,
+   "role": "Vati Specialist"
+  },
+  {
+   "read": 1,
+   "role": "Vati Supervisor"
+  }
+ ],
+ "search_fields": "entity_id,case_id,dataset_version",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}

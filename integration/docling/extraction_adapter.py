@@ -619,6 +619,18 @@ class DoclingExtractionAdapter:
             result["status"], task_id, resumed, recorded, result.get("error_code")
         )
 
+    def submit(self, *, evidence_id: str, media_type: str, content: bytes) -> str:
+        """Send one conversion and return Docling's task ID (not idempotent).
+
+        For callers that keep the task durably themselves: TAX-087 records it in the
+        outbox effect ledger, then ``extract`` resumes it through the job store.
+        """
+        if media_type not in MEDIA_TYPES:
+            raise _invalid(
+                "This media type cannot be extracted.", "media_type", "unsupported_media_type"
+            )
+        return self._submit(evidence_id, media_type, content)
+
     # -- steps ----------------------------------------------------------------
 
     def _submit(self, evidence_id: str, media_type: str, content: bytes) -> str:
