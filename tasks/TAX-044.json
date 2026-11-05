@@ -27,11 +27,11 @@
   "acceptance": [
     {
       "text": "Show explained amounts, missing invoices and correction prompts before submission",
-      "done": false
+      "done": true
     },
     {
       "text": "Test that incomplete evidence produces correction guidance rather than fraud accusations",
-      "done": false
+      "done": true
     },
     {
       "text": "Record relevant tests and evidence, update task status and open a human-review PR",
@@ -39,7 +39,7 @@
     },
     {
       "text": "Follow docs/DESIGN_STANDARD.md; supply relevant viewport/state screenshots and keyboard/accessibility evidence for human visual review",
-      "done": false
+      "done": true
     }
   ],
   "verification": "Test that incomplete evidence produces correction guidance rather than fraud accusations",
@@ -49,7 +49,20 @@
     "update-project-task",
     "finish-task"
   ],
-  "evidence": [],
+  "evidence": [
+    {
+      "criterion": 1,
+      "text": "Observed 2026-11-05 (VAT refund claims): claim details take the period's output and input VAT; a Purchase invoices step records each invoice (number, date, supplier, amounts excluding VAT, VAT, total, optional amount paid and contract) linked to an uploaded document, totals in whole cents and recomputed by the server (Vati Refund Claim extension, ADR-023). Review and send shows a 'Before you send' panel from vati_tax.portal.api.review_refund_claim, which runs the unchanged TAX-048 reconcile_refund: explained amounts (claimed, VAT on listed invoices, supported by documents, not yet supported), missing invoices ('Your claim is LSL X more than the VAT on the invoices you listed') and correction prompts for period arithmetic, missing payment, payment differing from total and optional contracts, each linking back to the right step; prompts never block sending. Live HTTP on the isolated stack: 9/9 checks passed; DB stored the schedule with totals 100000.00/15000.00/115000.00 and one claim despite replay and conflict."
+    },
+    {
+      "criterion": 2,
+      "text": "Observed 2026-11-05: portal/test_presubmission.py test_incomplete_evidence_gives_guidance_not_accusations (missing invoices, payment and contract plus an arithmetic mismatch produce the four correction prompts, and the output contains none of fraud/abuse/suspic/penalt/evasion/reject/denied/illegal/investigat/lane/risk/related party/offence) and test_every_prompt_template_uses_neutral_wording; indicators and lane are dropped (test_indicators_and_lane_never_reach_the_taxpayer) and guard tests keep the adapter the sole ai importer, never calling propose_refund_lane. Site-backed test_review_shows_figures_and_guidance_and_stores_nothing passes on a fresh verify site (134/134 site-backed tests, incl. TAX-031 13/13). Live HTTP: 'guidance uses no accusation, lane or risk wording' PASS. Browser: claim.spec pre-submission test asserts the panel contains no fraud/abuse/suspicious/penalty/risk/lane text at 1440/1024/390."
+    },
+    {
+      "criterion": 4,
+      "text": "Observed 2026-11-05 on Windows 11, Edge, Playwright 1.64.1: frappe-ui components and shared tokens per docs/DESIGN_STANDARD.md (fieldset per invoice, right-aligned tabular amounts, text-and-colour alerts, one primary action per step). 48 screenshots in docs/evidence/TAX-044 (15 claim states x 1440/1024/390 incl. invoices empty/filled/errors and review-with-checks, plus whole-panel checks-panel captures; a 390px wrapping defect in the panel was found and fixed). Full harness on the merged branch (--workers=2): 131 passed, 9 skipped (opt-in visual), 1 transient page-load timeout in the unrelated TAX-045 responses spec that passed 72/72 on 3x repeat at all widths. claim.spec runs axe (WCAG 2.1 A/AA serious/critical) and reflow on the new steps, keyboard-only completion through the invoice step, focus to the first invalid row field, and Change buttons described by their prompt. Human visual approval pending reviewer; not assumed by the agent."
+    }
+  ],
   "notes": [
     {
       "at": "2026-11-05T01:07:31.525943+00:00",
