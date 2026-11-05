@@ -17,7 +17,14 @@
   "claim_reason",
   "explanation",
   "vat_return_id",
-  "evidence_ids"
+  "evidence_ids",
+  "schedule_section",
+  "period_output_vat",
+  "period_input_vat",
+  "invoices",
+  "invoice_net_total",
+  "invoice_vat_total",
+  "invoice_gross_total"
  ],
  "fields": [
   {
@@ -119,11 +126,62 @@
    "fieldname": "evidence_ids",
    "fieldtype": "JSON",
    "label": "Evidence IDs"
+  },
+  {
+   "fieldname": "schedule_section",
+   "fieldtype": "Section Break",
+   "label": "Invoice schedule (TAX-044)"
+  },
+  {
+   "description": "Output VAT for the claim period, as declared.",
+   "fieldname": "period_output_vat",
+   "fieldtype": "Currency",
+   "label": "Period output VAT (LSL)",
+   "non_negative": 1,
+   "options": "currency"
+  },
+  {
+   "description": "Input VAT for the claim period, as declared.",
+   "fieldname": "period_input_vat",
+   "fieldtype": "Currency",
+   "label": "Period input VAT (LSL)",
+   "non_negative": 1,
+   "options": "currency"
+  },
+  {
+   "fieldname": "invoices",
+   "fieldtype": "Table",
+   "label": "Purchase invoices",
+   "options": "Vati Refund Claim Invoice"
+  },
+  {
+   "description": "Server-computed from the schedule.",
+   "fieldname": "invoice_net_total",
+   "fieldtype": "Currency",
+   "label": "Invoices excluding VAT (LSL)",
+   "options": "currency",
+   "read_only": 1
+  },
+  {
+   "description": "Server-computed from the schedule.",
+   "fieldname": "invoice_vat_total",
+   "fieldtype": "Currency",
+   "label": "VAT on invoices (LSL)",
+   "options": "currency",
+   "read_only": 1
+  },
+  {
+   "description": "Server-computed from the schedule.",
+   "fieldname": "invoice_gross_total",
+   "fieldtype": "Currency",
+   "label": "Invoices including VAT (LSL)",
+   "options": "currency",
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 0,
  "links": [],
- "modified": "2026-11-04 12:00:00.000000",
+ "modified": "2026-11-05 10:00:00.000000",
  "modified_by": "Administrator",
  "module": "Vati Tax",
  "name": "Vati Refund Claim",

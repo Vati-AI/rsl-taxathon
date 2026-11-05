@@ -66,6 +66,8 @@ describe('validateDetails (VAT refund claim, TAX-043)', () => {
     period: '2026-09',
     amount: '15,000.5',
     reason: 'excess_input_vat',
+    outputVat: '0',
+    inputVat: '15000.50',
   };
 
   it('accepts complete claim details', () => {
@@ -75,7 +77,13 @@ describe('validateDetails (VAT refund claim, TAX-043)', () => {
 
   it('reports every missing field with an actionable message', () => {
     const errors = validateDetails(emptyClaim(), TODAY);
-    expect(Object.keys(errors).sort()).toEqual(['amount', 'period', 'reason']);
+    expect(Object.keys(errors).sort()).toEqual([
+      'amount',
+      'inputVat',
+      'outputVat',
+      'period',
+      'reason',
+    ]);
     expect(errors.period).toMatch(/2026-09/);
   });
 

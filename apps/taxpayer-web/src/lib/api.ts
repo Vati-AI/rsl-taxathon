@@ -4,6 +4,7 @@ import type {
   EvidenceView,
   FixtureEnvelope,
   LiveEnvelope,
+  PresubmissionReview,
   PortalSession,
   RefundClaimResult,
   Submission,
@@ -227,6 +228,10 @@ export interface RefundClaimPayload {
   evidence_ids: string[];
   declaration: boolean;
   tenant_id: string;
+  /** TAX-044: the period's figures and the purchase-invoice schedule. */
+  period_output_vat: string;
+  period_input_vat: string;
+  invoices: Record<string, string | null>[];
 }
 
 /** Send the claim. Safe to repeat with the same key: the server replays, never duplicates. */
@@ -289,6 +294,21 @@ export async function respondToEvidenceRequest(payload: {
     throw new PortalError('unavailable', 'The portal returned data in an unexpected format.');
   }
   return result;
+}
+
+/** Check a draft claim before sending (TAX-044); stores nothing. */
+export async function reviewRefundClaim(
+  payload: Omit<RefundClaimPayload, 'idempotency_key' | 'declaration'>,
+): Promise<PresubmissionReview> {
+  const result = await post<LiveEnvelope<PresubmissionReview>>(
+    'vati_tax.portal.api.review_refund_claim',
+    { ...payload },
+    payload.tenant_id,
+  );
+  if (result?.mode !== 'live' || !Array.isArray(result.data?.prompts)) {
+    throw new PortalError('unavailable', 'The portal returned data in an unexpected format.');
+  }
+  return result.data;
 }
 
 export async function logout(): Promise<void> {

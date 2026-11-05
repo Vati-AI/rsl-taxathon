@@ -1,7 +1,8 @@
 <script setup lang="ts">
 /**
- * VAT refund claim (TAX-043): claim details → supporting documents → review and
- * send → confirmation. Documents are uploaded as private evidence as soon as
+ * VAT refund claim (TAX-043, TAX-044): claim details → supporting documents →
+ * purchase invoices → review (with the pre-submission checks) and send →
+ * confirmation. Documents are uploaded as private evidence as soon as
  * they are chosen; the claim is sent once, with one idempotency key for the
  * whole draft, so pressing Send again after a lost connection cannot create a
  * second claim.
@@ -9,12 +10,22 @@
 import { Alert, Badge, Button, FormControl } from 'frappe-ui';
 import { computed, nextTick, reactive, ref } from 'vue';
 import DocumentUploads from '../components/DocumentUploads.vue';
+import InvoiceSchedule from '../components/InvoiceSchedule.vue';
 import PortalHeader from '../components/PortalHeader.vue';
-import { PortalError, submitRefundClaim } from '../lib/api';
+import PresubmissionReview from '../components/PresubmissionReview.vue';
+import { PortalError, reviewRefundClaim, submitRefundClaim } from '../lib/api';
 import { documentTypeLabel } from '../lib/documents';
 import { formatAmount, formatPeriod } from '../lib/format';
 import { sessionState } from '../lib/session';
-import type { RefundClaimResult } from '../lib/types';
+import {
+  emptyInvoice,
+  mapScheduleErrors,
+  toPayload,
+  validateSchedule,
+  type InvoiceDraft,
+  type RowErrors,
+} from '../lib/schedule';
+import type { PresubmissionReview as Review, RefundClaimResult } from '../lib/types';
 import { useDocumentUploads } from '../lib/uploads';
 import {
   CLAIM_REASONS,
@@ -29,11 +40,12 @@ import {
   type ClaimField,
 } from '../lib/validation';
 
-type Step = 'details' | 'documents' | 'review' | 'sent';
+type Step = 'details' | 'documents' | 'invoices' | 'review' | 'sent';
 
 const STEPS: { id: Exclude<Step, 'sent'>; label: string }[] = [
   { id: 'details', label: 'Claim details' },
   { id: 'documents', label: 'Supporting documents' },
+  { id: 'invoices', label: 'Purchase invoices' },
   { id: 'review', label: 'Review and send' },
 ];
 
@@ -47,6 +59,12 @@ const sendProblem = ref<{ title: string; description: string; conflict?: boolean
 const result = ref<RefundClaimResult | null>(null);
 // One key per draft: a repeated send is recognised by the server and replayed.
 const claimKey = newIdempotencyKey('claim');
+// TAX-044: the purchase-invoice schedule and the pre-submission checks.
+const invoiceRows = ref<InvoiceDraft[]>([emptyInvoice()]);
+const rowErrors = ref<RowErrors>({});
+const review = ref<Review | null>(null);
+const reviewing = ref(false);
+const reviewError = ref<string | null>(null);
 
 /** The one taxpayer this account acts for; claims need exactly one. */
 const tenantId = computed(() => {
@@ -58,6 +76,9 @@ const scopeReady = computed(() => sessionState.value.status !== 'ready' || tenan
 
 const uploads = useDocumentUploads(() => tenantId.value);
 const uploadedItems = computed(() => uploads.items.filter((i) => i.status === 'uploaded'));
+const scheduleDocuments = computed(() =>
+  uploadedItems.value.map((i) => ({ evidenceId: i.evidenceId!, name: i.name })),
+);
 
 const reasonOptions = [
   { label: 'Choose a reason', value: '' },
@@ -70,9 +91,17 @@ const reasonHint = computed(
 );
 const detailErrorCount = computed(
   () =>
-    (['period', 'amount', 'reason', 'explanation', 'contactEmail'] as const).filter(
-      (f) => errors.value[f],
-    ).length,
+    (
+      [
+        'period',
+        'amount',
+        'outputVat',
+        'inputVat',
+        'reason',
+        'explanation',
+        'contactEmail',
+      ] as const
+    ).filter((f) => errors.value[f]).length,
 );
 const stepIndex = computed(() => STEPS.findIndex((s) => s.id === step.value));
 
@@ -98,9 +127,84 @@ async function continueFromDetails() {
 async function continueFromDocuments() {
   const blocker = uploads.blocker();
   errors.value = blocker ? { documents: blocker } : {};
-  if (!blocker) return goTo('review');
+  if (blocker) {
+    await nextTick();
+    documentsPanel.value?.focusPicker();
+    return;
+  }
+  // Convenience: with one document and an empty first row, link it for the taxpayer.
+  const first = invoiceRows.value[0];
+  if (first && !first.invoiceEvidenceId && scheduleDocuments.value.length === 1) {
+    first.invoiceEvidenceId = scheduleDocuments.value[0].evidenceId;
+  }
+  await goTo('invoices');
+}
+
+async function focusFirstRowProblem() {
   await nextTick();
-  documentsPanel.value?.focusPicker();
+  const first = Object.keys(rowErrors.value)
+    .map(Number)
+    .sort((a, b) => a - b)[0];
+  const fieldset = first === undefined ? null : document.getElementById(`invoice-${first}-title`);
+  fieldset?.closest('fieldset')?.querySelector<HTMLElement>('[aria-invalid="true"]')?.focus();
+}
+
+async function continueFromInvoices() {
+  const checked = validateSchedule(invoiceRows.value, {
+    period: draft.period,
+    uploaded: new Set(scheduleDocuments.value.map((d) => d.evidenceId)),
+  });
+  rowErrors.value = checked.rows;
+  errors.value = checked.general ? { invoices: checked.general } : {};
+  if (checked.general) return focusHeadingOf('invoices');
+  if (Object.keys(checked.rows).length) {
+    errors.value = { invoices: 'Fix the highlighted invoice details to continue.' };
+    return focusFirstRowProblem();
+  }
+  await goTo('review');
+  await runReview();
+}
+
+async function focusHeadingOf(next: Step) {
+  await nextTick();
+  document.getElementById(`${next}-title`)?.focus();
+}
+
+/** The answers both the review and the send use. */
+function claimPayload() {
+  return {
+    period: draft.period.trim(),
+    claimed_amount: normaliseAmount(draft.amount) ?? draft.amount.trim(),
+    claim_reason: draft.reason,
+    explanation: draft.explanation.trim() || null,
+    contact_email: draft.contactEmail.trim() || null,
+    evidence_ids: uploads.evidenceIds.value,
+    tenant_id: tenantId.value ?? '',
+    period_output_vat: normaliseAmount(draft.outputVat) ?? draft.outputVat.trim(),
+    period_input_vat: normaliseAmount(draft.inputVat) ?? draft.inputVat.trim(),
+    invoices: toPayload(invoiceRows.value),
+  };
+}
+
+async function runReview() {
+  if (!tenantId.value) return;
+  reviewing.value = true;
+  reviewError.value = null;
+  review.value = null;
+  try {
+    review.value = await reviewRefundClaim(claimPayload());
+  } catch (error) {
+    const err =
+      error instanceof PortalError ? error : new PortalError('unavailable', String(error));
+    if (err.kind === 'invalid' && err.fieldErrors.length > 0) {
+      await showServerErrors(err.fieldErrors);
+    } else {
+      reviewError.value =
+        'The checks are not available right now. You can still send the claim, or try again.';
+    }
+  } finally {
+    reviewing.value = false;
+  }
 }
 
 async function showServerErrors(fieldErrors: { field: string; message: string }[]) {
@@ -116,8 +220,14 @@ async function showServerErrors(fieldErrors: { field: string; message: string }[
   }
   const target = stepForField(first);
   if (target === 'review') return focusFirstInvalid(document.getElementById('review'));
+  if (target === 'invoices') {
+    const mapped = mapScheduleErrors(fieldErrors);
+    rowErrors.value = mapped.rows;
+    if (mapped.general) errors.value = { ...errors.value, invoices: mapped.general };
+  }
   await goTo(target);
   if (target === 'details') await focusFirstInvalid(form.value);
+  if (target === 'invoices') await focusFirstRowProblem();
 }
 
 async function send() {
@@ -131,13 +241,8 @@ async function send() {
   sending.value = true;
   try {
     result.value = await submitRefundClaim({
+      ...claimPayload(),
       idempotency_key: claimKey,
-      period: draft.period.trim(),
-      claimed_amount: normaliseAmount(draft.amount) ?? draft.amount.trim(),
-      claim_reason: draft.reason,
-      explanation: draft.explanation.trim() || null,
-      contact_email: draft.contactEmail.trim() || null,
-      evidence_ids: uploads.evidenceIds.value,
       declaration: true,
       tenant_id: tenantId.value,
     });
@@ -253,6 +358,28 @@ async function send() {
         :error="errors.amount"
       />
       <FormControl
+        v-model="draft.outputVat"
+        type="text"
+        size="lg"
+        variant="outline"
+        inputmode="decimal"
+        label="Output VAT for the period (LSL)"
+        description="The VAT you charged on sales in this period, as in your return. Enter 0.00 if none."
+        required
+        :error="errors.outputVat"
+      />
+      <FormControl
+        v-model="draft.inputVat"
+        type="text"
+        size="lg"
+        variant="outline"
+        inputmode="decimal"
+        label="Input VAT for the period (LSL)"
+        description="The VAT you paid on purchases in this period, as in your return."
+        required
+        :error="errors.inputVat"
+      />
+      <FormControl
         v-model="draft.reason"
         type="select"
         size="lg"
@@ -315,10 +442,42 @@ async function send() {
         <Button
           variant="solid"
           size="lg"
-          label="Continue to review"
+          label="Continue to invoices"
           @click="continueFromDocuments"
         />
         <Button size="lg" label="Back" icon-left="lucide-arrow-left" @click="goTo('details')" />
+      </div>
+    </section>
+
+    <!-- Step 3: purchase invoices (TAX-044) -->
+    <section v-else-if="step === 'invoices'" aria-labelledby="invoices-title" class="space-y-6">
+      <h2 id="invoices-title" tabindex="-1" class="text-lg font-semibold text-ink-gray-9">
+        Purchase invoices
+      </h2>
+      <p class="text-base text-ink-gray-6">
+        List each purchase invoice behind the VAT you are claiming, and choose its uploaded copy. We
+        add up the totals for you.
+      </p>
+      <Alert
+        v-if="errors.invoices"
+        theme="red"
+        role="alert"
+        title="Invoices need attention"
+        :description="errors.invoices"
+      />
+      <InvoiceSchedule
+        v-model:rows="invoiceRows"
+        :documents="scheduleDocuments"
+        :errors="rowErrors"
+      />
+      <div class="flex flex-wrap gap-3">
+        <Button
+          variant="solid"
+          size="lg"
+          label="Continue to review"
+          @click="continueFromInvoices"
+        />
+        <Button size="lg" label="Back" icon-left="lucide-arrow-left" @click="goTo('documents')" />
       </div>
     </section>
 
@@ -359,6 +518,14 @@ async function send() {
           <dd class="tabular-nums text-ink-gray-9">
             {{ formatAmount(normaliseAmount(draft.amount), 'LSL') }}
           </dd>
+          <dt class="text-ink-gray-6">Output VAT for the period</dt>
+          <dd class="tabular-nums text-ink-gray-9">
+            {{ formatAmount(normaliseAmount(draft.outputVat), 'LSL') }}
+          </dd>
+          <dt class="text-ink-gray-6">Input VAT for the period</dt>
+          <dd class="tabular-nums text-ink-gray-9">
+            {{ formatAmount(normaliseAmount(draft.inputVat), 'LSL') }}
+          </dd>
           <dt class="text-ink-gray-6">Reason</dt>
           <dd class="text-ink-gray-9">{{ reasonLabel(draft.reason) }}</dd>
           <dt class="text-ink-gray-6">Explanation</dt>
@@ -389,6 +556,31 @@ async function send() {
         </ul>
       </div>
 
+      <div class="rounded-lg border border-outline-gray-2 p-5">
+        <div class="mb-3 flex items-center justify-between gap-3">
+          <h3 class="text-base font-semibold text-ink-gray-9">
+            Purchase invoices ({{ invoiceRows.length }})
+          </h3>
+          <Button aria-label="Change purchase invoices" @click="goTo('invoices')">Change</Button>
+        </div>
+        <ul class="space-y-1">
+          <li v-for="(row, index) in invoiceRows" :key="row.id" class="break-words text-ink-gray-9">
+            {{ index + 1 }}. {{ row.supplierName }} · {{ row.invoiceNumber }}
+            <span class="tabular-nums text-ink-gray-6">
+              · VAT {{ formatAmount(normaliseAmount(row.vat), 'LSL') }}
+            </span>
+          </li>
+        </ul>
+      </div>
+
+      <PresubmissionReview
+        :review="review"
+        :loading="reviewing"
+        :error="reviewError"
+        @fix="(target) => goTo(target)"
+        @retry="runReview"
+      />
+
       <FormControl
         v-model="draft.declaration"
         type="checkbox"
@@ -405,7 +597,7 @@ async function send() {
           :disabled="sending || !tenantId"
           @click="send"
         />
-        <Button size="lg" label="Back" icon-left="lucide-arrow-left" @click="goTo('documents')" />
+        <Button size="lg" label="Back" icon-left="lucide-arrow-left" @click="goTo('invoices')" />
       </div>
     </section>
 
