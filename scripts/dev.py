@@ -195,6 +195,8 @@ def check():
         ["python3", "-m", "unittest", "discover", "-s", "tests/ai", "-p", "test_case_briefing*.py"],
         # TAX-056 agent evaluation and injection regression; skips without LangGraph.
         ["python3", "-m", "unittest", "discover", "-s", "tests/ai", "-p", "test_agent_eval*.py"],
+        # TAX-068 institutional knowledge retrieval (pure Python).
+        ["python3", "-m", "unittest", "discover", "-s", "tests/ai", "-p", "test_institutional*.py"],
         ["python3", "integration/api/contract.py"],
         ["python3", "-m", "unittest", "discover", "-s", "tests/contracts", "-v"],
         # Frappe-free app logic (portal boundary/fixtures); bench tests cover the rest.
