@@ -5,11 +5,11 @@
   "owner": "Keletso",
   "area": "integration",
   "phase": "foundation",
-  "status": "READY",
+  "status": "IN_PROGRESS",
   "priority": "P0",
   "depends_on": [],
-  "claimed_by": null,
-  "branch": null,
+  "claimed_by": "codex-ci-recovery-20261105",
+  "branch": "task/TAX-084",
   "pr": null,
   "scope": "Reduce superseded hosted CI work and document verified local checks for PRs 174\u2013177 during the included-usage block; preserve checks and human review.",
   "inputs": [
@@ -39,6 +39,10 @@
   ],
   "evidence": [],
   "notes": [
-    "User requested free recovery after hosted Actions usage exhausted. New task bootstrapped locally because task.py start requires an existing task on local main; main will not be pushed."
+    "User requested free recovery after hosted Actions usage exhausted. New task bootstrapped locally because task.py start requires an existing task on local main; main will not be pushed.",
+    {
+      "at": "2026-11-05T05:16:27.778913+00:00",
+      "text": "Claimed by codex-ci-recovery-20261105"
+    }
   ]
 }
