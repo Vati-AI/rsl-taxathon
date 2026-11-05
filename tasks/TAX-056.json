@@ -5,7 +5,7 @@
   "owner": "Leseli",
   "area": "tests/ai",
   "phase": "pilot",
-  "status": "IN_PROGRESS",
+  "status": "IN_REVIEW",
   "priority": "P0",
   "depends_on": [
     "TAX-049",
@@ -16,7 +16,7 @@
   ],
   "claimed_by": "leseli-claude-20261105-056",
   "branch": "task/TAX-056",
-  "pr": null,
+  "pr": "https://github.com/Vati-AI/rsl-taxathon/pull/189",
   "scope": "Create expected output/citation checks and hostile-document fixtures for every playbook",
   "inputs": [
     "PROJECT.md",
@@ -70,6 +70,10 @@
     {
       "at": "2026-11-05T07:41:48.638632+00:00",
       "text": "Claimed by leseli-claude-20261105-056"
+    },
+    {
+      "at": "2026-11-05T08:04:08.311480+00:00",
+      "text": "Agent leseli-claude-20261105-056 finished implementation and opened review (https://github.com/Vati-AI/rsl-taxathon/pull/189, reusing the claim PR). Evaluation gate passes with 11 known failures (findings F1-F4) reported in docs/evidence/TAX-056/README.md. mypy ran with the pinned requirements-dev.lock environment using a pure-Python mypy build because Smart App Control blocks the compiled one."
     }
   ]
 }
