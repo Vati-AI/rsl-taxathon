@@ -2,7 +2,7 @@
 
 ## Delivery order (ADR-038)
 
-From 2026-11-05 Keletso owns every open task except TAX-104 (Leseli, in progress). Take the ready task with the lowest `sequence`. A later task can start early when its dependencies are DONE.
+From 2026-11-05 Keletso owns every open task except TAX-104 and TAX-102 (Leseli). Take the ready task with the lowest `sequence`. A later task can start early when its dependencies are DONE.
 
 | Seq | Task | Title |
 |---|---|---|
@@ -120,7 +120,7 @@ Human owner = accountability. AI agent = implementer recorded in `claimed_by`. T
 | [TAX-099](TAX-099.json) | Keletso | pilot | Taxpayer evidence-response assistant | TAX-098, TAX-045 |
 | [TAX-100](TAX-100.json) | Keletso | pilot | Taxpayer-scoped assistant service in Frappe | TAX-096, TAX-029, TAX-031, TAX-032 |
 | [TAX-101](TAX-101.json) | Keletso | pilot | Taxpayer portal assistant UI | TAX-100, TAX-098, TAX-092 |
-| [TAX-102](TAX-102.json) | Keletso | pilot | Taxpayer assistant scenarios, expected outcomes and leakage tests | TAX-024 |
+| [TAX-102](TAX-102.json) | Leseli | pilot | Taxpayer assistant scenarios, expected outcomes and leakage tests | TAX-024 |
 | [TAX-103](TAX-103.json) | Keletso | pilot | Live-app end-to-end regression re-run | TAX-055, TAX-091, TAX-092, TAX-094, TAX-106, TAX-107, TAX-108, TAX-109 |
 | [TAX-104](TAX-104.json) | Leseli | pilot | Fix auditor defects found by TAX-055 | TAX-055 |
 | [TAX-105](TAX-105.json) | Keletso | pilot | Verify complete frontend and native UI integration scope | none |
