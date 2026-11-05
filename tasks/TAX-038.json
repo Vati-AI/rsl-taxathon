@@ -5,7 +5,7 @@
   "owner": "Keletso",
   "area": "integration",
   "phase": "pilot",
-  "status": "IN_REVIEW",
+  "status": "DONE",
   "priority": "P0",
   "depends_on": [
     "TAX-028",
@@ -68,6 +68,10 @@
     {
       "at": "2026-11-04T14:04:39.142513+00:00",
       "text": "Agent finished implementation and opened human review for owner Keletso. Live Docling run still pending (Docker stopped, low disk on implementing machine). task.py finish steps run individually: its dev.py check/quality.py gate fails on this Windows checkout only (POSIX file-mode tooling tests; CRLF vs Prettier), documented in the PR."
+    },
+    {
+      "at": "2026-11-05T00:13:04.705731+00:00",
+      "text": "Verified implementation PR #152 merged (d8d451f, 2026-11-04T16:50Z); all acceptance criteria and evidence recorded."
     }
   ]
 }
