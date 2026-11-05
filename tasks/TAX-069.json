@@ -27,11 +27,11 @@
   "acceptance": [
     {
       "text": "Link investigation decision to objections, appeals and reviewed final outcomes",
-      "done": false
+      "done": true
     },
     {
       "text": "Overturned findings remain traceable and trigger review signals without rewriting original evidence",
-      "done": false
+      "done": true
     },
     {
       "text": "Record relevant tests and evidence, update task status and open a human-review PR",
@@ -45,7 +45,16 @@
     "update-project-task",
     "finish-task"
   ],
-  "evidence": [],
+  "evidence": [
+    {
+      "criterion": 1,
+      "text": "Implemented vati_tax.challenges (rules/service/store/api) + Vati Decision Challenge DocType: objection to an approved Vati Decision, appeal linked to the reviewed objection (parent_challenge_id), reviewed outcome (upheld/partially_overturned/overturned/withdrawn) by a supervisor who did not propose/approve the decision, lodge it or review the objection; get_challenge_history returns decision -> objection -> appeal -> final_outcome. Observed 2026-11-05: 22 Frappe-free tests pass (challenges/test_service.py); bench module challenges/test_challenges_bench 6/6 OK on a Frappe v16.54.0 site incl. test_objection_appeal_and_final_outcome_are_linked_and_persisted. ADR-023."
+    },
+    {
+      "criterion": 2,
+      "text": "Observed 2026-11-05 on a Frappe site (bench run-tests --module vati_tax.challenges.test_challenges_bench, 6/6 OK): after an overturned review the Vati Decision row (decided fields and modified timestamp) and all earlier audit-ledger entries are unchanged, the chain verifies intact, Jube received no extra call; a review_only decision_overturned signal names the original proposer and is withheld from that viewer. Frappe-free tests also cover decision_changed refusal when the decision differs from the lodged digest and that sync bookkeeping is not treated as a change. scripts/frappe_dev.py verify (clean site, migrate twice, 133 bench + 321 app tests) exit 0. Mutation check: removing proposer/approver exclusion, taxpayer ownership, digest check, overturn signal or approved-only rule each fails the suite."
+    }
+  ],
   "notes": [
     {
       "at": "2026-11-05T02:12:36.931270+00:00",
