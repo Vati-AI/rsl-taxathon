@@ -131,8 +131,8 @@ afterEach(() => {
   document.body.innerHTML = '';
 });
 
-async function mountPanel() {
-  wrapper = mount(DecisionPanel, { props: { item: ITEM }, attachTo: document.body });
+async function mountPanel(item = ITEM) {
+  wrapper = mount(DecisionPanel, { props: { item }, attachTo: document.body });
   await flushPromises();
   return wrapper;
 }
@@ -235,5 +235,25 @@ describe('DecisionPanel', () => {
     expect(button('Approve…')!.disabled).toBe(true);
     expect(panel.text()).toContain('a different supervisor must approve');
     expect(button('Withdraw…')).toBeTruthy();
+  });
+
+  it('explains a blocked suggestion while another decision waits for approval', async () => {
+    server.open = decision(ME);
+    await mountPanel();
+    const use = button('Use as a starting point')!;
+    expect(use.disabled).toBe(true);
+    const reason = document.getElementById(use.getAttribute('aria-describedby')!);
+    expect(reason?.textContent?.trim()).toBe(
+      'Another decision on this case is waiting for approval.',
+    );
+  });
+
+  it('says a resolved case is resolved, not that a decision is waiting (TAX-104)', async () => {
+    await mountPanel({ ...ITEM, status: 'RESOLVED' });
+    const use = button('Use as a starting point')!;
+    expect(use.disabled).toBe(true);
+    const reason = document.getElementById(use.getAttribute('aria-describedby')!);
+    expect(reason?.textContent?.trim()).toBe('This case is resolved.');
+    expect(document.body.textContent).not.toContain('waiting for approval');
   });
 });

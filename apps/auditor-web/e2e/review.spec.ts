@@ -99,6 +99,10 @@ test('the proposer cannot approve; a different supervisor approves and Jube appl
   await expect(
     page.getByText('This case is resolved. No further decision can be proposed.'),
   ).toBeVisible();
+  // The disabled suggestion says why: the case is resolved, nothing is waiting (TAX-104).
+  const use = page.getByRole('button', { name: 'Use as a starting point' }).first();
+  await expect(use).toBeDisabled();
+  await expect(use).toHaveAccessibleDescription('This case is resolved.');
 });
 
 test('a stale view is refused, offers a reload and keeps the officer text', async ({

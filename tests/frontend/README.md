@@ -170,13 +170,10 @@ element only. Current entries:
   the loading-demo button shows "Show loading" but its accessible name is
   "Saving" (`apps/auditor-web/src/views/ShowcaseView.vue`). Owner: auditor
   frontend. Remove the entry when fixed.
-- SYN-005 review page, `color-contrast` on `#reject-reason-error` (WCAG 1.4.3,
-  found by TAX-055): frappe-ui's field error text is #e03434 on white, 4.45:1.
-  The taxpayer portal overrides it with `--ink-red-8`
-  (`apps/taxpayer-web/src/styles.css`); the auditor app has no such rule, so
-  other auditor field errors using frappe-ui's error slot are likely affected
-  too (only this one is exercised). Owner: auditor frontend. Remove the entry
-  when fixed.
+
+The SYN-005 `color-contrast` entry on `#reject-reason-error` (found by TAX-055)
+was removed by TAX-104: the auditor app now darkens frappe-ui field errors to
+`--ink-red-8`, as the taxpayer portal does.
 
 ## Screenshots and baselines
 

@@ -302,6 +302,22 @@ test.describe('accessibility', () => {
     });
   }
 
+  test('field errors meet 4.5:1 text contrast (TAX-104)', async ({ page }) => {
+    // frappe-ui's own field error red (text-ink-red-5) measured 4.45:1 on white;
+    // apps/auditor-web/src/style.css darkens it.
+    await page.goto('/auditor/showcase');
+    await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
+    await page.getByRole('button', { name: 'Validate example' }).click();
+    await expect(page.getByText('Enter a case reference in the format SYN-001.')).toBeVisible();
+    const results = await new AxeBuilder({ page })
+      .include("[data-slot='error']")
+      .withRules(['color-contrast'])
+      .analyze();
+    expect(results.violations.flatMap((v) => v.nodes.map((n) => n.target.join(' ')))).toEqual([]);
+    // The three showcase field errors were actually measured, not skipped.
+    expect(results.passes.flatMap((v) => v.nodes)).toHaveLength(3);
+  });
+
   test('reflows at 320px (400% zoom equivalent) without page-wide horizontal scroll', async ({
     page,
   }) => {

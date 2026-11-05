@@ -14,8 +14,11 @@ const props = defineProps<{
   findings: Finding[];
   allowed: readonly ReviewPermission[];
   caseStatus: CaseStatus;
-  /** False while another decision is open: new proposals wait for it. */
-  canPropose: boolean;
+  /**
+   * Why a new decision cannot be proposed (the case is resolved, or another decision
+   * is waiting for approval), or null when it can.
+   */
+  proposeBlocked: string | null;
 }>();
 const emit = defineEmits<{ start: [finding: Finding] }>();
 
@@ -27,7 +30,7 @@ function blocked(finding: Finding): string | null {
       ? null
       : PERMISSION_REASONS['evidence_request.authorise'];
   if (!props.allowed.includes('decision.propose')) return PERMISSION_REASONS['decision.propose'];
-  if (!props.canPropose) return 'Another decision on this case is waiting for approval.';
+  if (props.proposeBlocked) return props.proposeBlocked;
   return outcomeAvailability(start.outcome, props.caseStatus, props.allowed).reason;
 }
 </script>

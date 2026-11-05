@@ -110,6 +110,14 @@ const allowed = computed(() => review.value?.viewer.allowed_actions ?? []);
 const openDecision = computed(() => review.value?.open_decision ?? null);
 const suggested = computed(() => suggestions(data.value?.findings ?? []));
 const resolved = computed(() => props.item.status === 'RESOLVED');
+/** Why no new decision can be proposed right now, or null when one can. */
+const proposeBlocked = computed(() =>
+  resolved.value
+    ? 'This case is resolved.'
+    : openDecision.value
+      ? 'Another decision on this case is waiting for approval.'
+      : null,
+);
 const viewerRoles = computed(
   () => review.value?.viewer.roles.map((r) => ROLE_LABELS[r] ?? r).join(', ') || 'Officer',
 );
@@ -451,7 +459,7 @@ function reloadAfterRefusal() {
               :findings="suggested"
               :allowed="allowed"
               :case-status="item.status"
-              :can-propose="!openDecision && !resolved"
+              :propose-blocked="proposeBlocked"
               @start="startFrom"
             />
             <p v-else class="text-ink-gray-5">No agent or rule suggestions for this case.</p>
