@@ -2,7 +2,7 @@ import { createRouter, createWebHistory, type RouteRecordRaw } from 'vue-router'
 
 declare module 'vue-router' {
   interface RouteMeta {
-    section: 'overview' | 'cases' | 'management' | 'showcase' | 'none';
+    section: 'overview' | 'cases' | 'management' | 'integrity' | 'showcase' | 'none';
     title: string;
   }
 }
@@ -53,6 +53,13 @@ export const routes: RouteRecordRaw[] = [
     name: 'management',
     component: () => import('./views/ManagementView.vue'),
     meta: { section: 'management', title: 'Management dashboard' },
+  },
+  {
+    // TAX-077: restricted policy-gap and integrity aggregates (supervisors only).
+    path: '/management/integrity',
+    name: 'integrity',
+    component: () => import('./views/IntegrityView.vue'),
+    meta: { section: 'integrity', title: 'Integrity review' },
   },
   {
     path: '/showcase',
