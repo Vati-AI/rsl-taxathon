@@ -27,11 +27,11 @@
   "acceptance": [
     {
       "text": "Evaluate reviewed outcomes with temporal holdout, false-positive metrics and drift reporting",
-      "done": false
+      "done": true
     },
     {
       "text": "New calibration cannot replace approved model without review; measure legitimate-case regressions",
-      "done": false
+      "done": true
     },
     {
       "text": "Record relevant tests and evidence, update task status and open a human-review PR",
@@ -45,7 +45,16 @@
     "update-project-task",
     "finish-task"
   ],
-  "evidence": [],
+  "evidence": [
+    {
+      "criterion": 1,
+      "text": "ai/evaluation/risk_calibration.py (ADR-030) evaluates the approved TAX-035 ruleset with tax_risk.evaluate_record against reviewed outcomes read only from TAX-059 ledger entries (entry_view plus verify_ledger report; proposed by one officer, approved by a different supervisor with the TAX-046 outcome as detail, executed, not overturned; other decisions excluded with reasons). Temporal holdout: calibration 2024-Q3..2025-Q2 with labels approved before 2025-09-15 (TAX066-32 excluded as label_after_cutoff), holdout 2025-Q3..2025-Q4; flipping every holdout label leaves the candidate unchanged. Holdout false positives listed by case: approved 8/9 (34,36,37,39,41,44,45,47) -> candidate 5/9 (37,39,44,45,47), recall 7/7 both. Drift: feature_psi:imported_service_unverified_count 0.4318 > 0.25 and rule_rate:TR-IMPORTED-SERVICE-GAP 0.0968 -> 0.3750, plus per-period table. data/synthetic/tax066_reviewed_outcomes.json is synthetic."
+    },
+    {
+      "criterion": 2,
+      "text": "Candidate 1.1.0 is status proposed_calibration with auto_activate false (TR-VAT-REFUND-MISMATCH 0.00->100.00, TR-RELATED-PARTY-FEES 0.00->10000.00). promote() returns only an approval record and requires a SYN-SUPERVISOR-NN who is not the proposer, a rationale, the exact candidate, report and current parent digests and acknowledgement of every drift alert; a blocked metric gate is refused even when approved. Legitimate-case regressions and newly missed review-warranted holdout cases are measured and gated at 0 (shipped run: 0 and 0; seeded tests: TAX066-50 regression and TAX066-49 new miss both block). Nothing writes integration/jube/rules/tax_risk_rules.v1.json (byte-for-byte test; write_candidate refuses the rules directory). tests/ai/test_risk_calibration.py: 27 tests OK; python -m ai.evaluation.risk_calibration --check: baseline PASS."
+    }
+  ],
   "notes": [
     {
       "at": "2026-11-03T15:40:40.955115+00:00",
