@@ -23,6 +23,7 @@ Proposed UI state projection (map to configured Jube workflow; do not create a s
 
 TAX-033 implements the outbox as the `Vati Outbox Event`, `Vati Outbox Attempt` and `Vati Outbox Effect` DocTypes ([ADR-008](decisions/ADR-008-durable-outbox.md)).
 TAX-031 implements Taxpayer, Submission, VATReturn, RefundClaim and imported services as `Vati Taxpayer`, `Vati Submission`, `Vati VAT Return`, `Vati Refund Claim` and `Vati Imported Service` (LSL Currency columns with strict decimal parsing, `YYYY-MM` or `YYYY-Qn` periods; [ADR-010](decisions/ADR-010-submission-doctypes.md)).
+TAX-039 adds `Vati Case Sync` (staff-only mirror of one Jube case: Jube case number, projected status, escalation, closure and the `observed_at` watermark) and `Vati Bridge Inbound Event` (replay ledger for posted case-state envelopes). `Vati Submission` gains the server-owned `review_status` and `review_status_at`, the only Jube-derived fields a taxpayer can read ([ADR-028](decisions/ADR-028-frappe-jube-submission-bridge.md)).
 
 Maintain a `service_links` table unique on (tenant_id, service, external_id), mapping case_id/evidence_id to Jube/OpenAleph/Frappe IDs. Frappe document names are namespaced by DocType. TAX-030 implements this as the `Vati Service Link` DocType ([ADR-006](decisions/ADR-006-canonical-ids-service-links.md)). Optimistic version checks prevent concurrent decision overwrites. Idempotency key and request digest prevent replay with changed payloads. Foreign keys include tenant boundaries or equivalent database constraints.
 

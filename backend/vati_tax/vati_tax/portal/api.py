@@ -24,6 +24,7 @@ from typing import Any, NoReturn
 import frappe
 from frappe import _
 
+from vati_tax.bridge import store as bridge_store
 from vati_tax.identity.permissions import get_principal
 from vati_tax.identity.policy import TAXPAYER, canonical_uuid
 from vati_tax.ids.canonical import CaseNotFound, MappingError
@@ -192,6 +193,8 @@ def _view(submission_id: str, *, replayed: bool) -> dict[str, Any]:
             "currency": sub.currency,
             "claim_reason": claim.claim_reason,
             "evidence_count": len(domain.evidence_ids(claim.evidence_ids)),
+            # TAX-039: the taxpayer-facing review status only; never Jube state.
+            **bridge_store.taxpayer_view(submission_id),
         },
     }
 
