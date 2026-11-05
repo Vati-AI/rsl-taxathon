@@ -2,7 +2,7 @@
  "actions": [],
  "autoname": "hash",
  "creation": "2026-11-05 12:00:00.000000",
- "description": "Ledger of FollowTheMoney entities written to the tenant's OpenAleph collection (TAX-087, ADR-036). One row per entity and collection; written only by vati_tax.pipeline. A changed entity is never re-sent: it is flagged for a reviewed re-index.",
+ "description": "Ledger of FollowTheMoney entities written to the tenant's OpenAleph collection (TAX-087, ADR-037). One row per entity and collection; written only by vati_tax.pipeline. A changed entity is never re-sent: it is flagged for a reviewed re-index.",
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [

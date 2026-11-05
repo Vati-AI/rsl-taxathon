@@ -1,4 +1,4 @@
-"""In-process stand-ins for Jube, Docling, OpenAleph and yente (TAX-087, ADR-036).
+"""In-process stand-ins for Jube, Docling, OpenAleph and yente (TAX-087, ADR-037).
 
 Used only by the bench tests and by ``pipeline.demo`` on a disposable ``verify-*`` site
 when a service has no configuration. They are transports (Docling, OpenAleph, yente)

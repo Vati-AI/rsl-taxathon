@@ -1,4 +1,4 @@
-# ADR-036: Event wiring from Frappe to Jube, Docling, OpenAleph and yente
+# ADR-037: Event wiring from Frappe to Jube, Docling, OpenAleph and yente
 
 Status: proposed (TAX-087, pending review by Keletso for integration and Edga for Frappe)
 Owner and task: Leseli (owner, handed over by Keletso), TAX-087. Implemented by leseli-claude-20261105-087.

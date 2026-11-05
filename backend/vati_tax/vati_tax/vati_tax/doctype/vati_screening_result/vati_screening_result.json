@@ -2,7 +2,7 @@
  "actions": [],
  "autoname": "hash",
  "creation": "2026-11-05 12:00:00.000000",
- "description": "yente match candidates for one case party on one dataset version (TAX-087, ADR-036). Candidates are proposals awaiting officer review (TAX-037); nothing here confirms or merges an identity. Written only by vati_tax.pipeline.",
+ "description": "yente match candidates for one case party on one dataset version (TAX-087, ADR-037). Candidates are proposals awaiting officer review (TAX-037); nothing here confirms or merges an identity. Written only by vati_tax.pipeline.",
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [

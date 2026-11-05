@@ -188,7 +188,7 @@ The submission's `review_status` and `review_status_at` are server-owned: every 
 
 ## Event wiring to Docling, OpenAleph and yente (TAX-087)
 
-See [ADR-036](decisions/ADR-036-event-wiring-frappe-services.md).
+See [ADR-037](decisions/ADR-037-event-wiring-frappe-services.md).
 
 | Record or method | Who | Refused when |
 | --- | --- | --- |

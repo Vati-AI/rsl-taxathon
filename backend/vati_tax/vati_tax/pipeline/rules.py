@@ -1,4 +1,4 @@
-"""Rules for the TAX-087 event wiring (ADR-036). Pure functions, no Frappe import.
+"""Rules for the TAX-087 event wiring (ADR-037). Pure functions, no Frappe import.
 
 The pipeline after a taxpayer sends a claim (or evidence reaches a case):
 

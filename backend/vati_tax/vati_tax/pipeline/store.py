@@ -1,4 +1,4 @@
-"""Frappe binding of the TAX-087 event wiring (ADR-036).
+"""Frappe binding of the TAX-087 event wiring (ADR-037).
 
 Entry points (all in the caller's transaction, so an event commits with the change
 that caused it, or not at all):

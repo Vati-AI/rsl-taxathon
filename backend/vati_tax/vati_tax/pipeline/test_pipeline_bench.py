@@ -1,4 +1,4 @@
-"""Bench tests for the TAX-087 event wiring (ADR-036).
+"""Bench tests for the TAX-087 event wiring (ADR-037).
 
 Run on a disposable site: ``python3 scripts/frappe_dev.py verify``. Jube is replaced
 at the port level and Docling, OpenAleph and yente at the transport level by

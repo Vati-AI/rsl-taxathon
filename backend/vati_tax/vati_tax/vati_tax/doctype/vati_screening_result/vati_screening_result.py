@@ -1,4 +1,4 @@
-"""yente candidates for one case party on one dataset version (TAX-087, ADR-036).
+"""yente candidates for one case party on one dataset version (TAX-087, ADR-037).
 
 ``result_key`` (tenant, case, entity, dataset, version) is unique, so each party is
 screened once per dataset version. Candidates are stored as contract

@@ -43,7 +43,7 @@ scheduler_events = {
 }
 vati_outbox_handlers = {
     "case.registered": "vati_tax.bridge.store.handle_case_registered",
-    # TAX-087 (ADR-036): Docling extraction, then OpenAleph entities and yente screening.
+    # TAX-087 (ADR-037): Docling extraction, then OpenAleph entities and yente screening.
     "evidence.received": "vati_tax.pipeline.store.handle_evidence_received",
     "extraction.completed": "vati_tax.pipeline.store.handle_extraction_settled",
     "extraction.failed": "vati_tax.pipeline.store.handle_extraction_settled",

@@ -1,4 +1,4 @@
-"""Ledger of entities written to a tenant's OpenAleph collection (TAX-087, ADR-036).
+"""Ledger of entities written to a tenant's OpenAleph collection (TAX-087, ADR-037).
 
 ``index_key`` (tenant, collection, entity) is unique, so a concurrent write of the
 same entity loses at the database. Rows are written only by ``vati_tax.pipeline``.

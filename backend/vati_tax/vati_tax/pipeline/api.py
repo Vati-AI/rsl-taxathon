@@ -1,4 +1,4 @@
-"""Operator view of the TAX-087 pipeline for one case (ADR-036).
+"""Operator view of the TAX-087 pipeline for one case (ADR-037).
 
 Only site operators (``System Manager``) read it, as with the TAX-033 dead-letter
 endpoints in ``vati_tax.outbox.api``: retrying a dead-lettered step is
