@@ -1,0 +1,60 @@
+{
+  "id": "TAX-100",
+  "kind": "task",
+  "title": "Taxpayer-scoped assistant service in Frappe",
+  "owner": "Edga",
+  "area": "backend",
+  "phase": "pilot",
+  "status": "BACKLOG",
+  "priority": "P1",
+  "depends_on": [
+    "TAX-096",
+    "TAX-029",
+    "TAX-031",
+    "TAX-032"
+  ],
+  "claimed_by": null,
+  "branch": null,
+  "pr": null,
+  "scope": "Serve the TAX-096 taxpayer-assistance operations from Frappe: authenticate the taxpayer session, build the assistant's permission-scoped inputs (own submissions, documents, validation results, taxpayer-facing requests), call the assistant runtime, store assistant drafts and provenance, and require explicit taxpayer confirmation before anything changes a submission or is sent to RSL",
+  "inputs": [
+    "PROJECT.md",
+    "docs/ARCHITECTURE.md",
+    "docs/API_CONTRACTS.md",
+    "docs/REQUIREMENTS.md",
+    "docs/ENGINEERING_STANDARD.md",
+    "docs/V1_ACCEPTANCE.md",
+    "docs/AI_STANDARD.md",
+    "docs/decisions/ADR-031-ai-model-providers.md",
+    "integration/api/openapi.json",
+    "backend"
+  ],
+  "acceptance": [
+    {
+      "text": "A taxpayer can only obtain assistance for their own tenant and records; internal-only fields never leave the service (tests); confirmation is a separate, audited, idempotent step",
+      "done": false
+    },
+    {
+      "text": "Confirmed submissions and evidence responses enter the existing Frappe/Jube flow (TAX-039, TAX-045) unchanged; unconfirmed drafts never do",
+      "done": false
+    },
+    {
+      "text": "Record relevant tests and evidence, update task status and open a human-review PR",
+      "done": false
+    }
+  ],
+  "verification": "Confirmed submissions and evidence responses enter the existing Frappe/Jube flow (TAX-039, TAX-045) unchanged; unconfirmed drafts never do",
+  "skills": [
+    "start-task",
+    "implement-change",
+    "update-project-task",
+    "finish-task"
+  ],
+  "evidence": [],
+  "notes": [
+    {
+      "at": "2026-11-05T10:07:38.336884+00:00",
+      "text": "Added 2026-11-05 to record the agreed AI architecture (ADR-031): hosted models through a role router with local/template fallback, and the taxpayer-side assistant."
+    }
+  ]
+}

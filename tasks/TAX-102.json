@@ -1,0 +1,55 @@
+{
+  "id": "TAX-102",
+  "kind": "task",
+  "title": "Taxpayer assistant scenarios, expected outcomes and leakage tests",
+  "owner": "Yellow",
+  "area": "data",
+  "phase": "pilot",
+  "status": "BACKLOG",
+  "priority": "P1",
+  "depends_on": [
+    "TAX-024"
+  ],
+  "claimed_by": null,
+  "branch": null,
+  "pr": null,
+  "scope": "Independently define synthetic taxpayer-side scenarios and expected outcomes before assistant tuning: a 15-invoice upload with known problem invoices (wrong totals, duplicates, wrong period, missing document), an RSL evidence request with matched and missing items, and adversarial cases (injection in invoices, attempts to obtain risk scores or other taxpayers' data, requests to change declared figures)",
+  "inputs": [
+    "PROJECT.md",
+    "docs/ARCHITECTURE.md",
+    "docs/API_CONTRACTS.md",
+    "docs/REQUIREMENTS.md",
+    "docs/ENGINEERING_STANDARD.md",
+    "docs/V1_ACCEPTANCE.md",
+    "docs/AI_STANDARD.md",
+    "data/synthetic"
+  ],
+  "acceptance": [
+    {
+      "text": "Fixtures are synthetic, versioned and independent of the assistant implementation; each has an expected outcome a test can check",
+      "done": false
+    },
+    {
+      "text": "Leakage and injection cases are runnable by the TAX-098/TAX-099 tests and by agent_eval, and fail if the assistant reveals internal data, invents evidence or changes figures",
+      "done": false
+    },
+    {
+      "text": "Record relevant tests and evidence, update task status and open a human-review PR",
+      "done": false
+    }
+  ],
+  "verification": "Leakage and injection cases are runnable by the TAX-098/TAX-099 tests and by agent_eval, and fail if the assistant reveals internal data, invents evidence or changes figures",
+  "skills": [
+    "start-task",
+    "implement-change",
+    "update-project-task",
+    "finish-task"
+  ],
+  "evidence": [],
+  "notes": [
+    {
+      "at": "2026-11-05T10:07:38.336884+00:00",
+      "text": "Added 2026-11-05 to record the agreed AI architecture (ADR-031): hosted models through a role router with local/template fallback, and the taxpayer-side assistant."
+    }
+  ]
+}

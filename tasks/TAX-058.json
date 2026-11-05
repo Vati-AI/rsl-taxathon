@@ -16,7 +16,9 @@
     "TAX-092",
     "TAX-093",
     "TAX-094",
-    "TAX-095"
+    "TAX-095",
+    "TAX-097",
+    "TAX-101"
   ],
   "claimed_by": null,
   "branch": null,
@@ -57,6 +59,10 @@
     {
       "at": "2026-11-05T06:39:04.925015+00:00",
       "text": "2026-11-05: the demo now depends on the live-system tasks TAX-085..095 found missing in the runtime gap analysis."
+    },
+    {
+      "at": "2026-11-05T10:07:38.336884+00:00",
+      "text": "2026-11-05 (ADR-031): the demo includes model-assisted investigation (TAX-097) and the taxpayer assistant (TAX-101)."
     }
   ]
 }

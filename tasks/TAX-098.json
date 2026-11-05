@@ -1,0 +1,60 @@
+{
+  "id": "TAX-098",
+  "kind": "task",
+  "title": "Taxpayer compliance assistant agent",
+  "owner": "Gupta",
+  "area": "ai",
+  "phase": "pilot",
+  "status": "BACKLOG",
+  "priority": "P1",
+  "depends_on": [
+    "TAX-089",
+    "TAX-096",
+    "TAX-044",
+    "TAX-038"
+  ],
+  "claimed_by": null,
+  "branch": null,
+  "pr": null,
+  "scope": "LangGraph taxpayer assistant using the fast role: submission guidance for required fields and supporting information, validation-explanation tools that turn deterministic pre-submission results (totals, missing documents, duplicate invoices, inconsistent periods) into actionable instructions, document assistance over Docling output with document references and fields flagged for taxpayer confirmation (document role only when long-context reasoning is needed), and recurring-mistake guidance from the taxpayer's own prior validation results",
+  "inputs": [
+    "PROJECT.md",
+    "docs/ARCHITECTURE.md",
+    "docs/API_CONTRACTS.md",
+    "docs/REQUIREMENTS.md",
+    "docs/ENGINEERING_STANDARD.md",
+    "docs/V1_ACCEPTANCE.md",
+    "docs/AI_STANDARD.md",
+    "docs/decisions/ADR-031-ai-model-providers.md",
+    "ai/tools/refund_reconciliation.py",
+    "integration/docling/README.md"
+  ],
+  "acceptance": [
+    {
+      "text": "The assistant runs in the taxpayer permission context with its own tool allowlist: it sees only that taxpayer's submissions, documents, validation results and taxpayer-facing requests; it cannot reach risk scores, internal notes, findings or other taxpayers (negative tests)",
+      "done": false
+    },
+    {
+      "text": "It never fabricates evidence, changes declared figures or submits; it proposes corrections the taxpayer must confirm; with mock models the 15-invoice scenario from TAX-102 identifies exactly the expected problem invoices with references and explanations",
+      "done": false
+    },
+    {
+      "text": "Record relevant tests and evidence, update task status and open a human-review PR",
+      "done": false
+    }
+  ],
+  "verification": "It never fabricates evidence, changes declared figures or submits; it proposes corrections the taxpayer must confirm; with mock models the 15-invoice scenario from TAX-102 identifies exactly the expected problem invoices with references and explanations",
+  "skills": [
+    "start-task",
+    "implement-change",
+    "update-project-task",
+    "finish-task"
+  ],
+  "evidence": [],
+  "notes": [
+    {
+      "at": "2026-11-05T10:07:38.336884+00:00",
+      "text": "Added 2026-11-05 to record the agreed AI architecture (ADR-031): hosted models through a role router with local/template fallback, and the taxpayer-side assistant."
+    }
+  ]
+}

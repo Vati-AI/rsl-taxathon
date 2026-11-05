@@ -50,5 +50,10 @@
     "finish-task"
   ],
   "evidence": [],
-  "notes": []
+  "notes": [
+    {
+      "at": "2026-11-05T10:07:38.336884+00:00",
+      "text": "2026-11-05 (ADR-031): when TAX-098 is available, reminders can use its validation explanations; this task stays deterministic otherwise."
+    }
+  ]
 }

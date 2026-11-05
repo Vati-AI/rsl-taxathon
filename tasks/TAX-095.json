@@ -35,6 +35,10 @@
       "done": false
     },
     {
+      "text": "Model keys are set only in the demo laptop's ignored .env (Groq org with Zero Data Retention enabled); observed rate limits are recorded; the demo still completes, visibly labelled, on the local or template fallback when offline or rate-limited",
+      "done": false
+    },
+    {
       "text": "Record relevant tests and evidence, update task status and open a human-review PR",
       "done": false
     }
@@ -51,6 +55,10 @@
     {
       "at": "2026-11-05T06:39:04.925015+00:00",
       "text": "Added 2026-11-05 after a runtime gap analysis for the RSL demo: the component code existed but this link was not wired at runtime and no task covered it."
+    },
+    {
+      "at": "2026-11-05T10:07:38.336884+00:00",
+      "text": "2026-11-05 (ADR-031): added model key, quota and fallback handling for the presentation."
     }
   ]
 }

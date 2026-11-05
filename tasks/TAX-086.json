@@ -10,12 +10,13 @@
   "depends_on": [
     "TAX-030",
     "TAX-035",
-    "TAX-046"
+    "TAX-046",
+    "TAX-096"
   ],
   "claimed_by": null,
   "branch": null,
   "pr": null,
-  "scope": "Store per-case findings from Jube rules and AI playbooks (code, explanation, rule/playbook version, evidence citations, source, status) as tenant-scoped, append-only Frappe records the officer UI and decisions can read",
+  "scope": "Store per-case findings from Jube rules and AI playbooks (code, explanation, rule/playbook version, evidence citations, source, status) as tenant-scoped, append-only Frappe records the officer UI and decisions can read; include analysis provenance (provider, model id, prompt version, fallback level) and officer finding feedback (accepted/modified/rejected with reason)",
   "inputs": [
     "PROJECT.md",
     "docs/ARCHITECTURE.md",
@@ -37,6 +38,10 @@
       "done": false
     },
     {
+      "text": "Findings and briefings store the TAX-096 analysis provenance; officer feedback on a finding (accepted/modified/rejected with reason) is stored append-only with the actor and is readable by the TAX-070 feedback loop",
+      "done": false
+    },
+    {
       "text": "Record relevant tests and evidence, update task status and open a human-review PR",
       "done": false
     }
@@ -53,6 +58,10 @@
     {
       "at": "2026-11-05T06:39:04.925015+00:00",
       "text": "Added 2026-11-05 after a runtime gap analysis for the RSL demo: the component code existed but this link was not wired at runtime and no task covered it."
+    },
+    {
+      "at": "2026-11-05T10:07:38.336884+00:00",
+      "text": "2026-11-05 (ADR-031): added provenance and finding feedback so model output is traceable and the feedback loop has input. Proposed by Gupta for Edga's review."
     }
   ]
 }

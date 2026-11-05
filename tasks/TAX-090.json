@@ -9,12 +9,13 @@
   "priority": "P0",
   "depends_on": [
     "TAX-086",
-    "TAX-039"
+    "TAX-039",
+    "TAX-096"
   ],
   "claimed_by": null,
   "branch": null,
   "pr": null,
-  "scope": "Serve the integration/api/openapi.json operations the auditor app uses (cases, case detail, evidence, entities, findings, review state, decisions, evidence requests, taxpayer, management summary) from Frappe with real data, roles and tenant headers",
+  "scope": "Serve the integration/api/openapi.json operations the auditor app uses (cases, case detail, evidence, entities, findings, review state, decisions, evidence requests, taxpayer, management summary) from Frappe with real data, roles and tenant headers, plus the TAX-096 briefing and finding-feedback operations",
   "inputs": [
     "PROJECT.md",
     "docs/ARCHITECTURE.md",
@@ -52,6 +53,10 @@
     {
       "at": "2026-11-05T06:39:04.925015+00:00",
       "text": "Added 2026-11-05 after a runtime gap analysis for the RSL demo: the component code existed but this link was not wired at runtime and no task covered it."
+    },
+    {
+      "at": "2026-11-05T10:07:38.336884+00:00",
+      "text": "2026-11-05 (ADR-031): also serve briefing and finding feedback once the TAX-096 contract lands."
     }
   ]
 }
