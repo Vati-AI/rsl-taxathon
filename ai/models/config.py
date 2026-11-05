@@ -13,9 +13,10 @@ settings object, a model or a provenance record can be printed or logged safely.
 - ``hosted``: each role uses its hosted provider (Groq for ``reasoning`` and
   ``fast``, Gemini for ``document``) when that provider's key and the role's
   model ID are set, then the optional local model, then the template. A role
-  whose key is missing uses ``mock`` instead; a role with a key but no model ID
-  (the ``document`` role when ``VATI_MODEL_DOCUMENT`` is unset, ADR-031) is left
-  unconfigured and falls back down the chain.
+  whose key is missing uses ``mock`` instead. Model IDs default to ADR-031's
+  (``openai/gpt-oss-120b``, ``openai/gpt-oss-20b``, ``gemini-3.6-flash``); setting
+  a role's variable (for example ``VATI_MODEL_DOCUMENT``) to ``none`` leaves that
+  role's hosted level unconfigured, so it falls back down the chain.
 - ``local``: optional Ollama model, then the template.
 - ``template``: deterministic template only.
 """
@@ -30,14 +31,16 @@ from pathlib import Path
 ROLES = ("reasoning", "fast", "document")
 PROVIDER_MODES = ("mock", "hosted", "local", "template")
 HOSTED_PROVIDER = {"reasoning": "groq", "fast": "groq", "document": "gemini"}
-# ADR-031 demo defaults. The document role deliberately has no built-in default:
-# gemini-2.5-flash is deprecated, and the confirmed gemini-3.6-flash is set through
-# VATI_MODEL_DOCUMENT (.env.example) until the live smoke verifies its limits.
-DEFAULT_MODEL_IDS = {
+# ADR-031 (accepted 2026-11-05) demo defaults, matching .env.example. The document
+# model was confirmed by the team as gemini-3.6-flash (gemini-2.5-flash is
+# deprecated); its context window and free-tier limits are recorded by the live smoke.
+DEFAULT_MODEL_IDS: dict[str, str | None] = {
     "reasoning": "openai/gpt-oss-120b",
     "fast": "openai/gpt-oss-20b",
-    "document": None,
+    "document": "gemini-3.6-flash",
 }
+# A role's model variable set to one of these disables its hosted level.
+DISABLED_VALUES = frozenset({"none", "off", "disabled"})
 ROLE_ENV = {
     "reasoning": "VATI_MODEL_REASONING",
     "fast": "VATI_MODEL_FAST",
@@ -204,7 +207,11 @@ def load_settings(
     model_ids: dict[str, str | None] = {}
     for role in ROLES:
         raw = merged.get(ROLE_ENV[role])
-        model_ids[role] = raw.strip() if raw and raw.strip() else DEFAULT_MODEL_IDS[role]
+        value = (raw or "").strip()
+        if value.lower() in DISABLED_VALUES:
+            model_ids[role] = None
+        else:
+            model_ids[role] = value or DEFAULT_MODEL_IDS[role]
 
     base_url = (merged.get("OLLAMA_BASE_URL") or "").strip() or None
     if base_url and not base_url.startswith(("http://", "https://")):

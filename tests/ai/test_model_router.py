@@ -362,8 +362,22 @@ class FallbackTests(unittest.TestCase):
 
 
 class GeminiDocumentRoleTests(unittest.TestCase):
-    def test_document_role_has_no_default_model_id_and_falls_down_the_chain(self) -> None:
-        model = get_model("document", settings=settings(HOSTED), transport=NoNetwork())
+    def test_document_role_defaults_to_the_confirmed_gemini_model(self) -> None:
+        self.assertEqual(settings().model_ids["document"], "gemini-3.6-flash")
+        transport = FakeTransport({"googleapis.com": [gemini_ok('{"status": "ok"}')]})
+        p = (
+            get_model("document", settings=settings(HOSTED), transport=transport)
+            .complete(status_task())
+            .provenance
+        )
+        self.assertIn("/models/gemini-3.6-flash:generateContent", transport.requests[0]["url"])
+        self.assertEqual(
+            (p["provider"], p["model_id"], p["fallback_level"]), ("gemini", "gemini-3.6-flash", 0)
+        )
+
+    def test_disabled_document_model_is_unconfigured_and_falls_down_the_chain(self) -> None:
+        env = {**HOSTED, "VATI_MODEL_DOCUMENT": "none"}
+        model = get_model("document", settings=settings(env), transport=NoNetwork())
         p = model.complete(status_task()).provenance
         self.assertEqual(
             p["attempts"][0],
