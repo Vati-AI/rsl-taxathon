@@ -139,7 +139,7 @@
    "fieldname": "subject_type",
    "fieldtype": "Select",
    "label": "Subject Type",
-   "options": "decision\nevidence_request\nevidence\ncase\nledger\ncontrol\nexport\nchallenge",
+   "options": "decision\nevidence_request\nevidence\ncase\nledger\ncontrol\nexport\nworkflow\nchallenge",
    "reqd": 1,
    "set_only_once": 1
   },
