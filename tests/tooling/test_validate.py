@@ -45,3 +45,21 @@ class ValidationTests(unittest.TestCase):
     def test_unknown_dependency(self):
         self.change(depends_on=["TAX-999"])
         self.assertTrue(any("unknown dependency" in e for e in module.validate(self.root)))
+
+    def test_unmarked_synthetic_fixture(self):
+        path = self.root / "data/synthetic/tax102_taxpayer_assistant_scenarios.json"
+        doc = json.loads(path.read_text(encoding="utf-8"))
+        doc["synthetic"] = False
+        path.write_text(json.dumps(doc), encoding="utf-8")
+        errors = module.validate(self.root)
+        self.assertIn(
+            "tax102_taxpayer_assistant_scenarios.json: Only synthetic fixtures allowed", errors
+        )
+
+    def test_unmarked_synthetic_record(self):
+        path = self.root / "data/synthetic/tax024_records.json"
+        records = json.loads(path.read_text(encoding="utf-8"))
+        del records[0]["synthetic"]
+        path.write_text(json.dumps(records), encoding="utf-8")
+        errors = module.validate(self.root)
+        self.assertIn("tax024_records.json: Only synthetic fixtures allowed", errors)

@@ -198,6 +198,10 @@ def check():
         ["python3", "-m", "ai.evaluation.risk_calibration", "--check"],
         # TAX-056 agent evaluation and injection regression; skips without LangGraph.
         ["python3", "-m", "unittest", "discover", "-s", "tests/ai", "-p", "test_agent_eval*.py"],
+        # TAX-102 taxpayer-assistant scenarios and leakage checks (pure Python) and the
+        # harness self-check (reference fake passes, every seeded fault fails).
+        ["python3", "-m", "unittest", "discover", "-s", "tests/ai", "-p", "test_taxpayer*.py"],
+        ["python3", "-m", "ai.evaluation.taxpayer_assistant_eval", "--check"],
         # TAX-068 institutional knowledge retrieval (pure Python).
         ["python3", "-m", "unittest", "discover", "-s", "tests/ai", "-p", "test_institutional*.py"],
         # TAX-071 EOI draft packages (pure Python; no transmission capability).
