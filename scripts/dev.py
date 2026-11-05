@@ -193,6 +193,8 @@ def check():
         ["python3", "-m", "unittest", "discover", "-s", "tests/ai", "-p", "test_action*.py"],
         # TAX-053 evidence search (pure); cited briefing graph tests skip without LangGraph.
         ["python3", "-m", "unittest", "discover", "-s", "tests/ai", "-p", "test_case_briefing*.py"],
+        # TAX-071 EOI draft packages (pure Python; no transmission capability).
+        ["python3", "-m", "unittest", "discover", "-s", "tests/ai", "-p", "test_eoi*.py"],
         ["python3", "integration/api/contract.py"],
         ["python3", "-m", "unittest", "discover", "-s", "tests/contracts", "-v"],
         # Frappe-free app logic (portal boundary/fixtures); bench tests cover the rest.
