@@ -5,14 +5,14 @@
   "owner": "Keletso",
   "area": "integration",
   "phase": "future",
-  "status": "BACKLOG",
+  "status": "IN_PROGRESS",
   "priority": "P2",
   "depends_on": [
     "TAX-073",
     "TAX-074"
   ],
-  "claimed_by": null,
-  "branch": null,
+  "claimed_by": "claude-keletso-tax079",
+  "branch": "task/TAX-079",
   "pr": null,
   "scope": "Define adapters for bank/mobile-money/foreign-payment/wallet evidence with permission and source provenance",
   "inputs": [
@@ -46,5 +46,10 @@
     "finish-task"
   ],
   "evidence": [],
-  "notes": []
+  "notes": [
+    {
+      "at": "2026-11-05T06:15:08.734553+00:00",
+      "text": "Claimed by claude-keletso-tax079"
+    }
+  ]
 }
