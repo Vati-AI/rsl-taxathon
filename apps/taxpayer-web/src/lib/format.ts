@@ -8,6 +8,7 @@ const STATUS: Record<SubmissionStatus, { label: string; theme: BadgeTheme }> = {
   evidence_requested: { label: 'Evidence requested', theme: 'amber' },
   correction_needed: { label: 'Correction needed', theme: 'amber' },
   completed: { label: 'Completed', theme: 'green' },
+  withdrawn: { label: 'Withdrawn', theme: 'gray' },
 };
 
 export function statusDisplay(status: string): { label: string; theme: BadgeTheme } {

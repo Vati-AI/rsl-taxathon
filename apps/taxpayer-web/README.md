@@ -4,9 +4,22 @@ Owner: Kananelo. See `tasks/README.md` for work and `docs/ARCHITECTURE.md` for b
 
 Vue 3 + TypeScript + Vite + Frappe UI taxpayer portal (ADR-002), served by the
 `vati_tax` Frappe app at `/taxpayer`. TAX-021 delivers the authenticated shell:
-routes, login/logout, submissions list and submission status. The list and
-status pages still show **explicitly synthetic fixture data** from
-`vati_tax.portal.api`.
+routes, login/logout, submissions list and submission status.
+
+## Live submissions (TAX-092)
+
+The session, the submissions list and the submission status are **live**: the
+signed-in taxpayer's own Vati Submission and Vati Refund Claim records, with the
+taxpayer-facing review status mirrored from Jube by TAX-039 (Under review,
+Evidence requested, Completed; Frappe's own Draft, Correction needed and
+Withdrawn). A claim sent from the form appears in the list. Another taxpayer's
+submission is "not found", and case, risk and officer detail is never sent to
+the browser (`vati_tax.portal.submissions` is an allowlist).
+
+Every read says where its data comes from (`mode`). The portal accepts `live`,
+or `fixture` only when it is also labelled `synthetic: true`, and refuses
+anything else. The "Synthetic fixture data" notice and the "Synthetic fixture"
+sidebar label appear only for fixture data; live data is labelled "Live data".
 
 ## VAT refund claim (TAX-043)
 

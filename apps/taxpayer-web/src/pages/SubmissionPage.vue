@@ -108,7 +108,9 @@ const stepIcon = {
               {{ formatAmount(item.amount, item.currency) }}
             </dd>
             <dt class="text-ink-gray-6">Sent</dt>
-            <dd class="text-ink-gray-9">{{ formatDate(item.submitted_at) }}</dd>
+            <dd class="text-ink-gray-9">
+              {{ item.submitted_at ? formatDate(item.submitted_at) : 'Not sent yet' }}
+            </dd>
           </dl>
         </section>
 
