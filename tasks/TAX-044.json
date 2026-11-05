@@ -5,14 +5,14 @@
   "owner": "Kananelo",
   "area": "apps/taxpayer-web",
   "phase": "pilot",
-  "status": "BACKLOG",
+  "status": "IN_PROGRESS",
   "priority": "P0",
   "depends_on": [
     "TAX-043",
     "TAX-048"
   ],
-  "claimed_by": null,
-  "branch": null,
+  "claimed_by": "kananelo-claude-20261105-tax044",
+  "branch": "task/TAX-044",
   "pr": null,
   "scope": "Show explained amounts, missing invoices and correction prompts before submission",
   "inputs": [
@@ -50,5 +50,10 @@
     "finish-task"
   ],
   "evidence": [],
-  "notes": []
+  "notes": [
+    {
+      "at": "2026-11-05T01:07:31.525943+00:00",
+      "text": "Claimed by kananelo-claude-20261105-tax044"
+    }
+  ]
 }
