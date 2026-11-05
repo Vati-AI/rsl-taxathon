@@ -5,7 +5,20 @@ Candidate entity matching. Owner: Keletso; LangGraph implementation is owned by 
 - Upstream: https://github.com/opensanctions/yente (code MIT; OpenSanctions **data** is separately licensed and is not used here)
 - Official documentation: https://yente.followthemoney.tech/
 - Configuration: `YENTE_BASE_URL`
-- Status: isolated development stack running with a synthetic-only dataset and smoke-tested (TAX-027). No Vati candidate-review adapter yet (TAX-037).
+- Status: isolated development stack running with a synthetic-only dataset and smoke-tested (TAX-027). Candidate review adapter in `candidate_review.py` (TAX-037, [ADR-022](../../docs/decisions/ADR-022-yente-candidate-review.md)).
+
+## Candidate review adapter (TAX-037)
+
+`candidate_review.py` uses only the standard library, like the other adapters.
+
+- `match(transport, dataset, entities, retrieved_at=...)` reads the dataset version from `GET /catalog`. It refuses a dataset whose index is behind its manifest version (`upstream_unavailable`, reason `index_stale`), or one that isn't loaded (`not_found`). Then it sends one `POST /match/{dataset}` per Vati FtM party with `threshold` and `limit`.
+- Queries carry only name, country (as `jurisdiction` for companies and `nationality` for persons), registration number, incorporation date and birth date. Tax and ID numbers are never sent; they're compared locally.
+- Each candidate keeps yente's own ID, caption and properties unchanged, the dataset name and version, the score as a 4-decimal string, whether it was above the threshold, and a local corroboration check: `agrees`, `conflicts` or `absent` for registration number, ID number, tax number, birth date and country. A set with more than one candidate above the threshold is flagged `ambiguous`.
+- `ReviewLedger.record(...)` stores an officer decision (`confirmed`, `rejected` or `ambiguous`) with the officer UUID, role, rationale, cited case evidence, basis, score at review and dataset version. It's append-only: the latest decision per candidate and version is current, and earlier ones stay as history. The same idempotency key replays the same decision; a different payload under that key is an `idempotency_conflict`.
+- **A score is never identity.** A confirmation needs an agreeing identifier or cited case evidence (`score_only` otherwise). A conflicting identifier blocks it (`identifier_conflict`). In an ambiguous set, the identifier must single the candidate out (`ambiguous_candidates`). Only one candidate per entity and version can be confirmed (`already_confirmed`). Only auditors, specialists and supervisors may decide, never a service identity.
+- Decisions are bound to the dataset version. After yente re-indexes a new version, old candidates can't be reviewed (`version_conflict`), and the new candidates start `unreviewed`.
+- `ReviewLedger.contract_candidates(...)` returns contract `MatchCandidate` objects. `ambiguous` maps to `unreviewed`. `links()` lists confirmed links between a Vati entity and a yente entity. Neither entity is changed or merged.
+- Tests: `tests/integration/test_yente_candidate_review.py` runs against a fake that follows the locked routes and the scores recorded below.
 
 ## Run it (TAX-027)
 
