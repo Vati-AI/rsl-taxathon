@@ -335,5 +335,78 @@ class LanePolicyTests(unittest.TestCase):
                 propose_refund_lane(result, max_unresolved_share=bad)  # type: ignore[arg-type]
 
 
+def case_record_ids(data: dict) -> set[str]:
+    return {
+        data["return"]["id"],
+        *(item["id"] for key in ("contracts", "invoices", "payments") for item in data[key]),
+    }
+
+
+def reason(proposal: dict, code: str) -> dict:
+    return next(r for r in proposal["reasons"] if r["code"] == code)
+
+
+class CitationTests(unittest.TestCase):
+    """TAX-056 findings F1 and F2: every lane reason cites the records it rests on."""
+
+    def test_every_lane_reason_cites_records_of_its_own_case(self) -> None:
+        for case_id, data in RECORDS.items():
+            proposal = propose_refund_lane(reconcile_refund(data))
+            for item in proposal["reasons"]:
+                with self.subTest(case=case_id, code=item["code"]):
+                    self.assertTrue(item["evidence_ids"], "reason cites no evidence")
+                    self.assertLessEqual(set(item["evidence_ids"]), case_record_ids(data))
+
+    def test_lane_level_reasons_cite_the_return_and_relevant_invoices(self) -> None:
+        explained = reason(
+            propose_refund_lane(reconcile_refund(RECORDS["SYN-001"])), "claim_fully_explained"
+        )
+        self.assertLessEqual(
+            {"RET-SYN-001", "INV-SYN-001-01", "INV-SYN-001-02"}, set(explained["evidence_ids"])
+        )
+        self.assertEqual(
+            reason(propose_refund_lane(reconcile_refund(RECORDS["SYN-003"])), "no_refund_claimed")[
+                "evidence_ids"
+            ],
+            ["RET-SYN-003"],
+        )
+        unresolved = reason(
+            propose_refund_lane(reconcile_refund(RECORDS["SYN-004"])), "material_unresolved_amount"
+        )
+        self.assertEqual(unresolved["evidence_ids"][0], "RET-SYN-004")
+
+    def test_documented_vat_reasons_cite_the_invoices_that_document_it(self) -> None:
+        # TAX-024 ground truth: the return plus the purchase invoices charging VAT.
+        for case_id, code, expected in (
+            (
+                "SYN-002",
+                "refund_claim_exceeds_documented_input_vat",
+                ["RET-SYN-002", "INV-SYN-002-01", "INV-SYN-002-02"],
+            ),
+            (
+                "SYN-004",
+                "refund_claim_exceeds_documented_input_vat",
+                ["RET-SYN-004", "INV-SYN-004-01"],
+            ),
+            (
+                "SYN-005",
+                "economic_context_requires_human_policy_review",
+                ["RET-SYN-005", "INV-SYN-005-01", "INV-SYN-005-02"],
+            ),
+        ):
+            with self.subTest(case=case_id, code=code):
+                result = reconcile_refund(RECORDS[case_id])
+                entries = [*result["gaps"], *result["indicators"]]
+                found = next(e for e in entries if e["code"] == code)
+                self.assertEqual(found["evidence_ids"], expected)
+
+    def test_a_reconciliation_without_its_return_id_is_refused(self) -> None:
+        result = reconcile_refund(RECORDS["SYN-001"])
+        del result["return_id"]
+        with self.assertRaises(RefundDataError) as caught:
+            propose_refund_lane(result)
+        self.assertEqual(caught.exception.code, "invalid_reconciliation")
+
+
 if __name__ == "__main__":
     unittest.main()

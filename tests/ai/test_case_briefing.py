@@ -93,7 +93,11 @@ class CaseBriefingTests(unittest.TestCase):
             actor=who or actor(),
             questions=list(cb.DEFAULT_QUESTIONS) if questions is None else questions,
         )
-        graph = cb.build_briefing_graph(tool, model or cb.DeterministicBriefingModel())
+        graph = cb.build_briefing_graph(
+            tool,
+            model or cb.DeterministicBriefingModel(),
+            evidence_source=self.source(corpus),
+        )
         state = self.create_state(
             tenant_id=TENANT, case_id=case_id, run_id=f"run-{case_id}", max_steps=1
         )
@@ -528,6 +532,85 @@ class CaseBriefingTests(unittest.TestCase):
                 self.assertEqual(final["tool_results"][0]["error"]["code"], "tool_scope_mismatch")
                 self.assertIs(final["requires_human_review"], True)
 
+    def _forged_tool(self, mutate):
+        """A search tool that returns this case's search after ``mutate`` rewrites it."""
+        from ai.tools.contracts import tool_success
+        from ai.tools.evidence_search import search_case_evidence
+
+        def forged(context):
+            data = mutate(
+                lambda case: search_case_evidence(
+                    self.corpus,
+                    actor=actor(),
+                    tenant_id=TENANT,
+                    case_id=case,
+                    questions=list(self.cb.DEFAULT_QUESTIONS),
+                ),
+                context["case_id"],
+            )
+            return tool_success(
+                tool_name=self.cb.SEARCH_TOOL,
+                tenant_id=context["tenant_id"],
+                case_id=context["case_id"],
+                run_id=context["run_id"],
+                correlation_id=context["correlation_id"],
+                data=data,
+            )
+
+        forged.__name__ = self.cb.SEARCH_TOOL
+        return forged
+
+    def test_relabelled_tool_output_is_reresolved_against_the_evidence_store(self) -> None:
+        """F4 (TAX-056): another case's search relabelled with this case's ID is refused."""
+
+        def relabelled(search, case):
+            return {**search("SYN-001"), "case_id": case}
+
+        def wrong_hash(search, case):
+            data = search(case)
+            first = next(iter(data["hits"].values()))
+            first["document_sha256"] = "0" * 64
+            return data
+
+        def unknown_document(search, case):
+            data = search(case)
+            data["documents"] = [*data["documents"], "EV-NOT-IN-STORE"]
+            return data
+
+        for name, mutate in {
+            "relabelled": relabelled,
+            "wrong_hash": wrong_hash,
+            "unknown_document": unknown_document,
+        }.items():
+            with self.subTest(name=name):
+                final = self.run_briefing("SYN-002", tool=self._forged_tool(mutate))
+                self.assertEqual(final["findings"], [])
+                self.assertEqual(final["tool_results"][0]["error"]["code"], "tool_scope_mismatch")
+                self.assertIs(final["requires_human_review"], True)
+
+    def test_clean_search_still_verifies_against_the_store(self) -> None:
+        final = self.run_briefing(
+            "SYN-002", tool=self._forged_tool(lambda search, case: search(case))
+        )
+        self.assertEqual(final["tool_results"][0]["status"], "ok")
+        self.briefing(final)
+
+    def test_unreadable_evidence_store_stops_the_run_without_a_briefing(self) -> None:
+        cb = self.cb
+        tool = self._forged_tool(lambda search, case: search(case))
+
+        def broken_store(tenant_id, case_id):
+            raise OSError("store unavailable")
+
+        graph = cb.build_briefing_graph(
+            tool, cb.DeterministicBriefingModel(), evidence_source=broken_store
+        )
+        state = self.create_state(tenant_id=TENANT, case_id="SYN-002", run_id="run-s", max_steps=1)
+        final = graph.invoke(state)
+        self.assertEqual(final["findings"], [])
+        self.assertEqual(final["tool_results"][0]["error"]["code"], "evidence_verification_failed")
+        self.assertIs(final["requires_human_review"], True)
+
     # --- permissions, budgets and replay ---------------------------------------------
 
     def test_callers_without_evidence_read_get_no_briefing_and_no_documents_are_read(self) -> None:
@@ -560,7 +643,9 @@ class CaseBriefingTests(unittest.TestCase):
         tool = cb.make_evidence_search_tool(
             self.source(), actor=actor(), questions=list(cb.DEFAULT_QUESTIONS)
         )
-        graph = cb.build_briefing_graph(tool, cb.DeterministicBriefingModel())
+        graph = cb.build_briefing_graph(
+            tool, cb.DeterministicBriefingModel(), evidence_source=self.source()
+        )
         state = self.create_state(tenant_id=TENANT, case_id="SYN-002", run_id="run-b", max_steps=1)
         state["step_count"] = 1
         final = graph.invoke(state)
@@ -577,7 +662,9 @@ class CaseBriefingTests(unittest.TestCase):
             tool = cb.make_evidence_search_tool(
                 self.source(), actor=actor(), questions=list(cb.DEFAULT_QUESTIONS)
             )
-            graph = cb.build_briefing_graph(tool, model, checkpointer=saver)
+            graph = cb.build_briefing_graph(
+                tool, model, evidence_source=self.source(), checkpointer=saver
+            )
             config = thread_config(TENANT, "SYN-002", "run-cp")
             state = self.create_state(
                 tenant_id=TENANT, case_id="SYN-002", run_id="run-cp", max_steps=1

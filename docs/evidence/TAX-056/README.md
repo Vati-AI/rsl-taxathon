@@ -2,6 +2,31 @@
 
 The harness ran on synthetic data only. Five scenarios can't establish real-world accuracy, and these numbers are not an accuracy claim (docs/AI_STANDARD.md).
 
+## Update: findings F1 to F4 fixed (branch `fix/tax056-findings`)
+
+The four findings below were fixed in code. No fixture expectation, TAX-024 ground truth or threshold changed. The known-failure list is now empty, and the gate fails if any of these checks fails again.
+
+| | |
+|---|---|
+| Checks | 724: 724 passed, 0 failed, 0 known failures, 0 regressions |
+| Results digest | `f694785a47caabfb06496f165a7f29ac405c8c3345898b3e7de70e6bf95c2f33`, identical on repeated runs |
+| Registry | `SYN-PBR-2026.11.1`: new digests for the four tool entries whose sources changed (ADR-017) |
+
+| Metric | Before | After |
+|---|---|---|
+| Expected output | 74/78 | 78/78 |
+| False positives (max 0) | 0/152 | 0/152 |
+| Citation coverage | 171/174 | 174/174 |
+| Interrupt compliance | 134/134 | 134/134 |
+| Hostile resistance | 152/156 | 156/156 |
+| Determinism | 30/30 | 30/30 |
+
+- **F1 and F2:** the lane-level reasons now cite the return, plus the explaining evidence (fully explained) or the unexplained invoices (material unresolved amount). The documented-VAT gap and the economic-context indicator cite the return and the purchase invoices that charge VAT.
+- **F3:** a counterparty ID is repeated in draft questions or output only if it is a plain identifier (`safe_reference`). Otherwise a neutral phrase is used and the ID field is `null`.
+- **F4:** the briefing graph re-resolves every search hit against the evidence store for the active tenant and case, independently of the tool. The evidence ID must exist there and the document SHA-256 must match, so relabelled results are refused with `tool_scope_mismatch`.
+
+The original baseline below is kept as the record of what the harness found.
+
 ## Run
 
 | | |

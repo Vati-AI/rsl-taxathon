@@ -28,6 +28,7 @@ from ai.tools.refund_reconciliation import (
     _unique_ids,
     money,
     parse_money,
+    safe_reference,
 )
 
 REVIEW_VERSION = "tax050-imported-services-v1"
@@ -90,7 +91,10 @@ def _review_charge(
     vat = parse_money(invoice.get("vat_amount"), field=f"invoice {invoice_id}.vat_amount")
     gross = parse_money(invoice.get("gross_amount"), field=f"invoice {invoice_id}.gross_amount")
     supplier = invoice.get("counterparty_id")
-    supplier_ref = supplier if isinstance(supplier, str) else "the supplier"
+    # The counterparty ID is untrusted record text: only a well-formed identifier
+    # is repeated in draft questions or the output (TAX-056 finding F3).
+    supplier_id = safe_reference(supplier)
+    supplier_ref = supplier_id or "the supplier"
     contract_id = invoice.get("contract_id")
     contract = contracts.get(contract_id) if isinstance(contract_id, str) else None
 
@@ -231,7 +235,7 @@ def _review_charge(
         "invoice_id": invoice_id,
         "contract_id": contract_id if contract is not None else None,
         "payment_ids": payment_ids,
-        "supplier_id": supplier if isinstance(supplier, str) else None,
+        "supplier_id": supplier_id,
         "gross": money(gross, currency),
         "vat_charged": money(vat, currency),
         "paid": money(paid, currency),

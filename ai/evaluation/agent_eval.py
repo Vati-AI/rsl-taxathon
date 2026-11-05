@@ -944,7 +944,9 @@ def evaluate_case_briefing(
         tool = tool or cb.make_evidence_search_tool(
             source, actor=actor or _auditor(), questions=list(cb.DEFAULT_QUESTIONS)
         )
-        graph = cb.build_briefing_graph(tool, model or cb.DeterministicBriefingModel())
+        graph = cb.build_briefing_graph(
+            tool, model or cb.DeterministicBriefingModel(), evidence_source=source
+        )
         state = create_investigation_state(
             tenant_id=TENANT, case_id=case_id, run_id=f"brief-{case_id}", max_steps=1
         )
