@@ -29,15 +29,15 @@
   "acceptance": [
     {
       "text": "Mount or package integration/ read-only for the bench like ai/ (ADR-023); provide factory functions for every config-injected adapter, starting with vati_case_lifecycle; frappe_dev.py init sets the site config from ignored .local/*.env",
-      "done": false
+      "done": true
     },
     {
       "text": "On a clean verify site, an officer decision that needs Jube reaches the real local Jube (no jube_not_configured); a missing or unreachable service is reported as unavailable, never silently faked",
-      "done": false
+      "done": true
     },
     {
       "text": "Record relevant tests and evidence, update task status and open a human-review PR",
-      "done": false
+      "done": true
     }
   ],
   "verification": "On a clean verify site, an officer decision that needs Jube reaches the real local Jube (no jube_not_configured); a missing or unreachable service is reported as unavailable, never silently faked",
@@ -47,7 +47,20 @@
     "update-project-task",
     "finish-task"
   ],
-  "evidence": [],
+  "evidence": [
+    {
+      "criterion": 1,
+      "text": "integration/ mounted read-only at /workspace/vati_shared/integration (docker-compose.frappe.yml) and its five stdlib-only adapter dirs added to vati_shared.pth by frappe_dev.py init (ADR-023 mechanism, nothing installed); verify imported case_lifecycle, risk_invoke, tax_risk, extraction_adapter, entity_ingest, tax_mapping, scheme_graph, candidate_review and vati_tax.integrations.factories under bench Python 3.14.7 from the mount, langgraph absent. Factories in vati_tax.integrations.factories: case_lifecycle (vati_case_lifecycle, JubeCaseAdapter + MappingLinkStore), risk_evaluator (vati_risk_evaluator), docling_extraction, openaleph_ingest, yente_matcher. init writes vati_services + factory keys into taxathon.localhost site_config.json (mode 600) from ignored .local/*.env, .local/jube-case-workflow.json and root .env via env vars; only service names printed (no key found in init/verify logs); second init left the site_config.json digest unchanged (219bca3565ee4856). Tests: tests/integration/test_service_factories.py (14) and tests/tooling/test_frappe_dev.py (18, 10 new) pass."
+    },
+    {
+      "criterion": 2,
+      "text": "Shared isolated stack rsl-taxathon-frappe-tax019 with the real local Jube, 2026-11-05: frappe_dev.py verify --live-services on clean site verify-20261105t105846.localhost (head 363d7d1): risk invocation via vati_risk_evaluator archived; vati_case_lifecycle raised Jube case 6 (RECEIVED) and recorded the jube/case Vati Service Link; after AWAITING_HUMAN an auditor's continue_investigation proposal read the status from Jube and the supervisor approval synced (jube_sync.state=synced, attempts 1, status_after INVESTIGATING; Jube read back INVESTIGATING) - no jube_not_configured. Unreachable Jube -> upstream_unavailable/jube_unavailable, missing vati_services -> upstream_unavailable/jube_not_configured, 0 decisions recorded by refusals. Same run: 395 Frappe-free and 167+353 site tests OK. Re-run after merging origin/main (verify-20261105t110524.localhost): live check ok again; 3 new TAX-078 reminder bench tests fail on main itself (reproduced with the pre-TAX-085 path file), unrelated to this change."
+    },
+    {
+      "criterion": 3,
+      "text": "Tests recorded above plus local FREE_CI job equivalents on the PR head (posted as a PR comment); status updated to IN_REVIEW by task.py finish; human-review PR opened, not merged."
+    }
+  ],
   "notes": [
     {
       "at": "2026-11-05T06:39:04.925015+00:00",
