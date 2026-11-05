@@ -487,6 +487,55 @@ class BudgetTests(unittest.TestCase):
         self.assertEqual(transport.requests[0]["body"]["max_completion_tokens"], 64)
 
 
+class UrllibTransportTests(unittest.TestCase):
+    """The real transport, with urlopen replaced so nothing reaches the network."""
+
+    def _capture(self, headers):
+        from unittest import mock
+
+        from ai.models import providers
+
+        seen = {}
+
+        class Response:
+            status = 200
+            headers = {"Content-Type": "application/json"}
+
+            def read(self):
+                return b"{}"
+
+            def __enter__(self):
+                return self
+
+            def __exit__(self, *exc):
+                return False
+
+        def fake_urlopen(request, timeout):
+            seen["headers"] = {k.lower(): v for k, v in request.header_items()}
+            seen["timeout"] = timeout
+            return Response()
+
+        with mock.patch.object(providers.urllib.request, "urlopen", fake_urlopen):
+            result = providers.UrllibTransport().post(
+                "https://api.example.invalid/v1", headers, b"{}", 5.0
+            )
+        return result, seen
+
+    def test_sends_an_explicit_user_agent(self) -> None:
+        # Cloudflare in front of Groq answers urllib's default agent with 403 / 1010.
+        from ai.models.providers import USER_AGENT
+
+        result, seen = self._capture({"Authorization": "Bearer x"})
+        self.assertEqual(result.status, 200)
+        self.assertEqual(seen["headers"]["user-agent"], USER_AGENT)
+        self.assertNotIn("python-urllib", seen["headers"]["user-agent"].lower())
+        self.assertEqual(seen["timeout"], 5.0)
+
+    def test_keeps_a_caller_supplied_user_agent(self) -> None:
+        _, seen = self._capture({"User-Agent": "custom/1"})
+        self.assertEqual(seen["headers"]["user-agent"], "custom/1")
+
+
 class SecretHandlingTests(unittest.TestCase):
     def assert_no_key(self, text: str) -> None:
         self.assertNotIn(GROQ_KEY, text)

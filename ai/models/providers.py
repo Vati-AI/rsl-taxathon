@@ -64,6 +64,12 @@ class Transport(Protocol):
     ) -> HttpResponse: ...
 
 
+# Groq sits behind Cloudflare, which rejects urllib's default "Python-urllib/x.y"
+# agent with HTTP 403 "error code: 1010" before the key is checked (observed
+# 2026-11-05 in the TAX-089 live smoke). Send an explicit, honest agent.
+USER_AGENT = "vati-ai/0.1 (+https://github.com/Vati-AI/rsl-taxathon)"
+
+
 class UrllibTransport:
     """Stdlib HTTPS POST with a finite timeout; HTTP errors are returned, not raised."""
 
@@ -72,7 +78,10 @@ class UrllibTransport:
     ) -> HttpResponse:
         if not url.startswith(("https://", "http://")):
             raise TransportError("unsupported_scheme")
-        request = urllib.request.Request(url, data=body, headers=dict(headers), method="POST")
+        sent = dict(headers)
+        if not any(k.lower() == "user-agent" for k in sent):
+            sent["User-Agent"] = USER_AGENT
+        request = urllib.request.Request(url, data=body, headers=sent, method="POST")
         try:
             with urllib.request.urlopen(request, timeout=timeout) as response:  # noqa: S310
                 return HttpResponse(
