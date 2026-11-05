@@ -5,14 +5,14 @@
   "owner": "Edga",
   "area": "backend",
   "phase": "expansion",
-  "status": "IN_PROGRESS",
+  "status": "IN_REVIEW",
   "priority": "P1",
   "depends_on": [
     "TAX-064"
   ],
   "claimed_by": "edga-claude-code-20261105-065",
   "branch": "task/TAX-065",
-  "pr": null,
+  "pr": "https://github.com/Vati-AI/rsl-taxathon/pull/176",
   "scope": "Store supervisor decisions, activation history and rollback references for learned workflows",
   "inputs": [
     "PROJECT.md",
@@ -58,6 +58,10 @@
     {
       "at": "2026-11-05T02:12:33.205590+00:00",
       "text": "Claimed by edga-claude-code-20261105-065"
+    },
+    {
+      "at": "2026-11-05T03:27:37.987015+00:00",
+      "text": "Agent finished implementation and opened human review. Local finish gates cannot pass on Windows (2 POSIX-mode tooling tests; no Node for npm steps); site-backed bench tests not run (isolated init failed: concurrent MariaDB init, then host disk full); org GitHub Actions blocked by billing, so CI must be rerun before merge."
     }
   ]
 }
