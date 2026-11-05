@@ -1,0 +1,56 @@
+{
+  "id": "TAX-095",
+  "kind": "task",
+  "title": "Presentation environment on the demo laptop",
+  "owner": "Keletso",
+  "area": "integration",
+  "phase": "pilot",
+  "status": "BACKLOG",
+  "priority": "P0",
+  "depends_on": [
+    "TAX-085"
+  ],
+  "claimed_by": null,
+  "branch": null,
+  "pr": null,
+  "scope": "Make the RSL presentation runnable on the demo laptop: Frappe, Jube and the AI runtime live; Docling, OpenAleph and yente run beforehand with their results recorded and clearly labelled as recorded; one start command, a combined health page, restricted access and up-to-date service status docs",
+  "inputs": [
+    "PROJECT.md",
+    "docs/ARCHITECTURE.md",
+    "docs/API_CONTRACTS.md",
+    "docs/REQUIREMENTS.md",
+    "docs/ENGINEERING_STANDARD.md",
+    "docs/V1_ACCEPTANCE.md",
+    "docs/SERVICE_SETUP.md",
+    "integration/services.json",
+    "docs/SETUP_STATUS.md"
+  ],
+  "acceptance": [
+    {
+      "text": "A demo profile that fits the laptop's memory (live: Frappe, Jube, AI runtime and local model; recorded: Docling, OpenAleph, yente outputs captured from real runs with provenance), one start/stop command, a combined health/status page, loopback-only or authenticated access, and integration/services.json plus docs/SETUP_STATUS.md updated to reality",
+      "done": false
+    },
+    {
+      "text": "A rehearsal from a cold start reaches a healthy demo in a measured time without manual fixes; every screen discloses live versus recorded data; memory use is measured and stays within the laptop's limit",
+      "done": false
+    },
+    {
+      "text": "Record relevant tests and evidence, update task status and open a human-review PR",
+      "done": false
+    }
+  ],
+  "verification": "A rehearsal from a cold start reaches a healthy demo in a measured time without manual fixes; every screen discloses live versus recorded data; memory use is measured and stays within the laptop's limit",
+  "skills": [
+    "start-task",
+    "implement-change",
+    "update-project-task",
+    "finish-task"
+  ],
+  "evidence": [],
+  "notes": [
+    {
+      "at": "2026-11-05T06:39:04.925015+00:00",
+      "text": "Added 2026-11-05 after a runtime gap analysis for the RSL demo: the component code existed but this link was not wired at runtime and no task covered it."
+    }
+  ]
+}

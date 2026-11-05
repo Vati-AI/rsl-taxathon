@@ -1,0 +1,56 @@
+{
+  "id": "TAX-091",
+  "kind": "task",
+  "title": "Auditor app hosted in Frappe with real officer login",
+  "owner": "Kananelo",
+  "area": "apps/auditor-web",
+  "phase": "pilot",
+  "status": "BACKLOG",
+  "priority": "P0",
+  "depends_on": [
+    "TAX-090"
+  ],
+  "claimed_by": null,
+  "branch": null,
+  "pr": null,
+  "scope": "Build and serve the auditor app from the Frappe site (www/auditor, route rule, public assets) with real Frappe login for auditor, specialist and supervisor users and the live /api/v1 service; keep fixture mode only for local development",
+  "inputs": [
+    "PROJECT.md",
+    "docs/ARCHITECTURE.md",
+    "docs/API_CONTRACTS.md",
+    "docs/REQUIREMENTS.md",
+    "docs/ENGINEERING_STANDARD.md",
+    "docs/V1_ACCEPTANCE.md",
+    "docs/DESIGN_STANDARD.md",
+    "apps/auditor-web/src/session.ts",
+    "backend/vati_tax/vati_tax/www/taxpayer.py"
+  ],
+  "acceptance": [
+    {
+      "text": "Officers open /auditor on the Frappe site, are sent to login when signed out, see their real roles and tenant from get_access_scope, and can log out; the fixture role switcher and banner appear only in fixture mode",
+      "done": false
+    },
+    {
+      "text": "The auditor e2e suite passes against the live service for queue, case, evidence, review and management views; taxpayers are refused at /auditor and officers at /taxpayer",
+      "done": false
+    },
+    {
+      "text": "Record relevant tests and evidence, update task status and open a human-review PR",
+      "done": false
+    }
+  ],
+  "verification": "The auditor e2e suite passes against the live service for queue, case, evidence, review and management views; taxpayers are refused at /auditor and officers at /taxpayer",
+  "skills": [
+    "start-task",
+    "implement-change",
+    "update-project-task",
+    "finish-task"
+  ],
+  "evidence": [],
+  "notes": [
+    {
+      "at": "2026-11-05T06:39:04.925015+00:00",
+      "text": "Added 2026-11-05 after a runtime gap analysis for the RSL demo: the component code existed but this link was not wired at runtime and no task covered it."
+    }
+  ]
+}

@@ -11,7 +11,9 @@
     "TAX-041",
     "TAX-042",
     "TAX-044",
-    "TAX-045"
+    "TAX-045",
+    "TAX-091",
+    "TAX-092"
   ],
   "claimed_by": null,
   "branch": null,
@@ -56,6 +58,10 @@
     {
       "at": "2026-11-03T15:40:40.955115+00:00",
       "text": "Owner reassigned from Jane to Kananelo by team lead Keletso to balance workload; Jane keeps no open tasks for now."
+    },
+    {
+      "at": "2026-11-05T06:39:04.925015+00:00",
+      "text": "2026-11-05: regression must cover the live auditor and taxpayer apps (TAX-091, TAX-092), not only fixture mode."
     }
   ]
 }

@@ -12,12 +12,14 @@
     "TAX-037",
     "TAX-038",
     "TAX-047",
-    "TAX-053"
+    "TAX-053",
+    "TAX-087",
+    "TAX-088"
   ],
   "claimed_by": null,
   "branch": null,
   "pr": null,
-  "scope": "Connect submission, extraction, matching, risk, Jube case, graph and agent run with correlation tracing",
+  "scope": "Run the wired pipeline end to end (submission, extraction, matching, risk, Jube case, graph, agent run) with correlation tracing across services, and prove degraded-service and replay behaviour",
   "inputs": [
     "PROJECT.md",
     "docs/ARCHITECTURE.md",
@@ -29,7 +31,7 @@
   ],
   "acceptance": [
     {
-      "text": "Connect submission, extraction, matching, risk, Jube case, graph and agent run with correlation tracing",
+      "text": "Run submission, extraction, matching, risk, Jube case, graph and agent run end to end over TAX-087/TAX-088 wiring with one correlation ID traced across services",
       "done": false
     },
     {
@@ -53,6 +55,10 @@
     {
       "at": "2026-11-05T00:32:14.315046+00:00",
       "text": "Owner reassigned from Keletso to Leseli with Keletso's agreement; Keletso handed this task to Leseli to implement."
+    },
+    {
+      "at": "2026-11-05T06:39:04.925015+00:00",
+      "text": "Scope narrowed 2026-11-05: wiring moved to TAX-087 (event handlers) and TAX-088 (AI runtime). TAX-054 keeps the end-to-end run, correlation tracing and degraded-service tests over that wiring."
     }
   ]
 }

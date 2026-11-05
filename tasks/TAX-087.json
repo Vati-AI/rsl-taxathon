@@ -1,0 +1,60 @@
+{
+  "id": "TAX-087",
+  "kind": "task",
+  "title": "Event wiring from Frappe to Jube, Docling, OpenAleph and yente",
+  "owner": "Keletso",
+  "area": "integration",
+  "phase": "pilot",
+  "status": "BACKLOG",
+  "priority": "P0",
+  "depends_on": [
+    "TAX-085",
+    "TAX-039",
+    "TAX-036",
+    "TAX-037",
+    "TAX-038"
+  ],
+  "claimed_by": null,
+  "branch": null,
+  "pr": null,
+  "scope": "Register outbox handlers and enqueue events from real entry points so a submitted claim and uploaded evidence flow to risk/case (Jube), extraction (Docling), entity indexing (OpenAleph/FtM) and screening (yente), with results written back to Frappe records",
+  "inputs": [
+    "PROJECT.md",
+    "docs/ARCHITECTURE.md",
+    "docs/API_CONTRACTS.md",
+    "docs/REQUIREMENTS.md",
+    "docs/ENGINEERING_STANDARD.md",
+    "docs/V1_ACCEPTANCE.md",
+    "docs/decisions/ADR-008-durable-outbox.md",
+    "backend/vati_tax/vati_tax/outbox/worker.py",
+    "integration/services.json"
+  ],
+  "acceptance": [
+    {
+      "text": "Production code enqueues events on claim submission and evidence upload; vati_outbox_handlers registers handlers for Jube risk/case, Docling extraction (record_extraction), OpenAleph ingest and yente review; each handler records service links and correlation IDs",
+      "done": false
+    },
+    {
+      "text": "Submitting SYN-001 and SYN-002 on a local site produces a Jube case, extraction records and indexed entities with no manual steps; replay and unavailable-service paths are tested and visible to operators",
+      "done": false
+    },
+    {
+      "text": "Record relevant tests and evidence, update task status and open a human-review PR",
+      "done": false
+    }
+  ],
+  "verification": "Submitting SYN-001 and SYN-002 on a local site produces a Jube case, extraction records and indexed entities with no manual steps; replay and unavailable-service paths are tested and visible to operators",
+  "skills": [
+    "start-task",
+    "implement-change",
+    "update-project-task",
+    "finish-task"
+  ],
+  "evidence": [],
+  "notes": [
+    {
+      "at": "2026-11-05T06:39:04.925015+00:00",
+      "text": "Added 2026-11-05 after a runtime gap analysis for the RSL demo: the component code existed but this link was not wired at runtime and no task covered it."
+    }
+  ]
+}
