@@ -5,7 +5,7 @@
   "owner": "Keletso",
   "area": "integration",
   "phase": "pilot",
-  "status": "IN_PROGRESS",
+  "status": "IN_REVIEW",
   "priority": "P0",
   "depends_on": [
     "TAX-034",
@@ -13,7 +13,7 @@
   ],
   "claimed_by": "claude-keletso-tax085",
   "branch": "task/TAX-085",
-  "pr": null,
+  "pr": "https://github.com/Vati-AI/rsl-taxathon/pull/222",
   "scope": "Make the integration adapters (Jube case lifecycle, Jube tax risk, Docling, OpenAleph/FtM, yente) importable inside the Frappe bench without their heavy dependencies, and provide the site-config factories (e.g. vati_case_lifecycle) with secrets read from ignored local config",
   "inputs": [
     "PROJECT.md",
@@ -69,6 +69,10 @@
     {
       "at": "2026-11-05T10:41:51.919885+00:00",
       "text": "Claimed by claude-keletso-tax085"
+    },
+    {
+      "at": "2026-11-05T11:11:04.251618+00:00",
+      "text": "Agent finished implementation and opened human review"
     }
   ]
 }
