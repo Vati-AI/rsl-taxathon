@@ -5,14 +5,14 @@
   "owner": "Leseli",
   "area": "ai",
   "phase": "pilot",
-  "status": "IN_PROGRESS",
+  "status": "IN_REVIEW",
   "priority": "P0",
   "depends_on": [
     "TAX-097"
   ],
   "claimed_by": "leseli-claude-20261105-110",
   "branch": "task/TAX-110",
-  "pr": null,
+  "pr": "https://github.com/Vati-AI/rsl-taxathon/pull/261",
   "scope": "Follow-up to the TAX-097 live run, where 0/17 hosted briefings and 2/29 evidence readings reached the model (truncation at the 2,048-token budget, unrecorded HTTP errors, rate limits): make the hosted briefing and evidence interpretation succeed reliably on Groq/Gemini free tiers without weakening validation, fencing or fallback",
   "inputs": [
     "PROJECT.md",
@@ -42,7 +42,7 @@
     },
     {
       "text": "Record relevant tests and evidence, update task status and open a PR",
-      "done": false
+      "done": true
     }
   ],
   "verification": "agent_eval --check passes offline; a recorded live run (3 x SYN-001..SYN-005) shows the hosted briefing and evidence reading actually used (level 0) in most calls, with citations, alternatives and injection resistance unchanged and every failure, latency and token count reported; the TAX-097 scoring fix is re-scored on this run",
@@ -64,6 +64,10 @@
     {
       "criterion": 3,
       "text": "Offline part only (criterion stays open): agent_eval --check PASS, 1000 checks, 0 failed (mock chain, section-by-section briefing). Live part NOT done: no GROQ_API_KEY or GEMINI_API_KEY was configured (presence checked only), so no live run was made or reported. Command once keys and VATI_MODEL_PROVIDER=hosted are in the ignored .env: LANGSMITH_TRACING=false python -m ai.evaluation.agent_eval --live --json docs/evidence/TAX-110/live-eval-<date>.json (records every call with http_status, error_code, latency and tokens plus a live_summary; scored with the TAX-097 figure-scope fix). See docs/evidence/TAX-110/README.md."
+    },
+    {
+      "criterion": 4,
+      "text": "Tests: tests/ai/test_model_hosted_reliability.py 16 OK; tests/ai 346 OK (1 skipped, opt-in live smoke); agent_eval --check PASS (1000 checks, 0 failed); risk_calibration --check PASS; tests/contracts 129, tests/integration 249, tests/data 12 OK; validate.py and contract.py OK; ruff check pass; mypy (Docker python:3.13-slim) no issues. Evidence: docs/evidence/TAX-110/README.md, ADR-039. PR #261 opened with the local check results (hosted CI unavailable, ADR-038)."
     }
   ],
   "notes": [
@@ -82,6 +86,10 @@
     {
       "at": "2026-11-05T21:35:35.498338+00:00",
       "text": "Claimed by leseli-claude-20261105-110"
+    },
+    {
+      "at": "2026-11-05T21:59:19.606249+00:00",
+      "text": "PR #261 opened. Implementation and offline checks complete; criterion 3's recorded live run (3 x SYN-001..SYN-005) is pending because no Groq/Gemini keys are configured. Run: LANGSMITH_TRACING=false python -m ai.evaluation.agent_eval --live --json docs/evidence/TAX-110/live-eval-<date>.json"
     }
   ],
   "sequence": 3
