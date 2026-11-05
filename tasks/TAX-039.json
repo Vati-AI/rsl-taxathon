@@ -5,7 +5,7 @@
   "owner": "Leseli",
   "area": "integration",
   "phase": "pilot",
-  "status": "IN_PROGRESS",
+  "status": "IN_REVIEW",
   "priority": "P0",
   "depends_on": [
     "TAX-031",
@@ -15,7 +15,7 @@
   ],
   "claimed_by": "leseli-claude-20261105-039",
   "branch": "task/TAX-039",
-  "pr": null,
+  "pr": "https://github.com/Vati-AI/rsl-taxathon/pull/190",
   "scope": "Submit validated claims to risk/case services and mirror operational Jube state into taxpayer-safe Frappe status",
   "inputs": [
     "PROJECT.md",
@@ -29,15 +29,15 @@
   "acceptance": [
     {
       "text": "Submit validated claims to risk/case services and mirror operational Jube state into taxpayer-safe Frappe status",
-      "done": false
+      "done": true
     },
     {
       "text": "Replay webhook, reject stale update, prevent synchronization loop and hide internal risk details from taxpayer",
-      "done": false
+      "done": true
     },
     {
       "text": "Record relevant tests and evidence, update task status and open a human-review PR",
-      "done": false
+      "done": true
     }
   ],
   "verification": "Replay webhook, reject stale update, prevent synchronization loop and hide internal risk details from taxpayer",
@@ -47,7 +47,24 @@
     "update-project-task",
     "finish-task"
   ],
-  "evidence": [],
+  "evidence": [
+    {
+      "criterion": 1,
+      "text": "vati_tax.bridge (13f9e71, ADR-028): a taxpayer's send registers one canonical case per submission, writes case_id and enqueues one case.registered outbox event in the same transaction; the handler invokes the Jube risk model with declared facts (integration/jube/risk_invoke.py DeclaredRiskEvaluator, POST /api/Invoke/EntityAnalysisModel/{guid}) and then the TAX-034 ensure_case, both through the outbox effect ledger, and mirrors Jube state into the staff-only Vati Case Sync and a three-word taxpayer review_status (under_review / evidence_requested / completed). Frappe verify on a disposable site (rsl-taxathon-frappe-039): install, migrate x2, 142 site tests OK incl. 15 in bridge/test_bridge_bench.py (send registers once, delivery invokes then creates once, risk_evaluation_missing retries without a second invocation, permanent refusal dead-letters with its code, resend after correction reuses the case); site dropped. tests/integration/test_jube_bridge.py: 14 tests with the real RiskInvoker and JubeCaseAdapter against the Jube fake."
+    },
+    {
+      "criterion": 2,
+      "text": "Replay: same event_id and content returns the stored outcome with replayed=true (one Vati Bridge Inbound Event row); same event_id with changed content is idempotency_conflict. Stale: an older observed_at is 409 version_conflict and nothing changes; a different Jube case is refused. Loop: three posted state changes leave submission status, version and modified unchanged, add no outbox event and no Jube call (mirror writes are direct db writes). Hidden risk details: payload fields outside the allowlist (risk_score, rule_ids, activations, assigned_officer_id) are refused; escalation and failed processing read under_review; taxpayers get PermissionError on Vati Case Sync and Vati Bridge Inbound Event, get_review_status returns only review_status and review_status_at, another taxpayer gets not found, and no client save can set review_status. Covered by bridge/test_rules.py (23), test_bridge_bench.py (15, on site) and test_jube_bridge.py (14)."
+    },
+    {
+      "criterion": 3,
+      "text": "validate.py, compileall, tests/data 3, tests/integration 168, contract.py (26 examples), tests/contracts 84 and backend Frappe-free 322 (40 skipped) pass with the venv interpreter; ruff check and format clean on changed files; mypy clean (169 files). tests/tooling: the 2 existing Windows-only file-permission tests fail locally (pass on Linux CI). Frappe verify summary: migrate_1 ok, migrate_2 ok, app tests 322 OK, site tests 142 OK, dropped_after_verify true. Not run: a live Jube stack. Review PR opened with task.py-equivalent finish steps."
+    },
+    {
+      "criterion": 3,
+      "text": "After merging origin/main (16 commits incl. TAX-044/055/065/069): Frappe verify on a fresh disposable site with the stack recreated from the merged compose file: install, migrate_1 ok, migrate_2 ok, app tests 389 OK (42 skipped), site tests 161 OK, Frappe-free 347 OK, site dropped. tests/integration 227, tests/contracts 84, contract.py, validate.py and mypy (198 files) pass."
+    }
+  ],
   "notes": [
     {
       "at": "2026-11-05T00:32:14.315046+00:00",
@@ -56,6 +73,10 @@
     {
       "at": "2026-11-05T01:32:28.923849+00:00",
       "text": "Claimed by leseli-claude-20261105-039"
+    },
+    {
+      "at": "2026-11-05T08:00:34.478687+00:00",
+      "text": "Agent leseli-claude-20261105-039 finished implementation and opened review (#190). Frappe verify on a fresh site after merging main: migrate x2 ok, 161 site tests OK. Keletso (integration) and Edga (Frappe) asked to review."
     }
   ]
 }

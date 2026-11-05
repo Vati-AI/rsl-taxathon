@@ -39,19 +39,22 @@ responses are small JSON and still come from it, including its access rules.
 
 ## What is in here
 
-| File                                 | Purpose                                                                                                                                                                                                                               |
-| ------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `playwright.config.ts`               | One project per width: `desktop-1440`, `tablet-1024`, `mobile-390`.                                                                                                                                                                   |
-| `support/matrix.ts`                  | Viewport, route and keyboard test matrix for both portals.                                                                                                                                                                            |
-| `support/sessions.ts`                | Role/session mocks (below).                                                                                                                                                                                                           |
-| `support/checks.ts`                  | axe (WCAG 2.1 A/AA, serious/critical), reflow and focus helpers.                                                                                                                                                                      |
-| `support/warmup.ts`                  | Visits taxpayer routes once so Vite's first-load reload stays out of tests.                                                                                                                                                           |
-| `support/auditor-preview.config.mts` | Vite preview of the built auditor with `/api` sent to the fixture API.                                                                                                                                                                |
-| `auditor.spec.ts`                    | Positive navigation, denied access, keyboard, axe/reflow matrix.                                                                                                                                                                      |
-| `taxpayer.spec.ts`                   | Positive navigation, guest and API-denied access, logout, keyboard, axe/reflow matrix.                                                                                                                                                |
-| `visual.spec.ts`                     | Opt-in screenshots and baseline comparison (below).                                                                                                                                                                                   |
-| `claim.spec.ts`                      | TAX-043 VAT refund claim: send, duplicate retry, invalid documents, cross-scope evidence, keyboard, axe/reflow. `CAPTURE_SCREENSHOTS=1` writes `docs/evidence/TAX-044` (TAX-044 invoice schedule and pre-submission checks included). |
-| `responses.spec.ts`                  | TAX-045 evidence request responses: allowlisted statuses, structured answers, retry, read-only states, concealed requests, keyboard, axe/reflow. `CAPTURE_SCREENSHOTS=1` writes `docs/evidence/TAX-045`.                              |
+| File                                 | Purpose                                                                                                                                                                                                                                                              |
+| ------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `playwright.config.ts`               | One project per width: `desktop-1440`, `tablet-1024`, `mobile-390`.                                                                                                                                                                                                  |
+| `support/matrix.ts`                  | Viewport, route and keyboard test matrix for both portals.                                                                                                                                                                                                           |
+| `support/sessions.ts`                | Role/session mocks (below).                                                                                                                                                                                                                                          |
+| `support/checks.ts`                  | axe (WCAG 2.1 A/AA, serious/critical), reflow and focus helpers.                                                                                                                                                                                                     |
+| `support/warmup.ts`                  | Visits taxpayer routes once so Vite's first-load reload stays out of tests.                                                                                                                                                                                          |
+| `support/auditor-preview.config.mts` | Vite preview of the built auditor with `/api` sent to the fixture API.                                                                                                                                                                                               |
+| `support/claim-flow.ts`              | Taxpayer claim steps (TAX-043/044) shared by `claim.spec.ts` and `scenarios.spec.ts`.                                                                                                                                                                                |
+| `support/fixture-api.ts`             | Starts a fresh fixture API for one test and routes that page's `/api/v1` to it (below).                                                                                                                                                                              |
+| `auditor.spec.ts`                    | Positive navigation, denied access, keyboard, axe/reflow matrix.                                                                                                                                                                                                     |
+| `taxpayer.spec.ts`                   | Positive navigation, guest and API-denied access, logout, keyboard, axe/reflow matrix.                                                                                                                                                                               |
+| `visual.spec.ts`                     | Opt-in screenshots and baseline comparison (below).                                                                                                                                                                                                                  |
+| `claim.spec.ts`                      | TAX-043 VAT refund claim: send, duplicate retry, invalid documents, cross-scope evidence, keyboard, axe/reflow. `CAPTURE_SCREENSHOTS=1` writes `docs/evidence/TAX-044` (TAX-044 invoice schedule and pre-submission checks included).                                |
+| `responses.spec.ts`                  | TAX-045 evidence request responses: allowlisted statuses, structured answers, retry, read-only states, concealed requests, keyboard, axe/reflow. `CAPTURE_SCREENSHOTS=1` writes `docs/evidence/TAX-045`.                                                             |
+| `scenarios.spec.ts`                  | TAX-055 end-to-end regression: the five scenario routes (SYN-001 to SYN-005) from queue to recorded outcome, the taxpayer journey from claim to evidence response, and forced-colours/reduced-motion states. `CAPTURE_SCREENSHOTS=1` writes `docs/evidence/TAX-055`. |
 
 ## Session mocks
 
@@ -100,17 +103,54 @@ Personas mirror the documented TAX-029 rules (docs/PERMISSIONS.md); do not
 invent roles here. The taxpayer tests cover the client; the server page guard
 and API scope are covered by `vati_tax/portal/test_access.py`.
 
+## Five scenario routes (TAX-055)
+
+`scenarios.spec.ts` walks each synthetic scenario in `data/scenarios/cases.json`
+through the auditor workspace: queue row → case overview → Evidence and
+Findings tabs → Review and decide → the action its expected route needs, with
+axe and reflow checks on every state.
+
+| Scenario | Expected route              | Walked to                                                              |
+| -------- | --------------------------- | ---------------------------------------------------------------------- |
+| SYN-001  | `human_clearance`           | Proposer cannot approve; a supervisor approves; case Resolved          |
+| SYN-002  | `targeted_evidence_request` | Suggestion fills the request; recorded; status unchanged               |
+| SYN-003  | `specialist_review`         | Referral proposed; a specialist cannot approve; a supervisor approves  |
+| SYN-004  | `targeted_evidence_request` | Same, keyboard only (Escape cancels and keeps the draft)               |
+| SYN-005  | `policy_gap_review`         | "No verified legal route"; a supervisor rejects with a required reason |
+
+The officer review operations are stateful (`scripts/fixture_review.py` keeps
+them in memory until restart), so each of these tests starts its **own fixture
+API** on a free port (`support/fixture-api.ts`) and sends the page's `/api/v1`
+requests there. Nothing is faked: the real fixture server answers with its own
+principal, tenant and review rules, and an approval in one test can never
+change another test, width or `--repeat-each` run. The shared :58092 server is
+still used by every other spec.
+
+The taxpayer journey (claim with complete evidence → "Your figures add up" →
+sent → Evidence requests → response sent) uses the session mocks. **The two
+portals are not connected in fixture mode**: an evidence request recorded on
+the auditor side is not delivered to the taxpayer mock, so each half is tested
+against its own synthetic source. A connected run needs the Frappe and Vati
+services (TAX-058).
+
 ## Accessibility scan and known issues
 
 Every matrix route is scanned with axe-core for serious or critical WCAG 2.0/2.1
 A and AA violations. Recorded defects owned by another task are listed in
 `KNOWN_A11Y_ISSUES` (`support/checks.ts`); each entry excludes one rule on one
-element only. Current entry:
+element only. Current entries:
 
 - `/auditor/showcase`, `label-content-name-mismatch` (WCAG 2.5.3 Label in Name):
   the loading-demo button shows "Show loading" but its accessible name is
   "Saving" (`apps/auditor-web/src/views/ShowcaseView.vue`). Owner: auditor
   frontend. Remove the entry when fixed.
+- SYN-005 review page, `color-contrast` on `#reject-reason-error` (WCAG 1.4.3,
+  found by TAX-055): frappe-ui's field error text is #e03434 on white, 4.45:1.
+  The taxpayer portal overrides it with `--ink-red-8`
+  (`apps/taxpayer-web/src/styles.css`); the auditor app has no such rule, so
+  other auditor field errors using frappe-ui's error slot are likely affected
+  too (only this one is exercised). Owner: auditor frontend. Remove the entry
+  when fixed.
 
 ## Screenshots and baselines
 

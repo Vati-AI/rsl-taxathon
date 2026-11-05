@@ -103,6 +103,13 @@ jobs:
       - run: python -m unittest discover -s tests/ai -p 'test_case_briefing*.py' -v
         env:
           LANGSMITH_TRACING: 'false'
+      # TAX-056: fails on any new evaluation failure or on a known failure that no longer occurs.
+      - run: python -m unittest discover -s tests/ai -p 'test_agent_eval*.py' -v
+        env:
+          LANGSMITH_TRACING: 'false'
+      - run: python -m ai.evaluation.agent_eval --check
+        env:
+          LANGSMITH_TRACING: 'false'
       - run: python -m unittest discover -s tests/ai -p 'test_institutional*.py' -v
         env:
           LANGSMITH_TRACING: 'false'

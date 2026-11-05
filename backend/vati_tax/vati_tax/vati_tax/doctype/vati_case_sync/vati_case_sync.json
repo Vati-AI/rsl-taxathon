@@ -1,0 +1,160 @@
+{
+ "actions": [],
+ "autoname": "field:case_id",
+ "creation": "2026-11-05 03:00:00.000000",
+ "description": "Staff-only mirror of the Jube case state for one canonical case (TAX-039). Jube is the authority; this record is written only by vati_tax.bridge.",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "tenant_id",
+  "case_id",
+  "submission_id",
+  "jube_case_id",
+  "column_break_state",
+  "case_status",
+  "escalated",
+  "closed",
+  "review_status",
+  "sync_section",
+  "observed_at",
+  "last_event_id",
+  "column_break_sync",
+  "last_polled_at",
+  "last_error_code"
+ ],
+ "fields": [
+  {
+   "fieldname": "tenant_id",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Tenant ID",
+   "length": 36,
+   "reqd": 1,
+   "search_index": 1,
+   "set_only_once": 1
+  },
+  {
+   "fieldname": "case_id",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Case ID",
+   "length": 36,
+   "reqd": 1,
+   "set_only_once": 1,
+   "unique": 1
+  },
+  {
+   "fieldname": "submission_id",
+   "fieldtype": "Data",
+   "label": "Submission ID",
+   "length": 36,
+   "search_index": 1,
+   "set_only_once": 1
+  },
+  {
+   "fieldname": "jube_case_id",
+   "fieldtype": "Data",
+   "label": "Jube Case",
+   "length": 20
+  },
+  {
+   "fieldname": "column_break_state",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "case_status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Case Status (Jube)",
+   "options": "\nRECEIVED\nVALIDATING\nINVESTIGATING\nAWAITING_EVIDENCE\nAWAITING_HUMAN\nRESOLVED\nFAILED_PROCESSING"
+  },
+  {
+   "default": "0",
+   "fieldname": "escalated",
+   "fieldtype": "Check",
+   "label": "Escalated"
+  },
+  {
+   "default": "0",
+   "fieldname": "closed",
+   "fieldtype": "Check",
+   "label": "Closed in Jube"
+  },
+  {
+   "description": "The taxpayer-facing status mirrored onto the submission.",
+   "fieldname": "review_status",
+   "fieldtype": "Select",
+   "label": "Taxpayer Review Status",
+   "options": "\nunder_review\nevidence_requested\ncompleted"
+  },
+  {
+   "fieldname": "sync_section",
+   "fieldtype": "Section Break",
+   "label": "Synchronisation"
+  },
+  {
+   "description": "When the applied state was read from Jube (UTC). Older observations are refused.",
+   "fieldname": "observed_at",
+   "fieldtype": "Datetime",
+   "label": "Observed At (UTC)"
+  },
+  {
+   "fieldname": "last_event_id",
+   "fieldtype": "Data",
+   "label": "Last Event ID",
+   "length": 36
+  },
+  {
+   "fieldname": "column_break_sync",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "last_polled_at",
+   "fieldtype": "Datetime",
+   "label": "Last Polled At (UTC)"
+  },
+  {
+   "description": "Error code only; never an upstream message.",
+   "fieldname": "last_error_code",
+   "fieldtype": "Data",
+   "label": "Last Error Code",
+   "length": 64
+  }
+ ],
+ "in_create": 1,
+ "index_web_pages_for_search": 0,
+ "links": [],
+ "modified": "2026-11-05 03:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Vati Tax",
+ "name": "Vati Case Sync",
+ "naming_rule": "By fieldname",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "export": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager"
+  },
+  {
+   "read": 1,
+   "role": "Vati Auditor"
+  },
+  {
+   "read": 1,
+   "role": "Vati Specialist"
+  },
+  {
+   "read": 1,
+   "role": "Vati Supervisor"
+  }
+ ],
+ "search_fields": "case_id,submission_id,case_status",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}
