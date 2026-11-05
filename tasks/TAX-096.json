@@ -5,14 +5,14 @@
   "owner": "Keletso",
   "area": "integration",
   "phase": "pilot",
-  "status": "IN_PROGRESS",
+  "status": "IN_REVIEW",
   "priority": "P0",
   "depends_on": [
     "TAX-018"
   ],
   "claimed_by": "keletso-claude-20261105-096",
   "branch": "task/TAX-096",
-  "pr": null,
+  "pr": "https://github.com/Vati-AI/rsl-taxathon/pull/221",
   "scope": "Extend integration/api/openapi.json with a CaseBriefing schema and read operation, an analysis_provenance block on findings, briefings and runs (provider, model id, role, prompt version, fallback level, validation result), an officer finding-feedback operation (accepted/modified/rejected with reason), and taxpayer-scoped assistance operations (explain validation results, document assistance, draft evidence response) whose responses exclude risk scores, internal notes and findings",
   "inputs": [
     "PROJECT.md",
@@ -65,6 +65,10 @@
     {
       "at": "2026-11-05T10:45:29.144183+00:00",
       "text": "Claimed by keletso-claude-20261105-096"
+    },
+    {
+      "at": "2026-11-05T11:01:46.748697+00:00",
+      "text": "Agent finished implementation and opened human review"
     }
   ]
 }
