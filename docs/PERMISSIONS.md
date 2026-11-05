@@ -131,7 +131,7 @@ Retention is metadata only (`pilot-synthetic-unverified-1`, `policy_verified: fa
 
 ## Objections, appeals and final outcomes (TAX-069)
 
-`Vati Decision Challenge` is one objection to an approved `Vati Decision`, or one appeal against the reviewed outcome of that decision's objection. It is taxpayer-owned (`tenant_id` + `taxpayer_id`). Officers and services read it in Desk; taxpayers have no DocType permission and use `vati_tax.challenges.api`, which hides staff identities. Nothing in this flow changes the decision, its evidence or earlier ledger entries. An overturned outcome asks for a new decision through TAX-046 and raises a review-only `decision_overturned` signal, withheld from the original decider. No deadline or statutory route is enforced (`legal_route_verified: false`). See [ADR-023](decisions/ADR-023-objections-appeals-final-outcomes.md).
+`Vati Decision Challenge` is one objection to an approved `Vati Decision`, or one appeal against the reviewed outcome of that decision's objection. It is taxpayer-owned (`tenant_id` + `taxpayer_id`). Officers and services read it in Desk; taxpayers have no DocType permission and use `vati_tax.challenges.api`, which hides staff identities. Nothing in this flow changes the decision, its evidence or earlier ledger entries. An overturned outcome asks for a new decision through TAX-046 and raises a review-only `decision_overturned` signal, withheld from the original decider. No deadline or statutory route is enforced (`legal_route_verified: false`). See [ADR-024](decisions/ADR-024-objections-appeals-final-outcomes.md).
 
 | Step | Who | Refused when |
 | --- | --- | --- |

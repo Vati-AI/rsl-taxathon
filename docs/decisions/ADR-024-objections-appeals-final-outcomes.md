@@ -1,10 +1,10 @@
-# ADR-023: Objections, appeals and reviewed final outcomes
+# ADR-024: Objections, appeals and reviewed final outcomes
 
 Status: proposed (TAX-069, pending review)
 Owner and task: Edga (owner), TAX-069; implemented by edga-claude-code-20261105-069
 Date: 2026-11-05
 
-(ADR-016 to ADR-022 are taken on main or open branches, so this takes ADR-023.)
+(ADR-016 to ADR-023 are taken on main or open branches, so this takes ADR-024.)
 
 Context and smallest prototype need: PROPOSAL.md section 20 describes the learning loop **investigation → decision → objection → appeal → final outcome → learning**. TAX-046 (ADR-013) records officer decisions approved by a different supervisor. TAX-059 (ADR-015) seals every action into a per-tenant hash chain and raises review-only signals. Nothing yet records that a taxpayer disputed a decision, how the dispute was reviewed, or that a decision was overturned. TAX-070 (outcome and appeal feedback loop) and TAX-077 (integrity views) need that record. The acceptance requires overturned findings to stay traceable and raise review signals *without rewriting the original evidence*.
 

@@ -48,7 +48,7 @@
   "evidence": [
     {
       "criterion": 1,
-      "text": "Implemented vati_tax.challenges (rules/service/store/api) + Vati Decision Challenge DocType: objection to an approved Vati Decision, appeal linked to the reviewed objection (parent_challenge_id), reviewed outcome (upheld/partially_overturned/overturned/withdrawn) by a supervisor who did not propose/approve the decision, lodge it or review the objection; get_challenge_history returns decision -> objection -> appeal -> final_outcome. Observed 2026-11-05: 22 Frappe-free tests pass (challenges/test_service.py); bench module challenges/test_challenges_bench 6/6 OK on a Frappe v16.54.0 site incl. test_objection_appeal_and_final_outcome_are_linked_and_persisted. ADR-023."
+      "text": "Implemented vati_tax.challenges (rules/service/store/api) + Vati Decision Challenge DocType: objection to an approved Vati Decision, appeal linked to the reviewed objection (parent_challenge_id), reviewed outcome (upheld/partially_overturned/overturned/withdrawn) by a supervisor who did not propose/approve the decision, lodge it or review the objection; get_challenge_history returns decision -> objection -> appeal -> final_outcome. Observed 2026-11-05: 22 Frappe-free tests pass (challenges/test_service.py); bench module challenges/test_challenges_bench 6/6 OK on a Frappe v16.54.0 site incl. test_objection_appeal_and_final_outcome_are_linked_and_persisted. ADR-024."
     },
     {
       "criterion": 2,
