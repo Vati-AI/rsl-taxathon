@@ -1,5 +1,5 @@
 {
-  "registry_version": "SYN-PBR-2026.11.2",
+  "registry_version": "SYN-PBR-2026.11.3",
   "synthetic": true,
   "notice": "SYNTHETIC PROTOTYPE REGISTRY. Approvals use placeholder supervisor identities and are not RSL activations. Real activation requires supervisor playbook.approve (TAX-046), holdout evaluation and rollback. Digests pin the exact reviewed source; any change makes that version unapproved until a reviewed registry update.",
   "entries": [
@@ -140,7 +140,7 @@
         "ai/workflows/state.py",
         "ai/tools/contracts.py"
       ],
-      "content_digest": "fcb004e24a2706d9712d53b2d3a94c4b5912d4d2a0fdc5a3484e9f1395e08d7d",
+      "content_digest": "49f0990a7c5c564e7d41e6bd352308495e508def6689646a401e6bd46ec98aa7",
       "allowed_operations": [
         "read_case_records",
         "write_advisory_finding"
@@ -201,7 +201,7 @@
         "ai/workflows/state.py",
         "ai/tools/contracts.py"
       ],
-      "content_digest": "20b925f3bc415304bfb8f6ccc00a60e7fb5b4a653de86a7ce99e9972deed1472",
+      "content_digest": "b37f05c28d58a324783c18920367478bb28563c4da5f0b924a67a0ba862c004f",
       "allowed_operations": [
         "read_case_records",
         "write_advisory_finding"

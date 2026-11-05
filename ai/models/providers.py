@@ -6,16 +6,21 @@ and rate-limit headers, or raises :class:`ProviderError` with a reason code the
 router uses to fall back. HTTP goes through an injected :class:`Transport`
 (stdlib ``urllib`` by default, fakes in tests); there is no SDK dependency.
 Exception text and response bodies are never copied into errors, so neither a
-key nor provider-echoed content can leak into a record.
+key nor provider-echoed content can leak into a record. The one exception
+(TAX-110) is the provider's machine-readable error code from a non-2xx body (for
+example Groq ``invalid_request_error`` or Gemini ``RESOURCE_EXHAUSTED``): it is
+kept only when it is a short ``[A-Za-z0-9_.-]`` token that does not contain or
+resemble a credential, so every failed attempt records its HTTP status and code.
 """
 
 from __future__ import annotations
 
 import json
+import re
 import socket
 import urllib.error
 import urllib.request
-from collections.abc import Mapping
+from collections.abc import Iterable, Mapping
 from dataclasses import dataclass, field
 from typing import Protocol
 
@@ -36,6 +41,14 @@ RATE_LIMIT_HEADERS = (
     "x-ratelimit-reset-requests",
     "x-ratelimit-reset-tokens",
 )
+# gpt-oss models spend reasoning tokens from the same output budget; at the
+# default effort the TAX-097 live run truncated (TAX-110). Low effort keeps
+# structured drafts inside the per-call budget. Sent only to these models.
+GPT_OSS_PREFIX = "openai/gpt-oss"
+GPT_OSS_REASONING_EFFORT = "low"
+_ERROR_CODE = re.compile(r"[A-Za-z][A-Za-z0-9_.-]{0,63}")
+# Credential shapes that are never recorded, even if a provider echoes one.
+_KEY_LIKE = re.compile(r"(?i)^(gsk_|aiza|sk-|bearer)")
 _GEMINI_REFUSALS = frozenset(
     {"SAFETY", "RECITATION", "BLOCKLIST", "PROHIBITED_CONTENT", "SPII", "IMAGE_SAFETY"}
 )
@@ -109,7 +122,11 @@ class UrllibTransport:
 
 
 class ProviderError(Exception):
-    """A failed attempt. ``reason`` is a fixed code; no provider text is kept."""
+    """A failed attempt. ``reason`` is a fixed code; no provider text is kept.
+
+    ``error_code`` is the provider's sanitised error code for a non-2xx response,
+    or a fixed transport code (``timeout``, ``connection_failed``); never a message.
+    """
 
     def __init__(
         self,
@@ -119,6 +136,7 @@ class ProviderError(Exception):
         rate_limit: Mapping[str, str] | None = None,
         tokens: Mapping[str, int | None] | None = None,
         observed_model_id: str | None = None,
+        error_code: str | None = None,
     ) -> None:
         super().__init__(reason)
         self.reason = reason
@@ -126,6 +144,7 @@ class ProviderError(Exception):
         self.rate_limit = dict(rate_limit or {})
         self.tokens = dict(tokens) if tokens else None
         self.observed_model_id = observed_model_id
+        self.error_code = error_code
 
 
 @dataclass
@@ -164,6 +183,33 @@ def _rate_limit(headers: Mapping[str, str]) -> dict[str, str]:
     return {k: str(lowered[k])[:64] for k in RATE_LIMIT_HEADERS if k in lowered}
 
 
+def error_code(body: bytes, secrets: Iterable[str] = ()) -> str | None:
+    """The provider's machine-readable error code from a non-2xx body, or ``None``.
+
+    OpenAI-compatible hosts (Groq) send ``{"error": {"code" | "type": ...}}``;
+    Gemini sends ``{"error": {"status": ...}}``. Messages are never read. A code is
+    kept only if it is a short token, does not look like a credential and shares
+    no part with a value in ``secrets`` (the request's header values).
+    """
+    try:
+        decoded = json.loads(body.decode("utf-8"))
+    except (UnicodeDecodeError, ValueError):
+        return None
+    error = decoded.get("error") if isinstance(decoded, Mapping) else None
+    if not isinstance(error, Mapping):
+        return None
+    for field_name in ("code", "status", "type"):
+        value = error.get(field_name)
+        if not isinstance(value, str) or not _ERROR_CODE.fullmatch(value):
+            continue
+        if _KEY_LIKE.match(value):
+            return None
+        if any(len(s) >= 8 and (s in value or value in s) for s in secrets):
+            return None
+        return value
+    return None
+
+
 def _post_json(
     transport: Transport, url: str, headers: Mapping[str, str], body: Mapping[str, object], timeout
 ) -> tuple[HttpResponse, dict[str, str]]:
@@ -171,21 +217,25 @@ def _post_json(
     try:
         response = transport.post(url, headers, data, timeout)
     except TransportTimeout:
-        raise ProviderError("timeout") from None
+        raise ProviderError("timeout", error_code="timeout") from None
     except TransportError:
-        raise ProviderError("unavailable") from None
+        raise ProviderError("unavailable", error_code="connection_failed") from None
     except Exception:
-        raise ProviderError("unavailable") from None
+        raise ProviderError("unavailable", error_code="transport_exception") from None
     limits = _rate_limit(response.headers)
-    if response.status == 429:
-        raise ProviderError("rate_limited", http_status=429, rate_limit=limits)
-    if response.status in (408, 504):
-        raise ProviderError("timeout", http_status=response.status, rate_limit=limits)
-    if response.status in (401, 403):
-        raise ProviderError("unauthorized", http_status=response.status, rate_limit=limits)
-    if not 200 <= response.status < 300:
-        raise ProviderError("http_error", http_status=response.status, rate_limit=limits)
-    return response, limits
+    if 200 <= response.status < 300:
+        return response, limits
+    status = response.status
+    code = error_code(response.body, [str(v) for v in headers.values()])
+    if status == 429:
+        reason = "rate_limited"
+    elif status in (408, 504):
+        reason = "timeout"
+    elif status in (401, 403):
+        reason = "unauthorized"
+    else:
+        reason = "http_error"
+    raise ProviderError(reason, http_status=status, rate_limit=limits, error_code=code)
 
 
 def _decode(response: HttpResponse, limits: Mapping[str, str]) -> Mapping[str, object]:
@@ -264,11 +314,19 @@ class _OpenAICompatible:
     def __repr__(self) -> str:
         return f"{type(self).__name__}(model_id={self.model_id!r}, api_key={self._key!r})"
 
+    def _reasoning_effort(self) -> str | None:
+        return GPT_OSS_REASONING_EFFORT if self.model_id.startswith(GPT_OSS_PREFIX) else None
+
     def settings(self) -> dict[str, object]:
-        return {"temperature": 0, "response_format": "json_object"}
+        effort = self._reasoning_effort()
+        return {
+            "temperature": 0,
+            "response_format": "json_object",
+            **({"reasoning_effort": effort} if effort else {}),
+        }
 
     def complete(self, prompt: Prompt) -> Completion:
-        body = {
+        body: dict[str, object] = {
             "model": self.model_id,
             "messages": [
                 {"role": "system", "content": f"{prompt.instructions}\n\n{JSON_ONLY}"},
@@ -278,6 +336,9 @@ class _OpenAICompatible:
             "max_completion_tokens": prompt.max_output_tokens,
             "response_format": {"type": "json_object"},
         }
+        effort = self._reasoning_effort()
+        if effort:
+            body["reasoning_effort"] = effort
         headers = {
             "Authorization": f"Bearer {self._key.reveal()}",
             "Content-Type": "application/json",
@@ -308,6 +369,7 @@ class _OpenAICompatible:
                 rate_limit=limits,
                 tokens=tokens,
                 observed_model_id=model,
+                error_code="content_filter" if finish == "content_filter" else "refusal",
             )
         if finish == "length":
             raise ProviderError(
@@ -316,6 +378,7 @@ class _OpenAICompatible:
                 rate_limit=limits,
                 tokens=tokens,
                 observed_model_id=model,
+                error_code="length",
             )
         return _finish(
             message.get("content"),
@@ -381,6 +444,7 @@ class GeminiProvider:
                 rate_limit=limits,
                 tokens=tokens,
                 observed_model_id=model,
+                error_code="prompt_blocked",
             )
         candidates = data.get("candidates")
         first = candidates[0] if isinstance(candidates, list) and candidates else None
@@ -396,6 +460,7 @@ class GeminiProvider:
                 rate_limit=limits,
                 tokens=tokens,
                 observed_model_id=model,
+                error_code=str(finish),
             )
         if finish == "MAX_TOKENS":
             raise ProviderError(
@@ -404,6 +469,7 @@ class GeminiProvider:
                 rate_limit=limits,
                 tokens=tokens,
                 observed_model_id=model,
+                error_code="MAX_TOKENS",
             )
         content = first.get("content")
         parts = content.get("parts") if isinstance(content, Mapping) else None
@@ -470,6 +536,7 @@ class OllamaProvider:
                 http_status=response.status,
                 tokens=tokens,
                 observed_model_id=model,
+                error_code="length",
             )
         text = message.get("content") if isinstance(message, Mapping) else None
         return _finish(text, model=model, tokens=tokens, limits=limits, status=response.status)

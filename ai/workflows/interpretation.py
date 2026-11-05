@@ -44,7 +44,7 @@ from ai.tools.evidence_search import looks_like_instruction
 INTERPRETATION_VERSION = "tax097-interpretation-v1"
 REFUND_PROMPT_VERSION = "tax097-refund-interpretation-v1"
 RELATED_PARTY_PROMPT_VERSION = "tax097-related-party-interpretation-v1"
-EVIDENCE_PROMPT_VERSION = "tax097-evidence-interpretation-v1"
+EVIDENCE_PROMPT_VERSION = "tax110-evidence-interpretation-v2"
 KINDS = ("explanation", "hypothesis", "alternative_explanation", "open_question")
 MAX_STATEMENTS = 12
 MAX_STATEMENT_CHARS = 600
@@ -53,6 +53,11 @@ MAX_OUTPUT_TOKENS = 1536
 # The document role is used only when the fenced document text is long; shorter
 # evidence goes to the fast role (ADR-031 roles). Prototype choice, in characters.
 LONG_DOCUMENT_CHARS = 12_000
+# TAX-110: the evidence reading is bounded per role. The fast role reads short
+# extracts with a small output budget and fewer statements; only long documents
+# go to the document role with the larger budget.
+EVIDENCE_OUTPUT_TOKENS = {"fast": 1024, "document": MAX_OUTPUT_TOKENS}
+EVIDENCE_MAX_STATEMENTS = {"fast": 5, "document": 8}
 
 ModelFactory = Callable[[str], Any]
 
@@ -273,6 +278,8 @@ def interpret(
     untrusted_evidence: Sequence[Mapping[str, object]] = (),
     ref_figures: Mapping[str, set[Decimal]] | None = None,
     flagged_refs: Sequence[str] = (),
+    max_output_tokens: int = MAX_OUTPUT_TOKENS,
+    max_statements: int | None = None,
 ) -> dict[str, object]:
     """Ask ``models(role)`` to interpret; validated statements or the template's.
 
@@ -299,14 +306,17 @@ def interpret(
             flagged_refs=flagged_refs,
         )
 
+    instructions = INSTRUCTIONS
+    if max_statements is not None:
+        instructions += f" Return at most {max_statements} statements."
     task = CompletionTask(
         name=f"{subject}_interpretation",
         prompt_version=prompt_version,
-        instructions=INSTRUCTIONS,
+        instructions=instructions,
         payload=payload,
         template=lambda _payload: template(),
         validate=lambda output: check(output)[1],
-        max_output_tokens=MAX_OUTPUT_TOKENS,
+        max_output_tokens=max_output_tokens,
         template_id=f"{INTERPRETATION_VERSION}-template",
     )
     try:
@@ -624,18 +634,19 @@ def interpret_evidence(models: ModelFactory, search: Mapping[str, object]) -> di
         ],
         "unsearchable_documents": len(_list(search.get("unsearchable"))),
     }
+    role = evidence_role(evidence)
     if not usable:
         statements: list[dict[str, object]] = []
         provenance = template_provenance(
             task="evidence_interpretation",
             prompt_version=EVIDENCE_PROMPT_VERSION,
-            role=evidence_role(evidence),
+            role=role,
             model_id=f"{INTERPRETATION_VERSION}-template",
             validation={"status": "not_run", "reason": "no_usable_evidence"},
         )
         return _record(
             subject="evidence",
-            role=evidence_role(evidence),
+            role=role,
             statements=statements,
             provenance=provenance,
             payload_chars=0,
@@ -643,7 +654,7 @@ def interpret_evidence(models: ModelFactory, search: Mapping[str, object]) -> di
     return interpret(
         models,
         subject="evidence",
-        role=evidence_role(evidence),
+        role=role,
         prompt_version=EVIDENCE_PROMPT_VERSION,
         deterministic_results=results,
         template=template,
@@ -651,4 +662,6 @@ def interpret_evidence(models: ModelFactory, search: Mapping[str, object]) -> di
         untrusted_evidence=evidence,
         ref_figures=ref_figures,
         flagged_refs=flagged,
+        max_output_tokens=EVIDENCE_OUTPUT_TOKENS[role],
+        max_statements=EVIDENCE_MAX_STATEMENTS[role],
     )

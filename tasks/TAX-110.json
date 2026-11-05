@@ -30,11 +30,11 @@
   "acceptance": [
     {
       "text": "Hosted case briefing no longer truncates: draft section by section (or another bounded scheme) within the per-call output budget and Groq's 8,000 tokens/min; every section still passes validate_draft and falls back individually to the template; each fallback is recorded per section",
-      "done": false
+      "done": true
     },
     {
       "text": "Every failed hosted attempt records its HTTP status and provider error code (no key material); the pacer also counts failed calls so a live run does not hit HTTP 429 from its own pacing; evidence reading uses the fast role with a bounded output and the document role only for long documents",
-      "done": false
+      "done": true
     },
     {
       "text": "agent_eval --check passes offline; a recorded live run (3 x SYN-001..SYN-005) shows the hosted briefing and evidence reading actually used (level 0) in most calls, with citations, alternatives and injection resistance unchanged and every failure, latency and token count reported; the TAX-097 scoring fix is re-scored on this run",
@@ -52,7 +52,20 @@
     "update-project-task",
     "finish-task"
   ],
-  "evidence": [],
+  "evidence": [
+    {
+      "criterion": 1,
+      "text": "ai/models/briefing.py draft_by_section (ADR-039): RoutedModel.draft sends one bounded call per briefing section (max 1,536 output tokens, only the data that section needs, reasoning_effort low for gpt-oss; empty template sections are not sent). Each section must pass validate_draft with nothing rejected, contain only that section, be non-empty and cover the template's searches, unresolved items and next actions, else it falls back to the template's section alone; model.config.provenance.sections and section_fallbacks record each section. tests/ai/test_model_hosted_reliability.py: each section call stays under half of Groq's 8,000 tokens/min; a truncated section (finish_reason length) and one rejection per section each fall back individually with the reason recorded; contract-valid AnalysisProvenance/AiDisclosure for a mixed briefing. Offline only; live confirmation is criterion 3."
+    },
+    {
+      "criterion": 2,
+      "text": "Every failed attempt records http_status and a sanitised error_code (provider code or type from a non-2xx body, finish reason, or transport code; messages never read; a code that looks like or overlaps a key is dropped). The agent_eval --live pacer charges failed calls their request estimate (input chars/4 + requested output), waits for each call's own estimate, holds a role after HTTP 429 until retry-after/reset and paces briefing sections one by one. Evidence reading: fast role with 1,024 output tokens and 5 statements; document role (1,536) only above LONG_DOCUMENT_CHARS. Tests (fake transports): error codes for Groq 400/503, Gemini 429, unparseable 502 and connection failures with no key text; a fake Groq enforcing 8,000 tokens/min returns no 429 over a paced run where half the calls fail (the TAX-097 accounting gets repeated 429s in the same test); role selection by length including the boundary."
+    },
+    {
+      "criterion": 3,
+      "text": "Offline part only (criterion stays open): agent_eval --check PASS, 1000 checks, 0 failed (mock chain, section-by-section briefing). Live part NOT done: no GROQ_API_KEY or GEMINI_API_KEY was configured (presence checked only), so no live run was made or reported. Command once keys and VATI_MODEL_PROVIDER=hosted are in the ignored .env: LANGSMITH_TRACING=false python -m ai.evaluation.agent_eval --live --json docs/evidence/TAX-110/live-eval-<date>.json (records every call with http_status, error_code, latency and tokens plus a live_summary; scored with the TAX-097 figure-scope fix). See docs/evidence/TAX-110/README.md."
+    }
+  ],
   "notes": [
     {
       "at": "2026-11-05T13:54:18.678761+00:00",

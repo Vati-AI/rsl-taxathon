@@ -29,6 +29,10 @@ text), recorded as a separate ``evidence_interpretation`` finding. A statement
 that states a number not present in the evidence or search it cites is rejected
 (``figure_not_in_evidence``). Every briefing carries contract-shaped
 ``analysis_provenance`` and ``disclosure`` (template output included).
+
+TAX-110: a routed model drafts the briefing one section per bounded call; each
+section is validated and falls back to the template on its own, and the
+per-section record is kept in ``model.config.provenance.sections``.
 """
 
 from __future__ import annotations
@@ -64,7 +68,8 @@ from ai.workflows.interpretation import (
 from ai.workflows.state import InvestigationState
 
 BRIEFING_VERSION = "tax053-briefing-v1"
-PROMPT_VERSION = "tax053-briefing-instructions-v1"
+# TAX-110: routed models draft one section per call (ai.models.briefing).
+PROMPT_VERSION = "tax110-briefing-sections-v1"
 SEARCH_TOOL = "case_evidence_search"
 SECTIONS = (
     "what_happened",
