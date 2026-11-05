@@ -5,14 +5,14 @@
   "owner": "Keletso",
   "area": "integration",
   "phase": "expansion",
-  "status": "BACKLOG",
+  "status": "IN_PROGRESS",
   "priority": "P1",
   "depends_on": [
     "TAX-036",
     "TAX-037"
   ],
-  "claimed_by": null,
-  "branch": null,
+  "claimed_by": "claude-keletso-tax074",
+  "branch": "task/TAX-074",
   "pr": null,
   "scope": "Link taxpayer cases to schemes and model legal/beneficial ownership, advisers and conflicting sources",
   "inputs": [
@@ -46,5 +46,10 @@
     "finish-task"
   ],
   "evidence": [],
-  "notes": []
+  "notes": [
+    {
+      "at": "2026-11-05T05:25:49.269218+00:00",
+      "text": "Claimed by claude-keletso-tax074"
+    }
+  ]
 }
