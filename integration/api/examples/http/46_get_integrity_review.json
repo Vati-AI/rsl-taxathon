@@ -1,0 +1,107 @@
+{
+  "name": "get_integrity_review",
+  "operation_id": "getIntegrityReview",
+  "scenario": "SYN-002",
+  "synthetic": true,
+  "description": "A supervisor reads the restricted policy-gap and integrity aggregates. Small groups are combined, no person is identified, and the one signal about the viewer is withheld and only counted.",
+  "request": {
+    "method": "GET",
+    "path": "/api/v1/management/integrity",
+    "headers": {
+      "Authorization": "Bearer synthetic-dev-token-not-a-secret",
+      "X-Vati-Tenant-ID": "10000000-0000-4000-8000-000000000001",
+      "X-Correlation-ID": "c0000000-0000-4000-8000-000000000027"
+    }
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "X-Correlation-ID": "c0000000-0000-4000-8000-000000000027"
+    },
+    "body": {
+      "data": {
+        "tenant_id": "10000000-0000-4000-8000-000000000001",
+        "generated_at": "2026-11-04T12:00:00Z",
+        "window": {
+          "since": "2026-10-05T12:00:00Z",
+          "until": "2026-11-04T12:00:00Z",
+          "days": 30
+        },
+        "min_group_size": 3,
+        "privacy_note": "Groups covering fewer than 3 people are combined so no individual can be identified. Individual review happens only through the restricted signal review, which is itself recorded in the audit ledger.",
+        "policy_exposure": {
+          "status": "available",
+          "note": "A policy gap means the law or guidance does not clearly cover an observed economic pattern. It describes the rules, not the conduct of any taxpayer, and is not a finding of noncompliance.",
+          "confirmed_gaps": 14,
+          "pending_review": 2,
+          "areas": [
+            {
+              "key": "related_party_transaction",
+              "label": "Related-party service charges",
+              "count": 5,
+              "cases": 5
+            },
+            {
+              "key": "economic_context_requires_human_policy_review",
+              "label": "Economic context outside documented guidance",
+              "count": 4,
+              "cases": 4
+            }
+          ],
+          "combined": {
+            "key": "combined",
+            "label": "Other policy areas (combined to protect privacy)",
+            "count": 5,
+            "cases": 5,
+            "groups_combined": 3
+          }
+        },
+        "override_patterns": {
+          "status": "available",
+          "note": "Overrides are recorded exceptions to a named control, each with a reason. Counts describe how controls are used. They are not a measure of any officer's conduct.",
+          "total_overrides": 9,
+          "by_control": [
+            {
+              "key": "case_assignment",
+              "label": "Case assignment",
+              "count": 4,
+              "cases": 4
+            }
+          ],
+          "combined": {
+            "key": "combined",
+            "label": "Other controls (combined to protect privacy)",
+            "count": 5,
+            "cases": 5,
+            "groups_combined": 3
+          }
+        },
+        "review_signals": {
+          "status": "review_only",
+          "note": "A review signal for an authorised supervisor. It is not a finding against any officer and does not change any case, decision or access.",
+          "by_kind": [
+            {
+              "kind": "repeated_overrides",
+              "signals": 2
+            },
+            {
+              "kind": "repeated_separation_of_duties_attempts",
+              "signals": 1
+            },
+            {
+              "kind": "decision_overturned",
+              "signals": 1
+            }
+          ],
+          "withheld_about_viewer": 1
+        },
+        "ledger": {
+          "available": true,
+          "intact": true
+        },
+        "missing_data": [],
+        "synthetic": true
+      }
+    }
+  }
+}
