@@ -5,7 +5,7 @@
   "owner": "Leseli",
   "area": "apps/auditor-web",
   "phase": "expansion",
-  "status": "IN_REVIEW",
+  "status": "DONE",
   "priority": "P1",
   "depends_on": [
     "TAX-052",
@@ -76,6 +76,10 @@
     {
       "at": "2026-11-05T12:59:09.894046+00:00",
       "text": "Implementation finished and review PR #240 opened (ADR-036). Edga asked to review the ledger use and Frappe endpoint; Kananelo or Keletso the screens. CI blocked by org billing; local results in the PR."
+    },
+    {
+      "at": "2026-11-05T13:48:53.320700+00:00",
+      "text": "Verified merge of #240 (2026-11-05T13:01:58Z); all 4 acceptance criteria have recorded evidence"
     }
   ]
 }
