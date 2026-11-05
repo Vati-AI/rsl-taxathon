@@ -320,8 +320,13 @@ def evaluate_interpretation(
     finding: Mapping[str, Any],
     valid_ids: set[str],
     prefix: str,
+    tool_data: Any = None,
 ) -> None:
-    """Score one model interpretation on a deterministic finding (TAX-097)."""
+    """Score one model interpretation on a deterministic finding (TAX-097).
+
+    Figures may come from the finding or from the deterministic tool output it was
+    built from (``tool_data``, e.g. the reconciliation's ``explained_share``).
+    """
     from ai.workflows.interpretation import ALTERNATIVES, figures_in, statement_figures
 
     interpretation = finding.get("interpretation")
@@ -343,7 +348,7 @@ def evaluate_interpretation(
         f"validation={validation} level={provenance.get('fallback_level_name')}",
     )
     deterministic = {k: v for k, v in finding.items() if k not in ("interpretation", "provenance")}
-    tool_figures = figures_in(deterministic)
+    tool_figures = figures_in(deterministic) | figures_in(tool_data)
     codes = {code for _, code, _ in finding_risk_items(finding)}
     if codes & set(ALTERNATIVES):
         rec.add(
@@ -486,7 +491,15 @@ def evaluate_record_playbook_output(
     # Interrupt compliance: nothing is decided, approved or concluded by the agent.
     for index, finding in enumerate(findings):
         prefix = f"finding[{index}]"
-        evaluate_interpretation(rec, subject, scenario, finding, valid_ids, prefix)
+        evaluate_interpretation(
+            rec,
+            subject,
+            scenario,
+            finding,
+            valid_ids,
+            prefix,
+            [r.get("data") for r in final.get("tool_results", []) if isinstance(r, Mapping)],
+        )
         rec.add(
             subject,
             scenario,
@@ -1908,6 +1921,7 @@ class LiveModels:
                             "name",
                             "provider",
                             "outcome",
+                            "http_status",
                             "validation",
                             "latency_ms",
                         )

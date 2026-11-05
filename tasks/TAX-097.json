@@ -33,15 +33,15 @@
   "acceptance": [
     {
       "text": "Figures, thresholds and lanes still come only from deterministic tools; model output that adds a figure, decision, accusation or legal conclusion, or an unresolvable citation, is rejected and falls back; the document role is used only for long documents",
-      "done": false
+      "done": true
     },
     {
       "text": "agent_eval --check passes in mock mode; three recorded live runs per scenario (SYN-001..SYN-005) keep citations, alternatives and injection resistance, with failures, latency and tokens reported rather than cherry-picked",
-      "done": false
+      "done": true
     },
     {
       "text": "Record relevant tests and evidence, update task status and open a human-review PR",
-      "done": false
+      "done": true
     }
   ],
   "verification": "agent_eval --check passes in mock mode; three recorded live runs per scenario (SYN-001..SYN-005) keep citations, alternatives and injection resistance, with failures, latency and tokens reported rather than cherry-picked",
@@ -51,7 +51,20 @@
     "update-project-task",
     "finish-task"
   ],
-  "evidence": [],
+  "evidence": [
+    {
+      "criterion": 1,
+      "text": "ai/workflows/interpretation.py: refund-lane, related-party, evidence-reading and briefing agents use get_model(role) for interpretation only; amounts, thresholds, lanes and codes stay in deterministic tool output. Output adding a figure (figure_not_in_results / figure_not_in_evidence), decision, accusation, legal conclusion, instruction text or unresolvable citation is rejected and falls back to the template (tests/ai/test_model_interpretation.py, fake transports, one case per rejection class). The document role is chosen only when fenced text exceeds LONG_DOCUMENT_CHARS (test routes long text to Gemini, short to Groq fast). Deterministic findings are identical to model-free runs for SYN-001..005."
+    },
+    {
+      "criterion": 2,
+      "text": "Mock: agent_eval --check PASS, 0 failures (offline, get_model(role, offline=True)). Live 2026-11-05 (Groq gpt-oss-120b/20b, 3 runs x SYN-001..005 plus hostile fixtures, one invocation, not re-run): 979 checks, 1 failed (harness figure check did not count reconciliation explained_share 0.4000 as tool output; the harness is fixed, the run was not re-scored). Citations 100%, alternatives present, hostile_resistance 100%, deterministic output unchanged. 74 calls, 103,425 tokens; 15 first attempts ok, 14 validation fallbacks, 24 http_error, 10 truncated, 7 unavailable, 4 HTTP 429. All 17 hosted briefings fell back to the template. Full per-call latency and tokens: docs/evidence/TAX-097/."
+    },
+    {
+      "criterion": 3,
+      "text": "Tests: tests/ai/test_model_interpretation.py (17), full tests/ai 305 OK; contract-projection test validates mock, hosted-ok, 429->template and invalid->template provenance against AnalysisProvenance/AiDisclosure. ruff, ruff format, mypy, validate.py, contract.py, risk_calibration --check OK; dev.py check tooling has the known Windows file-mode failures (438 != 384). Registry SYN-PBR-2026.11.2. PR opened for human review."
+    }
+  ],
   "notes": [
     {
       "at": "2026-11-05T10:07:38.336884+00:00",
