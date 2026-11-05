@@ -119,6 +119,8 @@ export interface ReviewPrompt {
   /** Zero-based invoice row, or null for the claim as a whole. */
   invoice: number | null;
   message: string;
+  /** TAX-078: the earlier-claim reminder that covers this prompt, if any. */
+  reminder_id?: string | null;
 }
 
 export interface PresubmissionReview {
@@ -135,4 +137,20 @@ export interface PresubmissionReview {
   >;
   prompts: ReviewPrompt[];
   complete: boolean;
+}
+
+/**
+ * TAX-078 correction reminder: guidance from a reviewed omission in one of
+ * this taxpayer's earlier claims. Never a decision, risk rating or penalty.
+ */
+export interface CorrectionReminder {
+  reminder_id: string;
+  topic: string;
+  title: string;
+  explanation: string;
+  /** TAX-044 prompt codes for the same kind of gap. */
+  prompt_codes: string[];
+  /** ISO dates (YYYY-MM-DD). */
+  recorded_on: string;
+  updated_on: string | null;
 }

@@ -1,5 +1,6 @@
 import { call } from './frappe-call';
 import type {
+  CorrectionReminder,
   EvidenceRequestView,
   EvidenceView,
   FixtureEnvelope,
@@ -309,6 +310,17 @@ export async function reviewRefundClaim(
     throw new PortalError('unavailable', 'The portal returned data in an unexpected format.');
   }
   return result.data;
+}
+
+/** TAX-078: the caller's own reminders from reviewed omissions in earlier claims. */
+export async function fetchCorrectionReminders(): Promise<CorrectionReminder[]> {
+  const data = await liveRequest<CorrectionReminder[]>(
+    'vati_tax.portal.api.get_correction_reminders',
+  );
+  if (!Array.isArray(data)) {
+    throw new PortalError('unavailable', 'The portal returned data in an unexpected format.');
+  }
+  return data;
 }
 
 export async function logout(): Promise<void> {

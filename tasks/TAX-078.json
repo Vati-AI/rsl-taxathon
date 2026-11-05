@@ -27,11 +27,11 @@
   "acceptance": [
     {
       "text": "Offer taxpayer-specific correction reminders from reviewed prior omissions with clear explanation",
-      "done": false
+      "done": true
     },
     {
       "text": "No cross-taxpayer history leakage; withdrawn/incorrect reminders can be corrected",
-      "done": false
+      "done": true
     },
     {
       "text": "Record relevant tests and evidence, update task status and open a human-review PR",
@@ -39,7 +39,7 @@
     },
     {
       "text": "Follow docs/DESIGN_STANDARD.md; supply relevant viewport/state screenshots and keyboard/accessibility evidence for human visual review",
-      "done": false
+      "done": true
     }
   ],
   "verification": "No cross-taxpayer history leakage; withdrawn/incorrect reminders can be corrected",
@@ -49,7 +49,20 @@
     "update-project-task",
     "finish-task"
   ],
-  "evidence": [],
+  "evidence": [
+    {
+      "criterion": 1,
+      "text": "Observed 2026-11-05: staff (auditor/supervisor, reminder.record, human-only) record a Vati Correction Reminder from an approved TAX-046 decision on the taxpayer's own case whose outcome recorded an omission (close_after_correction or request_further_evidence), with a topic from a fixed list mapped to TAX-044 prompt codes and a 20-1000 character explanation written for the taxpayer (vati_tax/reminders, ADR-030). The portal (vati_tax.portal.api.get_correction_reminders) shows the caller's own active reminders on the first claim step ('From your earlier claims': title, explanation, noted/updated date; guidance, not a decision), and review_refund_claim marks the TAX-044 prompts a reminder covers, shown as 'Also noted on an earlier claim'. Never blocks sending; no risk, penalty or staff details. Frappe-free: reminders/test_service.py 25 tests pass (real TAX-046 engine and TAX-069 service); site-backed: reminders/test_reminders_bench.py 7/7 pass, including the live review_refund_claim prompt marking."
+    },
+    {
+      "criterion": 2,
+      "text": "Observed 2026-11-05 on a fresh disposable site (scripts/frappe_dev.py verify, project rsl-taxathon-frappe-tax078): install, migrate x2, 415 Frappe-free app tests OK (43 site-only skipped), site-backed run-tests OK (168 + 372 tests), site dropped. No cross-taxpayer leakage: the portal list and the review marking are filtered by the caller's own (tenant, taxpayer) memberships; another taxpayer in the same tenant and a taxpayer in another tenant see nothing; taxpayers have no DocType permission (frappe.get_list refused) and cannot call the staff history (PermissionError, recorded); the taxpayer view has no case/decision IDs, staff identities or history; staff of another tenant cannot record from or list tenant one's records. Withdrawn/incorrect reminders can be corrected: correct_reminder changes topic or wording (version+1, reason required, earlier wording kept in history) or withdraws it (hidden, final); stale version, no change, short reason, unknown action and clashing topic are refused and recorded in the TAX-059 ledger (reminder.recorded/corrected/withdrawn, *.denied); the DocType refuses source-field changes, version jumps and deletion. A reminder is hidden while its decision is challenged (TAX-069) and after any review overturned it; none can be recorded from such a decision."
+    },
+    {
+      "criterion": 4,
+      "text": "Observed 2026-11-05, Microsoft Edge 156 (Playwright 1.64.1, PLAYWRIGHT_CHANNEL=msedge) at 1440/1024/390 px: tests/frontend/reminders.spec.ts 15/15 pass - reminders panel, no panel for a first-time claimant, load failure with retry that never blocks the form, recurring prompts labelled (label is part of the Change button's accessible description), unlabelled checks when nothing is visible; axe (serious/critical) 0 violations and no horizontal overflow in every state; keyboard focus on the form fields. Screenshots in docs/evidence/TAX-078 (details-with-reminders, details-no-reminders, details-reminders-error, review-recurring-prompts, review-recurring-checks, each at 1440/1024/390). Uses existing frappe-ui Alert/Badge/Button and portal tokens only. Visual approval is left to human review per docs/DESIGN_STANDARD.md."
+    }
+  ],
   "notes": [
     {
       "at": "2026-11-05T08:48:40.331010+00:00",

@@ -128,7 +128,51 @@ export interface PortalMock {
   responses: Map<string, StoredClaim>;
   /** Store the next response, then drop the HTTP answer: the client sees a lost connection. */
   dropNextRespondResponse: boolean;
+  /**
+   * TAX-078: what `get_correction_reminders` returns for this taxpayer (empty by
+   * default, as for a first-time claimant). The server already filters out
+   * other taxpayers' and withdrawn or overturned reminders, so the mock serves
+   * this list as is.
+   */
+  reminders: CorrectionReminderMock[];
+  /** Answer `get_correction_reminders` with 503, as when the site is unavailable. */
+  remindersUnavailable: boolean;
 }
+
+/** Taxpayer view of a TAX-078 reminder (vati_tax.reminders.rules.taxpayer_view). */
+export interface CorrectionReminderMock {
+  reminder_id: string;
+  topic: string;
+  title: string;
+  explanation: string;
+  prompt_codes: string[];
+  recorded_on: string;
+  updated_on: string | null;
+}
+
+/** Synthetic reminders from reviewed omissions in earlier claims. */
+export const SYNTHETIC_REMINDERS: CorrectionReminderMock[] = [
+  {
+    reminder_id: '7a2e4c10-0000-4000-8000-000000000078',
+    topic: 'missing_invoices',
+    title: 'List every purchase invoice',
+    explanation:
+      'Your June 2026 claim was more than the VAT on the invoices you listed. Two invoices from Synthetic Highland Building Supplies were sent later. List every purchase invoice for the period.',
+    prompt_codes: ['refund_claim_exceeds_documented_input_vat'],
+    recorded_on: '2026-08-14',
+    updated_on: '2026-08-20',
+  },
+  {
+    reminder_id: '7a2e4c10-0000-4000-8000-000000000079',
+    topic: 'payment_details',
+    title: 'Add what you paid for each invoice',
+    explanation:
+      'Your March 2026 claim did not say how much you paid for three invoices. Add the amount paid for each invoice you have paid.',
+    prompt_codes: ['payment_evidence_missing', 'payment_total_differs_from_invoice'],
+    recorded_on: '2026-05-02',
+    updated_on: null,
+  },
+];
 
 /** Field names the TAX-043 claim must carry (vati_tax.portal.api.submit_refund_claim). */
 const CLAIM_FIELDS = [
@@ -315,6 +359,8 @@ export async function mockTaxpayerSession(
     requests: evidenceRequests(),
     responses: new Map(),
     dropNextRespondResponse: false,
+    reminders: [],
+    remindersUnavailable: false,
   };
 
   await page.route('**/login**', (route) =>
@@ -384,7 +430,14 @@ export async function mockTaxpayerSession(
         ]); // prettier-ignore
       }
       mock.reviews += 1;
-      return ok(route, { mode: 'live', data: mockReview(body) });
+      const review = mockReview(body);
+      // As review_refund_claim (TAX-078): mark prompts a visible reminder covers.
+      const marked = review.prompts.map((p) => ({
+        ...p,
+        reminder_id:
+          mock.reminders.find((r) => r.prompt_codes.includes(p.code))?.reminder_id ?? null,
+      }));
+      return ok(route, { mode: 'live', data: { ...review, prompts: marked } });
     }
     if (method === 'vati_tax.portal.api.submit_refund_claim') {
       const body = (route.request().postDataJSON() ?? {}) as Record<string, unknown>;
@@ -501,6 +554,12 @@ export async function mockTaxpayerSession(
         return route.abort('connectionreset');
       }
       return ok(route, result);
+    }
+    if (method === 'vati_tax.portal.api.get_correction_reminders') {
+      if (mock.remindersUnavailable) {
+        return refused(route, 'ServiceUnavailable', 503, 'Service unavailable');
+      }
+      return ok(route, { mode: 'live', data: mock.reminders });
     }
     if (method === 'vati_tax.portal.api.get_submissions') {
       return ok(route, { ...FIXTURE, data: PORTAL_SUBMISSIONS });

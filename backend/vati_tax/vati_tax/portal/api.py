@@ -14,6 +14,10 @@ and referenced here by evidence ID.
 The evidence request methods (TAX-045) are live too: the caller's own TAX-046
 evidence requests in their taxpayer-facing form, and a structured response to
 one of them (``vati_tax.responses``).
+
+``get_correction_reminders`` (TAX-078) lists the caller's own reminders from
+reviewed omissions in earlier claims, and ``review_refund_claim`` marks the
+prompts they cover (``vati_tax.reminders``).
 """
 
 from __future__ import annotations
@@ -30,6 +34,8 @@ from vati_tax.identity.policy import TAXPAYER, canonical_uuid
 from vati_tax.ids.canonical import CaseNotFound, MappingError
 from vati_tax.portal import claims, presubmission
 from vati_tax.portal.fixtures import FIXTURE_META, find_submission, list_submissions
+from vati_tax.reminders import rules as reminder_rules
+from vati_tax.reminders import store as reminder_store
 from vati_tax.responses import rules as response_rules
 from vati_tax.responses import store as response_store
 from vati_tax.submissions import domain
@@ -506,5 +512,24 @@ def review_refund_claim(
         )
     except presubmission.ReconciliationUnavailable as exc:
         _fail(503, "service_unavailable", str(exc), action=action)
+    # TAX-078: mark prompts the taxpayer was reminded about after an earlier claim.
+    reminders = reminder_store.taxpayer_reminders([(tenant, taxpayer)])
+    result["prompts"] = reminder_rules.annotate_prompts(result["prompts"], reminders)
     _log(action, "reviewed", prompts=len(result["prompts"]))
     return {**LIVE_META, "data": result}
+
+
+# --- correction reminders (TAX-078) -------------------------------------------------
+
+
+@frappe.whitelist()
+def get_correction_reminders() -> dict[str, Any]:
+    """The caller's own active reminders from reviewed omissions in earlier claims.
+
+    One per topic, newest first. A reminder whose decision is challenged or was
+    overturned, or that staff withdrew, is not returned. Guidance only.
+    """
+    _user, scope = _require_taxpayer()
+    data = reminder_store.taxpayer_reminders(scope)
+    _log("get_correction_reminders", "listed", reminders=len(data))
+    return {**LIVE_META, "data": data}
