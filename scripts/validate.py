@@ -64,6 +64,19 @@ def validate(root=ROOT):
         for key in ["refund_claim", "supported_refund"]:
             if not isinstance(case.get(key), str) or not re.fullmatch(r"\d+\.\d{2}", case[key]):
                 errors.append(f"{case.get('id')}: invalid decimal amount")
+    # Every JSON fixture under data/synthetic carries the synthetic marker: a document
+    # with "synthetic": true, or a list whose records each carry it (TAX-102).
+    for path in sorted((root / "data/synthetic").glob("*.json")):
+        try:
+            doc = json.loads(path.read_text(encoding="utf-8"))
+        except ValueError:
+            errors.append(f"{path.name}: invalid JSON")
+            continue
+        records = doc if isinstance(doc, list) else [doc]
+        if not records or any(
+            not isinstance(r, dict) or r.get("synthetic") is not True for r in records
+        ):
+            errors.append(f"{path.name}: Only synthetic fixtures allowed")
     skills = root / ".agents/skills"
     if skills.exists():
         for folder in skills.iterdir():

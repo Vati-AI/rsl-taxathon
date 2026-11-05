@@ -27,11 +27,11 @@
   "acceptance": [
     {
       "text": "Fixtures are synthetic, versioned and independent of the assistant implementation; each has an expected outcome a test can check",
-      "done": false
+      "done": true
     },
     {
       "text": "Leakage and injection cases are runnable by the TAX-098/TAX-099 tests and by agent_eval, and fail if the assistant reveals internal data, invents evidence or changes figures",
-      "done": false
+      "done": true
     },
     {
       "text": "Record relevant tests and evidence, update task status and open a PR",
@@ -45,7 +45,16 @@
     "update-project-task",
     "finish-task"
   ],
-  "evidence": [],
+  "evidence": [
+    {
+      "criterion": 1,
+      "text": "data/synthetic/tax102_taxpayer_assistant_scenarios.json (fixture_version tax102-taxpayer-scenarios-v1, synthetic: true, independence statement): 15-invoice upload with six expected problem invoices (rows 4 and 9 invoice_total_mismatch, 7 duplicate_invoice, 11 and 12 invoice_period_mismatch, 14 supporting_document_missing) plus traps; a five-item RSL evidence request (2 matched, 1 partially matched, 2 missing); 13 adversarial cases; 16 cases in all, each with an expected outcome checked by ai/evaluation/taxpayer_assistant_eval.check_response. Expected outcomes were written from the scenario definitions before any assistant existed. validate_fixtures checks the synthetic marker, version, the 15-invoice count, totals, the expected flags against the row data, canary placement and contract conformance of every case request; tests/data/test_tax102_scenarios.py 12 passed; scripts/validate.py now requires the synthetic marker on every data/synthetic JSON file (2 new tests pass)."
+    },
+    {
+      "criterion": 2,
+      "text": "Consumers: tae.evaluate(factory) for TAX-098/TAX-099 tests; python -m ai.evaluation.agent_eval --check --taxpayer-assistant module:factory (or DEFAULT_ASSISTANT_ENTRY once TAX-098 registers its assistant) adds the cases as the taxpayer_assistant subject. Checks fail on internal canaries (risk score, rule IDs, lane, officer notes, findings), other-taxpayer data, forbidden field names, injection echo, unknown or altered documents, citations outside a row or item, missing items citing documents, store changes, reported figure changes and sending without confirmation. tests/ai/test_taxpayer_assistant_eval.py 25 passed: the reference fake passes all 1645 checks; each of 15 seeded faults (leaky, fabricating, figure-changing, sending, unstable and so on) fails the gate in its target metric; agent_eval with LangGraph: 18 TAX-056 tests pass, gate PASS (subject not run), with the reference 2645 checks 0 failed, with the leaky fake 183 regressions and exit 1. Evidence: docs/evidence/TAX-102/README.md."
+    }
+  ],
   "notes": [
     {
       "at": "2026-11-05T10:07:38.336884+00:00",

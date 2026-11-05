@@ -80,6 +80,8 @@ METRICS = (
 )
 RECORD_PLAYBOOKS = ("refund_lanes", "imported_services", "related_party", "work_arrangement")
 SUBJECTS = (*RECORD_PLAYBOOKS, "policy_gap_gate", "case_briefing", "approved_action_checkpoint")
+# TAX-102 taxpayer-assistant cases; evaluated once an assistant is registered (TAX-098).
+TAXPAYER_SUBJECT = "taxpayer_assistant"
 # Lists inside a playbook finding whose items are claims ({code|question_id, evidence_ids}).
 CLAIM_LISTS = (
     "reasons",
@@ -1712,7 +1714,11 @@ def build_report(
 ) -> dict[str, Any]:
     thresholds = fixtures["thresholds"]
     subjects: dict[str, dict[str, Any]] = {}
-    for subject in SUBJECTS:
+    evaluated = [
+        *SUBJECTS,
+        *([TAXPAYER_SUBJECT] if any(c.subject == TAXPAYER_SUBJECT for c in checks) else []),
+    ]
+    for subject in evaluated:
         own = [c for c in checks if c.subject == subject]
         subjects[subject] = {
             metric: _metric(own, metric, thresholds[metric])
@@ -1745,11 +1751,28 @@ def build_report(
     }
 
 
+def taxpayer_assistant_factory(entry: str | None = None) -> tuple[str | None, Any]:
+    """The TAX-102 assistant factory to evaluate: ``entry`` or the registered default."""
+    from ai.evaluation import taxpayer_assistant_eval as tae
+
+    name = entry or tae.DEFAULT_ASSISTANT_ENTRY
+    return name, (tae.resolve_factory(name) if name else None)
+
+
 def run_evaluation(
-    fixtures: Mapping[str, Any] | None = None, *, models: ModelFactory | None = offline_models
+    fixtures: Mapping[str, Any] | None = None,
+    *,
+    models: ModelFactory | None = offline_models,
+    taxpayer_assistant: str | None = None,
 ) -> tuple[list[Check], dict[str, Any]]:
-    """Run the harness. ``models`` defaults to the offline mock chain; ``None`` is model-free."""
+    """Run the harness. ``models`` defaults to the offline mock chain; ``None`` is model-free.
+
+    ``taxpayer_assistant`` (``module:factory``) adds the TAX-102 taxpayer-assistant cases
+    as the ``taxpayer_assistant`` subject; without it the registered default is used, and
+    with none registered the subject is reported as not run.
+    """
     fixtures = fixtures or load_fixtures()
+    assistant_name, assistant = taxpayer_assistant_factory(taxpayer_assistant)
     records = load_records()
     rec = Recorder()
     timings: dict[str, float] = {}
@@ -1773,13 +1796,24 @@ def run_evaluation(
                     lambda: evaluate_approved_action_checkpoint(rec, fixtures, workdir),
                 ),
             ]
+            if assistant is not None:
+                from ai.evaluation import taxpayer_assistant_eval as tae
+
+                def taxpayer_cases() -> None:
+                    tae.record_agent_eval_checks(rec.add, assistant)
+
+                steps.append((TAXPAYER_SUBJECT, taxpayer_cases))
             for name, step in steps:
                 started = time.perf_counter()
                 step()
                 timings[name] = round((time.perf_counter() - started) * 1000, 1)
         finally:
             runner.close()
-    return rec.checks, build_report(rec.checks, fixtures, timings)
+    report = build_report(rec.checks, fixtures, timings)
+    report[TAXPAYER_SUBJECT] = (
+        assistant_name or "not run: no taxpayer assistant registered (TAX-098)"
+    )
+    return rec.checks, report
 
 
 def render_text(report: Mapping[str, Any]) -> str:
@@ -1814,6 +1848,8 @@ def render_text(report: Mapping[str, Any]) -> str:
         lines.append(f"  REGRESSION {item}")
     for item in report["stale_known_failures"]:
         lines.append(f"  STALE {item} (no longer fails; update known_failures in review)")
+    if TAXPAYER_SUBJECT in report:
+        lines.append(f"{TAXPAYER_SUBJECT} (TAX-102 cases): {report[TAXPAYER_SUBJECT]}")
     lines.append(f"gate: {report['gate'].upper()}")
     return "\n".join(lines)
 
@@ -1949,9 +1985,17 @@ def main(argv: Sequence[str] | None = None) -> int:
         help="opt-in: use get_model(role) as configured in the ignored .env (synthetic data "
         "only) and record every model call; not a CI gate",
     )
+    parser.add_argument(
+        "--taxpayer-assistant",
+        metavar="MODULE:FACTORY",
+        help="also run the TAX-102 taxpayer-assistant cases against this factory",
+    )
     args = parser.parse_args(argv)
     live = LiveModels() if args.live else None
-    _, report = run_evaluation(models=live if live is not None else offline_models)
+    _, report = run_evaluation(
+        models=live if live is not None else offline_models,
+        taxpayer_assistant=args.taxpayer_assistant,
+    )
     if live is not None:
         report["live_model_calls"] = live.calls
     print(render_text(report))
