@@ -1,5 +1,5 @@
 {
-  "registry_version": "SYN-PBR-2026.11.1",
+  "registry_version": "SYN-PBR-2026.11.2",
   "synthetic": true,
   "notice": "SYNTHETIC PROTOTYPE REGISTRY. Approvals use placeholder supervisor identities and are not RSL activations. Real activation requires supervisor playbook.approve (TAX-046), holdout evaluation and rollback. Digests pin the exact reviewed source; any change makes that version unapproved until a reviewed registry update.",
   "entries": [
@@ -15,7 +15,7 @@
         "ai/tools/refund_reconciliation.py",
         "ai/workflows/refund_lanes.py"
       ],
-      "content_digest": "180f1d0b8903bbbc011c1ad3a3fab43a1ac852cc87f7994592211e50d8879ebf",
+      "content_digest": "3b89d6ecc09289a675b9a983c2e203c227741431e293e0912f3f8f47814f7d1f",
       "allowed_operations": [
         "read_case_records"
       ],
@@ -132,14 +132,15 @@
       "status": "approved",
       "proposed_by": "claude-gupta-20261104-tax061",
       "approved_by": "SYN-SUPERVISOR-01",
-      "approved_on": "2026-11-04",
+      "approved_on": "2026-11-05",
       "source_files": [
         "ai/workflows/refund_lanes.py",
+        "ai/workflows/interpretation.py",
         "ai/workflows/fake_graph.py",
         "ai/workflows/state.py",
         "ai/tools/contracts.py"
       ],
-      "content_digest": "3292ad4c765df0a91f851d0f0669bf2dadd110b9be51d10fd125b02a98bc8d2a",
+      "content_digest": "fcb004e24a2706d9712d53b2d3a94c4b5912d4d2a0fdc5a3484e9f1395e08d7d",
       "allowed_operations": [
         "read_case_records",
         "write_advisory_finding"
@@ -191,15 +192,16 @@
       "status": "approved",
       "proposed_by": "claude-gupta-20261104-tax061",
       "approved_by": "SYN-SUPERVISOR-01",
-      "approved_on": "2026-11-04",
+      "approved_on": "2026-11-05",
       "source_files": [
         "ai/workflows/related_party_playbook.py",
+        "ai/workflows/interpretation.py",
         "ai/workflows/record_playbook.py",
         "ai/workflows/fake_graph.py",
         "ai/workflows/state.py",
         "ai/tools/contracts.py"
       ],
-      "content_digest": "5dbac11858317e15e6cbf3192094051c5524dc81948c33c14489f171e80cc345",
+      "content_digest": "20b925f3bc415304bfb8f6ccc00a60e7fb5b4a653de86a7ce99e9972deed1472",
       "allowed_operations": [
         "read_case_records",
         "write_advisory_finding"

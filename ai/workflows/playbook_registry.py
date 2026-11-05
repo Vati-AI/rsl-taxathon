@@ -83,13 +83,17 @@ GraphBuilder = Callable[..., Any]
 
 # Fixed name -> builder table. The registry can select among these, never add to them.
 PLAYBOOK_BUILDERS: dict[str, GraphBuilder] = {
-    "refund_lanes": lambda source, **_: build_refund_lane_graph(
-        make_refund_reconciliation_tool(source)
+    # ``models`` (TAX-097) is ``ai.models.get_model`` or a double; None keeps the
+    # playbook model-free. Models only interpret; figures and lanes stay deterministic.
+    "refund_lanes": lambda source, models=None, **_: build_refund_lane_graph(
+        make_refund_reconciliation_tool(source), models=models
     ),
     "imported_services": lambda source, **_: build_imported_services_graph(
         make_imported_services_tool(source)
     ),
-    "related_party": lambda source, **_: build_related_party_graph(make_related_party_tool(source)),
+    "related_party": lambda source, models=None, **_: build_related_party_graph(
+        make_related_party_tool(source), models=models
+    ),
     "work_arrangement": lambda source, *, checkpointer, agent_id, **_: build_work_arrangement_graph(
         make_work_arrangement_tool(source), checkpointer, agent_id=agent_id
     ),
@@ -279,11 +283,26 @@ def load_registry(path: Path = DEFAULT_REGISTRY_PATH, *, root: Path = ROOT) -> P
     return parse_registry(json.loads(path.read_text(encoding="utf-8")), root=root)
 
 
+# Run-time measurements of a model interpretation (TAX-097). They differ between
+# otherwise identical runs, so they are recorded but not part of the replay digest.
+_RUNTIME_KEYS = frozenset({"analysis_provenance", "disclosure", "router_provenance"})
+
+
+def _without_runtime(finding: object) -> object:
+    if not isinstance(finding, dict) or not isinstance(finding.get("interpretation"), dict):
+        return finding
+    interpretation = {k: v for k, v in finding["interpretation"].items() if k not in _RUNTIME_KEYS}
+    return {**finding, "interpretation": interpretation}
+
+
 def _output_digest(final: Mapping[str, object]) -> str:
     results = final.get("tool_results")
+    findings = final.get("findings", [])
     return action_digest(
         {
-            "findings": final.get("findings", []),
+            "findings": [_without_runtime(f) for f in findings]
+            if isinstance(findings, list)
+            else findings,
             "tool_results": [
                 {k: v for k, v in r.items() if k != "correlation_id"}
                 for r in results

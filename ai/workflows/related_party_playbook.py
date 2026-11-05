@@ -1,10 +1,13 @@
-"""TAX-049 related-party service and persistent-loss playbook (model-free).
+"""TAX-049 related-party service and persistent-loss playbook.
 
 ``review_related_party`` runs through the shared case-scoped record tool, and
 ``propose_officer_review`` turns its cited observations, counter-evidence and
 gaps into one advisory finding. The finding's ``code`` and ``evidence_ids`` are
 compatible with the TAX-052 policy-gap gate. Nothing here establishes pricing,
-intent, liability or abuse; an officer reviews every proposal.
+intent, liability or abuse; an officer reviews every proposal. With a
+``models`` factory (``ai.models.get_model``; TAX-097) the proposal also carries a
+validated ``interpretation`` from the ``reasoning`` role; the deterministic
+observations, gaps and questions are unchanged.
 """
 
 from langgraph.graph.state import CompiledStateGraph
@@ -12,6 +15,7 @@ from langgraph.graph.state import CompiledStateGraph
 from ai.tools.refund_reconciliation import DEFAULT_CURRENCY, RefundDataError
 from ai.tools.related_party import PROHIBITED_CONCLUSIONS, REVIEW_VERSION, review_related_party
 from ai.workflows.fake_graph import InvestigationTool
+from ai.workflows.interpretation import ModelFactory, interpret_related_party
 from ai.workflows.record_playbook import build_review_graph, make_record_tool
 from ai.workflows.refund_lanes import RefundRecordSource
 from ai.workflows.state import InvestigationState
@@ -97,11 +101,20 @@ def propose_officer_review(review: dict[str, object]) -> dict[str, object] | Non
 
 def build_related_party_graph(
     tool: InvestigationTool,
+    *,
+    models: ModelFactory | None = None,
 ) -> CompiledStateGraph[InvestigationState, None, InvestigationState, InvestigationState]:
     """Compile review_related_party -> propose_officer_review; failures stop for review."""
+
+    def propose(review: dict[str, object]) -> dict[str, object] | None:
+        proposal = propose_officer_review(review)
+        if proposal is not None and models is not None:
+            proposal["interpretation"] = interpret_related_party(models, proposal)
+        return proposal
+
     return build_review_graph(
         tool,
-        propose_officer_review,
+        propose,
         review_node="review_related_party",
         propose_node="propose_officer_review",
     )

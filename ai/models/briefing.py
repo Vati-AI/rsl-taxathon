@@ -36,6 +36,8 @@ def _request_scope(request: Mapping[str, Any]) -> dict[str, object]:
                 "evidence_id": "request-scoped",
                 "document_sha256": "request-scoped",
                 "locator": dict(locator) if isinstance(locator, Mapping) else {},
+                # Figures a statement may state come from the text it cites (TAX-097).
+                "excerpt": item.get("untrusted_text"),
             }
     return {
         "hits": hits,
