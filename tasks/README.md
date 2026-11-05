@@ -2,7 +2,7 @@
 
 ## Delivery order (ADR-038)
 
-From 2026-11-05 Keletso owns every open task except TAX-104, TAX-102 and TAX-110 (Leseli). Take the ready task with the lowest `sequence`. A later task can start early when its dependencies are DONE.
+From 2026-11-05 Keletso owns every open task except the tasks owned by Leseli (TAX-072, TAX-076, TAX-102, TAX-104 and TAX-110). Take the ready task with the lowest `sequence`. A later task can start early when its dependencies are DONE.
 
 | Seq | Task | Title |
 |---|---|---|
@@ -90,11 +90,11 @@ Human owner = accountability. AI agent = implementer recorded in `claimed_by`. T
 | [TAX-069](TAX-069.json) | Edga | expansion | Objection, appeal and final-outcome records | TAX-046, TAX-059 |
 | [TAX-070](TAX-070.json) | Gupta | expansion | Outcome and appeal feedback loop | TAX-068, TAX-069, TAX-066 |
 | [TAX-071](TAX-071.json) | Gupta | expansion | EOI evidence-gap and request drafting agent | TAX-053, TAX-052 |
-| [TAX-072](TAX-072.json) | Keletso | expansion | EOI approval and response evidence lifecycle | TAX-071, TAX-062 |
+| [TAX-072](TAX-072.json) | Leseli | expansion | EOI approval and response evidence lifecycle | TAX-071, TAX-062 |
 | [TAX-073](TAX-073.json) | Keletso | expansion | Tax/customs multi-value reconciliation | TAX-048, TAX-018 |
 | [TAX-074](TAX-074.json) | Keletso | expansion | Scheme, beneficial ownership and intermediary graph | TAX-036, TAX-037 |
 | [TAX-075](TAX-075.json) | Gupta | expansion | Emerging network pattern review | TAX-074, TAX-067 |
-| [TAX-076](TAX-076.json) | Keletso | expansion | Controlled serious-case referral package | TAX-062, TAX-052 |
+| [TAX-076](TAX-076.json) | Leseli | expansion | Controlled serious-case referral package | TAX-062, TAX-052 |
 | [TAX-077](TAX-077.json) | Leseli | expansion | Policy-gap and integrity management views | TAX-052, TAX-059, TAX-069 |
 | [TAX-078](TAX-078.json) | Kananelo | expansion | Recurring submission-error guidance | TAX-044, TAX-069 |
 | [TAX-079](TAX-079.json) | Keletso | future | Lawful payment-channel extension contracts | TAX-073, TAX-074 |

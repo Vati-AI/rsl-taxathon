@@ -2,7 +2,7 @@
   "id": "TAX-076",
   "kind": "task",
   "title": "Controlled serious-case referral package",
-  "owner": "Keletso",
+  "owner": "Leseli",
   "area": "backend",
   "phase": "expansion",
   "status": "BACKLOG",
@@ -50,6 +50,10 @@
     {
       "at": "2026-11-05T14:08:21.889825+00:00",
       "text": "Reassigned from Edga to Keletso (single-developer delivery, ADR-038)"
+    },
+    {
+      "at": "2026-11-05T21:31:39.286017+00:00",
+      "text": "Reassigned from Keletso to Leseli by agreement (ADR-038 exception)"
     }
   ],
   "sequence": 24
