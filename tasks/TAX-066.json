@@ -5,15 +5,15 @@
   "owner": "Leseli",
   "area": "tests/ai",
   "phase": "expansion",
-  "status": "BACKLOG",
+  "status": "DONE",
   "priority": "P1",
   "depends_on": [
     "TAX-056",
     "TAX-059"
   ],
-  "claimed_by": null,
-  "branch": null,
-  "pr": null,
+  "claimed_by": "leseli-claude-20261105-066",
+  "branch": "task/TAX-066",
+  "pr": "https://github.com/Vati-AI/rsl-taxathon/pull/202",
   "scope": "Evaluate reviewed outcomes with temporal holdout, false-positive metrics and drift reporting",
   "inputs": [
     "PROJECT.md",
@@ -27,15 +27,15 @@
   "acceptance": [
     {
       "text": "Evaluate reviewed outcomes with temporal holdout, false-positive metrics and drift reporting",
-      "done": false
+      "done": true
     },
     {
       "text": "New calibration cannot replace approved model without review; measure legitimate-case regressions",
-      "done": false
+      "done": true
     },
     {
       "text": "Record relevant tests and evidence, update task status and open a human-review PR",
-      "done": false
+      "done": true
     }
   ],
   "verification": "New calibration cannot replace approved model without review; measure legitimate-case regressions",
@@ -45,11 +45,36 @@
     "update-project-task",
     "finish-task"
   ],
-  "evidence": [],
+  "evidence": [
+    {
+      "criterion": 1,
+      "text": "ai/evaluation/risk_calibration.py (ADR-030) evaluates the approved TAX-035 ruleset with tax_risk.evaluate_record against reviewed outcomes read only from TAX-059 ledger entries (entry_view plus verify_ledger report; proposed by one officer, approved by a different supervisor with the TAX-046 outcome as detail, executed, not overturned; other decisions excluded with reasons). Temporal holdout: calibration 2024-Q3..2025-Q2 with labels approved before 2025-09-15 (TAX066-32 excluded as label_after_cutoff), holdout 2025-Q3..2025-Q4; flipping every holdout label leaves the candidate unchanged. Holdout false positives listed by case: approved 8/9 (34,36,37,39,41,44,45,47) -> candidate 5/9 (37,39,44,45,47), recall 7/7 both. Drift: feature_psi:imported_service_unverified_count 0.4318 > 0.25 and rule_rate:TR-IMPORTED-SERVICE-GAP 0.0968 -> 0.3750, plus per-period table. data/synthetic/tax066_reviewed_outcomes.json is synthetic."
+    },
+    {
+      "criterion": 2,
+      "text": "Candidate 1.1.0 is status proposed_calibration with auto_activate false (TR-VAT-REFUND-MISMATCH 0.00->100.00, TR-RELATED-PARTY-FEES 0.00->10000.00). promote() returns only an approval record and requires a SYN-SUPERVISOR-NN who is not the proposer, a rationale, the exact candidate, report and current parent digests and acknowledgement of every drift alert; a blocked metric gate is refused even when approved. Legitimate-case regressions and newly missed review-warranted holdout cases are measured and gated at 0 (shipped run: 0 and 0; seeded tests: TAX066-50 regression and TAX066-49 new miss both block). Nothing writes integration/jube/rules/tax_risk_rules.v1.json (byte-for-byte test; write_candidate refuses the rules directory). tests/ai/test_risk_calibration.py: 27 tests OK; python -m ai.evaluation.risk_calibration --check: baseline PASS."
+    },
+    {
+      "criterion": 3,
+      "text": "Tests and results recorded under criteria 1 and 2 and in docs/evidence/TAX-066/README.md; local suites pass on the branch merged with main (tests/ai incl. 27 new, both evaluation gates, integration 227, contracts 84, backend 389, mypy 203 files, ruff); conflict check before push: merged origin/main incl. #194 with no conflicts and no other open PRs overlapping; review PR #202 opened with Gupta requested; status IN_REVIEW."
+    }
+  ],
   "notes": [
     {
       "at": "2026-11-03T15:40:40.955115+00:00",
       "text": "Owner reassigned from Yellow to Leseli by team lead Keletso to balance workload; Yellow keeps no open tasks for now."
+    },
+    {
+      "at": "2026-11-05T08:44:41.729270+00:00",
+      "text": "Claimed by leseli-claude-20261105-066"
+    },
+    {
+      "at": "2026-11-05T09:02:33.482619+00:00",
+      "text": "Agent leseli-claude-20261105-066 finished implementation and opened review (https://github.com/Vati-AI/rsl-taxathon/pull/202). Conflict check against main and open PRs done before push; GitHub Actions may still be blocked by org billing, local results recorded."
+    },
+    {
+      "at": "2026-11-05T09:03:44.856066+00:00",
+      "text": "Verified PR #202 merged by leselilexus-cmd at 2026-11-05T09:03:52Z; all acceptance criteria recorded with evidence. Completion reconciled by claude-gupta at Gupta's request to unblock TAX-067/TAX-070; owner Leseli unchanged. GitHub Actions jobs were not started on recent PRs (account billing/spending limit)."
     }
   ]
 }

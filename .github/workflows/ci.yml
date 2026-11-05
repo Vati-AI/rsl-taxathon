@@ -103,6 +103,9 @@ jobs:
       - run: python -m unittest discover -s tests/ai -p 'test_case_briefing*.py' -v
         env:
           LANGSMITH_TRACING: 'false'
+      # TAX-066: risk calibration and drift on reviewed outcomes; fails if the report leaves its baseline.
+      - run: python -m unittest discover -s tests/ai -p 'test_risk_cal*.py' -v
+      - run: python -m ai.evaluation.risk_calibration --check
       # TAX-056: fails on any new evaluation failure or on a known failure that no longer occurs.
       - run: python -m unittest discover -s tests/ai -p 'test_agent_eval*.py' -v
         env:
@@ -111,5 +114,17 @@ jobs:
         env:
           LANGSMITH_TRACING: 'false'
       - run: python -m unittest discover -s tests/ai -p 'test_institutional*.py' -v
+        env:
+          LANGSMITH_TRACING: 'false'
+      - run: python -m unittest discover -s tests/ai -p 'test_eoi*.py' -v
+        env:
+          LANGSMITH_TRACING: 'false'
+      - run: python -m unittest discover -s tests/ai -p 'test_peer*.py' -v
+        env:
+          LANGSMITH_TRACING: 'false'
+      - run: python -m unittest discover -s tests/ai -p 'test_outcome*.py' -v
+        env:
+          LANGSMITH_TRACING: 'false'
+      - run: python -m unittest discover -s tests/ai -p 'test_network*.py' -v
         env:
           LANGSMITH_TRACING: 'false'

@@ -5,15 +5,15 @@
   "owner": "Leseli",
   "area": "apps/auditor-web",
   "phase": "expansion",
-  "status": "BACKLOG",
+  "status": "IN_PROGRESS",
   "priority": "P1",
   "depends_on": [
     "TAX-052",
     "TAX-059",
     "TAX-069"
   ],
-  "claimed_by": null,
-  "branch": null,
+  "claimed_by": "leseli-claude-20261105-077",
+  "branch": "task/TAX-077",
   "pr": null,
   "scope": "Aggregate verified policy gaps and unusual override patterns for restricted management review",
   "inputs": [
@@ -51,5 +51,10 @@
     "finish-task"
   ],
   "evidence": [],
-  "notes": []
+  "notes": [
+    {
+      "at": "2026-11-05T08:48:46.039520+00:00",
+      "text": "Claimed by leseli-claude-20261105-077"
+    }
+  ]
 }
