@@ -5,7 +5,7 @@
   "owner": "Gupta",
   "area": "ai",
   "phase": "future",
-  "status": "IN_PROGRESS",
+  "status": "IN_REVIEW",
   "priority": "P2",
   "depends_on": [
     "TAX-061",
@@ -13,7 +13,7 @@
   ],
   "claimed_by": "gupta-claude-20261105-080",
   "branch": "task/TAX-080",
-  "pr": null,
+  "pr": "https://github.com/Vati-AI/rsl-taxathon/pull/218",
   "scope": "Define governed extension contracts for PAYE, withholding, treaty/permanent-establishment and digital-services playbooks",
   "inputs": [
     "PROJECT.md",
@@ -63,6 +63,10 @@
     {
       "at": "2026-11-05T10:28:12.172111+00:00",
       "text": "Claimed by gupta-claude-20261105-080"
+    },
+    {
+      "at": "2026-11-05T10:42:16.384572+00:00",
+      "text": "Agent finished implementation and opened human review; local checks recorded in PR (Actions blocked by org billing limit)"
     }
   ]
 }
