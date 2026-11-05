@@ -5,7 +5,8 @@ Serves listCases, getCase and getTaxpayer from integration/api/fixtures/auditor_
 (TAX-041), the officer review operations getCaseReview, listFindings,
 proposeDecision, reviewDecision and requestEvidence from ``fixture_review`` (TAX-042),
 and the supervisor-only getManagementSummary (TAX-060) measured from those cases plus
-integration/api/fixtures/management.json.
+integration/api/fixtures/management.json, and the supervisor-only getIntegrityReview
+(TAX-077) from ``fixture_integrity``.
 Requests are checked with the contract's own rules (integration/api/contract.py), so
 missing or malformed tenant headers, bad IDs, invalid bodies and unknown routes fail
 exactly as the contract specifies. The fixture principal may see one tenant; any other
@@ -44,6 +45,7 @@ if str(API_DIR) not in sys.path:
     sys.path.insert(0, str(API_DIR))
 
 import contract  # noqa: E402
+import fixture_integrity  # noqa: E402  (TAX-077 getIntegrityReview)
 import fixture_review  # noqa: E402
 
 MODE_HEADER = "X-Vati-Mode"
@@ -520,6 +522,22 @@ def _dispatch(
         days = int(query.get("window_days", "30"))
         summary = management_summary(data, mgmt, days, viewer=acting)
         result = summary if isinstance(summary, str) else (200, {}, {"data": summary})
+    elif op_id == "getIntegrityReview":
+        # TAX-077: same acting officer and supervisor-only rule as the summary.
+        role = headers.get(fixture_review.ROLE_HEADER) or "auditor"
+        acting = review.review["principals"].get(role)
+        if acting is None:
+            return _error("invalid_request", correlation)
+        days = int(query.get("window_days", "30"))
+        body_or_error = fixture_integrity.integrity_review(
+            data["principal"]["tenant_id"],
+            fixture_integrity.load_integrity(),
+            days,
+            viewer=acting,
+        )
+        if body_or_error == "forbidden":
+            return _error("forbidden", correlation, fixture_integrity.FORBIDDEN_MESSAGE)
+        result = body_or_error if isinstance(body_or_error, str) else (200, {}, {"data": body_or_error})
     else:
         # Contract operations without fixture data are absent here, never invented.
         return _error("not_found", correlation, "This operation has no fixture data.")
