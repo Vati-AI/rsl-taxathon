@@ -5,7 +5,7 @@
   "owner": "Leseli",
   "area": "apps/auditor-web",
   "phase": "pilot",
-  "status": "IN_REVIEW",
+  "status": "DONE",
   "priority": "P1",
   "depends_on": [
     "TAX-055"
@@ -72,6 +72,10 @@
     {
       "at": "2026-11-05T20:13:18.038135+00:00",
       "text": "PR #254 opened: field errors now #941f1f (8.48:1 on white), KNOWN_A11Y_ISSUES entry removed, resolved cases explain the disabled suggestion. Local checks pass (npm run check, auditor e2e 66 passed, tests/frontend 195 passed with --workers=2, validate.py); mypy not run locally."
+    },
+    {
+      "at": "2026-11-05T20:45:11.667285+00:00",
+      "text": "Verified merge of #254 (2026-11-05T20:44:34Z); all 3 acceptance criteria have recorded evidence"
     }
   ]
 }
