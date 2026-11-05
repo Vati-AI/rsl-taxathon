@@ -1,0 +1,79 @@
+{
+  "persona": "auditor-first-case",
+  "description": "A newly appointed auditor opening the workspace for the first time and working one case.",
+  "mode": "pointer",
+  "viewport": "mobile-390",
+  "browser": "msedge",
+  "tasks": [
+    {
+      "id": "find-case",
+      "goal": "Find the case for Synthetic Border Retail and see why it was selected",
+      "completed": true,
+      "actions": 3,
+      "tabStops": 0,
+      "typed": 13,
+      "klmSeconds": 12.4,
+      "wallMs": 8178,
+      "route": [
+        "Open my case queue",
+        "Search",
+        "SYN-002"
+      ],
+      "friction": [
+        "The operational sidebar lists \"Component showcase\" (a design page) next to the case work"
+      ]
+    },
+    {
+      "id": "read-evidence",
+      "goal": "Open the evidence behind the case",
+      "completed": true,
+      "actions": 3,
+      "tabStops": 0,
+      "typed": 0,
+      "klmSeconds": 8,
+      "wallMs": 5583,
+      "route": [
+        "tab: Evidence",
+        "first evidence item",
+        "breadcrumb: back to case"
+      ],
+      "friction": [
+        "The evidence page has no link or button to open the original document; it says the content is never shown in the workspace"
+      ]
+    },
+    {
+      "id": "view-taxpayer",
+      "goal": "Look at the taxpayer's profile",
+      "completed": true,
+      "actions": 2,
+      "tabStops": 0,
+      "typed": 0,
+      "klmSeconds": 5.3,
+      "wallMs": 3334,
+      "route": [
+        "View taxpayer profile",
+        "SYN-002 from the profile"
+      ],
+      "friction": []
+    },
+    {
+      "id": "request-evidence",
+      "goal": "Ask the taxpayer for the missing service agreement",
+      "completed": true,
+      "actions": 6,
+      "tabStops": 0,
+      "typed": 98,
+      "klmSeconds": 44.9,
+      "wallMs": 5545,
+      "route": [
+        "Review and decide",
+        "Use as a starting point",
+        "Document 1 description",
+        "Message to the taxpayer",
+        "Review request…",
+        "Record evidence request"
+      ],
+      "friction": []
+    }
+  ]
+}

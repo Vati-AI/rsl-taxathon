@@ -1,0 +1,46 @@
+{
+  "persona": "auditor-keyboard",
+  "description": "An auditor who works with the keyboard only, requesting evidence on SYN-004.",
+  "mode": "keyboard",
+  "viewport": "mobile-390",
+  "browser": "msedge",
+  "tasks": [
+    {
+      "id": "find-case",
+      "goal": "Search for Synthetic Highland Imports and open its case",
+      "completed": true,
+      "actions": 2,
+      "tabStops": 20,
+      "typed": 16,
+      "klmSeconds": 15.1,
+      "wallMs": 5838,
+      "route": [
+        "Open my case queue (6 Tab)",
+        "Search (4 Tab)",
+        "SYN-004 (10 Tab)"
+      ],
+      "friction": []
+    },
+    {
+      "id": "request-evidence",
+      "goal": "Request the missing import records",
+      "completed": true,
+      "actions": 4,
+      "tabStops": 44,
+      "typed": 105,
+      "klmSeconds": 50.9,
+      "wallMs": 6178,
+      "route": [
+        "Review and decide (12 Tab)",
+        "Use as a starting point (21 Tab)",
+        "Document 1 description (4 Tab)",
+        "Message to the taxpayer (4 Tab)",
+        "Review request… (1 Tab)",
+        "Record evidence request (2 Tab)"
+      ],
+      "friction": [
+        "21 Tab stops to reach \"Use as a starting point\""
+      ]
+    }
+  ]
+}

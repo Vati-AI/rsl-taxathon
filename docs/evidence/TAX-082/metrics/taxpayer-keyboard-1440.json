@@ -1,0 +1,44 @@
+{
+  "persona": "taxpayer-keyboard",
+  "description": "A taxpayer who uses the keyboard only (screen-reader or motor-impairment proxy).",
+  "mode": "keyboard",
+  "viewport": "desktop-1440",
+  "browser": "msedge",
+  "tasks": [
+    {
+      "id": "check-status",
+      "goal": "Open my first submission and read what happens next",
+      "completed": true,
+      "actions": 2,
+      "tabStops": 3,
+      "typed": 0,
+      "klmSeconds": 4.5,
+      "wallMs": 9604,
+      "route": [
+        "Skip to main content (1 Tab)",
+        "first submission (2 Tab)"
+      ],
+      "friction": []
+    },
+    {
+      "id": "answer-request",
+      "goal": "Answer an evidence request without a mouse",
+      "completed": true,
+      "actions": 5,
+      "tabStops": 23,
+      "typed": 39,
+      "klmSeconds": 35.3,
+      "wallMs": 6523,
+      "route": [
+        "nav: Evidence requests (7 Tab)",
+        "request with \"Response needed\" (4 Tab)",
+        "file chooser for item 1 (4 Tab)",
+        "upload for item 1",
+        "cannot provide item 2 (5 Tab)",
+        "reason for item 2 (1 Tab)",
+        "Send response (2 Tab)"
+      ],
+      "friction": []
+    }
+  ]
+}

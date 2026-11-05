@@ -1,0 +1,28 @@
+{
+  "persona": "specialist-first-referral",
+  "description": "A specialist asked for an opinion, looking for the case and what they may do on it.",
+  "mode": "pointer",
+  "viewport": "tablet-1024",
+  "browser": "msedge",
+  "tasks": [
+    {
+      "id": "find-referral",
+      "goal": "Find cases referred to me and understand what I can do",
+      "completed": true,
+      "actions": 4,
+      "tabStops": 0,
+      "typed": 0,
+      "klmSeconds": 11.9,
+      "wallMs": 5119,
+      "route": [
+        "Acting as (fixture): Specialist",
+        "Overview: Awaiting officer review",
+        "SYN-005",
+        "Review and decide"
+      ],
+      "friction": [
+        "There is no \"Referred to me\" view; a specialist sees the same queue as an auditor"
+      ]
+    }
+  ]
+}

@@ -5,15 +5,15 @@
   "owner": "Kananelo",
   "area": "tests/frontend",
   "phase": "expansion",
-  "status": "BACKLOG",
+  "status": "IN_REVIEW",
   "priority": "P1",
   "depends_on": [
     "TAX-055",
     "TAX-060"
   ],
-  "claimed_by": null,
-  "branch": null,
-  "pr": null,
+  "claimed_by": "claude-kananelo",
+  "branch": "task/TAX-082",
+  "pr": "https://github.com/Vati-AI/rsl-taxathon/pull/245",
   "scope": "Create persona onboarding walkthroughs and measure task completion with test participants or scripted proxies",
   "inputs": [
     "PROJECT.md",
@@ -27,19 +27,19 @@
   "acceptance": [
     {
       "text": "Create persona onboarding walkthroughs and measure task completion with test participants or scripted proxies",
-      "done": false
+      "done": true
     },
     {
       "text": "Record observed friction and accessibility issues with prioritized remediation tasks",
-      "done": false
+      "done": true
     },
     {
       "text": "Record relevant tests and evidence, update task status and open a human-review PR",
-      "done": false
+      "done": true
     },
     {
       "text": "Follow docs/DESIGN_STANDARD.md; supply relevant viewport/state screenshots and keyboard/accessibility evidence for human visual review",
-      "done": false
+      "done": true
     }
   ],
   "verification": "Record observed friction and accessibility issues with prioritized remediation tasks",
@@ -49,11 +49,36 @@
     "update-project-task",
     "finish-task"
   ],
-  "evidence": [],
+  "evidence": [
+    {
+      "criterion": 1,
+      "text": "Six persona walkthroughs (first-time and keyboard-only taxpayer, new and keyboard-only auditor, supervisor, specialist) in tests/frontend/onboarding.spec.ts, measured by scripted proxy users (tests/frontend/support/proxy.ts) from each portal entrance using only on-screen controls. Completion, actions, Tab stops and Keystroke-Level Model estimates per goal: 17 goals completed at 1440/1024/390 (18/18 walkthroughs); metrics in docs/evidence/TAX-082/metrics. Synthetic data only; no real participants."
+    },
+    {
+      "criterion": 2,
+      "text": "docs/evidence/TAX-082/README.md records seven findings with priorities and proposed remediation: F1 P1 auditor search-result click cancelled at >=300 ms latency (8/8 reproduced, cause traced to debounced change + router.replace); F2 P1 supervisors cannot see which cases await their approval; F3 P2 taxpayer landing omits open evidence requests; F4 P2 no specialist referred-to-me view (TAX-093); F5 P2 21/44 Tab stops on review page; F6 P3 showcase in operational nav (TAX-091); F7 tracked by TAX-109. Task creation and owners left to the team lead."
+    },
+    {
+      "criterion": 3,
+      "text": "onboarding spec 18/18 passed (Edge, 3 widths); full browser harness 192 passed, 0 failed, 9 skipped (opt-in visual); vitest auditor 100/100, taxpayer 72/72; ESLint, typechecks (auditor, taxpayer, frontend tests), both builds, Ruff, mypy (228 files), Prettier on changed files and validate.py pass. dev.py check fails only on 3 Windows file-mode tooling tests; repo-wide prettier --check flags CRLF checkouts on Windows. CI blocked by org billing."
+    },
+    {
+      "criterion": 4,
+      "text": "39 viewport screenshots at 1440/1024/390 (docs/evidence/TAX-082) of each persona's key states including keyboard focus on the dialog confirm and Send response; axe WCAG 2.1 A/AA serious/critical and reflow checks on 12 states found nothing new; keyboard Tab-stop counts per control in metrics/*-keyboard-*.json. Human visual review requested, not assumed."
+    }
+  ],
   "notes": [
     {
       "at": "2026-11-03T15:40:40.955115+00:00",
       "text": "Owner reassigned from Jane to Kananelo by team lead Keletso to balance workload; Jane keeps no open tasks for now."
+    },
+    {
+      "at": "2026-11-05T12:25:50.587862+00:00",
+      "text": "Claimed by claude-kananelo"
+    },
+    {
+      "at": "2026-11-05T13:38:50.325329+00:00",
+      "text": "PR #245 opened for human review. Six scripted-proxy persona walkthroughs, 18/18 at three widths; seven findings with prioritised remediation proposals in docs/evidence/TAX-082/README.md. CI blocked by org billing."
     }
   ]
 }

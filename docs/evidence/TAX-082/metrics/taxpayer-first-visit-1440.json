@@ -1,0 +1,103 @@
+{
+  "persona": "taxpayer-first-visit",
+  "description": "A business owner using the portal for the first time, with a mouse or touch.",
+  "mode": "pointer",
+  "viewport": "desktop-1440",
+  "browser": "msedge",
+  "tasks": [
+    {
+      "id": "check-status",
+      "goal": "Find out where my submission is and what happens next",
+      "completed": true,
+      "actions": 1,
+      "tabStops": 0,
+      "typed": 0,
+      "klmSeconds": 2.7,
+      "wallMs": 14288,
+      "route": [
+        "first submission"
+      ],
+      "friction": [
+        "The landing page (Your submissions) does not mention that an evidence request is waiting for a response"
+      ]
+    },
+    {
+      "id": "answer-request",
+      "goal": "Answer the evidence request an officer sent",
+      "completed": true,
+      "actions": 6,
+      "tabStops": 0,
+      "typed": 39,
+      "klmSeconds": 32.9,
+      "wallMs": 5131,
+      "route": [
+        "nav: Evidence requests",
+        "request with \"Response needed\"",
+        "upload for item 1",
+        "cannot provide item 2",
+        "reason for item 2",
+        "Send response"
+      ],
+      "friction": []
+    },
+    {
+      "id": "send-claim",
+      "goal": "Send a VAT refund claim with one invoice",
+      "completed": true,
+      "actions": 18,
+      "tabStops": 0,
+      "typed": 100,
+      "klmSeconds": 90.3,
+      "wallMs": 7987,
+      "route": [
+        "nav: New submission",
+        "Tax period",
+        "Amount claimed",
+        "Output VAT",
+        "Input VAT",
+        "Reason for the claim",
+        "Continue to documents",
+        "upload invoice",
+        "Continue to invoices",
+        "Invoice number",
+        "Invoice date",
+        "Supplier",
+        "Amount excluding VAT (LSL)",
+        "VAT (LSL)",
+        "Total including VAT (LSL)",
+        "Continue to review",
+        "declaration",
+        "Send claim"
+      ],
+      "friction": []
+    },
+    {
+      "id": "find-new-claim",
+      "goal": "Find the claim I just sent in my submissions",
+      "completed": true,
+      "actions": 1,
+      "tabStops": 0,
+      "typed": 0,
+      "klmSeconds": 2.7,
+      "wallMs": 1033,
+      "route": [
+        "nav: Submissions"
+      ],
+      "friction": []
+    },
+    {
+      "id": "find-logout",
+      "goal": "Find my account details and how to log out",
+      "completed": true,
+      "actions": 1,
+      "tabStops": 0,
+      "typed": 0,
+      "klmSeconds": 2.7,
+      "wallMs": 2032,
+      "route": [
+        "nav: Account"
+      ],
+      "friction": []
+    }
+  ]
+}
