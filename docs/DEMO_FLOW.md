@@ -11,3 +11,5 @@
 | SYN-005 no verified legal route | Record policy-gap review; no invented enforcement conclusion |
 
 TAX-024 expands the minimal fixture summaries into linked documents and expected findings/non-findings. Test duplicate submissions, denied tenant access, unavailable services and malicious document instructions. Record measured timings, citation coverage, false positives and legal-route coverage. Clearly label fixture-only vs live stages.
+
+Presentation on the demo laptop (reduced profile, recorded Docling/OpenAleph/yente outputs): [DEMO_LAPTOP.md](DEMO_LAPTOP.md).
