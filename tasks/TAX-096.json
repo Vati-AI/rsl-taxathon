@@ -29,7 +29,7 @@
   "acceptance": [
     {
       "text": "Schemas and operations have examples validated by integration/api/contract.py tests; feedback and assistant drafts are idempotent and tenant/taxpayer scoped; taxpayer operations cannot return internal-only fields (negative tests)",
-      "done": false
+      "done": true
     },
     {
       "text": "Contract changes are reviewed by Gupta (AI), Edga (backend), Leseli and Kananelo (frontends); docs/API_CONTRACTS.md describes the briefing, provenance, feedback and taxpayer-assistance shapes",
@@ -37,7 +37,7 @@
     },
     {
       "text": "Record relevant tests and evidence, update task status and open a human-review PR",
-      "done": false
+      "done": true
     }
   ],
   "verification": "Contract changes are reviewed by Gupta (AI), Edga (backend), Leseli and Kananelo (frontends); docs/API_CONTRACTS.md describes the briefing, provenance, feedback and taxpayer-assistance shapes",
@@ -47,7 +47,16 @@
     "update-project-task",
     "finish-task"
   ],
-  "evidence": [],
+  "evidence": [
+    {
+      "criterion": 1,
+      "text": "integration/api/openapi.json adds AnalysisProvenance, AiDisclosure, CaseBriefing (getCaseBriefing), FindingFeedback (recordFindingFeedback) and five taxpayer-assistance operations with closed TaxpayerFacing* schemas. python3 integration/api/contract.py: contract valid, 45 HTTP examples (19 new, every new operation has a success example) and 2 events. python3 -m unittest discover -s tests/contracts: 113 tests OK, 29 in tests/contracts/test_ai_assistance_contract.py. These cover the lint refusing officer schemas, open objects and internal field names (risk_score, finding_ids, internal_notes, case_id, analysis_provenance, ...) in taxpayer operations; taxpayer responses carrying internal fields or another taxpayer's or tenant's data; feedback replay (same key and body) and conflict (422); actor in body refused; draft unsent until confirmed; confirmation replay; stale second confirmation (409); and missing declaration (400)."
+    },
+    {
+      "criterion": 3,
+      "text": "Local verification on the PR head (hosted CI blocked by billing): scripts/validate.py passed; scripts/dev.py check passed (LangGraph-dependent AI tests skipped, no .venv-ai); scripts/quality.py passed (ruff, ruff format, mypy, npm run check). Task set IN_REVIEW and human-review PR opened by scripts/task.py finish; criterion 2 (review by Gupta, Edga, Leseli and Kananelo) stays open until they review."
+    }
+  ],
   "notes": [
     {
       "at": "2026-11-05T10:07:38.336884+00:00",
