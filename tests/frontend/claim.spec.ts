@@ -2,6 +2,16 @@ import path from 'node:path';
 import { expect, test, type Page } from '@playwright/test';
 import { horizontalOverflow, pageReady, seriousAxeViolations } from './support/checks';
 import { TAXPAYER } from './support/env';
+import {
+  chooseReason,
+  field,
+  fillDetails,
+  fillInvoice,
+  pdf,
+  toInvoices,
+  toReview,
+  upload,
+} from './support/claim-flow';
 import { mockTaxpayerSession, type PortalMock } from './support/sessions';
 
 // TAX-043 VAT refund claim form, at every matrix width. The portal API and the
@@ -16,11 +26,6 @@ const capture = Boolean(process.env.CAPTURE_SCREENSHOTS);
 const out = path.resolve(__dirname, '../../docs/evidence/TAX-044');
 const NEW_CLAIM = '/taxpayer/submissions/new';
 const HEADING = 'New VAT refund claim';
-
-/** A tiny synthetic PDF-looking upload; the mock judges files by name only. */
-function pdf(name = 'synthetic-invoice-2026-09.pdf') {
-  return { name, mimeType: 'application/pdf', buffer: Buffer.from('%PDF-1.4\n% synthetic\n') };
-}
 
 async function shot(page: Page, name: string, width: string) {
   if (!capture) return;
@@ -37,69 +42,6 @@ async function open(page: Page): Promise<PortalMock> {
   await page.goto(TAXPAYER + NEW_CLAIM);
   await pageReady(page, HEADING);
   return mock;
-}
-
-/** frappe-ui 1.1.0 renders the select as a combobox with a listbox, not a native <select>. */
-async function chooseReason(page: Page, label: string) {
-  await page.getByRole('combobox', { name: 'Reason for the claim' }).click();
-  await page.getByRole('option', { name: label }).click();
-  await expect(page.getByRole('combobox', { name: 'Reason for the claim' })).toContainText(label);
-}
-
-async function fillDetails(page: Page) {
-  await page.getByLabel('Tax period').fill('2026-09');
-  await page.getByLabel('Amount claimed (LSL)').fill('48,210.55');
-  await page.getByLabel('Output VAT for the period (LSL)').fill('0');
-  await page.getByLabel('Input VAT for the period (LSL)').fill('48210.55');
-  await chooseReason(page, 'More input VAT than output VAT');
-  await page.getByLabel('Contact email (optional)').fill('accounts@example.test');
-  await page.getByRole('button', { name: 'Continue to documents' }).click();
-  await expect(page.getByRole('heading', { name: 'Supporting documents' })).toBeFocused();
-}
-
-async function upload(page: Page, file = pdf()) {
-  await page.getByLabel('Choose a file to upload').setInputFiles(file);
-  return page
-    .getByRole('list', { name: 'Supporting documents' })
-    .getByRole('listitem')
-    .filter({ has: page.getByText(file.name, { exact: true }) });
-}
-
-/** A row field by its visible label; frappe-ui appends " (required)" to required ones. */
-function field(row: ReturnType<Page['getByRole']>, label: string) {
-  const escaped = label.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-  // Match the accessible name, which frappe-ui computes as "<label> (required)".
-  return row.getByRole('textbox', { name: new RegExp(`^${escaped}( \\(required\\))?$`) });
-}
-
-/** TAX-044: one purchase invoice behind the claim (its copy is the only upload). */
-async function fillInvoice(page: Page, overrides: Record<string, string> = {}) {
-  const row = page.getByRole('group', { name: 'Invoice 1' });
-  const values: Record<string, string> = {
-    'Invoice number': 'INV-2026-0912',
-    'Invoice date': '2026-09-12',
-    Supplier: 'Synthetic Highland Supplies',
-    'Amount excluding VAT (LSL)': '321403.67',
-    'VAT (LSL)': '48210.55',
-    'Total including VAT (LSL)': '369614.22',
-    ...overrides,
-  };
-  for (const [label, value] of Object.entries(values)) {
-    await field(row, label).fill(value);
-  }
-}
-
-async function toInvoices(page: Page) {
-  await page.getByRole('button', { name: 'Continue to invoices' }).click();
-  await expect(page.getByRole('heading', { name: 'Purchase invoices' })).toBeFocused();
-}
-
-async function toReview(page: Page, invoice: Record<string, string> = {}) {
-  await toInvoices(page);
-  await fillInvoice(page, invoice);
-  await page.getByRole('button', { name: 'Continue to review' }).click();
-  await expect(page.getByRole('heading', { name: 'Check your claim' })).toBeFocused();
-  await expect(page.getByRole('heading', { name: 'Before you send' })).toBeVisible();
 }
 
 const width = (project: string) => project.split('-')[1];

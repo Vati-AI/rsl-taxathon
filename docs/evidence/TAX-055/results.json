@@ -1,0 +1,109 @@
+{
+  "run": "CAPTURE_SCREENSHOTS=1 playwright test scenarios --workers=2 (Edge, Windows 11), branch task/TAX-055 with main f06d781 merged",
+  "stats": {
+    "expected": 21,
+    "unexpected": 0,
+    "flaky": 0,
+    "skipped": 0
+  },
+  "tests": {
+    "SYN-001 legitimate refund \u2192 human clearance by a different supervisor": {
+      "desktop-1440": {
+        "status": "passed",
+        "seconds": 32.3
+      },
+      "tablet-1024": {
+        "status": "passed",
+        "seconds": 34.9
+      },
+      "mobile-390": {
+        "status": "passed",
+        "seconds": 36.0
+      }
+    },
+    "SYN-002 related-party risk \u2192 targeted evidence request": {
+      "desktop-1440": {
+        "status": "passed",
+        "seconds": 37.1
+      },
+      "tablet-1024": {
+        "status": "passed",
+        "seconds": 33.8
+      },
+      "mobile-390": {
+        "status": "passed",
+        "seconds": 37.2
+      }
+    },
+    "SYN-003 ambiguous service \u2192 specialist review": {
+      "desktop-1440": {
+        "status": "passed",
+        "seconds": 36.6
+      },
+      "tablet-1024": {
+        "status": "passed",
+        "seconds": 36.6
+      },
+      "mobile-390": {
+        "status": "passed",
+        "seconds": 33.0
+      }
+    },
+    "SYN-004 imported-services gap \u2192 targeted evidence request, keyboard only": {
+      "desktop-1440": {
+        "status": "passed",
+        "seconds": 25.9
+      },
+      "tablet-1024": {
+        "status": "passed",
+        "seconds": 25.2
+      },
+      "mobile-390": {
+        "status": "passed",
+        "seconds": 23.5
+      }
+    },
+    "SYN-005 unverified legal route \u2192 policy-gap review by a supervisor": {
+      "desktop-1440": {
+        "status": "passed",
+        "seconds": 32.1
+      },
+      "tablet-1024": {
+        "status": "passed",
+        "seconds": 30.2
+      },
+      "mobile-390": {
+        "status": "passed",
+        "seconds": 29.7
+      }
+    },
+    "claim with complete evidence, then answer an evidence request": {
+      "desktop-1440": {
+        "status": "passed",
+        "seconds": 31.7
+      },
+      "tablet-1024": {
+        "status": "passed",
+        "seconds": 33.9
+      },
+      "mobile-390": {
+        "status": "passed",
+        "seconds": 30.6
+      }
+    },
+    "forced colours and reduced motion: approval dialog and claim checks stay usable": {
+      "desktop-1440": {
+        "status": "passed",
+        "seconds": 23.2
+      },
+      "tablet-1024": {
+        "status": "passed",
+        "seconds": 21.1
+      },
+      "mobile-390": {
+        "status": "passed",
+        "seconds": 15.8
+      }
+    }
+  }
+}
