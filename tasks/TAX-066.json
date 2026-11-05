@@ -5,14 +5,14 @@
   "owner": "Leseli",
   "area": "tests/ai",
   "phase": "expansion",
-  "status": "BACKLOG",
+  "status": "IN_PROGRESS",
   "priority": "P1",
   "depends_on": [
     "TAX-056",
     "TAX-059"
   ],
-  "claimed_by": null,
-  "branch": null,
+  "claimed_by": "leseli-claude-20261105-066",
+  "branch": "task/TAX-066",
   "pr": null,
   "scope": "Evaluate reviewed outcomes with temporal holdout, false-positive metrics and drift reporting",
   "inputs": [
@@ -50,6 +50,10 @@
     {
       "at": "2026-11-03T15:40:40.955115+00:00",
       "text": "Owner reassigned from Yellow to Leseli by team lead Keletso to balance workload; Yellow keeps no open tasks for now."
+    },
+    {
+      "at": "2026-11-05T08:44:41.729270+00:00",
+      "text": "Claimed by leseli-claude-20261105-066"
     }
   ]
 }
