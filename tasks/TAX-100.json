@@ -2,7 +2,7 @@
   "id": "TAX-100",
   "kind": "task",
   "title": "Taxpayer-scoped assistant service in Frappe",
-  "owner": "Edga",
+  "owner": "Keletso",
   "area": "backend",
   "phase": "pilot",
   "status": "BACKLOG",
@@ -39,7 +39,7 @@
       "done": false
     },
     {
-      "text": "Record relevant tests and evidence, update task status and open a human-review PR",
+      "text": "Record relevant tests and evidence, update task status and open a PR",
       "done": false
     }
   ],
@@ -55,6 +55,11 @@
     {
       "at": "2026-11-05T10:07:38.336884+00:00",
       "text": "Added 2026-11-05 to record the agreed AI architecture (ADR-031): hosted models through a role router with local/template fallback, and the taxpayer-side assistant."
+    },
+    {
+      "at": "2026-11-05T14:08:21.889825+00:00",
+      "text": "Reassigned from Edga to Keletso (single-developer delivery, ADR-038)"
     }
-  ]
+  ],
+  "sequence": 18
 }

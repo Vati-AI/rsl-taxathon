@@ -2,7 +2,7 @@
   "id": "TAX-072",
   "kind": "task",
   "title": "EOI approval and response evidence lifecycle",
-  "owner": "Edga",
+  "owner": "Keletso",
   "area": "backend",
   "phase": "expansion",
   "status": "BACKLOG",
@@ -34,7 +34,7 @@
       "done": false
     },
     {
-      "text": "Record relevant tests and evidence, update task status and open a human-review PR",
+      "text": "Record relevant tests and evidence, update task status and open a PR",
       "done": false
     }
   ],
@@ -46,5 +46,11 @@
     "finish-task"
   ],
   "evidence": [],
-  "notes": []
+  "notes": [
+    {
+      "at": "2026-11-05T14:08:21.889825+00:00",
+      "text": "Reassigned from Edga to Keletso (single-developer delivery, ADR-038)"
+    }
+  ],
+  "sequence": 23
 }

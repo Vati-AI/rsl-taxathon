@@ -37,7 +37,7 @@
       "done": false
     },
     {
-      "text": "Record relevant tests and evidence, update task status and open a human-review PR",
+      "text": "Record relevant tests and evidence, update task status and open a PR",
       "done": false
     }
   ],
@@ -58,5 +58,6 @@
       "at": "2026-11-05T10:07:38.336884+00:00",
       "text": "2026-11-05 (ADR-031): also serve briefing and finding feedback once the TAX-096 contract lands."
     }
-  ]
+  ],
+  "sequence": 2
 }

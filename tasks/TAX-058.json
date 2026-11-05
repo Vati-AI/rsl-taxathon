@@ -46,7 +46,7 @@
       "done": false
     },
     {
-      "text": "Record relevant tests and evidence, update task status and open a human-review PR",
+      "text": "Record relevant tests and evidence, update task status and open a PR",
       "done": false
     },
     {
@@ -76,5 +76,6 @@
       "text": "Keletso decision 2026-11-05: the taxpayer assistant (TAX-101) is an optional demo segment, shown if ready, so it cannot block the officer pipeline demo. The live-app regression re-run (TAX-103) is required."
     },
     "TAX-105 scope clarification: Full native-tool acceptance follows UI_INTEGRATION_SCOPE.md and TAX-103; reduced laptop demos are disclosed."
-  ]
+  ],
+  "sequence": 21
 }

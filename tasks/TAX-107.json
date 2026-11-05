@@ -34,11 +34,11 @@
       "done": false
     },
     {
-      "text": "Record actual native case URL patterns for TAX-106, login/denied-access/session behavior, screenshots and human usability review; compare ordinary-user and administrator grants without shared admin credentials.",
+      "text": "Record actual native case URL patterns for TAX-106, login/denied-access/session behavior and screenshots; compare ordinary-user and administrator grants without shared admin credentials.",
       "done": false
     },
     {
-      "text": "Record tests and limitations, update evidence and open a human-review PR; do not claim native runtime readiness from fixtures.",
+      "text": "Record tests and limitations, update evidence and open a PR; do not claim native runtime readiness from fixtures.",
       "done": false
     }
   ],
@@ -52,5 +52,6 @@
   "evidence": [],
   "notes": [
     "Added by TAX-105 from user-requested complete frontend/native UI scope; not implemented or claimed."
-  ]
+  ],
+  "sequence": 8
 }

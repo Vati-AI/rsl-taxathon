@@ -2,7 +2,7 @@
   "id": "TAX-091",
   "kind": "task",
   "title": "Auditor app hosted in Frappe with real officer login",
-  "owner": "Kananelo",
+  "owner": "Keletso",
   "area": "apps/auditor-web",
   "phase": "pilot",
   "status": "BACKLOG",
@@ -36,7 +36,7 @@
       "done": false
     },
     {
-      "text": "Record relevant tests and evidence, update task status and open a human-review PR",
+      "text": "Record relevant tests and evidence, update task status and open a PR",
       "done": false
     },
     {
@@ -57,6 +57,11 @@
       "at": "2026-11-05T06:39:04.925015+00:00",
       "text": "Added 2026-11-05 after a runtime gap analysis for the RSL demo: the component code existed but this link was not wired at runtime and no task covered it."
     },
-    "TAX-105 scope clarification: Make the complete Frappe login lifecycle explicit; native sessions remain separate initially."
-  ]
+    "TAX-105 scope clarification: Make the complete Frappe login lifecycle explicit; native sessions remain separate initially.",
+    {
+      "at": "2026-11-05T14:08:21.889825+00:00",
+      "text": "Reassigned from Kananelo to Keletso (single-developer delivery, ADR-038)"
+    }
+  ],
+  "sequence": 7
 }

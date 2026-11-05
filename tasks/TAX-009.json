@@ -1,7 +1,7 @@
 {
   "id": "TAX-009",
   "title": "Frontend QA plan and browser fixtures",
-  "owner": "Kananelo",
+  "owner": "Keletso",
   "area": "tests/frontend",
   "status": "BACKLOG",
   "priority": "P0",
@@ -30,6 +30,10 @@
     {
       "at": "2026-11-03T15:40:40.955115+00:00",
       "text": "Owner reassigned from Jane to Kananelo by team lead Keletso to balance workload; Jane keeps no open tasks for now."
+    },
+    {
+      "at": "2026-11-05T14:08:21.889825+00:00",
+      "text": "Reassigned from Kananelo to Keletso (single-developer delivery, ADR-038)"
     }
   ],
   "kind": "epic",

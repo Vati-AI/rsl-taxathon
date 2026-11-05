@@ -2,7 +2,7 @@
   "id": "TAX-106",
   "kind": "task",
   "title": "Case-aware navigation to native investigation and administration screens",
-  "owner": "Leseli",
+  "owner": "Keletso",
   "area": "apps/auditor-web",
   "phase": "pilot",
   "status": "BACKLOG",
@@ -35,11 +35,11 @@
       "done": false
     },
     {
-      "text": "Keep the Vati case tab and breadcrumbs; move showcase out of operational navigation; provide permitted Frappe Desk entry; document separate-session logout behavior and capture relevant viewport/keyboard/accessibility evidence with human review.",
+      "text": "Keep the Vati case tab and breadcrumbs; move showcase out of operational navigation; provide permitted Frappe Desk entry; document separate-session logout behavior and capture relevant viewport/keyboard/accessibility evidence.",
       "done": false
     },
     {
-      "text": "Record tests and limitations, update evidence and open a human-review PR; do not claim native runtime readiness from fixtures.",
+      "text": "Record tests and limitations, update evidence and open a PR; do not claim native runtime readiness from fixtures.",
       "done": false
     }
   ],
@@ -52,6 +52,11 @@
   ],
   "evidence": [],
   "notes": [
-    "Added by TAX-105 from user-requested complete frontend/native UI scope; not implemented or claimed."
-  ]
+    "Added by TAX-105 from user-requested complete frontend/native UI scope; not implemented or claimed.",
+    {
+      "at": "2026-11-05T14:08:21.889825+00:00",
+      "text": "Reassigned from Leseli to Keletso (single-developer delivery, ADR-038)"
+    }
+  ],
+  "sequence": 10
 }

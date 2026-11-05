@@ -2,7 +2,7 @@
   "id": "TAX-110",
   "kind": "task",
   "title": "Reliable hosted briefing and evidence reading within free-tier limits",
-  "owner": "Gupta",
+  "owner": "Keletso",
   "area": "ai",
   "phase": "pilot",
   "status": "BACKLOG",
@@ -41,7 +41,7 @@
       "done": false
     },
     {
-      "text": "Record relevant tests and evidence, update task status and open a human-review PR",
+      "text": "Record relevant tests and evidence, update task status and open a PR",
       "done": false
     }
   ],
@@ -57,6 +57,11 @@
     {
       "at": "2026-11-05T13:54:18.678761+00:00",
       "text": "Added 2026-11-05 from the TAX-097 live evaluation (PR #244): safety held, but the officer briefing always fell back to the template."
+    },
+    {
+      "at": "2026-11-05T14:08:21.889825+00:00",
+      "text": "Reassigned from Gupta to Keletso (single-developer delivery, ADR-038)"
     }
-  ]
+  ],
+  "sequence": 3
 }
