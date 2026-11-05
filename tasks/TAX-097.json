@@ -5,7 +5,7 @@
   "owner": "Gupta",
   "area": "ai",
   "phase": "pilot",
-  "status": "IN_PROGRESS",
+  "status": "IN_REVIEW",
   "priority": "P0",
   "depends_on": [
     "TAX-089",
@@ -13,7 +13,7 @@
   ],
   "claimed_by": "gupta-claude-20261105-097",
   "branch": "task/TAX-097",
-  "pr": null,
+  "pr": "https://github.com/Vati-AI/rsl-taxathon/pull/244",
   "scope": "Use routed models in the VAT refund, related-party, evidence and case briefing agents for interpretation only (explain discrepancies, interpret contracts and Docling output, form and challenge hypotheses with legitimate alternatives, draft briefings), over deterministic reconciliation results and cited evidence; every output passes the existing validators",
   "inputs": [
     "PROJECT.md",
@@ -73,6 +73,10 @@
     {
       "at": "2026-11-05T11:26:11.618433+00:00",
       "text": "Claimed by gupta-claude-20261105-097"
+    },
+    {
+      "at": "2026-11-05T13:27:20.662199+00:00",
+      "text": "Review PR #244 opened; local checks recorded in the PR (Actions blocked by billing limit)."
     }
   ]
 }
