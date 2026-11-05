@@ -28,7 +28,7 @@ from vati_tax.bridge import store as bridge_store
 from vati_tax.identity.permissions import get_principal
 from vati_tax.identity.policy import TAXPAYER, canonical_uuid
 from vati_tax.ids.canonical import CaseNotFound, MappingError
-from vati_tax.portal import claims
+from vati_tax.portal import claims, presubmission
 from vati_tax.portal.fixtures import FIXTURE_META, find_submission, list_submissions
 from vati_tax.responses import rules as response_rules
 from vati_tax.responses import store as response_store
@@ -38,6 +38,19 @@ from vati_tax.vati_tax.doctype.vati_refund_claim.vati_refund_claim import foreig
 
 SUBMISSION = "Vati Submission"
 REFUND_CLAIM = "Vati Refund Claim"
+INVOICE_ROW = "Vati Refund Claim Invoice"
+INVOICE_FIELDS = (
+    "invoice_number",
+    "invoice_date",
+    "supplier_name",
+    "supplier_tin",
+    "net_amount",
+    "vat_amount",
+    "gross_amount",
+    "amount_paid",
+    "invoice_evidence_id",
+    "contract_evidence_id",
+)
 LIVE_META: dict[str, Any] = {"mode": "live"}
 
 
@@ -51,6 +64,12 @@ class PortalBadRequest(frappe.ValidationError):
     """Malformed request, such as a missing tenant context (API standard: 400)."""
 
     http_status_code = 400
+
+
+class PortalUnavailable(frappe.ValidationError):
+    """A dependency is unavailable (API standard: 503, retryable)."""
+
+    http_status_code = 503
 
 
 def _require_taxpayer() -> tuple[str, list[tuple[str, str]]]:
@@ -92,6 +111,9 @@ def _fail(
         "field_errors": [error.as_dict() for error in field_errors or []],
     }
     _log(action, code, correlation_id=correlation_id)
+    if status == 503:
+        frappe.local.response["error"]["retryable"] = True
+        raise PortalUnavailable(message)
     raise (PortalRequestError if status == 422 else PortalBadRequest)(message)
 
 
@@ -156,10 +178,26 @@ def _stored(submission_key: str) -> Any:
     claim = frappe.db.get_value(
         REFUND_CLAIM,
         {"submission_id": row.name},
-        ["claimed_amount", "claim_reason", "explanation", "evidence_ids"],
+        [
+            "name",
+            "claimed_amount",
+            "claim_reason",
+            "explanation",
+            "evidence_ids",
+            "period_output_vat",
+            "period_input_vat",
+        ],  # fmt: skip
         as_dict=True,
     )
-    return {**row, **(claim or {})}
+    if not claim:
+        return {**row}
+    rows = frappe.get_all(
+        INVOICE_ROW,
+        filters={"parent": claim.name, "parenttype": REFUND_CLAIM, "parentfield": "invoices"},
+        fields=list(INVOICE_FIELDS),
+        order_by="idx asc",
+    )
+    return {**row, **claim, "name": row.name, "invoices": rows}
 
 
 def _view(submission_id: str, *, replayed: bool) -> dict[str, Any]:
@@ -222,6 +260,9 @@ def submit_refund_claim(
     evidence_ids: Any = None,
     declaration: Any = None,
     tenant_id: str | None = None,
+    period_output_vat: Any = None,
+    period_input_vat: Any = None,
+    invoices: Any = None,
 ) -> dict[str, Any]:
     """Send a VAT refund claim with its uploaded supporting documents.
 
@@ -246,6 +287,9 @@ def submit_refund_claim(
                 "contact_email": contact_email,
                 "evidence_ids": evidence_ids,
                 "declaration": declaration,
+                "period_output_vat": period_output_vat,
+                "period_input_vat": period_input_vat,
+                "invoices": invoices,
             },
             frappe.utils.getdate(frappe.utils.nowdate()),
         )
@@ -295,6 +339,9 @@ def submit_refund_claim(
                 "claim_reason": request.claim_reason,
                 "explanation": request.explanation,
                 "evidence_ids": frappe.as_json(list(request.evidence_ids)),
+                "period_output_vat": domain.format_money(request.period_output_vat),
+                "period_input_vat": domain.format_money(request.period_input_vat),
+                "invoices": [row.as_dict() for row in request.invoices],
             }
         ).insert()
         submission.reload()
@@ -388,3 +435,76 @@ def respond_to_evidence_request(
         )
     _log(action, "replayed" if result["replayed"] else "responded", request_id=result["request_id"])
     return {**LIVE_META, "replayed": result.pop("replayed"), "data": result}
+
+
+# --- pre-submission reconciliation (TAX-044) --------------------------------------
+
+
+@frappe.whitelist(methods=["POST"])
+def review_refund_claim(
+    period: str | None = None,
+    claimed_amount: Any = None,
+    claim_reason: str | None = None,
+    explanation: str | None = None,
+    contact_email: str | None = None,
+    evidence_ids: Any = None,
+    period_output_vat: Any = None,
+    period_input_vat: Any = None,
+    invoices: Any = None,
+    tenant_id: str | None = None,
+) -> dict[str, Any]:
+    """Check a draft claim before it is sent; stores nothing.
+
+    Validates the same answers as ``submit_refund_claim`` and runs the shared
+    TAX-048 reconciliation (``portal.presubmission``). Returns taxpayer-facing
+    figures and correction prompts only; prompts never block sending.
+    """
+    _user, scope = _require_taxpayer()
+    tenant, taxpayer = _claim_owner(scope, tenant_id)
+    action = "review_refund_claim"
+    try:
+        request = claims.validate_claim(
+            {
+                # Review needs no key or declaration; these placeholders only
+                # satisfy the shared validator and are never stored.
+                "idempotency_key": "review-" + uuid.uuid4().hex,
+                "declaration": True,
+                "period": period,
+                "claimed_amount": claimed_amount,
+                "claim_reason": claim_reason,
+                "explanation": explanation,
+                "contact_email": contact_email,
+                "evidence_ids": evidence_ids,
+                "period_output_vat": period_output_vat,
+                "period_input_vat": period_input_vat,
+                "invoices": invoices,
+            },
+            frappe.utils.getdate(frappe.utils.nowdate()),
+        )
+    except claims.ClaimInputError as exc:
+        _fail(422, "invalid_domain_input", "Check the highlighted answers.", exc.errors, action)
+    if foreign_evidence_ids(tenant, taxpayer, request.evidence_ids):
+        _fail(
+            422,
+            "invalid_domain_input",
+            "Check the highlighted answers.",
+            [
+                claims.FieldError(
+                    "evidence_ids",
+                    "not_found",
+                    "A document could not be found. Remove it and upload the file again.",
+                )
+            ],
+            action,
+        )
+    try:
+        result = presubmission.review(
+            request.claimed_amount,
+            request.period_output_vat,
+            request.period_input_vat,
+            request.invoices,
+        )
+    except presubmission.ReconciliationUnavailable as exc:
+        _fail(503, "service_unavailable", str(exc), action=action)
+    _log(action, "reviewed", prompts=len(result["prompts"]))
+    return {**LIVE_META, "data": result}

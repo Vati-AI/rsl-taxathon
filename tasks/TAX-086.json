@@ -1,0 +1,58 @@
+{
+  "id": "TAX-086",
+  "kind": "task",
+  "title": "Case findings record for rule and agent output",
+  "owner": "Edga",
+  "area": "backend",
+  "phase": "pilot",
+  "status": "BACKLOG",
+  "priority": "P0",
+  "depends_on": [
+    "TAX-030",
+    "TAX-035",
+    "TAX-046"
+  ],
+  "claimed_by": null,
+  "branch": null,
+  "pr": null,
+  "scope": "Store per-case findings from Jube rules and AI playbooks (code, explanation, rule/playbook version, evidence citations, source, status) as tenant-scoped, append-only Frappe records the officer UI and decisions can read",
+  "inputs": [
+    "PROJECT.md",
+    "docs/ARCHITECTURE.md",
+    "docs/API_CONTRACTS.md",
+    "docs/REQUIREMENTS.md",
+    "docs/ENGINEERING_STANDARD.md",
+    "docs/V1_ACCEPTANCE.md",
+    "docs/DATA_MODEL.md",
+    "docs/PERMISSIONS.md",
+    "docs/AI_STANDARD.md"
+  ],
+  "acceptance": [
+    {
+      "text": "A Vati Case Finding DocType (or equivalent) with tenant/case isolation via TAX-029 field names, provenance (rule or playbook id + version, evidence refs) and append-only revisions; no risk/fraud labels on people",
+      "done": false
+    },
+    {
+      "text": "Rule signals from TAX-035 and a playbook result for at least SYN-002 can be recorded and read back per case; cross-tenant and taxpayer reads are refused; replay of the same finding is idempotent",
+      "done": false
+    },
+    {
+      "text": "Record relevant tests and evidence, update task status and open a human-review PR",
+      "done": false
+    }
+  ],
+  "verification": "Rule signals from TAX-035 and a playbook result for at least SYN-002 can be recorded and read back per case; cross-tenant and taxpayer reads are refused; replay of the same finding is idempotent",
+  "skills": [
+    "start-task",
+    "implement-change",
+    "update-project-task",
+    "finish-task"
+  ],
+  "evidence": [],
+  "notes": [
+    {
+      "at": "2026-11-05T06:39:04.925015+00:00",
+      "text": "Added 2026-11-05 after a runtime gap analysis for the RSL demo: the component code existed but this link was not wired at runtime and no task covered it."
+    }
+  ]
+}

@@ -1,0 +1,57 @@
+{
+  "id": "TAX-093",
+  "kind": "task",
+  "title": "Auditor screens for AI briefing and specialist opinion",
+  "owner": "Leseli",
+  "area": "apps/auditor-web",
+  "phase": "pilot",
+  "status": "BACKLOG",
+  "priority": "P0",
+  "depends_on": [
+    "TAX-090",
+    "TAX-088"
+  ],
+  "claimed_by": null,
+  "branch": null,
+  "pr": null,
+  "scope": "Show the agent's briefing, cited evidence, findings provenance and human-checkpoint state in the case review, and let a specialist record an opinion so SYN-003 can be completed",
+  "inputs": [
+    "PROJECT.md",
+    "docs/ARCHITECTURE.md",
+    "docs/API_CONTRACTS.md",
+    "docs/REQUIREMENTS.md",
+    "docs/ENGINEERING_STANDARD.md",
+    "docs/V1_ACCEPTANCE.md",
+    "docs/DESIGN_STANDARD.md",
+    "docs/AI_STANDARD.md",
+    "apps/auditor-web/src/views/CaseReviewView.vue"
+  ],
+  "acceptance": [
+    {
+      "text": "Case review shows the briefing with clickable citations, which rule or playbook produced each finding, model-versus-template disclosure, and whether the run is waiting for a human; a specialist can record an opinion through the existing decisions API",
+      "done": false
+    },
+    {
+      "text": "SYN-003 can be completed end to end in the UI (referral, specialist opinion, supervisor decision); accessibility checks pass; the agent's output is clearly a suggestion that never decides",
+      "done": false
+    },
+    {
+      "text": "Record relevant tests and evidence, update task status and open a human-review PR",
+      "done": false
+    }
+  ],
+  "verification": "SYN-003 can be completed end to end in the UI (referral, specialist opinion, supervisor decision); accessibility checks pass; the agent's output is clearly a suggestion that never decides",
+  "skills": [
+    "start-task",
+    "implement-change",
+    "update-project-task",
+    "finish-task"
+  ],
+  "evidence": [],
+  "notes": [
+    {
+      "at": "2026-11-05T06:39:04.925015+00:00",
+      "text": "Added 2026-11-05 after a runtime gap analysis for the RSL demo: the component code existed but this link was not wired at runtime and no task covered it."
+    }
+  ]
+}

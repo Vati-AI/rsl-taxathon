@@ -14,6 +14,7 @@ invalid document and cross-tenant (and cross-taxpayer) evidence access.
 from __future__ import annotations
 
 import io
+import json
 import unittest
 import uuid
 
@@ -177,9 +178,42 @@ class RefundClaimPortalTests(IntegrationTestCase):
             "contact_email": "accounts@example.test",
             "evidence_ids": evidence_ids,
             "declaration": 1,
+            # TAX-044: period figures and one invoice backed by the first document.
+            "period_output_vat": "0.00",
+            "period_input_vat": "15000.00",
+            "invoices": [self.invoice(evidence_ids[0])] if evidence_ids else [],
             **overrides,
         }
         return portal_api.submit_refund_claim(**args)
+
+    @staticmethod
+    def invoice(evidence_id, **overrides):
+        row = {
+            "invoice_number": "INV-0912",
+            "invoice_date": "2026-09-12",
+            "supplier_name": "Synthetic Supplies",
+            "net_amount": "100000.00",
+            "vat_amount": "15000.00",
+            "gross_amount": "115000.00",
+            "invoice_evidence_id": evidence_id,
+        }
+        row.update(overrides)
+        return row
+
+    def review(self, who: str, evidence_ids, **overrides):
+        self.as_user(who)
+        frappe.local.request = Request(EnvironBuilder(method="POST").get_environ())
+        args = {
+            "period": "2026-09",
+            "claimed_amount": "15000.00",
+            "claim_reason": "excess_input_vat",
+            "evidence_ids": evidence_ids,
+            "period_output_vat": "0.00",
+            "period_input_vat": "15000.00",
+            "invoices": [self.invoice(evidence_ids[0])] if evidence_ids else [],
+            **overrides,
+        }
+        return portal_api.review_refund_claim(**args)
 
     def error(self) -> dict:
         return frappe.local.response["error"]
@@ -256,6 +290,7 @@ class RefundClaimPortalTests(IntegrationTestCase):
                 ("contact_email", "invalid_email"),
                 ("evidence_ids", "evidence_required"),
                 ("declaration", "declaration_required"),
+                ("invoices", "required"),
             },
         )
         for field_error in error["field_errors"]:
@@ -383,3 +418,145 @@ class RefundClaimPortalTests(IntegrationTestCase):
                     evidence_api.get_evidence(evidence_id)
         with self.assertRaises(TenantScopeDenied):
             self.upload("taxpayer-a", self.t2)
+
+    # --- TAX-044: invoice schedule and pre-submission reconciliation ------------------
+
+    def test_schedule_and_period_figures_are_stored_with_server_totals(self):
+        first = self.upload("taxpayer-a", self.t1)["evidence_id"]
+        second = self.upload("taxpayer-a", self.t1)["evidence_id"]
+        rows = [
+            self.invoice(first, amount_paid="115000.00", contract_evidence_id=second),
+            self.invoice(
+                second,
+                invoice_number="INV-0913",
+                net_amount="200.00",
+                vat_amount="30.00",
+                gross_amount="230.00",
+            ),
+        ]
+        result = self.claim(
+            "taxpayer-a",
+            [first, second],
+            invoices=rows,
+            claimed_amount="15030.00",
+            period_input_vat="15030.00",
+        )
+        frappe.set_user("Administrator")
+        claim = frappe.get_doc(REFUND, {"submission_id": result["data"]["submission_id"]})
+        self.assertEqual(len(claim.invoices), 2)
+        totals = (
+            float(claim.invoice_net_total),
+            float(claim.invoice_vat_total),
+            float(claim.invoice_gross_total),
+        )
+        self.assertEqual(totals, (100200.0, 15030.0, 115230.0))
+        figures = (float(claim.period_output_vat), float(claim.period_input_vat))
+        self.assertEqual(figures, (0.0, 15030.0))
+        self.assertEqual(claim.invoices[0].contract_evidence_id, second)
+
+    def test_review_shows_figures_and_guidance_and_stores_nothing(self):
+        evidence = self.upload("taxpayer-a", self.t1)["evidence_id"]
+        before = self.count(SUBMISSION, taxpayer_id=self.tp_a)
+        # Incomplete evidence: claim exceeds the invoices, no payment, no contract,
+        # and the period arithmetic does not add up (acceptance criterion 2).
+        result = self.review(
+            "taxpayer-a", [evidence], claimed_amount="20000.00", period_output_vat="100.00"
+        )
+        data = result["data"]
+        self.assertEqual(result["mode"], "live")
+        self.assertEqual(data["figures"]["documented_input_vat"], "15000.00")
+        expected = {
+            "refund_claim_exceeds_documented_input_vat",
+            "return_arithmetic_mismatch",
+            "payment_evidence_missing",
+            "contract_evidence_missing",
+        }
+        self.assertEqual({p["code"] for p in data["prompts"]}, expected)
+        text = json.dumps(result).lower()
+        for word in ("fraud", "abuse", "suspic", "penalt", "lane", "risk", "investigat"):
+            self.assertNotIn(word, text)
+        self.assertEqual(self.count(SUBMISSION, taxpayer_id=self.tp_a), before)
+
+    def test_fully_evidenced_review_is_complete(self):
+        invoice = self.upload("taxpayer-a", self.t1)["evidence_id"]
+        contract = self.upload("taxpayer-a", self.t1)["evidence_id"]
+        row = self.invoice(invoice, amount_paid="115000.00", contract_evidence_id=contract)
+        result = self.review("taxpayer-a", [invoice, contract], invoices=[row])
+        self.assertTrue(result["data"]["complete"])
+        self.assertEqual(result["data"]["figures"]["explained_amount"], "15000.00")
+
+    def test_review_refuses_another_taxpayers_documents(self):
+        theirs = self.upload("taxpayer-b", self.t1)["evidence_id"]
+        with self.assertRaises(portal_api.PortalRequestError):
+            self.review("taxpayer-a", [theirs])
+        self.assertEqual(self.error()["field_errors"][0]["code"], "not_found")
+
+    def test_schedule_problems_are_reported_by_row(self):
+        evidence = self.upload("taxpayer-a", self.t1)["evidence_id"]
+        bad = self.invoice(evidence, gross_amount="115000.01")
+        with self.assertRaises(portal_api.PortalRequestError):
+            self.claim("taxpayer-a", [evidence], invoices=[bad])
+        self.assertEqual(
+            [(e["field"], e["code"]) for e in self.error()["field_errors"]],
+            [("invoices.0.gross_amount", "invoice_total_mismatch")],
+        )
+
+    def test_changed_schedule_under_the_same_key_conflicts(self):
+        evidence = self.upload("taxpayer-a", self.t1)["evidence_id"]
+        retry_key = key()
+        rows = [self.invoice(evidence)]
+        self.claim("taxpayer-a", [evidence], idempotency_key=retry_key, invoices=rows)
+        frappe.db.commit()
+        try:
+            again = self.claim("taxpayer-a", [evidence], idempotency_key=retry_key, invoices=rows)
+            self.assertTrue(again["replayed"])
+            changed = [{**rows[0], "supplier_name": "Synthetic Other Supplier"}]
+            frappe.local.response = frappe._dict()
+            with self.assertRaises(portal_api.PortalRequestError):
+                self.claim("taxpayer-a", [evidence], idempotency_key=retry_key, invoices=changed)
+            self.assertEqual(self.error()["code"], "idempotency_conflict")
+        finally:
+            frappe.set_user("Administrator")
+            for name in frappe.get_all(SUBMISSION, {"idempotency_key": retry_key}, pluck="name"):
+                for claim in frappe.get_all(REFUND, {"submission_id": name}, pluck="name"):
+                    frappe.db.delete("Vati Refund Claim Invoice", {"parent": claim})
+                frappe.db.delete(REFUND, {"submission_id": name})
+                frappe.db.delete(SUBMISSION, {"name": name})
+            frappe.db.commit()
+
+    def test_doctype_refuses_bad_rows_and_foreign_row_documents(self):
+        own = self.upload("taxpayer-a", self.t1)["evidence_id"]
+        theirs = self.upload("taxpayer-b", self.t1)["evidence_id"]
+        self.as_user("taxpayer-a")
+        submission = frappe.get_doc(
+            {
+                "doctype": SUBMISSION,
+                "tenant_id": self.t1,
+                "taxpayer_id": self.tp_a,
+                "submission_type": "refund_claim",
+                "period": "2026-08",
+            }
+        ).insert()
+
+        def new_claim(row):
+            return frappe.get_doc(
+                {
+                    "doctype": REFUND,
+                    "submission_id": submission.name,
+                    "tenant_id": self.t1,
+                    "taxpayer_id": self.tp_a,
+                    "claimed_amount": "100.00",
+                    "claim_reason": "excess_input_vat",
+                    "invoices": [row],
+                }
+            ).insert()
+
+        bad_rows = {
+            "total mismatch": self.invoice(own, invoice_date="2026-08-01", gross_amount="1.00"),
+            "after the period": self.invoice(own, invoice_date="2026-09-15"),
+            "another taxpayer's document": self.invoice(theirs, invoice_date="2026-08-01"),
+        }
+        for label, bad in bad_rows.items():
+            with self.subTest(label):
+                with self.assertRaises(InvalidDomainInput):
+                    new_claim(bad)

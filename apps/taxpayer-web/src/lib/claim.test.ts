@@ -193,6 +193,9 @@ describe('live calls', () => {
         evidence_ids: ['e1'],
         declaration: true,
         tenant_id: TENANT,
+        period_output_vat: '0.00',
+        period_input_vat: '15000.00',
+        invoices: [],
       }),
     ).rejects.toMatchObject({ kind: 'unavailable' });
   });
@@ -217,6 +220,9 @@ describe('live calls', () => {
         evidence_ids: ['e1'],
         declaration: true,
         tenant_id: TENANT,
+        period_output_vat: '0.00',
+        period_input_vat: '15000.00',
+        invoices: [],
       }),
     ).rejects.toMatchObject({ kind: 'unavailable' });
   });

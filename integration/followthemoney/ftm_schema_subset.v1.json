@@ -4,6 +4,8 @@
     "Contract",
     "Document",
     "LegalEntity",
+    "Organization",
+    "Project",
     "Thing"
   ],
   "schemata": {
@@ -130,6 +132,56 @@
       "required": [
         "contract",
         "supplier"
+      ]
+    },
+    "Directorship": {
+      "abstract": false,
+      "edge": true,
+      "is_a": [
+        "Directorship",
+        "Interest",
+        "Interval"
+      ],
+      "properties": {
+        "description": {
+          "defined_in": "Interval",
+          "type": "text"
+        },
+        "director": {
+          "defined_in": "Directorship",
+          "range": "LegalEntity",
+          "type": "entity"
+        },
+        "endDate": {
+          "defined_in": "Interval",
+          "type": "date"
+        },
+        "organization": {
+          "defined_in": "Directorship",
+          "range": "Organization",
+          "type": "entity"
+        },
+        "proof": {
+          "defined_in": "Interval",
+          "range": "Document",
+          "type": "entity"
+        },
+        "recordId": {
+          "defined_in": "Interval",
+          "type": "string"
+        },
+        "role": {
+          "defined_in": "Interest",
+          "type": "string"
+        },
+        "startDate": {
+          "defined_in": "Interval",
+          "type": "date"
+        }
+      },
+      "required": [
+        "director",
+        "organization"
       ]
     },
     "Document": {
@@ -362,6 +414,137 @@
         "name"
       ]
     },
+    "Project": {
+      "abstract": false,
+      "edge": false,
+      "is_a": [
+        "Interval",
+        "Project",
+        "Thing",
+        "Value"
+      ],
+      "properties": {
+        "description": {
+          "defined_in": "Interval",
+          "type": "text"
+        },
+        "endDate": {
+          "defined_in": "Interval",
+          "type": "date"
+        },
+        "name": {
+          "defined_in": "Thing",
+          "type": "name"
+        },
+        "projectId": {
+          "defined_in": "Project",
+          "type": "identifier"
+        },
+        "proof": {
+          "defined_in": "Interval",
+          "range": "Document",
+          "type": "entity"
+        },
+        "startDate": {
+          "defined_in": "Interval",
+          "type": "date"
+        }
+      },
+      "required": []
+    },
+    "ProjectParticipant": {
+      "abstract": false,
+      "edge": true,
+      "is_a": [
+        "Interest",
+        "Interval",
+        "ProjectParticipant"
+      ],
+      "properties": {
+        "endDate": {
+          "defined_in": "Interval",
+          "type": "date"
+        },
+        "participant": {
+          "defined_in": "ProjectParticipant",
+          "range": "LegalEntity",
+          "type": "entity"
+        },
+        "project": {
+          "defined_in": "ProjectParticipant",
+          "range": "Project",
+          "type": "entity"
+        },
+        "proof": {
+          "defined_in": "Interval",
+          "range": "Document",
+          "type": "entity"
+        },
+        "recordId": {
+          "defined_in": "Interval",
+          "type": "string"
+        },
+        "role": {
+          "defined_in": "Interest",
+          "type": "string"
+        },
+        "startDate": {
+          "defined_in": "Interval",
+          "type": "date"
+        }
+      },
+      "required": []
+    },
+    "Representation": {
+      "abstract": false,
+      "edge": true,
+      "is_a": [
+        "Interest",
+        "Interval",
+        "Representation"
+      ],
+      "properties": {
+        "agent": {
+          "defined_in": "Representation",
+          "range": "LegalEntity",
+          "type": "entity"
+        },
+        "client": {
+          "defined_in": "Representation",
+          "range": "LegalEntity",
+          "type": "entity"
+        },
+        "description": {
+          "defined_in": "Interval",
+          "type": "text"
+        },
+        "endDate": {
+          "defined_in": "Interval",
+          "type": "date"
+        },
+        "proof": {
+          "defined_in": "Interval",
+          "range": "Document",
+          "type": "entity"
+        },
+        "recordId": {
+          "defined_in": "Interval",
+          "type": "string"
+        },
+        "role": {
+          "defined_in": "Interest",
+          "type": "string"
+        },
+        "startDate": {
+          "defined_in": "Interval",
+          "type": "date"
+        }
+      },
+      "required": [
+        "agent",
+        "client"
+      ]
+    },
     "UnknownLink": {
       "abstract": false,
       "edge": true,
@@ -412,22 +595,26 @@
   "source": {
     "commit": "c8c457a5c80fcf3ebe134f49b8dc60b417f0b860",
     "files_sha256": {
-      "Analyzable.yaml": "fd7ca801d49e646cef3814dfd7262f97c7b7660759fd76a1429fec0903eea9b6",
-      "Asset.yaml": "4767e82009a65429d138639053d577ed02204c33101456ef9e8e64b5dd1cbc31",
-      "Company.yaml": "1df46f6c226c3db64ebfefec75214bbd048f928584064b07e50f5dcaf8baeebc",
-      "Contract.yaml": "eebb33c7c8e58f130f7c8b696f814af6e91afa874aa66c8056696d23cee43fd3",
-      "ContractAward.yaml": "81c5cc61d28ff65aae87700e69473aefe0dab71cc453e8d9b07fa05eafd07508",
-      "Document.yaml": "647b22b1445377cd64e652306d97b3c8b4d5942ff395119ca4cde0efb6b06700",
-      "Interest.yaml": "f81f1872606517795e634027849ad2c2ac57defb01f4756f8c98bc3a2c22dabb",
-      "Interval.yaml": "5b7ace75e9c6dbc91c93fbe53e6719e2852cb055551eabd836e930d54664bcf3",
-      "LegalEntity.yaml": "fe126dbc8b05d025644c5d5d5065b8af889cad765b8d327ae187a1d3d2bdf113",
-      "Organization.yaml": "d6e98da914e4e15ba900d365e2546579af5a78c1b35646b1303177bab17ca55d",
-      "Ownership.yaml": "41be2e5f2fde0bc26327cc8283dbb534b9cc33c1e6617e0d2bf0306ff62418c3",
-      "Payment.yaml": "af2dd6767ac4eff974b55d6e1acfb7f15f727eed3911a65e7ea72722b73a6fbd",
-      "Person.yaml": "d361fa60f2888bb24398e328e21dc3f0c66a8abc1c20e224d0cc2a47f0c534d8",
-      "Thing.yaml": "f52fb57622ea92a8432c24303ce0a4414c1f9142c20ef755fed7a9db115ae824",
-      "UnknownLink.yaml": "44ee342b36b510cee6fa6941dacc6519daa7223a55574b2a6c074278552b4929",
-      "Value.yaml": "991b73a6076373c234b404a090ecb4af8b1c9651ebb66038d34ad54cf75f7896"
+      "Analyzable.yaml": "d17107aa26cbfd7a73011a67ab5841d1ab77f30e22d8580e9a1f846ed1fea6df",
+      "Asset.yaml": "c50847249b6718b7e239a52772a1afe09477627ee5e3ac8083ba7484a1401551",
+      "Company.yaml": "56dd65ba2580dc26c025143fc266c66ddec7984568aa94aceee58538b072d588",
+      "Contract.yaml": "206bf818e7af8d8a86fe7e6ec3d4baf0785bb77c70779290eaeb7b45ce76e6a4",
+      "ContractAward.yaml": "6f6b296991d809a3f5c91d510acac8ee652393e7c017b05413775cf159777144",
+      "Directorship.yaml": "044048167b845e1368fc7aaf937fdae19750fa76b846df4076f941ac6d7e39f8",
+      "Document.yaml": "271a1897fda8f9e6d55e1e4ccd120a1077d5deafc4fbec1718ed871bbcc16998",
+      "Interest.yaml": "554ade866b0dd5682d4b5a006b98e7fc91ad4a46461982c635a869f91e4984e4",
+      "Interval.yaml": "148a05bbd2f50c358dabf442721e6e67dbaaedf1c81ce1a9f100ca77a8a49e3c",
+      "LegalEntity.yaml": "6e447e174d4b27aa61500c075ece0334fe1a2d7a08a2b4e7d1f1a767e4c99349",
+      "Organization.yaml": "9c354dd1d5266273981be6adad8a4a5142ce215fe2b75075a6a899761ac3886f",
+      "Ownership.yaml": "27585a8eb2c03b707aba55ca95bb5c4803af512f643520fa199121df7844fbaf",
+      "Payment.yaml": "591049ba3f658ecc4b06cfb483d67d503f3bb91d514edb948989d63a72abd6a0",
+      "Person.yaml": "50f4fd06906ae86830b8dfbc6d7f23eca9e69345475ca17e9a33365f13995055",
+      "Project.yaml": "b6c8453392950dc6c726fcd58beebc7a0aaf5183360d1594dee157a3abb4733e",
+      "ProjectParticipant.yaml": "14f7a1e6a42a0648b2a5c7f64260b31f2e336cde1a578de543500efec2738189",
+      "Representation.yaml": "b02bc59d40d068496ad9ca92074ac82dc3186f681a319aa5cf1947c725fd2068",
+      "Thing.yaml": "e150b1987c66801cb81c6323464515f315f6be331e69d57a58e5afd3e742611a",
+      "UnknownLink.yaml": "967792fc764d81e2f2271c335a72f1d19a32637317b7df48fcad97fe8f73e60f",
+      "Value.yaml": "70d1d30ad6a43135c35b44296fa02b668762f6b309f846efa755ac388451cf0e"
     },
     "repository": "https://github.com/opensanctions/followthemoney"
   }

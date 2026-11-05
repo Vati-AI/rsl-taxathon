@@ -1,0 +1,70 @@
+{
+  "id": "TAX-084",
+  "kind": "task",
+  "title": "Free-plan CI recovery and local PR verification",
+  "owner": "Keletso",
+  "area": "integration",
+  "phase": "foundation",
+  "status": "DONE",
+  "priority": "P0",
+  "depends_on": [],
+  "claimed_by": "codex-ci-recovery-20261105",
+  "branch": "task/TAX-084",
+  "pr": "https://github.com/Vati-AI/rsl-taxathon/pull/180",
+  "scope": "Reduce superseded hosted CI work and document verified local checks for PRs 174\u2013177 during the included-usage block; preserve checks and human review.",
+  "inputs": [
+    ".github/workflows/ci.yml",
+    "docs/TOOLCHAIN.md",
+    "docs/V1_ACCEPTANCE.md"
+  ],
+  "acceptance": [
+    {
+      "text": "Cancel superseded CI runs without dropping existing jobs or checks",
+      "done": true
+    },
+    {
+      "text": "Record exact PR commits, local verification results and limitations",
+      "done": true
+    },
+    {
+      "text": "Document repeatable free local verification and safe runner prerequisites",
+      "done": true
+    }
+  ],
+  "verification": "Run dev.py check, quality.py, browser suites, AI checks and compose validation; record unavailable checks honestly.",
+  "skills": [
+    "start-task",
+    "implement-change",
+    "finish-task"
+  ],
+  "evidence": [
+    {
+      "criterion": 1,
+      "text": "Parsed CI YAML and compared against origin/main: all five jobs, triggers, permissions and commands are unchanged. Added workflow/ref-scoped cancel-in-progress. Hosted behavior remains unobserved because account usage blocks runners."
+    },
+    {
+      "criterion": 3,
+      "text": "Added docs/FREE_CI.md with separate locked quality/AI environments, full local job equivalents, explicit skips/hosted limitations, allowance recovery and isolated-runner prerequisites. User elected local checks and waiting for reset."
+    },
+    {
+      "criterion": 2,
+      "text": "Verified exact heads of PRs 174\u2013177 locally: workspace and quality checks, AI smoke, 144 AI tests per PR, all three Compose configs, 54 auditor browser passes per PR, and cross-portal browser passes 126/126/126/132. Existing Frappe/visual skips and setup retries recorded in docs/evidence/TAX-084-local-ci.md. No application fixes required; hosted jobs remain blocked."
+    }
+  ],
+  "notes": [
+    "User requested free recovery after hosted Actions usage exhausted. New task bootstrapped locally because task.py start requires an existing task on local main; main will not be pushed.",
+    {
+      "at": "2026-11-05T05:16:27.778913+00:00",
+      "text": "Claimed by codex-ci-recovery-20261105"
+    },
+    "User chose local checks while waiting for included usage reset; no permanent self-hosted runner or paid usage will be enabled.",
+    {
+      "at": "2026-11-05T05:32:31.093560+00:00",
+      "text": "Agent finished implementation and opened human review"
+    },
+    {
+      "at": "2026-11-05T06:09:38.250446+00:00",
+      "text": "Verified merge of #180 on 2026-11-05"
+    }
+  ]
+}

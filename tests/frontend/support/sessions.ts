@@ -121,6 +121,8 @@ export interface PortalMock {
   dropNextSendResponse: boolean;
   /** Refuse the next claim as referencing evidence outside the caller's scope. */
   rejectEvidenceOnSend: boolean;
+  /** TAX-044: how many pre-submission reviews the portal ran. */
+  reviews: number;
   /** TAX-045: evidence requests by ID (taxpayer-facing views) and stored responses by key. */
   requests: Map<string, EvidenceRequestMock>;
   responses: Map<string, StoredClaim>;
@@ -136,7 +138,82 @@ const CLAIM_FIELDS = [
   'explanation',
   'contact_email',
   'evidence_ids',
+  // TAX-044
+  'period_output_vat',
+  'period_input_vat',
+  'invoices',
 ] as const;
+
+/** Whole cents of a decimal string (the portal sends normalised amounts). */
+function toCents(value: unknown): number {
+  const [whole, frac = ''] = String(value ?? '0').split('.');
+  return Number(whole) * 100 + Number(frac.padEnd(2, '0').slice(0, 2));
+}
+
+function money(value: number): string {
+  return `${Math.floor(value / 100)}.${String(value % 100).padStart(2, '0')}`;
+}
+
+interface MockInvoice {
+  vat_amount: string;
+  gross_amount: string;
+  amount_paid: string | null;
+  contract_evidence_id: string | null;
+}
+
+/**
+ * The taxpayer view of the TAX-048 reconciliation for a draft claim, computed
+ * with the same rules as vati_tax/portal/presubmission.py (whole cents). The
+ * real server path is covered by vati_tax/portal/test_refund_claim_bench.py.
+ */
+function mockReview(body: Record<string, unknown>) {
+  const rows = (body.invoices as MockInvoice[] | undefined) ?? [];
+  const claimed = toCents(body.claimed_amount);
+  const output = toCents(body.period_output_vat);
+  const input = toCents(body.period_input_vat);
+  const documented = rows.reduce((sum, r) => sum + toCents(r.vat_amount), 0);
+  const explainedVat = rows
+    .filter((r) => r.contract_evidence_id && r.amount_paid && toCents(r.amount_paid) === toCents(r.gross_amount))
+    .reduce((sum, r) => sum + toCents(r.vat_amount), 0); // prettier-ignore
+  const explained = Math.min(claimed, Math.max(0, explainedVat - output));
+  const prompts: { code: string; invoice: number | null; message: string }[] = [];
+  if (claimed !== Math.max(0, input - output)) {
+    prompts.push({ code: 'return_arithmetic_mismatch', invoice: null,
+      message: "The amount claimed should equal the period's input VAT minus its output VAT. Check these figures and the amount claimed." }); // prettier-ignore
+  }
+  const undocumented = claimed - Math.max(0, documented - output);
+  if (undocumented > 0) {
+    prompts.push({ code: 'refund_claim_exceeds_documented_input_vat', invoice: null,
+      message: `Your claim is LSL ${Number(money(undocumented)).toLocaleString('en-US', { minimumFractionDigits: 2 })} more than the VAT on the invoices you listed. Add any missing invoices, or check the amount claimed.` }); // prettier-ignore
+  }
+  rows.forEach((r, i) => {
+    if (toCents(r.vat_amount) === 0) return;
+    if (r.amount_paid && toCents(r.amount_paid) !== toCents(r.gross_amount)) {
+      prompts.push({ code: 'payment_total_differs_from_invoice', invoice: i,
+        message: `Invoice ${i + 1}: the amount paid is different from the invoice total. Check the amount paid.` }); // prettier-ignore
+    }
+    if (!r.contract_evidence_id) {
+      prompts.push({ code: 'contract_evidence_missing', invoice: i,
+        message: `Invoice ${i + 1}: if you have a contract or purchase order for it, attach it. An officer may ask for it later.` }); // prettier-ignore
+    }
+    if (!r.amount_paid) {
+      prompts.push({ code: 'payment_evidence_missing', invoice: i,
+        message: `Invoice ${i + 1}: add the amount paid, if you have paid this invoice.` }); // prettier-ignore
+    }
+  });
+  return {
+    calculation_version: 'tax048-reconciliation-v1',
+    figures: {
+      claimed_refund: money(claimed),
+      output_vat: money(output),
+      documented_input_vat: money(documented),
+      explained_amount: money(explained),
+      unresolved_amount: money(claimed - explained),
+    },
+    prompts,
+    complete: prompts.length === 0,
+  };
+}
 
 let referenceCounter = 0;
 
@@ -234,6 +311,7 @@ export async function mockTaxpayerSession(
     claims: new Map(),
     dropNextSendResponse: false,
     rejectEvidenceOnSend: false,
+    reviews: 0,
     requests: evidenceRequests(),
     responses: new Map(),
     dropNextRespondResponse: false,
@@ -295,6 +373,18 @@ export async function mockTaxpayerSession(
         received_at: '2026-11-04T10:00:00Z',
         synthetic: true,
       });
+    }
+    if (method === 'vati_tax.portal.api.review_refund_claim') {
+      const body = (route.request().postDataJSON() ?? {}) as Record<string, unknown>;
+      const ids = (body.evidence_ids as string[] | undefined) ?? [];
+      if (ids.some((id) => !mock.evidence.includes(id))) {
+        return claimRefused(route, 'invalid_domain_input', [
+          { field: 'evidence_ids', code: 'not_found',
+            message: 'A document could not be found. Remove it and upload the file again.' },
+        ]); // prettier-ignore
+      }
+      mock.reviews += 1;
+      return ok(route, { mode: 'live', data: mockReview(body) });
     }
     if (method === 'vati_tax.portal.api.submit_refund_claim') {
       const body = (route.request().postDataJSON() ?? {}) as Record<string, unknown>;

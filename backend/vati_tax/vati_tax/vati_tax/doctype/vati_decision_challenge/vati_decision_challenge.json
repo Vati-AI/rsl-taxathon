@@ -1,0 +1,270 @@
+{
+ "actions": [],
+ "autoname": "field:challenge_id",
+ "creation": "2026-11-05 09:00:00.000000",
+ "description": "Objection or appeal against an approved Vati Decision and its reviewed outcome (TAX-069). The original decision and evidence are never changed; an overturned outcome asks for a new human decision.",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "challenge_id",
+  "tenant_id",
+  "taxpayer_id",
+  "case_id",
+  "decision_id",
+  "stage",
+  "parent_challenge_id",
+  "status",
+  "version",
+  "lodge_section",
+  "grounds",
+  "evidence_ids",
+  "route_reference",
+  "lodged_by",
+  "lodger_role",
+  "lodged_at",
+  "decision_digest",
+  "request_digest",
+  "review_section",
+  "outcome",
+  "reviewed_by",
+  "reviewed_at",
+  "review_reason",
+  "keys_section",
+  "objection_key",
+  "appeal_key"
+ ],
+ "fields": [
+  {
+   "fieldname": "challenge_id",
+   "fieldtype": "Data",
+   "label": "Challenge ID",
+   "length": 36,
+   "reqd": 1,
+   "unique": 1,
+   "set_only_once": 1
+  },
+  {
+   "fieldname": "tenant_id",
+   "fieldtype": "Data",
+   "label": "Tenant ID",
+   "length": 36,
+   "reqd": 1,
+   "search_index": 1,
+   "set_only_once": 1,
+   "in_standard_filter": 1
+  },
+  {
+   "fieldname": "taxpayer_id",
+   "fieldtype": "Data",
+   "label": "Taxpayer ID",
+   "length": 36,
+   "reqd": 1,
+   "search_index": 1,
+   "set_only_once": 1
+  },
+  {
+   "fieldname": "case_id",
+   "fieldtype": "Data",
+   "label": "Case ID",
+   "length": 36,
+   "reqd": 1,
+   "search_index": 1,
+   "set_only_once": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "decision_id",
+   "fieldtype": "Data",
+   "label": "Decision ID",
+   "length": 36,
+   "reqd": 1,
+   "search_index": 1,
+   "set_only_once": 1
+  },
+  {
+   "fieldname": "stage",
+   "fieldtype": "Select",
+   "label": "Stage",
+   "options": "objection\nappeal",
+   "reqd": 1,
+   "set_only_once": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "parent_challenge_id",
+   "fieldtype": "Data",
+   "label": "Appeal Of (Objection)",
+   "length": 36,
+   "set_only_once": 1
+  },
+  {
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "label": "Status",
+   "options": "lodged\nreviewed",
+   "reqd": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1
+  },
+  {
+   "fieldname": "version",
+   "fieldtype": "Int",
+   "label": "Version",
+   "reqd": 1,
+   "default": "1"
+  },
+  {
+   "fieldname": "lodge_section",
+   "fieldtype": "Section Break",
+   "label": "Lodged"
+  },
+  {
+   "fieldname": "grounds",
+   "fieldtype": "Long Text",
+   "label": "Grounds",
+   "reqd": 1,
+   "set_only_once": 1
+  },
+  {
+   "fieldname": "evidence_ids",
+   "fieldtype": "Long Text",
+   "label": "Evidence IDs (JSON)",
+   "set_only_once": 1
+  },
+  {
+   "fieldname": "route_reference",
+   "fieldtype": "Data",
+   "label": "Route Reference (unverified)",
+   "length": 200,
+   "set_only_once": 1
+  },
+  {
+   "fieldname": "lodged_by",
+   "fieldtype": "Data",
+   "label": "Lodged By",
+   "length": 140,
+   "reqd": 1,
+   "set_only_once": 1
+  },
+  {
+   "fieldname": "lodger_role",
+   "fieldtype": "Data",
+   "label": "Lodger Role",
+   "length": 16,
+   "reqd": 1,
+   "set_only_once": 1
+  },
+  {
+   "fieldname": "lodged_at",
+   "fieldtype": "Datetime",
+   "label": "Lodged At (UTC)",
+   "reqd": 1,
+   "set_only_once": 1
+  },
+  {
+   "fieldname": "decision_digest",
+   "fieldtype": "Data",
+   "label": "Decision Digest At Lodging",
+   "length": 64,
+   "reqd": 1,
+   "set_only_once": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "request_digest",
+   "fieldtype": "Data",
+   "label": "Request Digest",
+   "length": 64,
+   "set_only_once": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "review_section",
+   "fieldtype": "Section Break",
+   "label": "Review"
+  },
+  {
+   "fieldname": "outcome",
+   "fieldtype": "Select",
+   "label": "Outcome",
+   "options": "\nupheld\npartially_overturned\noverturned\nwithdrawn",
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "reviewed_by",
+   "fieldtype": "Data",
+   "label": "Reviewed By",
+   "length": 140
+  },
+  {
+   "fieldname": "reviewed_at",
+   "fieldtype": "Datetime",
+   "label": "Reviewed At (UTC)"
+  },
+  {
+   "fieldname": "review_reason",
+   "fieldtype": "Long Text",
+   "label": "Review Reason"
+  },
+  {
+   "fieldname": "keys_section",
+   "fieldtype": "Section Break",
+   "label": "Uniqueness keys",
+   "collapsible": 1
+  },
+  {
+   "fieldname": "objection_key",
+   "fieldtype": "Data",
+   "label": "Objection Key",
+   "length": 64,
+   "read_only": 1,
+   "unique": 1
+  },
+  {
+   "fieldname": "appeal_key",
+   "fieldtype": "Data",
+   "label": "Appeal Key",
+   "length": 64,
+   "read_only": 1,
+   "unique": 1
+  }
+ ],
+ "in_create": 1,
+ "index_web_pages_for_search": 0,
+ "links": [],
+ "modified": "2026-11-05 09:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Vati Tax",
+ "name": "Vati Decision Challenge",
+ "naming_rule": "By fieldname",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "export": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager"
+  },
+  {
+   "read": 1,
+   "role": "Vati Auditor"
+  },
+  {
+   "read": 1,
+   "role": "Vati Specialist"
+  },
+  {
+   "read": 1,
+   "role": "Vati Supervisor"
+  },
+  {
+   "read": 1,
+   "role": "Vati Service"
+  }
+ ],
+ "search_fields": "decision_id,stage,status",
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "stage"
+}

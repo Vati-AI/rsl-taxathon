@@ -68,6 +68,10 @@ app=root/'apps/vati_tax'
 if not app.exists():
     app.symlink_to('/workspace/vati_tax', target_is_directory=True)
 cmd([str(root/'env/bin/python'),'-m','pip','install','-e',str(app)])
+# TAX-044 / ADR-023: make the read-only ai/ mount importable as `ai` without installing
+# its dependencies (langgraph is never installed in the Frappe bench).
+site_packages=subprocess.check_output([str(root/'env/bin/python'),'-c','import sysconfig;print(sysconfig.get_paths()["purelib"])'],text=True).strip()
+pathlib.Path(site_packages,'vati_shared.pth').write_text('/workspace/vati_shared')
 apps_file=root/'sites/apps.txt'
 names=apps_file.read_text().splitlines()
 if 'vati_tax' not in names: apps_file.write_text('\n'.join(names+['vati_tax'])+'\n')
@@ -113,6 +117,10 @@ try:
     cmd(['bench', 'new-site', site, '--db-root-password', pw, '--admin-password',
          os.environ['VERIFY_ADMIN_PASSWORD'], '--mariadb-user-host-login-scope=%'])
     created = True
+    # The app's site tests create far more users than Frappe's default limit of
+    # 60 per hour (User.throttle_user_creation). Raise it on this disposable
+    # verify-* site only; the developer site and real sites keep the default.
+    cmd(['bench', '--site', site, 'set-config', '--parse', 'throttle_user_limit', '10000'])
     cmd(['bench', '--site', site, 'install-app', 'vati_tax'])
     report['installed_apps'] = cmd(['bench', '--site', site, 'list-apps', '--format', 'json']).strip()
     for n in (1, 2):
