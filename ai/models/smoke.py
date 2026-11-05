@@ -5,7 +5,7 @@
 
 ``--live`` forces ``VATI_MODEL_PROVIDER=hosted`` for this run, reads keys from the
 environment or the ignored ``.env`` and skips roles without a key or model ID
-(the ``document`` role until a Gemini ID is confirmed, ADR-031). It prints, per
+(the ``document`` role when ``VATI_MODEL_DOCUMENT`` is unset, ADR-031). It prints, per
 role, the observed model ID, latency, token use and rate-limit headers, never a
 key. A live role that does not answer at level 0 makes the run fail. Only the
 synthetic payload below is sent.

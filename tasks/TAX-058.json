@@ -18,7 +18,7 @@
     "TAX-094",
     "TAX-095",
     "TAX-097",
-    "TAX-101"
+    "TAX-103"
   ],
   "claimed_by": null,
   "branch": null,
@@ -63,6 +63,10 @@
     {
       "at": "2026-11-05T10:07:38.336884+00:00",
       "text": "2026-11-05 (ADR-031): the demo includes model-assisted investigation (TAX-097) and the taxpayer assistant (TAX-101)."
+    },
+    {
+      "at": "2026-11-05T10:39:50.241416+00:00",
+      "text": "Keletso decision 2026-11-05: the taxpayer assistant (TAX-101) is an optional demo segment, shown if ready, so it cannot block the officer pipeline demo. The live-app regression re-run (TAX-103) is required."
     }
   ]
 }

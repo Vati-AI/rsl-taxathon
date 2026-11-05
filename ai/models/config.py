@@ -14,7 +14,7 @@ settings object, a model or a provenance record can be printed or logged safely.
   ``fast``, Gemini for ``document``) when that provider's key and the role's
   model ID are set, then the optional local model, then the template. A role
   whose key is missing uses ``mock`` instead; a role with a key but no model ID
-  (the ``document`` role until the team confirms a Gemini ID, ADR-031) is left
+  (the ``document`` role when ``VATI_MODEL_DOCUMENT`` is unset, ADR-031) is left
   unconfigured and falls back down the chain.
 - ``local``: optional Ollama model, then the template.
 - ``template``: deterministic template only.
@@ -30,8 +30,9 @@ from pathlib import Path
 ROLES = ("reasoning", "fast", "document")
 PROVIDER_MODES = ("mock", "hosted", "local", "template")
 HOSTED_PROVIDER = {"reasoning": "groq", "fast": "groq", "document": "gemini"}
-# ADR-031 demo defaults. The document role deliberately has none: gemini-2.5-flash is
-# deprecated and no replacement has been confirmed by the team.
+# ADR-031 demo defaults. The document role deliberately has no built-in default:
+# gemini-2.5-flash is deprecated, and the confirmed gemini-3.6-flash is set through
+# VATI_MODEL_DOCUMENT (.env.example) until the live smoke verifies its limits.
 DEFAULT_MODEL_IDS = {
     "reasoning": "openai/gpt-oss-120b",
     "fast": "openai/gpt-oss-20b",
