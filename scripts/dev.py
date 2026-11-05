@@ -208,6 +208,8 @@ def check():
         ["python3", "-m", "unittest", "discover", "-s", "tests/ai", "-p", "test_outcome*.py"],
         # TAX-075 network pattern review (pure Python on TAX-074 graphs).
         ["python3", "-m", "unittest", "discover", "-s", "tests/ai", "-p", "test_network*.py"],
+        # TAX-089 model router (pure Python; briefing port tests skip without LangGraph).
+        ["python3", "-m", "unittest", "discover", "-s", "tests/ai", "-p", "test_model*.py"],
         ["python3", "integration/api/contract.py"],
         ["python3", "-m", "unittest", "discover", "-s", "tests/contracts", "-v"],
         # Frappe-free app logic (portal boundary/fixtures); bench tests cover the rest.

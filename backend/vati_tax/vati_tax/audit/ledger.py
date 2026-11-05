@@ -48,6 +48,7 @@ SUBJECT_TYPES: Final[tuple[str, ...]] = (
     "export",  # TAX-062 evidence export requests
     "workflow",  # TAX-065 learned workflow versions
     "challenge",  # TAX-069 objections and appeals against a decision
+    "reminder",  # TAX-078 correction reminders for a taxpayer
 )
 
 # Decision and evidence-request actions (TAX-046) and their ledger category.
@@ -74,6 +75,10 @@ _ACTION_CATEGORY: Final[dict[str, Category]] = {
     # TAX-069: a challenge is lodged (write) and its outcome reviewed (approval).
     "challenge.lodged": "write",
     "challenge.reviewed": "approval",
+    # TAX-078: correction reminders are recorded, corrected or withdrawn (write).
+    "reminder.recorded": "write",
+    "reminder.corrected": "write",
+    "reminder.withdrawn": "write",
 }
 
 # Refused attempts that break separation of duties when repeated.
