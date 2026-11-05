@@ -1,7 +1,7 @@
 {
   "id": "TAX-008",
   "title": "VAT and related-party investigations",
-  "owner": "Gupta",
+  "owner": "Keletso",
   "area": "ai",
   "status": "BACKLOG",
   "priority": "P0",
@@ -30,7 +30,11 @@
   ],
   "evidence": [],
   "notes": [
-    "Expanded into implementation tasks TAX-018 onward; do not claim this planning epic."
+    "Expanded into implementation tasks TAX-018 onward; do not claim this planning epic.",
+    {
+      "at": "2026-11-05T14:08:21.889825+00:00",
+      "text": "Reassigned from Gupta to Keletso (single-developer delivery, ADR-038)"
+    }
   ],
   "kind": "epic",
   "phase": "planning",

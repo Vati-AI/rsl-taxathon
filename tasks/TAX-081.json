@@ -2,7 +2,7 @@
   "id": "TAX-081",
   "kind": "task",
   "title": "Pilot operational acceptance and performance baseline",
-  "owner": "Leseli",
+  "owner": "Keletso",
   "area": "tests/integration",
   "phase": "expansion",
   "status": "BACKLOG",
@@ -35,7 +35,7 @@
       "done": false
     },
     {
-      "text": "Record relevant tests and evidence, update task status and open a human-review PR",
+      "text": "Record relevant tests and evidence, update task status and open a PR",
       "done": false
     }
   ],
@@ -51,6 +51,11 @@
     {
       "at": "2026-11-03T15:40:40.955115+00:00",
       "text": "Owner reassigned from Yellow to Leseli by team lead Keletso to balance workload; Yellow keeps no open tasks for now."
+    },
+    {
+      "at": "2026-11-05T14:08:21.889825+00:00",
+      "text": "Reassigned from Leseli to Keletso (single-developer delivery, ADR-038)"
     }
-  ]
+  ],
+  "sequence": 25
 }

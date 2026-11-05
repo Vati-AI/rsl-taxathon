@@ -2,7 +2,7 @@
   "id": "TAX-088",
   "kind": "task",
   "title": "AI investigation runtime on real cases",
-  "owner": "Gupta",
+  "owner": "Keletso",
   "area": "ai",
   "phase": "pilot",
   "status": "BACKLOG",
@@ -41,7 +41,7 @@
       "done": false
     },
     {
-      "text": "Record relevant tests and evidence, update task status and open a human-review PR",
+      "text": "Record relevant tests and evidence, update task status and open a PR",
       "done": false
     }
   ],
@@ -65,6 +65,11 @@
     {
       "at": "2026-11-05T13:54:18.678761+00:00",
       "text": "2026-11-05: depends on TAX-110 so live cases get a model-drafted briefing, not only the template."
+    },
+    {
+      "at": "2026-11-05T14:08:21.889825+00:00",
+      "text": "Reassigned from Gupta to Keletso (single-developer delivery, ADR-038)"
     }
-  ]
+  ],
+  "sequence": 4
 }

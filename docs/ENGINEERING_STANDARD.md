@@ -28,4 +28,4 @@ Follow docs/API_STANDARD.md. Keep each vendor adapter behind an explicit interfa
 
 Run `python3 scripts/dev.py check` for dependency-free workspace checks. Run `python3 scripts/quality.py` after installing dev dependencies for Python lint/format/type checks and frontend lint/format. Run relevant service/UI tests for changed behaviour. The first Vue app task must extend npm check with its build/typecheck and component tests; do not leave new file types outside checks. Product integration tests are added with their implementation tasks; a tooling-only green CI is not product acceptance.
 
-One task branch, independent checkout, current main, focused commits, explicit branch push and human-reviewed PR. No self-merge or direct main push. Free-plan review is a team convention supported by CI and CODEOWNERS, not a server-enforced guarantee. Do not keep asking for a paid plan.
+One task branch, independent checkout, current main, focused commits, explicit branch push and a PR. No direct main push. Under ADR-038 the owner merges their own PR after the local checks pass; hosted CI is unavailable. Do not keep asking for a paid plan.

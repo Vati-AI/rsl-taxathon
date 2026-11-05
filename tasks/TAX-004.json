@@ -1,7 +1,7 @@
 {
   "id": "TAX-004",
   "title": "Evidence responses and submission API integration",
-  "owner": "Kananelo",
+  "owner": "Keletso",
   "area": "apps/taxpayer-web",
   "status": "BACKLOG",
   "priority": "P0",
@@ -29,7 +29,11 @@
   ],
   "evidence": [],
   "notes": [
-    "Expanded into implementation tasks TAX-018 onward; do not claim this planning epic."
+    "Expanded into implementation tasks TAX-018 onward; do not claim this planning epic.",
+    {
+      "at": "2026-11-05T14:08:21.889825+00:00",
+      "text": "Reassigned from Kananelo to Keletso (single-developer delivery, ADR-038)"
+    }
   ],
   "kind": "epic",
   "phase": "planning",
