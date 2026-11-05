@@ -29,19 +29,19 @@
   "acceptance": [
     {
       "text": "Automate complete browser flow across both personas, viewport sizes and accessibility states",
-      "done": false
+      "done": true
     },
     {
       "text": "Run all five scenario routes and record screenshots, failures and fixes",
-      "done": false
+      "done": true
     },
     {
       "text": "Record relevant tests and evidence, update task status and open a human-review PR",
-      "done": false
+      "done": true
     },
     {
       "text": "Follow docs/DESIGN_STANDARD.md; supply relevant viewport/state screenshots and keyboard/accessibility evidence for human visual review",
-      "done": false
+      "done": true
     }
   ],
   "verification": "Run all five scenario routes and record screenshots, failures and fixes",
@@ -51,7 +51,24 @@
     "update-project-task",
     "finish-task"
   ],
-  "evidence": [],
+  "evidence": [
+    {
+      "criterion": 1,
+      "text": "tests/frontend/scenarios.spec.ts: auditor (officer, specialist, supervisor via fixture role) and taxpayer personas at 1440/1024/390; axe and reflow on every state; keyboard-only SYN-004 route; forced colours + reduced motion test. Full harness 153 passed, 0 failed on the merged branch."
+    },
+    {
+      "criterion": 2,
+      "text": "All five data/scenarios/cases.json routes (SYN-001 to SYN-005) walked from queue to recorded outcome, each on its own fresh fixture API; 132 screenshots and failures/fixes table in docs/evidence/TAX-055/README.md (two auditor defects recorded for their owner, four harness fixes)."
+    },
+    {
+      "criterion": 3,
+      "text": "docs/evidence/TAX-055/results.json (21/21 at three widths); lint, prettier and typecheck:frontend-tests pass; validate.py passes; README updated; human-review PR opened."
+    },
+    {
+      "criterion": 4,
+      "text": "DESIGN_STANDARD widths 1440/1024/390; keyboard focus, dialog focus and Escape, disabled-control reasons, live-region outcomes, forced colours; screenshots in docs/evidence/TAX-055 for human visual review (not baselines)."
+    }
+  ],
   "notes": [
     {
       "at": "2026-11-03T15:40:40.955115+00:00",
