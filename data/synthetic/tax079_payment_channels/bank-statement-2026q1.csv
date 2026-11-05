@@ -1,0 +1,6 @@
+account_ref,transaction_ref,booking_date,value_date,transaction_type,direction,amount,currency,counterparty_name,counterparty_account_ref,narration
+SYN-ACC-0001,BS-0001,2026-01-05,2026-01-05,transfer,credit,12500.00,LSL,Synthetic Retail Co,SYN-ACC-9001,Invoice INV-101 settlement
+SYN-ACC-0001,BS-0002,2026-01-12,,cash_deposit,credit,3200.00,LSL,Branch counter deposit,,Market day takings
+SYN-ACC-0001,BS-0003,2026-02-03,2026-02-03,card_payment,debit,860.40,LSL,Synthetic Wool Supplies,,Yarn purchase
+SYN-ACC-0001,BS-0004,2026-03-28,2026-03-28,transfer,credit,4100.00,LSL,Synthetic Craft Exporters,SYN-ACC-9002,Invoice INV-117
+SYN-ACC-0001,BS-0005,2026-03-31,,fee,debit,45.00,LSL,Synthetic Bank One,,Monthly account fee

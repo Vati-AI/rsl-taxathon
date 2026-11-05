@@ -10,7 +10,13 @@
   "depends_on": [
     "TAX-055",
     "TAX-056",
-    "TAX-057"
+    "TAX-057",
+    "TAX-089",
+    "TAX-091",
+    "TAX-092",
+    "TAX-093",
+    "TAX-094",
+    "TAX-095"
   ],
   "claimed_by": null,
   "branch": null,
@@ -47,5 +53,10 @@
     "finish-task"
   ],
   "evidence": [],
-  "notes": []
+  "notes": [
+    {
+      "at": "2026-11-05T06:39:04.925015+00:00",
+      "text": "2026-11-05: the demo now depends on the live-system tasks TAX-085..095 found missing in the runtime gap analysis."
+    }
+  ]
 }

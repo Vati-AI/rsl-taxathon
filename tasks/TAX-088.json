@@ -1,0 +1,59 @@
+{
+  "id": "TAX-088",
+  "kind": "task",
+  "title": "AI investigation runtime on real cases",
+  "owner": "Gupta",
+  "area": "ai",
+  "phase": "pilot",
+  "status": "BACKLOG",
+  "priority": "P0",
+  "depends_on": [
+    "TAX-087",
+    "TAX-086",
+    "TAX-047",
+    "TAX-053"
+  ],
+  "claimed_by": null,
+  "branch": null,
+  "pr": null,
+  "scope": "Run the approved LangGraph playbooks on real Frappe cases: load case and evidence state, execute the playbook selected for the case, write findings and briefings to the case findings record, pause at human checkpoints and resume from recorded officer decisions",
+  "inputs": [
+    "PROJECT.md",
+    "docs/ARCHITECTURE.md",
+    "docs/API_CONTRACTS.md",
+    "docs/REQUIREMENTS.md",
+    "docs/ENGINEERING_STANDARD.md",
+    "docs/V1_ACCEPTANCE.md",
+    "docs/AI_STANDARD.md",
+    "ai/workflows/human_checkpoints.py",
+    "ai/workflows/playbook_registry.py"
+  ],
+  "acceptance": [
+    {
+      "text": "A worker or outbox handler starts the right playbook when a case is ready; state is loaded from Frappe/Jube records, outputs are written to the TAX-086 findings record with playbook id/version and citations; checkpoints persist outside a local SQLite file or are documented for the demo host",
+      "done": false
+    },
+    {
+      "text": "For each of SYN-001..SYN-005 a live run produces the expected findings/non-findings and briefing, interrupts for human review, and resumes only after an authorised Frappe decision; no decision is ever taken by the agent",
+      "done": false
+    },
+    {
+      "text": "Record relevant tests and evidence, update task status and open a human-review PR",
+      "done": false
+    }
+  ],
+  "verification": "For each of SYN-001..SYN-005 a live run produces the expected findings/non-findings and briefing, interrupts for human review, and resumes only after an authorised Frappe decision; no decision is ever taken by the agent",
+  "skills": [
+    "start-task",
+    "implement-change",
+    "update-project-task",
+    "finish-task"
+  ],
+  "evidence": [],
+  "notes": [
+    {
+      "at": "2026-11-05T06:39:04.925015+00:00",
+      "text": "Added 2026-11-05 after a runtime gap analysis for the RSL demo: the component code existed but this link was not wired at runtime and no task covered it."
+    }
+  ]
+}

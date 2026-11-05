@@ -1,0 +1,58 @@
+{
+  "id": "TAX-094",
+  "kind": "task",
+  "title": "Demo seed and reset for the five scenarios",
+  "owner": "Keletso",
+  "area": "data",
+  "phase": "pilot",
+  "status": "BACKLOG",
+  "priority": "P0",
+  "depends_on": [
+    "TAX-085",
+    "TAX-086"
+  ],
+  "claimed_by": null,
+  "branch": null,
+  "pr": null,
+  "scope": "One command that resets and seeds synthetic tenants, demo users (taxpayer, auditor, specialist, supervisor) with generated passwords in ignored config, taxpayers, submissions and evidence for SYN-001..SYN-005 into Frappe, Jube and (when running) OpenAleph/yente",
+  "inputs": [
+    "PROJECT.md",
+    "docs/ARCHITECTURE.md",
+    "docs/API_CONTRACTS.md",
+    "docs/REQUIREMENTS.md",
+    "docs/ENGINEERING_STANDARD.md",
+    "docs/V1_ACCEPTANCE.md",
+    "data/scenarios/cases.json",
+    "data/synthetic/tax024_records.json",
+    "docs/PERMISSIONS.md",
+    "docs/DEMO_FLOW.md"
+  ],
+  "acceptance": [
+    {
+      "text": "A reset/seed script that is idempotent, synthetic-only, refuses non-demo sites and never prints secrets; demo credentials go to ignored local config; it can seed either before the pipeline runs (to demo live) or with recorded results (to demo offline)",
+      "done": false
+    },
+    {
+      "text": "From an empty local stack the script produces a site where each scenario's taxpayer can log in and the officer queue shows the expected cases; running it twice changes nothing; a reset restores the same state",
+      "done": false
+    },
+    {
+      "text": "Record relevant tests and evidence, update task status and open a human-review PR",
+      "done": false
+    }
+  ],
+  "verification": "From an empty local stack the script produces a site where each scenario's taxpayer can log in and the officer queue shows the expected cases; running it twice changes nothing; a reset restores the same state",
+  "skills": [
+    "start-task",
+    "implement-change",
+    "update-project-task",
+    "finish-task"
+  ],
+  "evidence": [],
+  "notes": [
+    {
+      "at": "2026-11-05T06:39:04.925015+00:00",
+      "text": "Added 2026-11-05 after a runtime gap analysis for the RSL demo: the component code existed but this link was not wired at runtime and no task covered it."
+    }
+  ]
+}

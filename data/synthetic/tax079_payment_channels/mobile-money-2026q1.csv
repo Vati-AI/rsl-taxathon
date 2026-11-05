@@ -1,0 +1,5 @@
+wallet_ref,transaction_ref,transaction_date,transaction_type,direction,amount,fee,currency,counterparty_name,counterparty_wallet_ref,agent_ref,narration
+SYN-MM-0001,MM-0001,2026-01-20,merchant_payment,received,350.00,3.50,LSL,Synthetic Customer A,SYN-MM-7001,,Scarf sale
+SYN-MM-0001,MM-0002,2026-01-22,cash_out,sent,1000.00,10.00,LSL,Synthetic Agent Point 12,,SYN-AGENT-12,Cash withdrawal at agent
+SYN-MM-0001,MM-0003,2026-02-14,cash_in,received,500.00,,LSL,Synthetic Agent Point 7,,SYN-AGENT-07,Cash deposit at agent
+SYN-MM-0001,MM-0004,2026-02-27,bill_payment,sent,220.00,2.00,LSL,Synthetic Power Utility,SYN-MM-UTIL,,Electricity
