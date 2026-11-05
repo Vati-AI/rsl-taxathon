@@ -1,19 +1,21 @@
 {
   "id": "TAX-089",
   "kind": "task",
-  "title": "Local free model for interpretation tasks with template fallback",
+  "title": "Model router with Groq/Gemini providers, local and template fallback",
   "owner": "Gupta",
   "area": "ai",
   "phase": "pilot",
   "status": "BACKLOG",
-  "priority": "P1",
+  "priority": "P0",
   "depends_on": [
-    "TAX-088"
+    "TAX-022",
+    "TAX-053",
+    "TAX-056"
   ],
   "claimed_by": null,
   "branch": null,
   "pr": null,
-  "scope": "Add an optional local, free model (e.g. via Ollama) behind the existing briefing/interpretation model interfaces, with the deterministic template as fallback; no paid keys; record model id, prompt version and settings on every output",
+  "scope": "Implement get_model(\"reasoning\" | \"fast\" | \"document\") per ADR-031: mock provider as default, Groq GPT-OSS 120B/20B and Gemini Flash adapters behind the existing model ports, optional local open-weights model (e.g. Ollama), and the deterministic template as the last fallback; mapping and keys only from the ignored .env; record provider, model id, role, prompt version, settings, fallback level, latency and tokens on every output",
   "inputs": [
     "PROJECT.md",
     "docs/ARCHITECTURE.md",
@@ -22,15 +24,22 @@
     "docs/ENGINEERING_STANDARD.md",
     "docs/V1_ACCEPTANCE.md",
     "docs/AI_STANDARD.md",
-    "ai/workflows/case_briefing.py"
+    "docs/decisions/ADR-031-ai-model-providers.md",
+    "ai/workflows/case_briefing.py",
+    "ai/evaluation/agent_eval.py",
+    "ai/requirements.lock"
   ],
   "acceptance": [
     {
-      "text": "A provider-neutral model adapter with a local open-weights default, resource limits suitable for the demo laptop, timeouts, and automatic fallback to the deterministic template; every output records model id, prompt version and whether the fallback was used",
+      "text": "Agents obtain models only via get_model(role); no graph imports a provider SDK or reads a key; with no keys the mock provider is used and agent_eval --check, smoke and tests pass offline; new packages are pinned in ai/requirements.lock",
       "done": false
     },
     {
-      "text": "Briefings for the five scenarios keep citations and injection resistance (TAX-056 fixtures) with the model enabled; three repeated runs are measured; the UI and demo clearly disclose model versus template output",
+      "text": "Per call fallback hosted -> local -> template on 429, timeout, refusal, invalid structured output or failed validation, each case unit-tested; every output records provider, model id, role, prompt version, settings, fallback level, latency and token use",
+      "done": false
+    },
+    {
+      "text": "Opt-in live smoke (skipped without keys) runs each configured role once against synthetic data and records observed model ids, account rate limits, latency and tokens; the Gemini document model id is confirmed by the team or the role is left unconfigured as recorded in ADR-031",
       "done": false
     },
     {
@@ -38,7 +47,7 @@
       "done": false
     }
   ],
-  "verification": "Briefings for the five scenarios keep citations and injection resistance (TAX-056 fixtures) with the model enabled; three repeated runs are measured; the UI and demo clearly disclose model versus template output",
+  "verification": "Opt-in live smoke (skipped without keys) runs each configured role once against synthetic data and records observed model ids, account rate limits, latency and tokens; the Gemini document model id is confirmed by the team or the role is left unconfigured as recorded in ADR-031",
   "skills": [
     "start-task",
     "implement-change",
@@ -50,6 +59,10 @@
     {
       "at": "2026-11-05T06:39:04.925015+00:00",
       "text": "Added 2026-11-05 after a runtime gap analysis for the RSL demo: the component code existed but this link was not wired at runtime and no task covered it."
+    },
+    {
+      "at": "2026-11-05T10:07:38.336884+00:00",
+      "text": "Rescoped 2026-11-05 per ADR-031: the agreed plan uses Groq/Gemini free tiers as primary for synthetic data; the local model is a fallback, not the only path. Dependency on TAX-088 removed (the router does not need live cases; TAX-088 now depends on this)."
     }
   ]
 }
