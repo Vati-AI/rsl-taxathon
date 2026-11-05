@@ -117,6 +117,10 @@ try:
     cmd(['bench', 'new-site', site, '--db-root-password', pw, '--admin-password',
          os.environ['VERIFY_ADMIN_PASSWORD'], '--mariadb-user-host-login-scope=%'])
     created = True
+    # The app's site tests create far more users than Frappe's default limit of
+    # 60 per hour (User.throttle_user_creation). Raise it on this disposable
+    # verify-* site only; the developer site and real sites keep the default.
+    cmd(['bench', '--site', site, 'set-config', '--parse', 'throttle_user_limit', '10000'])
     cmd(['bench', '--site', site, 'install-app', 'vati_tax'])
     report['installed_apps'] = cmd(['bench', '--site', site, 'list-apps', '--format', 'json']).strip()
     for n in (1, 2):

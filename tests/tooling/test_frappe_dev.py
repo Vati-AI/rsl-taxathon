@@ -70,6 +70,14 @@ class VerifySafetyTests(unittest.TestCase):
         self.assertIn("if created and", frappe_dev.VERIFY)
         self.assertEqual(frappe_dev.VERIFY.count("'drop-site'"), 1)
 
+    def test_user_throttle_is_raised_only_on_the_disposable_verify_site(self):
+        # Site tests create more users than Frappe's default 60/hour limit.
+        line = "cmd(['bench', '--site', site, 'set-config', '--parse', 'throttle_user_limit',"
+        self.assertEqual(frappe_dev.VERIFY.count("throttle_user_limit"), 1)
+        self.assertIn(line, frappe_dev.VERIFY)
+        self.assertNotIn("throttle_user_limit", frappe_dev.INIT)
+        self.assertNotIn("'-g'", frappe_dev.VERIFY.split("throttle_user_limit")[0].splitlines()[-1])
+
 
 if __name__ == "__main__":
     unittest.main()
