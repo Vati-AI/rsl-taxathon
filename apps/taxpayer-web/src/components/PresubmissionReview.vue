@@ -3,16 +3,24 @@
  * "Before you send" panel (TAX-044): figures and correction prompts from the
  * pre-submission reconciliation. Guidance only — it never blocks sending and
  * never shows lanes, risk or decisions.
+ *
+ * TAX-078: a prompt the taxpayer was already reminded about after an earlier
+ * claim is labelled "Also noted on an earlier claim".
  */
-import { Alert, Button, LoadingText } from 'frappe-ui';
+import { Alert, Badge, Button, LoadingText } from 'frappe-ui';
 import { formatAmount } from '../lib/format';
-import type { PresubmissionReview } from '../lib/types';
+import { reminderForPrompt } from '../lib/reminders';
+import type { CorrectionReminder, PresubmissionReview } from '../lib/types';
 
-defineProps<{
-  review: PresubmissionReview | null;
-  loading: boolean;
-  error: string | null;
-}>();
+withDefaults(
+  defineProps<{
+    review: PresubmissionReview | null;
+    loading: boolean;
+    error: string | null;
+    reminders?: readonly CorrectionReminder[];
+  }>(),
+  { reminders: () => [] },
+);
 const emit = defineEmits<{ fix: [target: 'details' | 'invoices']; retry: [] }>();
 
 const FIGURES = [
@@ -68,7 +76,14 @@ const FIGURES = [
             :key="`${prompt.code}-${prompt.invoice ?? 'claim'}-${index}`"
             class="flex flex-col gap-2 rounded-md bg-surface-gray-1 p-3 sm:flex-row sm:items-start sm:justify-between"
           >
-            <p :id="`check-${index}`" class="text-ink-gray-8">{{ prompt.message }}</p>
+            <div :id="`check-${index}`" class="space-y-1">
+              <p class="text-ink-gray-8">{{ prompt.message }}</p>
+              <Badge
+                v-if="reminderForPrompt(prompt, reminders)"
+                theme="amber"
+                label="Also noted on an earlier claim"
+              />
+            </div>
             <!-- Visible text in the slot: frappe-ui's `label` prop would replace the aria-label. -->
             <Button
               class="shrink-0"

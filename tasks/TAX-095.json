@@ -13,7 +13,7 @@
   "claimed_by": null,
   "branch": null,
   "pr": null,
-  "scope": "Make the RSL presentation runnable on the demo laptop: Frappe, Jube and the AI runtime live; Docling, OpenAleph and yente run beforehand with their results recorded and clearly labelled as recorded; one start command, a combined health page, restricted access and up-to-date service status docs",
+  "scope": "Make the RSL presentation runnable on the demo laptop: Frappe, Jube and the AI runtime live (ADR-031 hosted models with local/template fallback); Docling, OpenAleph and yente run beforehand with their results recorded and clearly labelled as recorded; one start command, a combined health page, restricted access and up-to-date service status docs",
   "inputs": [
     "PROJECT.md",
     "docs/ARCHITECTURE.md",
@@ -27,7 +27,7 @@
   ],
   "acceptance": [
     {
-      "text": "A demo profile that fits the laptop's memory (live: Frappe, Jube, AI runtime and local model; recorded: Docling, OpenAleph, yente outputs captured from real runs with provenance), one start/stop command, a combined health/status page, loopback-only or authenticated access, and integration/services.json plus docs/SETUP_STATUS.md updated to reality",
+      "text": "A demo profile that fits the laptop's memory (live: Frappe, Jube, AI runtime with ADR-031 hosted models and an optional local fallback model; recorded: Docling, OpenAleph, yente outputs captured from real runs with provenance), one start/stop command, a combined health/status page, loopback-only or authenticated access, and integration/services.json plus docs/SETUP_STATUS.md updated to reality",
       "done": false
     },
     {
@@ -59,6 +59,10 @@
     {
       "at": "2026-11-05T10:07:38.336884+00:00",
       "text": "2026-11-05 (ADR-031): added model key, quota and fallback handling for the presentation."
+    },
+    {
+      "at": "2026-11-05T10:39:50.241416+00:00",
+      "text": "2026-11-05: aligned with ADR-031 as approved by Keletso (hosted primary, local optional fallback)."
     }
   ]
 }

@@ -5,16 +5,16 @@
   "owner": "Gupta",
   "area": "ai",
   "phase": "pilot",
-  "status": "BACKLOG",
+  "status": "IN_REVIEW",
   "priority": "P0",
   "depends_on": [
     "TAX-022",
     "TAX-053",
     "TAX-056"
   ],
-  "claimed_by": null,
-  "branch": null,
-  "pr": null,
+  "claimed_by": "gupta-claude-20261105-089",
+  "branch": "task/TAX-089",
+  "pr": "https://github.com/Vati-AI/rsl-taxathon/pull/216",
   "scope": "Implement get_model(\"reasoning\" | \"fast\" | \"document\") per ADR-031: mock provider as default, Groq GPT-OSS 120B/20B and Gemini Flash adapters behind the existing model ports, optional local open-weights model (e.g. Ollama), and the deterministic template as the last fallback; mapping and keys only from the ignored .env; record provider, model id, role, prompt version, settings, fallback level, latency and tokens on every output",
   "inputs": [
     "PROJECT.md",
@@ -32,11 +32,11 @@
   "acceptance": [
     {
       "text": "Agents obtain models only via get_model(role); no graph imports a provider SDK or reads a key; with no keys the mock provider is used and agent_eval --check, smoke and tests pass offline; new packages are pinned in ai/requirements.lock",
-      "done": false
+      "done": true
     },
     {
       "text": "Per call fallback hosted -> local -> template on 429, timeout, refusal, invalid structured output or failed validation, each case unit-tested; every output records provider, model id, role, prompt version, settings, fallback level, latency and token use",
-      "done": false
+      "done": true
     },
     {
       "text": "Opt-in live smoke (skipped without keys) runs each configured role once against synthetic data and records observed model ids, account rate limits, latency and tokens; the Gemini document model id is confirmed by the team or the role is left unconfigured as recorded in ADR-031",
@@ -44,7 +44,7 @@
     },
     {
       "text": "Record relevant tests and evidence, update task status and open a human-review PR",
-      "done": false
+      "done": true
     }
   ],
   "verification": "Opt-in live smoke (skipped without keys) runs each configured role once against synthetic data and records observed model ids, account rate limits, latency and tokens; the Gemini document model id is confirmed by the team or the role is left unconfigured as recorded in ADR-031",
@@ -54,7 +54,20 @@
     "update-project-task",
     "finish-task"
   ],
-  "evidence": [],
+  "evidence": [
+    {
+      "criterion": 1,
+      "text": "ai/models get_model(role) returns a RoutedModel satisfying the TAX-053 BriefingModel port (model_id, config, draft) plus complete(CompletionTask) for structured JSON. VATI_MODEL_PROVIDER unset/mock/unknown, or hosted without keys, uses the mock fixture provider with no network (tests use a transport that fails if called). tests/ai/test_model_router.py ArchitectureTests scan ai/workflows, ai/tools, ai/evaluation, ai/agents: no provider/config/router or SDK/HTTP import and no key or VATI_MODEL_ variable read. Stdlib urllib only: no new packages, ai/requirements.lock unchanged (asserted by test). Offline with no keys (.venv-ai): ai/smoke.py passed; python -m ai.models.smoke exit 0 (all roles mock, validation passed); unittest discover -s tests/ai 274 tests OK (1 live test skipped); agent_eval --check gate PASS (0 known failures, 0 regressions); ruff/format/mypy (214 files) clean."
+    },
+    {
+      "criterion": 2,
+      "text": "RoutedModel.complete walks hosted (Groq openai/gpt-oss-120b / -20b, Gemini) or mock at level 0, optional Ollama at level 1, deterministic template at level 2. Fake-transport tests: HTTP 429, transport timeout, 504, refusal (message.refusal, content_filter, JSON refusal), invalid/non-object output, truncated output (length / MAX_TOKENS), failed validation, 5xx, 401, connection failure and malformed body each fall back hosted -> local (level 1) and, without local, -> template (level 2); local 429/timeout/invalid/validation failures fall to template; Gemini blockReason/SAFETY refusals, truncation and 429 fall back; call, token and input-size budgets stop hosted calls; timeout clamped to 1-120 s and passed to the transport; output tokens capped. Every output carries provenance: provider, observed/configured model id, role, task, prompt_version, settings (temperature, max_output_tokens, timeout_s), fallback_level and name, each attempt with outcome/http status/latency/tokens, latency_ms, tokens, rate-limit headers, validation result. Briefing graph with get_model('reasoning'): mock gives the template's sections with model.config.provenance; a hosted draft with a forbidden statement fails validate_draft and falls back to the template; a valid hosted draft is used at level 0. Keys never appear in repr, config, provenance or errors (leaky-transport test); Secret refuses pickling. Existing tests unchanged and passing."
+    },
+    {
+      "criterion": 4,
+      "text": "Tests and evidence recorded on task/TAX-089 (criteria 1-2; criterion 3 left not done because no Groq/Gemini keys are configured, so the live smoke was not run). Branch refreshed from main (clean merge of task-record updates only, tests rerun), pushed explicitly; human-review PR https://github.com/Vati-AI/rsl-taxathon/pull/216 opened with the CI billing block and local results documented. Agent will not merge."
+    }
+  ],
   "notes": [
     {
       "at": "2026-11-05T06:39:04.925015+00:00",
@@ -63,6 +76,22 @@
     {
       "at": "2026-11-05T10:07:38.336884+00:00",
       "text": "Rescoped 2026-11-05 per ADR-031: the agreed plan uses Groq/Gemini free tiers as primary for synthetic data; the local model is a fallback, not the only path. Dependency on TAX-088 removed (the router does not need live cases; TAX-088 now depends on this)."
+    },
+    {
+      "at": "2026-11-05T10:28:40.191262+00:00",
+      "text": "Claimed by gupta-claude-20261105-089"
+    },
+    {
+      "at": "2026-11-05T10:39:50.241416+00:00",
+      "text": "Keletso approved ADR-031 on 2026-11-05 and confirmed gemini-3.6-flash as the document model; verify its context window and observed free-tier limits before relying on it."
+    },
+    {
+      "at": "2026-11-05T10:40:20.331190+00:00",
+      "text": "Agent finished implementation and opened human review; criterion 3 (live smoke) awaits keys and team-confirmed Gemini document model ID"
+    },
+    {
+      "at": "2026-11-05T10:41:36+00:00",
+      "text": "Merged main after ADR-031 approval: gemini-3.6-flash is now set in .env.example (VATI_MODEL_DOCUMENT); the code keeps no built-in document default, so the role stays unconfigured until set in .env. Its context window and observed limits remain unverified because the live smoke has not run (no keys)."
     }
   ]
 }

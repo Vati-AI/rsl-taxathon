@@ -6,14 +6,23 @@
  * they are chosen; the claim is sent once, with one idempotency key for the
  * whole draft, so pressing Send again after a lost connection cannot create a
  * second claim.
+ *
+ * TAX-078: reminders from reviewed omissions in this taxpayer's earlier claims
+ * are shown on the first step and next to the pre-submission prompts they cover.
  */
 import { Alert, Badge, Button, FormControl } from 'frappe-ui';
-import { computed, nextTick, reactive, ref } from 'vue';
+import { computed, nextTick, onMounted, reactive, ref } from 'vue';
+import CorrectionReminders from '../components/CorrectionReminders.vue';
 import DocumentUploads from '../components/DocumentUploads.vue';
 import InvoiceSchedule from '../components/InvoiceSchedule.vue';
 import PortalHeader from '../components/PortalHeader.vue';
 import PresubmissionReview from '../components/PresubmissionReview.vue';
-import { PortalError, reviewRefundClaim, submitRefundClaim } from '../lib/api';
+import {
+  PortalError,
+  fetchCorrectionReminders,
+  reviewRefundClaim,
+  submitRefundClaim,
+} from '../lib/api';
 import { documentTypeLabel } from '../lib/documents';
 import { formatAmount, formatPeriod } from '../lib/format';
 import { sessionState } from '../lib/session';
@@ -25,7 +34,11 @@ import {
   type InvoiceDraft,
   type RowErrors,
 } from '../lib/schedule';
-import type { PresubmissionReview as Review, RefundClaimResult } from '../lib/types';
+import type {
+  CorrectionReminder,
+  PresubmissionReview as Review,
+  RefundClaimResult,
+} from '../lib/types';
 import { useDocumentUploads } from '../lib/uploads';
 import {
   CLAIM_REASONS,
@@ -65,6 +78,20 @@ const rowErrors = ref<RowErrors>({});
 const review = ref<Review | null>(null);
 const reviewing = ref(false);
 const reviewError = ref<string | null>(null);
+// TAX-078: reminders from earlier claims (guidance only; never blocks the form).
+const reminders = ref<CorrectionReminder[]>([]);
+const remindersError = ref<string | null>(null);
+
+async function loadReminders() {
+  remindersError.value = null;
+  try {
+    reminders.value = await fetchCorrectionReminders();
+  } catch {
+    reminders.value = [];
+    remindersError.value = 'You can still fill in and send this claim.';
+  }
+}
+onMounted(loadReminders);
 
 /** The one taxpayer this account acts for; claims need exactly one. */
 const tenantId = computed(() => {
@@ -322,6 +349,8 @@ async function send() {
       </h2>
       <p class="text-base text-ink-gray-6">All fields are required unless marked optional.</p>
 
+      <CorrectionReminders :reminders="reminders" :error="remindersError" @retry="loadReminders" />
+
       <Alert
         v-if="detailErrorCount > 0"
         theme="red"
@@ -575,6 +604,7 @@ async function send() {
 
       <PresubmissionReview
         :review="review"
+        :reminders="reminders"
         :loading="reviewing"
         :error="reviewError"
         @fix="(target) => goTo(target)"
