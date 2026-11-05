@@ -5,7 +5,7 @@
   "owner": "Keletso",
   "area": "integration",
   "phase": "expansion",
-  "status": "IN_REVIEW",
+  "status": "DONE",
   "priority": "P1",
   "depends_on": [
     "TAX-036",
@@ -67,6 +67,10 @@
     {
       "at": "2026-11-05T05:41:59.480984+00:00",
       "text": "Agent finished implementation and opened human review"
+    },
+    {
+      "at": "2026-11-05T06:09:37.388349+00:00",
+      "text": "Verified merge of #182 on 2026-11-05"
     }
   ]
 }
