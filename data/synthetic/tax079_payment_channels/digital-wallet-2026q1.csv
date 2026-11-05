@@ -1,0 +1,4 @@
+wallet_ref,transaction_ref,transaction_date,direction,asset_kind,asset_code,quantity,fiat_value,fiat_currency,valuation_source,counterparty_name,counterparty_wallet_ref,narration
+SYN-WAL-0001,WL-0001,2026-01-30,in,fiat_balance,LSL,600.00,,,,Synthetic Online Shop,SYN-WAL-5001,Marketplace payout
+SYN-WAL-0001,WL-0002,2026-02-18,in,virtual_asset,SYNC,0.015,1450.00,LSL,Synthetic exchange statement,Synthetic Collector,SYN-WAL-5002,Tapestry sale
+SYN-WAL-0001,WL-0003,2026-03-09,out,virtual_asset,SYNC,0.002,,,,Synthetic Collector,SYN-WAL-5002,Return of overpayment

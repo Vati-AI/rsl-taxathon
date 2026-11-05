@@ -1,0 +1,5 @@
+account_ref,transaction_ref,booking_date,value_date,transaction_type,direction,amount,currency,counterparty_name,counterparty_account_ref,narration
+SYN-ACC-0001,BS-0004,2026-03-28,2026-03-28,transfer,credit,4010.00,LSL,Synthetic Craft Exporters,SYN-ACC-9002,Invoice INV-117
+SYN-ACC-0001,BS-0005,2026-03-31,,fee,debit,45.00,LSL,Synthetic Bank One,,Monthly account fee
+SYN-ACC-0001,BS-0006,2026-04-08,2026-04-08,cash_withdrawal,debit,1500.00,LSL,Branch counter withdrawal,,Wages for casual weavers
+SYN-ACC-0001,BS-0007,2026-04-15,2026-04-15,standing_order,debit,2800.00,LSL,Synthetic Property Rentals,SYN-ACC-9100,Workshop rent April

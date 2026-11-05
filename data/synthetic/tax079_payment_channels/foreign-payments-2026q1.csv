@@ -1,0 +1,4 @@
+account_ref,transfer_ref,instruction_date,settlement_date,direction,instructed_amount,instructed_currency,settled_amount,settled_currency,exchange_rate,rate_source,counterparty_name,counterparty_account_ref,counterparty_country,intermediary_bank_ref,narration
+SYN-ACC-0001,FX-0001,2026-02-10,2026-02-12,incoming,1000.00,USD,18250.00,LSL,18.250000,Synthetic Bank One advice,Synthetic Overseas Buyer,SYN-IBAN-0001,gb,SYN-CORR-01,Order PO-55
+SYN-ACC-0001,FX-0002,2026-03-02,2026-03-04,incoming,500.00,USD,9200.00,LSL,18.300000,Synthetic Bank One advice,Synthetic Overseas Buyer,SYN-IBAN-0001,gb,SYN-CORR-01,Order PO-61
+SYN-ACC-0001,FX-0003,2026-03-15,2026-03-16,outgoing,2000.00,ZAR,2000.00,LSL,,,Synthetic Dye Works,SYN-ZA-0003,za,,Dye order

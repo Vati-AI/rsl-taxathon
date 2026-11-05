@@ -1,0 +1,2 @@
+# Hash-pinned synthetic evidence files: keep their bytes exact on every platform (TAX-079).
+data/synthetic/tax079_payment_channels/*.csv -text
