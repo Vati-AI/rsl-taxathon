@@ -116,3 +116,6 @@ jobs:
       - run: python -m unittest discover -s tests/ai -p 'test_institutional*.py' -v
         env:
           LANGSMITH_TRACING: 'false'
+      - run: python -m unittest discover -s tests/ai -p 'test_eoi*.py' -v
+        env:
+          LANGSMITH_TRACING: 'false'
