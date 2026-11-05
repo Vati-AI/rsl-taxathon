@@ -5,13 +5,13 @@
   "owner": "Leseli",
   "area": "ai",
   "phase": "pilot",
-  "status": "BACKLOG",
+  "status": "IN_PROGRESS",
   "priority": "P0",
   "depends_on": [
     "TAX-097"
   ],
-  "claimed_by": null,
-  "branch": null,
+  "claimed_by": "leseli-claude-20261105-110",
+  "branch": "task/TAX-110",
   "pr": null,
   "scope": "Follow-up to the TAX-097 live run, where 0/17 hosted briefings and 2/29 evidence readings reached the model (truncation at the 2,048-token budget, unrecorded HTTP errors, rate limits): make the hosted briefing and evidence interpretation succeed reliably on Groq/Gemini free tiers without weakening validation, fencing or fallback",
   "inputs": [
@@ -65,6 +65,10 @@
     {
       "at": "2026-11-05T21:27:54.169783+00:00",
       "text": "Reassigned from Keletso to Leseli by agreement (ADR-038 exception, like TAX-102 and TAX-104)"
+    },
+    {
+      "at": "2026-11-05T21:35:35.498338+00:00",
+      "text": "Claimed by leseli-claude-20261105-110"
     }
   ],
   "sequence": 3
