@@ -21,7 +21,15 @@ doc_events = {
     # TAX-032: an evidence file stays private and in place.
     "File": {"before_validate": "vati_tax.evidence.store.guard_evidence_file"},
     # TAX-039: a taxpayer's send registers the case and enqueues case.registered.
-    "Vati Submission": {"on_update": "vati_tax.bridge.store.on_submission_update"},
+    # TAX-087: then the claim's evidence is linked to the case (runs second, in order).
+    "Vati Submission": {
+        "on_update": [
+            "vati_tax.bridge.store.on_submission_update",
+            "vati_tax.pipeline.store.on_submission_sent",
+        ]
+    },
+    # TAX-087: evidence linked to a case enqueues evidence.received (Docling extraction).
+    "Vati Service Link": {"after_insert": "vati_tax.pipeline.store.on_service_link_insert"},
 }
 
 # TAX-033: deliver committed outbox events every minute. Handlers are registered
@@ -33,7 +41,13 @@ scheduler_events = {
         "*/5 * * * *": ["vati_tax.bridge.store.poll_scheduled"],
     }
 }
-vati_outbox_handlers = {"case.registered": "vati_tax.bridge.store.handle_case_registered"}
+vati_outbox_handlers = {
+    "case.registered": "vati_tax.bridge.store.handle_case_registered",
+    # TAX-087 (ADR-037): Docling extraction, then OpenAleph entities and yente screening.
+    "evidence.received": "vati_tax.pipeline.store.handle_evidence_received",
+    "extraction.completed": "vati_tax.pipeline.store.handle_extraction_settled",
+    "extraction.failed": "vati_tax.pipeline.store.handle_extraction_settled",
+}
 
 # TAX-021: the Vue taxpayer portal owns client routes under /taxpayer; every
 # deep link renders the guarded www/taxpayer page.

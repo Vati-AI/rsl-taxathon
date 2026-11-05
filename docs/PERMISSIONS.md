@@ -185,3 +185,15 @@ See [ADR-028](decisions/ADR-028-frappe-jube-submission-bridge.md).
 | `get_review_status` | the submission's own taxpayer | anyone else (`not_found`). Returns only `review_status` and `review_status_at` |
 
 The submission's `review_status` and `review_status_at` are server-owned: every save keeps the stored values, so no client can set them. The bridge writes them, and the sync record, with direct database writes that run no controller, hook or outbox event, so a mirror update never sends anything back to Jube.
+
+## Event wiring to Docling, OpenAleph and yente (TAX-087)
+
+See [ADR-037](decisions/ADR-037-event-wiring-frappe-services.md).
+
+| Record or method | Who | Refused when |
+| --- | --- | --- |
+| Outbox handlers `evidence.received`, `extraction.completed`, `extraction.failed` | the site's pipeline service identity (`vati_pipeline_service_user`, `Vati Service` memberships only); `record_extraction` still checks `integration.callback` in the tenant | no service identity configured (retryable `service_identity_not_configured`); an identity without a membership in the event's tenant (`service_identity_forbidden`, dead letter) |
+| `Vati Entity Index`, `Vati Screening Result` (read) | System Manager; auditors, specialists and supervisors of the tenant | taxpayers (no DocPerm, no `taxpayer_id`); staff of another tenant. Nobody edits or deletes them; only the entity re-index flag changes, by the pipeline |
+| `pipeline.api.case_status` | System Manager | everyone else (403); a case of another tenant (`not_found`). Returns IDs, states, counts and error codes only |
+
+Screening candidates are proposals: they are stored `unreviewed` and only an officer's TAX-037 review decision can confirm or reject one. A service identity never decides.
