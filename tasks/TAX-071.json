@@ -5,14 +5,14 @@
   "owner": "Gupta",
   "area": "ai",
   "phase": "expansion",
-  "status": "BACKLOG",
+  "status": "IN_PROGRESS",
   "priority": "P1",
   "depends_on": [
     "TAX-053",
     "TAX-052"
   ],
-  "claimed_by": null,
-  "branch": null,
+  "claimed_by": "claude-gupta-20261105-tax071",
+  "branch": "task/TAX-071",
   "pr": null,
   "scope": "Prepare foreign entity/jurisdiction/evidence-gap package for competent-authority review",
   "inputs": [
@@ -46,5 +46,10 @@
     "finish-task"
   ],
   "evidence": [],
-  "notes": []
+  "notes": [
+    {
+      "at": "2026-11-05T08:31:08.542400+00:00",
+      "text": "Claimed by claude-gupta-20261105-tax071"
+    }
+  ]
 }
