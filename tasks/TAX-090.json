@@ -1,0 +1,57 @@
+{
+  "id": "TAX-090",
+  "kind": "task",
+  "title": "Vati /api/v1 service in Frappe for the auditor app",
+  "owner": "Keletso",
+  "area": "backend",
+  "phase": "pilot",
+  "status": "BACKLOG",
+  "priority": "P0",
+  "depends_on": [
+    "TAX-086",
+    "TAX-039"
+  ],
+  "claimed_by": null,
+  "branch": null,
+  "pr": null,
+  "scope": "Serve the integration/api/openapi.json operations the auditor app uses (cases, case detail, evidence, entities, findings, review state, decisions, evidence requests, taxpayer, management summary) from Frappe with real data, roles and tenant headers",
+  "inputs": [
+    "PROJECT.md",
+    "docs/ARCHITECTURE.md",
+    "docs/API_CONTRACTS.md",
+    "docs/REQUIREMENTS.md",
+    "docs/ENGINEERING_STANDARD.md",
+    "docs/V1_ACCEPTANCE.md",
+    "docs/API_STANDARD.md",
+    "integration/api/openapi.json",
+    "docs/decisions/ADR-003-vati-api-contract.md"
+  ],
+  "acceptance": [
+    {
+      "text": "A Frappe-hosted /api/v1 router (or whitelisted equivalents with the same contract shapes) backed by Frappe records, the Jube case projection, OpenAleph/yente entities and TAX-086 findings; CSRF/session auth; ADR-003 error codes; contract tests reuse the existing examples",
+      "done": false
+    },
+    {
+      "text": "Every auditor-app call has a live implementation that passes the contract checks; officer roles and separation of duties are enforced server-side; no fixture data is returned in live mode and the management summary is computed from real records",
+      "done": false
+    },
+    {
+      "text": "Record relevant tests and evidence, update task status and open a human-review PR",
+      "done": false
+    }
+  ],
+  "verification": "Every auditor-app call has a live implementation that passes the contract checks; officer roles and separation of duties are enforced server-side; no fixture data is returned in live mode and the management summary is computed from real records",
+  "skills": [
+    "start-task",
+    "implement-change",
+    "update-project-task",
+    "finish-task"
+  ],
+  "evidence": [],
+  "notes": [
+    {
+      "at": "2026-11-05T06:39:04.925015+00:00",
+      "text": "Added 2026-11-05 after a runtime gap analysis for the RSL demo: the component code existed but this link was not wired at runtime and no task covered it."
+    }
+  ]
+}

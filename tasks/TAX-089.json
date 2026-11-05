@@ -1,0 +1,55 @@
+{
+  "id": "TAX-089",
+  "kind": "task",
+  "title": "Local free model for interpretation tasks with template fallback",
+  "owner": "Gupta",
+  "area": "ai",
+  "phase": "pilot",
+  "status": "BACKLOG",
+  "priority": "P1",
+  "depends_on": [
+    "TAX-088"
+  ],
+  "claimed_by": null,
+  "branch": null,
+  "pr": null,
+  "scope": "Add an optional local, free model (e.g. via Ollama) behind the existing briefing/interpretation model interfaces, with the deterministic template as fallback; no paid keys; record model id, prompt version and settings on every output",
+  "inputs": [
+    "PROJECT.md",
+    "docs/ARCHITECTURE.md",
+    "docs/API_CONTRACTS.md",
+    "docs/REQUIREMENTS.md",
+    "docs/ENGINEERING_STANDARD.md",
+    "docs/V1_ACCEPTANCE.md",
+    "docs/AI_STANDARD.md",
+    "ai/workflows/case_briefing.py"
+  ],
+  "acceptance": [
+    {
+      "text": "A provider-neutral model adapter with a local open-weights default, resource limits suitable for the demo laptop, timeouts, and automatic fallback to the deterministic template; every output records model id, prompt version and whether the fallback was used",
+      "done": false
+    },
+    {
+      "text": "Briefings for the five scenarios keep citations and injection resistance (TAX-056 fixtures) with the model enabled; three repeated runs are measured; the UI and demo clearly disclose model versus template output",
+      "done": false
+    },
+    {
+      "text": "Record relevant tests and evidence, update task status and open a human-review PR",
+      "done": false
+    }
+  ],
+  "verification": "Briefings for the five scenarios keep citations and injection resistance (TAX-056 fixtures) with the model enabled; three repeated runs are measured; the UI and demo clearly disclose model versus template output",
+  "skills": [
+    "start-task",
+    "implement-change",
+    "update-project-task",
+    "finish-task"
+  ],
+  "evidence": [],
+  "notes": [
+    {
+      "at": "2026-11-05T06:39:04.925015+00:00",
+      "text": "Added 2026-11-05 after a runtime gap analysis for the RSL demo: the component code existed but this link was not wired at runtime and no task covered it."
+    }
+  ]
+}
