@@ -12,6 +12,7 @@ import {
 } from 'frappe-ui';
 import FixtureBanner from './components/FixtureBanner.vue';
 import StatePanel from './components/StatePanel.vue';
+import { fixtureRole } from './session';
 
 const route = useRoute();
 const router = useRouter();
@@ -53,6 +54,15 @@ function reloadPage() {
               icon="lucide-list-checks"
               :route="{ name: 'queue' }"
               :active="section === 'cases'"
+            />
+          </SidebarSection>
+          <!-- Supervisors only. The server still refuses anyone else (403). -->
+          <SidebarSection v-if="fixtureRole === 'supervisor'" label="Supervision">
+            <SidebarItem
+              label="Management dashboard"
+              icon="lucide-gauge"
+              :route="{ name: 'management' }"
+              :active="section === 'management'"
             />
           </SidebarSection>
           <SidebarSection label="Design">

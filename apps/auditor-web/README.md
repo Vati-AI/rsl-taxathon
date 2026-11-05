@@ -5,9 +5,10 @@ Owner: Leseli. See `tasks/README.md` for work and `docs/ARCHITECTURE.md` for bou
 Officer-facing Vue 3 + TypeScript + Frappe UI app (ADR-004). It reads the Vati
 `/api/v1` contract (`listCases`, `getCase`, `getTaxpayer`; ADR-005) through
 `src/api/vati.ts`, `listEvidence` and `listEntities` (TAX-041) through
-`src/api/caseRecords.ts`, and the officer review operations (`getCaseReview`,
+`src/api/caseRecords.ts`, the officer review operations (`getCaseReview`,
 `listFindings`, `proposeDecision`, `reviewDecision`, `requestEvidence`; ADR-018)
-through `src/api/review.ts`, all served from synthetic fixtures by
+through `src/api/review.ts`, and the supervisor-only `getManagementSummary`
+(ADR-020) through `src/api/management.ts`, all served from synthetic fixtures by
 `scripts/dev.py serve`. Live services arrive with later tasks.
 
 Screens: overview (assigned cases by status, failed-processing alert), my case
@@ -19,15 +20,17 @@ history, extraction state, the cited page or record and the findings citing it),
 review and decide (`/auditor/cases/{id}/review`: propose a decision, approve,
 reject or withdraw, refer to a specialist, request evidence, agent suggestions
 and the review trail; every action is confirmed in a dialog first), taxpayer
-profile, component showcase (`/auditor/showcase`). Shared tokens live in
-`apps/shared/design`.
+profile, management dashboard (`/auditor/management`, supervisors only:
+workload, elapsed time, unresolved evidence, closures with no further action,
+legal-route coverage and audit ledger assurance), component showcase
+(`/auditor/showcase`). Shared tokens live in `apps/shared/design`.
 
 The request tenant comes from `src/session.ts` (fixture tenant unless
 `VITE_VATI_TENANT_ID` is set); the server, not this header, decides access. In
 fixture mode the banner's "Acting as" switch picks the synthetic officer
 (auditor, specialist or supervisor) through the fixture-only
 `X-Vati-Fixture-Role` header; review actions change fixture state until the
-server restarts.
+server restarts. Choose "supervisor" to see the management dashboard.
 
 ```sh
 npm ci
@@ -44,7 +47,9 @@ or on Windows use the installed Edge with `PLAYWRIGHT_CHANNEL=msedge`. Set
 `CAPTURE_SCREENSHOTS=1 npm run test:auditor:browser -- screenshots` writes to
 `docs/evidence/TAX-040` (TAX-020's first baseline stays in `docs/evidence/TAX-020`);
 `-- screenshots-evidence` writes the TAX-041 evidence and relationship screens to
-`docs/evidence/TAX-041`, and `-- review-screenshots` writes the review page states
-to `docs/evidence/TAX-042`. Review actions run in their own Playwright project
-against a second fixture server (port 58095, `AUDITOR_REVIEW_E2E_PORT`), so they
-never change the data the other specs check.
+`docs/evidence/TAX-041`, `-- review-screenshots` writes the review page states
+to `docs/evidence/TAX-042`, and `-- management` writes the management dashboard
+screens to `docs/evidence/TAX-060`. Review actions run in their own Playwright
+project against a second fixture server (port 58095, `AUDITOR_REVIEW_E2E_PORT`),
+so they never change the data the other specs check. The management dashboard
+only reads, so its spec uses the main fixture server.

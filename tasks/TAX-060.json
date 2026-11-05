@@ -5,15 +5,15 @@
   "owner": "Leseli",
   "area": "apps/auditor-web",
   "phase": "pilot",
-  "status": "BACKLOG",
+  "status": "IN_REVIEW",
   "priority": "P0",
   "depends_on": [
     "TAX-040",
     "TAX-059"
   ],
-  "claimed_by": null,
-  "branch": null,
-  "pr": null,
+  "claimed_by": "leseli-claude-20261104-060",
+  "branch": "task/TAX-060",
+  "pr": "https://github.com/Vati-AI/rsl-taxathon/pull/158",
   "scope": "Display workload, elapsed time, unresolved evidence, false positives and legal-route coverage from measured data",
   "inputs": [
     "PROJECT.md",
@@ -27,19 +27,19 @@
   "acceptance": [
     {
       "text": "Display workload, elapsed time, unresolved evidence, false positives and legal-route coverage from measured data",
-      "done": false
+      "done": true
     },
     {
       "text": "Verify denominators, missing-data states and supervisor-only visibility",
-      "done": false
+      "done": true
     },
     {
       "text": "Record relevant tests and evidence, update task status and open a human-review PR",
-      "done": false
+      "done": true
     },
     {
       "text": "Follow docs/DESIGN_STANDARD.md; supply relevant viewport/state screenshots and keyboard/accessibility evidence for human visual review",
-      "done": false
+      "done": true
     }
   ],
   "verification": "Verify denominators, missing-data states and supervisor-only visibility",
@@ -49,6 +49,44 @@
     "update-project-task",
     "finish-task"
   ],
-  "evidence": [],
-  "notes": []
+  "evidence": [
+    {
+      "criterion": 1,
+      "text": "Supervisor-only dashboard /auditor/management (ManagementView.vue) shows workload (open cases by status and officer, unassigned), elapsed time (open-case age and time to close: median, nearest-rank p90, longest), unresolved evidence (outstanding, overdue, cases affected), closures with no further action (false positives) and after correction, legal-route coverage, and audit ledger assurance. Figures come from getManagementSummary (GET /api/v1/management/summary, ADR-020), which the fixture API measures from auditor_queue.json and the synthetic management.json, sealing the ledger events with the TAX-059 vati_tax.audit.ledger functions. Commit 859679f."
+    },
+    {
+      "criterion": 2,
+      "text": "Denominators: every ratio is {numerator, denominator}; closure ratios share one denominator that excludes closures without a recorded outcome; breakdowns add up to totals; a zero denominator reads 'No data', never 0% (tests/contracts/test_management_summary.py, 17 tests; vitest parser rejects 13 kinds of inconsistent or non-synthetic data). Missing data: closures or open cases without timestamps are excluded, counted and listed in missing_data; an unavailable ledger is a listed gap, not zeros; a tampered chain shows as failed. Supervisor-only: officer without the role and unknown principal get 403 forbidden with no data, another tenant 403, and the UI shows 'Supervisors only' with no figures; signals about the viewer are withheld and no logins reach the response. Playwright management.spec.ts: 12 tests pass in Edge."
+    },
+    {
+      "criterion": 4,
+      "text": "docs/evidence/TAX-060: screenshots at 1440, 1024 and 390px plus loading, denied, empty and ledger-broken states, captured in Edge (README lists them). Tables only, with no decorative charts; shared PageLayout, StatePanel and CaseStatusBadge; status shown as text plus colour. axe (WCAG 2 A/AA) finds no serious or critical violations and there is no page-wide horizontal scroll at all three widths, in both management.spec.ts and the TAX-023 matrix (management route added; 30 of 30 auditor harness tests pass). The window control and focusable table regions are reachable by keyboard, with visible focus. Visual approval is left to the reviewer."
+    },
+    {
+      "criterion": 3,
+      "text": "Tests and results recorded under criteria 1, 2 and 4 (contract 22 examples; tests/contracts incl. 17 new; dev.py check steps pass except the 2 existing Windows-only tests/tooling file-permission tests; ruff, mypy and npm run check pass; auditor Playwright 34 pass; TAX-023 auditor harness 30 of 30). Status set to IN_REVIEW and review PR #158 opened; the agent will not merge."
+    },
+    {
+      "criterion": 2,
+      "text": "Denominators: every ratio is {numerator, denominator}; closure ratios share one denominator that excludes closures without a recorded outcome; breakdowns add up to totals; a zero denominator reads 'No data', never 0% (tests/contracts/test_management_summary.py, 18 tests; the vitest parser rejects 13 kinds of inconsistent or non-synthetic data). Missing data: records without timestamps are excluded, counted and listed in missing_data; an unavailable ledger is a listed gap, not zeros; a tampered chain shows as failed. Supervisor-only: in fixture mode the acting officer comes from TAX-042's X-Vati-Fixture-Role switch. The default auditor and the specialist get 403 forbidden with no data, another tenant gets 403, and an unknown role gets 400. The UI shows 'Supervisors only' with no figures, and the Supervision nav entry appears only when acting as supervisor. Signals about the viewer are withheld and no logins reach the response. management.spec.ts: 13 tests pass in Edge."
+    },
+    {
+      "criterion": 3,
+      "text": "Rerun after merging main (TAX-041, TAX-042, TAX-045): contract.py valid with 26 HTTP examples and 14 unique operations; tests/contracts pass (18 new); dev.py check steps pass except the 2 existing Windows-only tests/tooling file-permission tests; ruff, ruff format and mypy (156 files) pass; npm run check passes (100 auditor and 55 taxpayer unit tests, both builds); auditor Playwright 54 pass (17 screenshot tests skipped by design); TAX-023 auditor harness 33 of 33 at 1440, 1024 and 390px. Status IN_REVIEW with review PR #158; the agent will not merge."
+    },
+    {
+      "criterion": 4,
+      "text": "docs/evidence/TAX-060: screenshots at 1440, 1024 and 390px, acting as supervisor, plus loading, denied (specialist, server 403), empty and ledger-broken states, captured in Edge after the merge (README lists them). Tables only, with no decorative charts; shared PageLayout, StatePanel and CaseStatusBadge; status shown as text plus colour. axe (WCAG 2 A/AA) finds no serious or critical violations and there is no page-wide horizontal scroll at all three widths, in both management.spec.ts and the TAX-023 matrix (management route; 33 of 33 auditor harness tests pass). The window control and focusable table regions are reachable by keyboard, with visible focus. Visual approval is left to the reviewer."
+    }
+  ],
+  "notes": [
+    {
+      "at": "2026-11-04T11:21:28.749416+00:00",
+      "text": "Claimed by leseli-claude-20261104-060"
+    },
+    {
+      "at": "2026-11-04T19:25:41.216983+00:00",
+      "text": "Agent leseli-claude-20261104-060 finished implementation and opened review (https://github.com/Vati-AI/rsl-taxathon/pull/158). Contract change (getManagementSummary, ADR-020) for Keletso; ledger read usage for Edga. quality.py steps run individually because the worktree has no .venv-dev of its own."
+    }
+  ]
 }

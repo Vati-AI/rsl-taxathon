@@ -8,6 +8,7 @@
 | createCase | `POST /api/v1/cases` |
 | getCase | `GET /api/v1/cases/{case_id}` |
 | getTaxpayer | `GET /api/v1/taxpayers/{taxpayer_id}` |
+| getManagementSummary | `GET /api/v1/management/summary` |
 | startInvestigation | `POST /api/v1/cases/{case_id}/investigate` |
 | listEvidence | `GET /api/v1/cases/{case_id}/evidence` |
 | registerDocument | `POST /api/v1/cases/{case_id}/documents` |
@@ -31,9 +32,11 @@ Rules every implementation must keep (see [ADR-003](../../docs/decisions/ADR-003
 
 `getCaseReview`, `proposeDecision` and `reviewDecision` were added for officer decisions, approvals and specialist referrals (TAX-042, [ADR-018](../../docs/decisions/ADR-018-officer-review-contract.md)). They project the Frappe decision records of [ADR-013](../../docs/decisions/ADR-013-decisions-approvals-evidence-requests.md). Refusals use `version_conflict` (409) or `invalid_domain_input` (422) with the reason in `field_errors[].code`, e.g. `stale_case_version`, `decision_pending`, `proposal_expired`, `case_state_changed`, `citation_required`.
 
+`getManagementSummary` (TAX-060, [ADR-020](../../docs/decisions/ADR-020-management-summary-contract.md)) gives supervisors measured workload and assurance counts. Anyone else gets `403 forbidden`. Every ratio carries its denominator, gaps are listed in `missing_data`, and review signals are counted by kind only.
+
 ## Fixture server
 
-`python3 scripts/dev.py serve` serves `listCases`, `getCase` and `getTaxpayer` from the synthetic `fixtures/auditor_queue.json`, and `listEvidence` and `listEntities` (TAX-041) from `fixtures/case_records.json` (`scripts/fixture_api.py`). Requests are checked with `contract.check_request`; the fixture principal sees one tenant (any other is `403 tenant_scope_denied`). Responses carry `X-Vati-Mode: fixture`. A case with no evidence or entities yet returns an empty page; an unknown case is `404`. Findings come only from `listFindings` below, and every citation in them names evidence served here with the same SHA-256. Mutations and any other operation return `404` rather than invented data.
+`python3 scripts/dev.py serve` serves `listCases`, `getCase` and `getTaxpayer` from the synthetic `fixtures/auditor_queue.json`, and `listEvidence` and `listEntities` (TAX-041) from `fixtures/case_records.json` (`scripts/fixture_api.py`). Requests are checked with `contract.check_request`; the fixture principal sees one tenant (any other is `403 tenant_scope_denied`). Responses carry `X-Vati-Mode: fixture`. A case with no evidence or entities yet returns an empty page; an unknown case is `404`. Findings come only from `listFindings` below, and every citation in them names evidence served here with the same SHA-256. It also measures `getManagementSummary` (TAX-060) from the queue cases plus `fixtures/management.json` (closed cases, outcomes, evidence requests, findings and ledger events, the ledger read with the TAX-059 functions). Only the `supervisor` fixture officer (`X-Vati-Fixture-Role`, below) may read it; the default `auditor` gets `403 forbidden`. Mutations and any other operation return `404` rather than invented data.
 
 It also serves `getCaseReview`, `listFindings`, `proposeDecision`, `reviewDecision` and `requestEvidence` from `fixtures/case_review.json` (`scripts/fixture_review.py`, TAX-042). These keep in-memory state for the life of the server process, so a reviewer can propose, approve and see the result; restarting resets them. They apply the same permission, separation-of-duties, stale-version, expiry, one-open-decision and idempotency rules as TAX-046. An approval records a fixture Jube result and nothing leaves the process. The fixture officer is chosen with the fixture-only `X-Vati-Fixture-Role` header (`auditor` by default, `specialist`, `supervisor`); a real server ignores it.
 

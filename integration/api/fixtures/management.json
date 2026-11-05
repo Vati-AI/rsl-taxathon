@@ -1,0 +1,283 @@
+{
+  "description": "Synthetic records behind getManagementSummary (TAX-060), served by scripts/dev.py serve. Open workload comes from auditor_queue.json; this file adds closed cases, decision outcomes, evidence requests, findings and audit-ledger events. scripts/fixture_api.py measures the summary from these records (the ledger with the TAX-059 functions). Officers give the names and ledger logins; who is acting, and with which role, comes from the case_review.json principals selected by X-Vati-Fixture-Role (TAX-042). Every record is synthetic.",
+  "synthetic": true,
+  "as_of": "2026-11-04T12:00:00Z",
+  "officers": [
+    {
+      "officer_id": "80000000-0000-4000-8000-000000000001",
+      "display_name": "Synthetic Officer A",
+      "login": "officer.a@example.test"
+    },
+    {
+      "officer_id": "80000000-0000-4000-8000-000000000002",
+      "display_name": "Synthetic Officer B",
+      "login": "officer.b@example.test"
+    },
+    {
+      "officer_id": "80000000-0000-4000-8000-000000000003",
+      "display_name": "Synthetic Supervisor C",
+      "login": "supervisor.c@example.test"
+    },
+    {
+      "officer_id": "80000000-0000-4000-8000-000000000004",
+      "display_name": "Synthetic Specialist D",
+      "login": "specialist.d@example.test"
+    }
+  ],
+  "closed_cases": [
+    {
+      "case_id": "40000000-0000-4000-8000-000000000010",
+      "display_id": "SYN-010",
+      "created_at": "2026-10-20T08:00:00Z",
+      "closed_at": "2026-10-24T16:00:00Z",
+      "outcome": "close_no_further_action"
+    },
+    {
+      "case_id": "40000000-0000-4000-8000-000000000011",
+      "display_id": "SYN-011",
+      "created_at": "2026-10-22T09:00:00Z",
+      "closed_at": "2026-10-29T11:30:00Z",
+      "outcome": "close_after_correction"
+    },
+    {
+      "case_id": "40000000-0000-4000-8000-000000000012",
+      "display_id": "SYN-012",
+      "created_at": "2026-10-25T10:00:00Z",
+      "closed_at": "2026-10-27T10:00:00Z",
+      "outcome": "close_no_further_action"
+    },
+    {
+      "case_id": "40000000-0000-4000-8000-000000000013",
+      "display_id": "SYN-013",
+      "created_at": "2026-10-28T13:00:00Z",
+      "closed_at": "2026-11-02T09:00:00Z",
+      "outcome": "close_after_correction"
+    },
+    {
+      "case_id": "40000000-0000-4000-8000-000000000014",
+      "display_id": "SYN-014",
+      "created_at": "2026-10-30T08:30:00Z",
+      "closed_at": "2026-11-03T15:00:00Z",
+      "outcome": "close_no_further_action"
+    },
+    {
+      "case_id": "40000000-0000-4000-8000-000000000015",
+      "display_id": "SYN-015",
+      "created_at": "2026-10-31T10:00:00Z",
+      "closed_at": "2026-11-02T12:00:00Z",
+      "outcome": null
+    },
+    {
+      "case_id": "40000000-0000-4000-8000-000000000016",
+      "display_id": "SYN-016",
+      "created_at": "2026-09-10T08:00:00Z",
+      "closed_at": "2026-09-20T08:00:00Z",
+      "outcome": "close_no_further_action"
+    },
+    {
+      "case_id": "40000000-0000-4000-8000-000000000017",
+      "display_id": "SYN-017",
+      "created_at": null,
+      "closed_at": "2026-11-01T10:00:00Z",
+      "outcome": "close_after_correction"
+    }
+  ],
+  "evidence_requests": [
+    {
+      "request_id": "60000000-0000-4000-8000-000000000001",
+      "case_id": "40000000-0000-4000-8000-000000000004",
+      "status": "sent",
+      "due_date": "2026-11-10"
+    },
+    {
+      "request_id": "60000000-0000-4000-8000-000000000002",
+      "case_id": "40000000-0000-4000-8000-000000000004",
+      "status": "recorded",
+      "due_date": "2026-11-12"
+    },
+    {
+      "request_id": "60000000-0000-4000-8000-000000000003",
+      "case_id": "40000000-0000-4000-8000-000000000002",
+      "status": "sent",
+      "due_date": "2026-11-02"
+    },
+    {
+      "request_id": "60000000-0000-4000-8000-000000000004",
+      "case_id": "40000000-0000-4000-8000-000000000011",
+      "status": "responded",
+      "due_date": "2026-10-27"
+    },
+    {
+      "request_id": "60000000-0000-4000-8000-000000000005",
+      "case_id": "40000000-0000-4000-8000-000000000013",
+      "status": "withdrawn",
+      "due_date": "2026-11-01"
+    }
+  ],
+  "findings": [
+    {
+      "finding_id": "70000000-0000-4000-8000-000000000001",
+      "case_id": "40000000-0000-4000-8000-000000000001",
+      "legal_route_status": "verified_by_reviewer"
+    },
+    {
+      "finding_id": "70000000-0000-4000-8000-000000000002",
+      "case_id": "40000000-0000-4000-8000-000000000002",
+      "legal_route_status": "unverified"
+    },
+    {
+      "finding_id": "70000000-0000-4000-8000-000000000003",
+      "case_id": "40000000-0000-4000-8000-000000000002",
+      "legal_route_status": "unverified"
+    },
+    {
+      "finding_id": "70000000-0000-4000-8000-000000000004",
+      "case_id": "40000000-0000-4000-8000-000000000003",
+      "legal_route_status": "verified_by_reviewer"
+    },
+    {
+      "finding_id": "70000000-0000-4000-8000-000000000005",
+      "case_id": "40000000-0000-4000-8000-000000000004",
+      "legal_route_status": "unverified"
+    },
+    {
+      "finding_id": "70000000-0000-4000-8000-000000000006",
+      "case_id": "40000000-0000-4000-8000-000000000005",
+      "legal_route_status": "no_verified_route"
+    },
+    {
+      "finding_id": "70000000-0000-4000-8000-000000000007",
+      "case_id": "40000000-0000-4000-8000-000000000011",
+      "legal_route_status": "verified_by_reviewer"
+    },
+    {
+      "finding_id": "70000000-0000-4000-8000-000000000008",
+      "case_id": "40000000-0000-4000-8000-000000000016",
+      "legal_route_status": "verified_by_reviewer"
+    }
+  ],
+  "ledger_events": [
+    {
+      "occurred_at": "2026-09-18T09:00:00Z",
+      "action": "decision.approved",
+      "actor": "supervisor.c@example.test",
+      "actor_role": "supervisor",
+      "subject_type": "decision",
+      "case_id": "40000000-0000-4000-8000-000000000016"
+    },
+    {
+      "occurred_at": "2026-10-24T15:30:00Z",
+      "action": "decision.proposed",
+      "actor": "officer.b@example.test",
+      "actor_role": "auditor",
+      "subject_type": "decision",
+      "case_id": "40000000-0000-4000-8000-000000000010"
+    },
+    {
+      "occurred_at": "2026-10-24T15:55:00Z",
+      "action": "decision.approved",
+      "actor": "supervisor.c@example.test",
+      "actor_role": "supervisor",
+      "subject_type": "decision",
+      "case_id": "40000000-0000-4000-8000-000000000010"
+    },
+    {
+      "occurred_at": "2026-10-26T08:10:00Z",
+      "action": "override.evidence_due_date",
+      "actor": "supervisor.c@example.test",
+      "actor_role": "supervisor",
+      "subject_type": "control",
+      "target_actor": "officer.b@example.test",
+      "reason": "Synthetic: taxpayer asked for more time to collect bank statements."
+    },
+    {
+      "occurred_at": "2026-10-29T10:00:00Z",
+      "action": "evidence_request.recorded",
+      "actor": "officer.a@example.test",
+      "actor_role": "auditor",
+      "subject_type": "evidence_request",
+      "case_id": "40000000-0000-4000-8000-000000000004"
+    },
+    {
+      "occurred_at": "2026-10-30T09:20:00Z",
+      "action": "override.case_assignment",
+      "actor": "supervisor.c@example.test",
+      "actor_role": "supervisor",
+      "subject_type": "control",
+      "target_actor": "officer.a@example.test",
+      "reason": "Synthetic: workload rebalanced while another officer was on leave."
+    },
+    {
+      "occurred_at": "2026-10-31T14:00:00Z",
+      "action": "decision.approve.denied",
+      "actor": "officer.a@example.test",
+      "actor_role": "auditor",
+      "subject_type": "decision",
+      "case_id": "40000000-0000-4000-8000-000000000013"
+    },
+    {
+      "occurred_at": "2026-11-01T09:00:00Z",
+      "action": "case.read",
+      "actor": "officer.a@example.test",
+      "actor_role": "auditor",
+      "subject_type": "case",
+      "case_id": "40000000-0000-4000-8000-000000000002"
+    },
+    {
+      "occurred_at": "2026-11-01T10:30:00Z",
+      "action": "evidence.read",
+      "actor": "officer.b@example.test",
+      "actor_role": "auditor",
+      "subject_type": "evidence",
+      "case_id": "40000000-0000-4000-8000-000000000008"
+    },
+    {
+      "occurred_at": "2026-11-02T08:45:00Z",
+      "action": "decision.approve.denied",
+      "actor": "officer.a@example.test",
+      "actor_role": "auditor",
+      "subject_type": "decision",
+      "case_id": "40000000-0000-4000-8000-000000000013"
+    },
+    {
+      "occurred_at": "2026-11-02T08:55:00Z",
+      "action": "decision.approved",
+      "actor": "supervisor.c@example.test",
+      "actor_role": "supervisor",
+      "subject_type": "decision",
+      "case_id": "40000000-0000-4000-8000-000000000013"
+    },
+    {
+      "occurred_at": "2026-11-03T11:00:00Z",
+      "action": "override.risk_rating",
+      "actor": "supervisor.c@example.test",
+      "actor_role": "supervisor",
+      "subject_type": "control",
+      "target_actor": "officer.b@example.test",
+      "reason": "Synthetic: risk rating lowered after the corrected return was filed."
+    },
+    {
+      "occurred_at": "2026-11-03T14:30:00Z",
+      "action": "decision.proposed",
+      "actor": "officer.a@example.test",
+      "actor_role": "auditor",
+      "subject_type": "decision",
+      "case_id": "40000000-0000-4000-8000-000000000014"
+    },
+    {
+      "occurred_at": "2026-11-03T14:50:00Z",
+      "action": "decision.approved",
+      "actor": "supervisor.c@example.test",
+      "actor_role": "supervisor",
+      "subject_type": "decision",
+      "case_id": "40000000-0000-4000-8000-000000000014"
+    },
+    {
+      "occurred_at": "2026-11-04T09:15:00Z",
+      "action": "ledger.read",
+      "actor": "supervisor.c@example.test",
+      "actor_role": "supervisor",
+      "subject_type": "ledger"
+    }
+  ]
+}

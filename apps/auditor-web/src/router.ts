@@ -2,7 +2,7 @@ import { createRouter, createWebHistory, type RouteRecordRaw } from 'vue-router'
 
 declare module 'vue-router' {
   interface RouteMeta {
-    section: 'overview' | 'cases' | 'showcase' | 'none';
+    section: 'overview' | 'cases' | 'management' | 'showcase' | 'none';
     title: string;
   }
 }
@@ -47,6 +47,12 @@ export const routes: RouteRecordRaw[] = [
     component: () => import('./views/TaxpayerView.vue'),
     props: true,
     meta: { section: 'cases', title: 'Taxpayer' },
+  },
+  {
+    path: '/management',
+    name: 'management',
+    component: () => import('./views/ManagementView.vue'),
+    meta: { section: 'management', title: 'Management dashboard' },
   },
   {
     path: '/showcase',
