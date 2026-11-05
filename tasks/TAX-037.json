@@ -27,15 +27,15 @@
   "acceptance": [
     {
       "text": "Normalize match candidates, dataset versions and review decisions; never merge entities solely on score",
-      "done": false
+      "done": true
     },
     {
       "text": "Test aliases, false matches and ambiguous candidates without overwriting original identities",
-      "done": false
+      "done": true
     },
     {
       "text": "Record relevant tests and evidence, update task status and open a human-review PR",
-      "done": false
+      "done": true
     }
   ],
   "verification": "Test aliases, false matches and ambiguous candidates without overwriting original identities",
@@ -45,7 +45,20 @@
     "update-project-task",
     "finish-task"
   ],
-  "evidence": [],
+  "evidence": [
+    {
+      "criterion": 1,
+      "text": "integration/yente/candidate_review.py (ADR-022): reads the dataset version from the locked GET /catalog (refuses stale or unloaded datasets), sends one POST /match/{dataset} per Vati FtM party with only name/country/registration/incorporation/birth date, normalizes candidates to contract MatchCandidate (4-decimal score, dataset and version, unreviewed), flags ambiguous sets and corroborates identifiers locally. ReviewLedger records append-only officer decisions (confirmed/rejected/ambiguous, officer UUID, role, rationale, cited case evidence, basis, dataset version, idempotency key). Confirmation is refused on score alone (score_only), on conflicting identifiers (identifier_conflict), on undistinguished ambiguous candidates (ambiguous_candidates), for a second candidate (already_confirmed) and across dataset versions (version_conflict); service identities and taxpayers cannot decide. Confirmation yields a MatchLink; no entity is merged or changed."
+    },
+    {
+      "criterion": 2,
+      "text": "tests/integration/test_yente_candidate_review.py: 21 tests against a fake of the locked yente 5.5.0 routes returning the TAX-027 recorded results. Aliases: 'SBR Trading' -> vati-syn-co-border-retail at 1.0000, confirmed only with an agreeing registration number. False match: same alias with a different registration number cannot be confirmed even with evidence, and is rejected. Ambiguous: the Highland pair (0.9430/0.8800) is flagged, refused on country alone, recorded as ambiguous (stays unreviewed), then confirmed with cited evidence or by a distinguishing registration number. Original identities: the Vati entity and yente entities are deep-equal before and after review, yente aliases are not merged, nothing is written to yente. MatchCandidate output validates against integration/api/openapi.json. Integration suite 154 OK, contracts 84 OK, contract.py valid, backend 298 OK (39 skipped), ruff and mypy (158 files) clean."
+    },
+    {
+      "criterion": 3,
+      "text": "dev.py check steps run with the venv interpreter: validate, compileall (now including integration/yente), data 3 OK, integration 154 OK, the tests/ai patterns OK, contract.py valid, contracts 84 OK, backend 298 OK. tests/tooling has 2 existing Windows-only file-permission failures (Jube and OpenAleph env files), passing on Linux CI. Status updated and review PR opened by the finish steps."
+    }
+  ],
   "notes": [
     {
       "at": "2026-11-05T00:32:14.315046+00:00",
