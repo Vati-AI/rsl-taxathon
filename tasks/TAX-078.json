@@ -5,7 +5,7 @@
   "owner": "Kananelo",
   "area": "apps/taxpayer-web",
   "phase": "expansion",
-  "status": "IN_PROGRESS",
+  "status": "IN_REVIEW",
   "priority": "P1",
   "depends_on": [
     "TAX-044",
@@ -13,7 +13,7 @@
   ],
   "claimed_by": "kananelo-claude-20261105-078",
   "branch": "task/TAX-078",
-  "pr": null,
+  "pr": "https://github.com/Vati-AI/rsl-taxathon/pull/211",
   "scope": "Offer taxpayer-specific correction reminders from reviewed prior omissions with clear explanation",
   "inputs": [
     "PROJECT.md",
@@ -35,7 +35,7 @@
     },
     {
       "text": "Record relevant tests and evidence, update task status and open a human-review PR",
-      "done": false
+      "done": true
     },
     {
       "text": "Follow docs/DESIGN_STANDARD.md; supply relevant viewport/state screenshots and keyboard/accessibility evidence for human visual review",
@@ -61,12 +61,20 @@
     {
       "criterion": 4,
       "text": "Observed 2026-11-05, Microsoft Edge 156 (Playwright 1.64.1, PLAYWRIGHT_CHANNEL=msedge) at 1440/1024/390 px: tests/frontend/reminders.spec.ts 15/15 pass - reminders panel, no panel for a first-time claimant, load failure with retry that never blocks the form, recurring prompts labelled (label is part of the Change button's accessible description), unlabelled checks when nothing is visible; axe (serious/critical) 0 violations and no horizontal overflow in every state; keyboard focus on the form fields. Screenshots in docs/evidence/TAX-078 (details-with-reminders, details-no-reminders, details-reminders-error, review-recurring-prompts, review-recurring-checks, each at 1440/1024/390). Uses existing frappe-ui Alert/Badge/Button and portal tokens only. Visual approval is left to human review per docs/DESIGN_STANDARD.md."
+    },
+    {
+      "criterion": 3,
+      "text": "Observed 2026-11-05: tests recorded in this task's evidence and the PR body (Frappe-free 415 OK; clean-site verify OK incl. 7 new site-backed tests; ruff/mypy; npm run check; Playwright reminders.spec 15/15 in Edge 156; known pre-existing Windows tooling failures and a timing-sensitive TAX-043 claim test under parallel load reported, not hidden). Human-review PR: https://github.com/Vati-AI/rsl-taxathon/pull/211 (not merged by the agent)."
     }
   ],
   "notes": [
     {
       "at": "2026-11-05T08:48:40.331010+00:00",
       "text": "Claimed by kananelo-claude-20261105-078"
+    },
+    {
+      "at": "2026-11-05T10:22:24.150797+00:00",
+      "text": "Implementation PR #211 opened for human review"
     }
   ]
 }
