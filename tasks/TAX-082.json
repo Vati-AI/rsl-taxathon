@@ -5,7 +5,7 @@
   "owner": "Kananelo",
   "area": "tests/frontend",
   "phase": "expansion",
-  "status": "IN_REVIEW",
+  "status": "DONE",
   "priority": "P1",
   "depends_on": [
     "TAX-055",
@@ -79,6 +79,10 @@
     {
       "at": "2026-11-05T13:38:50.325329+00:00",
       "text": "PR #245 opened for human review. Six scripted-proxy persona walkthroughs, 18/18 at three widths; seven findings with prioritised remediation proposals in docs/evidence/TAX-082/README.md. CI blocked by org billing."
+    },
+    {
+      "at": "2026-11-05T13:46:02.989018+00:00",
+      "text": "Verified PR #245 merged by Hlompho28 on 2026-11-05; all acceptance criteria have recorded evidence. Remediation proposals F1-F7 in docs/evidence/TAX-082/README.md await the team lead."
     }
   ]
 }
