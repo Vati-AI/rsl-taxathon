@@ -32,11 +32,11 @@
   "acceptance": [
     {
       "text": "Production code enqueues events on claim submission and evidence upload; vati_outbox_handlers registers handlers for Jube risk/case, Docling extraction (record_extraction), OpenAleph ingest and yente review; each handler records service links and correlation IDs",
-      "done": false
+      "done": true
     },
     {
       "text": "Submitting SYN-001 and SYN-002 on a local site produces a Jube case, extraction records and indexed entities with no manual steps; replay and unavailable-service paths are tested and visible to operators",
-      "done": false
+      "done": true
     },
     {
       "text": "Record relevant tests and evidence, update task status and open a human-review PR",
@@ -50,7 +50,16 @@
     "update-project-task",
     "finish-task"
   ],
-  "evidence": [],
+  "evidence": [
+    {
+      "criterion": 1,
+      "text": "vati_tax.pipeline (ADR-037). Production entry points enqueue in the caller's transaction: doc_events Vati Submission.on_update (runs after the TAX-039 bridge) links every document a sent refund claim refers to (evidence_ids plus schedule rows) to the case as a frappe/Vati Evidence service link, and doc_events Vati Service Link.after_insert enqueues one evidence.received per evidence linked to a case (claim send, officer upload with case_id, later responses). vati_outbox_handlers: case.registered stays the TAX-039 Jube risk and case handler; evidence.received converts the stored original with Docling (submission kept as the outbox effect docling.submit, then resumed) and records the revision through record_extraction as the service identity; extraction.completed and extraction.failed map the case to FtM entities (TAX-036), write new ones to OpenAleph (idempotent effect, Vati Entity Index ledger) and screen parties with yente (Vati Screening Result, unreviewed). Links recorded: jube/case (bridge), docling/conversion_job, docling/extraction (source_event_id = outbox event), openaleph/document. One correlation ID (the case.registered one) is carried by every event of a claim and stored on the ledgers."
+    },
+    {
+      "criterion": 2,
+      "text": "Own Frappe stack rsl-taxathon-frappe-087 (fresh verify site on merged branch e073dbc): install and migrate x2 ok; 468 app tests OK; 424 Frappe-free OK; 183 site tests with only 1 error, in reminders/test_reminders_bench.py (TAX-078), which fails the same way on a clean origin/main baseline in the same stack (174 site tests, 2 failures + 1 error), so it predates this task. The 9 new pipeline site tests pass (also run alone: 9 OK). bench execute vati_tax.pipeline.demo.run on the verify site sent SYN-001 and SYN-002 through portal.api.submit_refund_claim with no manual step: 16 outbox events delivered, 0 failing; SYN-001 Jube case 9001, 3/3 extractions success, 9 entities indexed, 2 parties screened; SYN-002 Jube case 9002, 4/4 extractions success, 11 entities indexed, 3 parties screened, 1 candidate. All four services were fakes (no local Jube, Docling, OpenAleph or yente running; Docling/OpenAleph/yente fakes are transports into the real adapters). Bench tests cover replay (redelivered events make no second outward call and write no duplicate rows; re-enqueue replays), unavailable Docling (retry with docling_upstream_status, no effect row left, dead letter after 5 attempts, later steps wait, operator retry recovers), unavailable OpenAleph then yente (ledger kept), unconfigured service and missing service identity (retryable codes), and the operator view pipeline.api.case_status (System Manager only, tenant-scoped, IDs and codes only)."
+    }
+  ],
   "notes": [
     {
       "at": "2026-11-05T06:39:04.925015+00:00",
