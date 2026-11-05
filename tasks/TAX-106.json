@@ -1,0 +1,57 @@
+{
+  "id": "TAX-106",
+  "kind": "task",
+  "title": "Case-aware navigation to native investigation and administration screens",
+  "owner": "Leseli",
+  "area": "apps/auditor-web",
+  "phase": "pilot",
+  "status": "BACKLOG",
+  "priority": "P0",
+  "depends_on": [
+    "TAX-030",
+    "TAX-090",
+    "TAX-091",
+    "TAX-107",
+    "TAX-108"
+  ],
+  "claimed_by": null,
+  "branch": null,
+  "pr": null,
+  "scope": "Connect Vati cases to verified native Jube and OpenAleph destinations in new tabs; retain case context and expose Frappe Desk only to permitted staff.",
+  "inputs": [
+    "PROJECT_SCOPE.md",
+    "docs/UI_INTEGRATION_SCOPE.md",
+    "docs/ARCHITECTURE.md",
+    "docs/decisions/ADR-034-native-ui-integration.md",
+    "docs/DESIGN_STANDARD.md"
+  ],
+  "acceptance": [
+    {
+      "text": "Create server-authorized destinations from configured allowlisted origins and mapped IDs; verify deployed browser route patterns, encode identifiers, never include credentials and independently test native permissions.",
+      "done": false
+    },
+    {
+      "text": "Officer case links open the correct Jube case and OpenAleph collection/entity/graph; taxpayers and unauthorized staff cannot obtain or use destinations; missing mappings, unavailable or recorded-only services and separate native login requirements have honest states.",
+      "done": false
+    },
+    {
+      "text": "Keep the Vati case tab and breadcrumbs; move showcase out of operational navigation; provide permitted Frappe Desk entry; document separate-session logout behavior and capture relevant viewport/keyboard/accessibility evidence with human review.",
+      "done": false
+    },
+    {
+      "text": "Record tests and limitations, update evidence and open a human-review PR; do not claim native runtime readiness from fixtures.",
+      "done": false
+    }
+  ],
+  "verification": "Authenticated synthetic native-screen and connected navigation checks; denied access, unavailable service and documented human visual review.",
+  "skills": [
+    "start-task",
+    "implement-change",
+    "integrate-service",
+    "finish-task"
+  ],
+  "evidence": [],
+  "notes": [
+    "Added by TAX-105 from user-requested complete frontend/native UI scope; not implemented or claimed."
+  ]
+}

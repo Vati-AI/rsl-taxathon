@@ -44,7 +44,7 @@ Human owner = accountability. AI agent = implementer recorded in `claimed_by`. T
 | [TAX-055](TAX-055.json) | Kananelo | pilot | Portal and auditor end-to-end regression | TAX-041, TAX-042, TAX-044, TAX-045 |
 | [TAX-056](TAX-056.json) | Leseli | pilot | Agent evaluation and injection regression | TAX-049, TAX-050, TAX-051, TAX-052, TAX-053 |
 | [TAX-057](TAX-057.json) | Leseli | pilot | Tenant isolation, replay and failure matrix | TAX-054, TAX-046 |
-| [TAX-058](TAX-058.json) | Keletso | pilot | Five-scenario demo and measured acceptance | TAX-055, TAX-056, TAX-057, TAX-089, TAX-091, TAX-092, TAX-093, TAX-094, TAX-095, TAX-097, TAX-103 |
+| [TAX-058](TAX-058.json) | Keletso | pilot | Five-scenario demo and measured acceptance | TAX-055, TAX-056, TAX-057, TAX-089, TAX-091, TAX-092, TAX-093, TAX-094, TAX-095, TAX-097, TAX-103, TAX-101, TAX-102 |
 | [TAX-059](TAX-059.json) | Leseli | pilot | Audit ledger and segregation of duties | TAX-046 |
 | [TAX-060](TAX-060.json) | Leseli | pilot | Management workload and assurance dashboard | TAX-040, TAX-059 |
 | [TAX-061](TAX-061.json) | Gupta | pilot | Approved playbook and reusable tool registry | TAX-047, TAX-052 |
@@ -89,5 +89,10 @@ Human owner = accountability. AI agent = implementer recorded in `claimed_by`. T
 | [TAX-100](TAX-100.json) | Edga | pilot | Taxpayer-scoped assistant service in Frappe | TAX-096, TAX-029, TAX-031, TAX-032 |
 | [TAX-101](TAX-101.json) | Kananelo | pilot | Taxpayer portal assistant UI | TAX-100, TAX-098, TAX-092 |
 | [TAX-102](TAX-102.json) | Leseli | pilot | Taxpayer assistant scenarios, expected outcomes and leakage tests | TAX-024 |
-| [TAX-103](TAX-103.json) | Kananelo | pilot | Live-app end-to-end regression re-run | TAX-055, TAX-091, TAX-092, TAX-094 |
+| [TAX-103](TAX-103.json) | Kananelo | pilot | Live-app end-to-end regression re-run | TAX-055, TAX-091, TAX-092, TAX-094, TAX-106, TAX-107, TAX-108, TAX-109 |
 | [TAX-104](TAX-104.json) | Leseli | pilot | Fix auditor defects found by TAX-055 | TAX-055 |
+| [TAX-105](TAX-105.json) | Keletso | pilot | Verify complete frontend and native UI integration scope | none |
+| [TAX-106](TAX-106.json) | Leseli | pilot | Case-aware navigation to native investigation and administration screens | TAX-030, TAX-090, TAX-091, TAX-107, TAX-108 |
+| [TAX-107](TAX-107.json) | Keletso | pilot | Configure and verify Jube native tax investigation screens | TAX-085, TAX-034, TAX-035, TAX-046 |
+| [TAX-108](TAX-108.json) | Leseli | pilot | Configure and verify OpenAleph tax evidence and graph screens | TAX-085, TAX-032, TAX-036, TAX-037 |
+| [TAX-109](TAX-109.json) | Leseli | pilot | Protected original-document access from case evidence and citations | TAX-032, TAX-090, TAX-108 |

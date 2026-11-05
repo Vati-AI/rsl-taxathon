@@ -25,3 +25,28 @@ Tax assessment, enforcement, criminal referrals, refund denial/payment, sending 
 ## Delivery management
 
 TAX-001–016 are planning epics. TAX-018–082 are executable tasks. Phase, dependencies, concrete outputs and verification live in each task. The backlog represents the supplied scope, not a promise that the national platform fits in four days. Prioritize a complete five-scenario vertical slice, then expand.
+
+## Complete frontend and premade UI delivery
+
+The pilot is a complete connected officer/taxpayer experience, not acceptance of
+the current fixture shell. [UI_INTEGRATION_SCOPE.md](docs/UI_INTEGRATION_SCOPE.md)
+defines the required screen inventory, login/session behavior, native navigation,
+tax-specific configuration and acceptance. [ADR-034](docs/decisions/ADR-034-native-ui-integration.md)
+records the integration approach and its verification limits.
+
+Frappe hosts Vati authentication and the custom auditor/taxpayer portals; authorized
+administrators use Frappe Desk. Staff open mapped Jube investigations and OpenAleph
+evidence/entity/graph views in new tabs from the Vati case. Use premade screens,
+configured for tax data, identities and permissions; do not rebuild all vendor UIs.
+FollowTheMoney supplies the relationship schema behind Vati summaries/OpenAleph
+exploration. Docling, yente and LangGraph provide backend capabilities surfaced in
+these workflows. Shared SSO and iframe embedding are not initial requirements.
+
+Additions TAX-106–109 cover native navigation, Jube/OpenAleph adaptation and protected
+document access. Existing live wiring, AI/specialist and taxpayer-assistant tasks
+remain necessary. Native actions must not bypass Frappe approvals or tenant/case
+permissions. Preserve existing expansion/future phases.
+
+Full pilot acceptance needs working native screens and connected five-scenario
+journeys. A resource-constrained demo with recorded service output remains labelled
+as a reduced demonstration; it does not prove live native search/graph integration.

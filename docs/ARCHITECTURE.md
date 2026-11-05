@@ -34,7 +34,7 @@ The first coding environment uses explicit synthetic fixtures. Live integrations
 
 A submission is validated in Frappe, original evidence is hashed, and an outbox job triggers extraction/matching/risk. Jube creates or updates the operational case. LangGraph retrieves permission-scoped evidence and drafts findings, alternatives and evidence gaps. An authorized officer reviews the exact proposed action. Frappe records the decision and Vati applies the approved Jube transition idempotently.
 
-OpenAleph native search/graph and Jube native investigation interfaces remain available to advanced analysts. Our UI presents the common workflow; do not rebuild all upstream features.
+OpenAleph native search/graph and Jube native investigation interfaces remain part of the intended advanced-analyst experience. Their integration is a delivery requirement, not a claim of current runtime availability. See [complete UI scope](UI_INTEGRATION_SCOPE.md) and [ADR-034](decisions/ADR-034-native-ui-integration.md): Frappe login and portals, permission-checked case-specific native links in new tabs, separate native sessions initially, and tax-specific configuration without duplicating upstream features. Native actions must preserve Frappe approval authority and case permissions.
 
 ## AI layer
 
