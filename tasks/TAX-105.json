@@ -5,7 +5,7 @@
   "owner": "Keletso",
   "area": "integration",
   "phase": "pilot",
-  "status": "IN_REVIEW",
+  "status": "DONE",
   "priority": "P0",
   "depends_on": [],
   "claimed_by": "codex-ui-scope-20261105",
@@ -49,7 +49,7 @@
     },
     {
       "criterion": 3,
-      "text": "Added unclaimed TAX-106\u2013109 with human owners, dependencies and observable acceptance; updated TAX-091/095/103/058 and task index. validate.py, dev.py check and quality.py passed; existing optional/dependency-gated test skips remain. No product code or runtime configuration changed."
+      "text": "Added unclaimed TAX-106–109 with human owners, dependencies and observable acceptance; updated TAX-091/095/103/058 and task index. validate.py, dev.py check and quality.py passed; existing optional/dependency-gated test skips remain. No product code or runtime configuration changed."
     }
   ],
   "notes": [
@@ -61,6 +61,10 @@
     {
       "at": "2026-11-05T11:20:49.361539+00:00",
       "text": "Agent finished implementation and opened human review"
+    },
+    {
+      "at": "2026-11-05T13:52:56.789439+00:00",
+      "text": "Verified merge of #225 (2026-11-05T11:24:49Z); all 3 acceptance criteria have recorded evidence"
     }
   ]
 }
