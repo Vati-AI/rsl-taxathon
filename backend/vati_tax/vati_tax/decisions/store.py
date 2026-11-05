@@ -18,7 +18,9 @@ lives outside this app. A site names a factory in ``site_config.json``::
 
 ``factory(tenant_id)`` returns an object with the adapter's ``get_case``,
 ``transition`` and ``escalate``. Without one, decisions that need Jube are
-refused as ``upstream_unavailable`` and nothing is recorded.
+refused as ``upstream_unavailable`` and nothing is recorded. The factory is
+``vati_tax.integrations.factories.case_lifecycle`` (TAX-085), which
+``scripts/frappe_dev.py init`` names and configures from ignored local config.
 """
 
 from __future__ import annotations

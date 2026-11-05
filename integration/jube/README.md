@@ -190,4 +190,12 @@ Locked source `01c4afd…`, local stack. Each `contract` run uses a new syntheti
 
 The Frappe side (`backend/vati_tax/vati_tax/bridge`) invokes first and then asks `ensure_case` for the case, because Jube raises cases only from archived invocations. It mirrors Jube's state into the staff-only `Vati Case Sync` and a three-word taxpayer `review_status`. Jube sends no webhooks, so open cases are polled every five minutes, and a service identity may also post `case.status_projected` envelopes. Design: [ADR-028](../../docs/decisions/ADR-028-frappe-jube-submission-bridge.md).
 
-A site wires both ports in `site_config.json`. `vati_case_lifecycle` returns the `JubeCaseAdapter` and `vati_risk_evaluator` returns `DeclaredRiskEvaluator(RiskInvoker(RiskInvokerConfig(...)), tax_risk.load_ruleset())`. Not yet run against the live stack: `tests/integration/test_jube_bridge.py` covers the invoker and adapter together against the Jube fake.
+A site wires both ports in `site_config.json`. `vati_case_lifecycle` returns the `JubeCaseAdapter` and `vati_risk_evaluator` returns `DeclaredRiskEvaluator(RiskInvoker(RiskInvokerConfig(...)), tax_risk.load_ruleset())`. `tests/integration/test_jube_bridge.py` covers the invoker and adapter together against the Jube fake.
+
+TAX-085 ([ADR-035](../../docs/decisions/ADR-035-service-adapters-in-frappe.md)) supplies both factories (`vati_tax.integrations.factories.case_lifecycle` / `.risk_evaluator`). `scripts/frappe_dev.py init` configures them from `.local/jube.env` and `.local/jube-case-workflow.json`; `scripts/jube_rules.py record-model` adds `JUBE_RISK_MODEL_GUID` there once. From the Frappe container, Jube is `http://host.docker.internal:55501`. Plain HTTP is allowed only to loopback and that exact host. On a clean verify site with the live Jube (`frappe_dev.py verify --live-services`, 2026-11-05):
+
+- the risk invocation was archived and the case raised as `RECEIVED` with its Vati Service Link
+- after the move to `AWAITING_HUMAN`, an auditor's `continue_investigation` proposal read that status from Jube, and the supervisor's approval synced (`jube_sync.state=synced`, Jube read back `INVESTIGATING`)
+- an unreachable Jube was refused as `upstream_unavailable` (`jube_unavailable`), and a missing configuration as `upstream_unavailable` (`jube_not_configured`)
+
+The full submission bridge flow is still to be run live, in TAX-087.

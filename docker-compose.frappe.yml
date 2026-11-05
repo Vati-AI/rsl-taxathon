@@ -27,6 +27,12 @@ services:
       # TAX-044 / ADR-023: the stdlib-only TAX-048 reconciliation, read-only. Only
       # `ai` is put on the path (frappe_dev.py init); no AI dependency is installed.
       - ./ai:/workspace/vati_shared/ai:ro
+      # TAX-085 / ADR-035: the stdlib-only service adapters, read-only. frappe_dev.py init puts
+      # their directories on the bench path and writes vati_services into the site config.
+      - ./integration:/workspace/vati_shared/integration:ro
+    # The site reaches local Jube/Docling/OpenAleph/yente on the developer's machine through
+    # host.docker.internal (built in on Docker Desktop; this maps it on Linux Docker Engine).
+    extra_hosts: ["host.docker.internal:host-gateway"]
     # Ports are overridable so a second checkout can run its own isolated stack
     # (scripts/frappe_dev.py --project NAME --http-port N --socketio-port N).
     ports: ["127.0.0.1:${FRAPPE_HTTP_PORT:-58000}:8000", "127.0.0.1:${FRAPPE_SOCKETIO_PORT:-59000}:9000"]

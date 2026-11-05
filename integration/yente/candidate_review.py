@@ -647,9 +647,9 @@ def _invalid(message: str, reason: str) -> ReviewError:
 def http_transport(base_url: str, timeout_s: float = 15.0) -> Transport:
     """Transport for a real yente. yente has no authentication, so it must only be reachable on
     a private network or loopback (integration/yente/README.md)."""
-    if not base_url.startswith(
-        ("http://127.0.0.1", "http://localhost", "https://", "http://yente")
-    ):
+    # host.docker.internal: the developer's machine seen from the Frappe container (TAX-085).
+    local = ("http://127.0.0.1", "http://localhost", "http://host.docker.internal:")
+    if not base_url.startswith((*local, "https://", "http://yente")):
         raise ValueError("YENTE_BASE_URL must be loopback, the private yente host or https")
 
     def call(method: str, path: str, body: Any = None) -> Response:
