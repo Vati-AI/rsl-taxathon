@@ -5,7 +5,7 @@
   "owner": "Kananelo",
   "area": "tests/frontend",
   "phase": "pilot",
-  "status": "BACKLOG",
+  "status": "IN_PROGRESS",
   "priority": "P0",
   "depends_on": [
     "TAX-041",
@@ -13,8 +13,8 @@
     "TAX-044",
     "TAX-045"
   ],
-  "claimed_by": null,
-  "branch": null,
+  "claimed_by": "kananelo-claude-20261105-tax055",
+  "branch": "task/TAX-055",
   "pr": null,
   "scope": "Automate complete browser flow across both personas, viewport sizes and accessibility states",
   "inputs": [
@@ -56,6 +56,10 @@
     {
       "at": "2026-11-03T15:40:40.955115+00:00",
       "text": "Owner reassigned from Jane to Kananelo by team lead Keletso to balance workload; Jane keeps no open tasks for now."
+    },
+    {
+      "at": "2026-11-05T05:41:49.782292+00:00",
+      "text": "Claimed by kananelo-claude-20261105-tax055"
     }
   ]
 }
