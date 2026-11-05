@@ -24,6 +24,9 @@ services:
     volumes:
       - frappe-workspace:/workspace
       - ./backend/vati_tax:/workspace/vati_tax
+      # TAX-044 / ADR-020: the stdlib-only TAX-048 reconciliation, read-only. Only
+      # `ai` is put on the path (frappe_dev.py init); no AI dependency is installed.
+      - ./ai:/workspace/vati_shared/ai:ro
     # Ports are overridable so a second checkout can run its own isolated stack
     # (scripts/frappe_dev.py --project NAME --http-port N --socketio-port N).
     ports: ["127.0.0.1:${FRAPPE_HTTP_PORT:-58000}:8000", "127.0.0.1:${FRAPPE_SOCKETIO_PORT:-59000}:9000"]
