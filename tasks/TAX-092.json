@@ -5,14 +5,14 @@
   "owner": "Kananelo",
   "area": "apps/taxpayer-web",
   "phase": "pilot",
-  "status": "IN_PROGRESS",
+  "status": "IN_REVIEW",
   "priority": "P0",
   "depends_on": [
     "TAX-039"
   ],
   "claimed_by": "kananelo-claude-20261105-tax092",
   "branch": "task/TAX-092",
-  "pr": null,
+  "pr": "https://github.com/Vati-AI/rsl-taxathon/pull/209",
   "scope": "Replace the fixture submissions list, submission detail and session labels in the taxpayer portal with live Frappe data, including the taxpayer-safe status mirrored from Jube by TAX-039",
   "inputs": [
     "PROJECT.md",
@@ -67,6 +67,10 @@
     {
       "at": "2026-11-05T08:45:51.210219+00:00",
       "text": "Claimed by kananelo-claude-20261105-tax092"
+    },
+    {
+      "at": "2026-11-05T09:54:48.783267+00:00",
+      "text": "Live session, list and status; 167 bench tests and 16/16 live HTTP checks pass; full browser harness 159/159. CI blocked by org billing."
     }
   ]
 }
