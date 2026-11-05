@@ -2,7 +2,7 @@
   "id": "TAX-096",
   "kind": "task",
   "title": "AI briefing, provenance, feedback and taxpayer-assistance contract",
-  "owner": "Keletso",
+  "owner": "Leseli",
   "area": "integration",
   "phase": "pilot",
   "status": "IN_REVIEW",
@@ -69,6 +69,10 @@
     {
       "at": "2026-11-05T11:01:46.748697+00:00",
       "text": "Agent finished implementation and opened human review"
+    },
+    {
+      "at": "2026-11-05T11:41:17.444794+00:00",
+      "text": "Owner reassigned from Keletso to Leseli with Keletso's agreement. Keletso handed TAX-096 to Leseli to complete; implementation merged in #221, criterion 2 (contract reviews by Gupta, Edga, Leseli and Kananelo) is still open."
     }
   ]
 }

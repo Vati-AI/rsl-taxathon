@@ -5,14 +5,14 @@
   "owner": "Gupta",
   "area": "ai",
   "phase": "pilot",
-  "status": "BACKLOG",
+  "status": "IN_PROGRESS",
   "priority": "P0",
   "depends_on": [
     "TAX-089",
     "TAX-056"
   ],
-  "claimed_by": null,
-  "branch": null,
+  "claimed_by": "gupta-claude-20261105-097",
+  "branch": "task/TAX-097",
   "pr": null,
   "scope": "Use routed models in the VAT refund, related-party, evidence and case briefing agents for interpretation only (explain discrepancies, interpret contracts and Docling output, form and challenge hypotheses with legitimate alternatives, draft briefings), over deterministic reconciliation results and cited evidence; every output passes the existing validators",
   "inputs": [
@@ -56,6 +56,10 @@
     {
       "at": "2026-11-05T10:07:38.336884+00:00",
       "text": "Added 2026-11-05 to record the agreed AI architecture (ADR-031): hosted models through a role router with local/template fallback, and the taxpayer-side assistant."
+    },
+    {
+      "at": "2026-11-05T11:26:11.618433+00:00",
+      "text": "Claimed by gupta-claude-20261105-097"
     }
   ]
 }
