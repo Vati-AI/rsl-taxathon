@@ -5,7 +5,7 @@
   "owner": "Leseli",
   "area": "tests/ai",
   "phase": "pilot",
-  "status": "BACKLOG",
+  "status": "IN_PROGRESS",
   "priority": "P0",
   "depends_on": [
     "TAX-049",
@@ -14,8 +14,8 @@
     "TAX-052",
     "TAX-053"
   ],
-  "claimed_by": null,
-  "branch": null,
+  "claimed_by": "leseli-claude-20261105-056",
+  "branch": "task/TAX-056",
   "pr": null,
   "scope": "Create expected output/citation checks and hostile-document fixtures for every playbook",
   "inputs": [
@@ -53,6 +53,10 @@
     {
       "at": "2026-11-03T15:40:40.955115+00:00",
       "text": "Owner reassigned from Yellow to Leseli by team lead Keletso to balance workload; Yellow keeps no open tasks for now."
+    },
+    {
+      "at": "2026-11-05T07:41:48.638632+00:00",
+      "text": "Claimed by leseli-claude-20261105-056"
     }
   ]
 }
