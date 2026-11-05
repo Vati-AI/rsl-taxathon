@@ -1,0 +1,44 @@
+{
+  "id": "TAX-084",
+  "kind": "task",
+  "title": "Free-plan CI recovery and local PR verification",
+  "owner": "Keletso",
+  "area": "integration",
+  "phase": "foundation",
+  "status": "READY",
+  "priority": "P0",
+  "depends_on": [],
+  "claimed_by": null,
+  "branch": null,
+  "pr": null,
+  "scope": "Reduce superseded hosted CI work and document verified local checks for PRs 174\u2013177 during the included-usage block; preserve checks and human review.",
+  "inputs": [
+    ".github/workflows/ci.yml",
+    "docs/TOOLCHAIN.md",
+    "docs/V1_ACCEPTANCE.md"
+  ],
+  "acceptance": [
+    {
+      "text": "Cancel superseded CI runs without dropping existing jobs or checks",
+      "done": false
+    },
+    {
+      "text": "Record exact PR commits, local verification results and limitations",
+      "done": false
+    },
+    {
+      "text": "Document repeatable free local verification and safe runner prerequisites",
+      "done": false
+    }
+  ],
+  "verification": "Run dev.py check, quality.py, browser suites, AI checks and compose validation; record unavailable checks honestly.",
+  "skills": [
+    "start-task",
+    "implement-change",
+    "finish-task"
+  ],
+  "evidence": [],
+  "notes": [
+    "User requested free recovery after hosted Actions usage exhausted. New task bootstrapped locally because task.py start requires an existing task on local main; main will not be pushed."
+  ]
+}
