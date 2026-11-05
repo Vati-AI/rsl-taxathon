@@ -202,6 +202,8 @@ def check():
         ["python3", "-m", "unittest", "discover", "-s", "tests/ai", "-p", "test_institutional*.py"],
         # TAX-071 EOI draft packages (pure Python; no transmission capability).
         ["python3", "-m", "unittest", "discover", "-s", "tests/ai", "-p", "test_eoi*.py"],
+        # TAX-067 baselines and peer comparisons (pure Python).
+        ["python3", "-m", "unittest", "discover", "-s", "tests/ai", "-p", "test_peer*.py"],
         # TAX-070 outcome/appeal feedback proposals (pure Python; registry stamps with LangGraph).
         ["python3", "-m", "unittest", "discover", "-s", "tests/ai", "-p", "test_outcome*.py"],
         ["python3", "integration/api/contract.py"],
