@@ -74,7 +74,7 @@ Human owner = accountability. AI agent = implementer recorded in `claimed_by`. T
 | [TAX-085](TAX-085.json) | Keletso | pilot | Service adapters packaged and configured inside Frappe | TAX-034, TAX-038 |
 | [TAX-086](TAX-086.json) | Edga | pilot | Case findings record for rule and agent output | TAX-030, TAX-035, TAX-046, TAX-096 |
 | [TAX-087](TAX-087.json) | Leseli | pilot | Event wiring from Frappe to Jube, Docling, OpenAleph and yente | TAX-085, TAX-039, TAX-036, TAX-037, TAX-038 |
-| [TAX-088](TAX-088.json) | Gupta | pilot | AI investigation runtime on real cases | TAX-087, TAX-086, TAX-047, TAX-053, TAX-089, TAX-097 |
+| [TAX-088](TAX-088.json) | Gupta | pilot | AI investigation runtime on real cases | TAX-087, TAX-086, TAX-047, TAX-053, TAX-089, TAX-097, TAX-110 |
 | [TAX-089](TAX-089.json) | Gupta | pilot | Model router with Groq/Gemini providers, local and template fallback | TAX-022, TAX-053, TAX-056 |
 | [TAX-090](TAX-090.json) | Keletso | pilot | Vati /api/v1 service in Frappe for the auditor app | TAX-086, TAX-039, TAX-096 |
 | [TAX-091](TAX-091.json) | Kananelo | pilot | Auditor app hosted in Frappe with real officer login | TAX-090 |
@@ -96,3 +96,4 @@ Human owner = accountability. AI agent = implementer recorded in `claimed_by`. T
 | [TAX-107](TAX-107.json) | Keletso | pilot | Configure and verify Jube native tax investigation screens | TAX-085, TAX-034, TAX-035, TAX-046 |
 | [TAX-108](TAX-108.json) | Leseli | pilot | Configure and verify OpenAleph tax evidence and graph screens | TAX-085, TAX-032, TAX-036, TAX-037 |
 | [TAX-109](TAX-109.json) | Leseli | pilot | Protected original-document access from case evidence and citations | TAX-032, TAX-090, TAX-108 |
+| [TAX-110](TAX-110.json) | Gupta | pilot | Reliable hosted briefing and evidence reading within free-tier limits | TAX-097 |
