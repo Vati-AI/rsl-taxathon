@@ -27,15 +27,15 @@
   "acceptance": [
     {
       "text": "Link taxpayer cases to schemes and model legal/beneficial ownership, advisers and conflicting sources",
-      "done": false
+      "done": true
     },
     {
       "text": "Graph preserves contradictions and avoids guilt-by-association labels; access remains tenant/case scoped",
-      "done": false
+      "done": true
     },
     {
       "text": "Record relevant tests and evidence, update task status and open a human-review PR",
-      "done": false
+      "done": true
     }
   ],
   "verification": "Graph preserves contradictions and avoids guilt-by-association labels; access remains tenant/case scoped",
@@ -45,7 +45,20 @@
     "update-project-task",
     "finish-task"
   ],
-  "evidence": [],
+  "evidence": [
+    {
+      "criterion": 1,
+      "text": "integration/followthemoney/scheme_graph.py builds a per-(tenant, case) graph from FtM entities: the TAX-036 bundle plus Directorship, Representation (adviser_to / intermediary_for), Project (scheme) and ProjectParticipant, with evidence-backed case_scheme_link and case_subject edges. Ownership is split into legal (direct), beneficial (beneficial/ultimate), indirect and unstated edge types. Tests: test_legal_beneficial_director_adviser_and_intermediary_are_separate, test_ownership_type_is_never_guessed, test_scheme_is_a_grouping_object_linked_to_the_case_with_evidence, test_scheme_links_and_participation_need_evidence (tests/integration/test_scheme_graph.py, 26/26 passing; ADR-026)."
+    },
+    {
+      "criterion": 2,
+      "text": "Conflicting sources stay separate edges, each with its source record, evidence ID, SHA-256 and extraction revision. Contradictions are listed as unresolved, including across truncation, and a changed record is refused (idempotency_conflict). No risk labels: unknown fields and labelling wording are refused (risk_label_not_allowed), a flag on an input party leaves the graph byte-identical, and every neighbourhood and connections output was scanned for forbidden terms and label fields. Connections have interpretation null and review_route finding.review. Scope: one graph per (tenant, case); other-case, other-tenant and taxpayer-role queries are refused (not_found / forbidden). GRAPH_READ_ROLES equals policy case.read. Depth, node, path and step limits report truncation flags. Changing the code to add a proximity field, or to skip the scope check, made 2 and 8 tests fail."
+    },
+    {
+      "criterion": 3,
+      "text": "python3 scripts/dev.py check passed: tests/integration ran 180 tests including the 26 TAX-074 tests, and the TAX-036 suite still passes. python3 scripts/quality.py passed (ruff and mypy). scripts/ftm_schema_subset.py --check matches the locked FtM c8c457a. Synthetic fixtures are in data/synthetic/tax074_scheme_graph.json. Not run: a live OpenAleph read-back of the new schemata, and a Vati API route."
+    }
+  ],
   "notes": [
     {
       "at": "2026-11-05T05:25:49.269218+00:00",
