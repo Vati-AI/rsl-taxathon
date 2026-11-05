@@ -38,6 +38,10 @@
     {
       "at": "2026-11-05T14:08:21.889825+00:00",
       "text": "Reassigned from Kananelo to Keletso (single-developer delivery, ADR-038)"
+    },
+    {
+      "at": "2026-11-05T14:28:35.430037+00:00",
+      "text": "Added TAX-104 (fix auditor defects found by the TAX-055 regression) as a child; this epic closes when TAX-104 is DONE"
     }
   ],
   "kind": "epic",
@@ -45,6 +49,7 @@
   "children": [
     "TAX-023",
     "TAX-055",
-    "TAX-082"
+    "TAX-082",
+    "TAX-104"
   ]
 }
