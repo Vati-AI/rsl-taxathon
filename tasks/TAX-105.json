@@ -5,12 +5,12 @@
   "owner": "Keletso",
   "area": "integration",
   "phase": "pilot",
-  "status": "IN_PROGRESS",
+  "status": "IN_REVIEW",
   "priority": "P0",
   "depends_on": [],
   "claimed_by": "codex-ui-scope-20261105",
   "branch": "task/TAX-105",
-  "pr": null,
+  "pr": "https://github.com/Vati-AI/rsl-taxathon/pull/225",
   "scope": "Verify code and locked upstream sources; document agreed full screens, Frappe login, native Jube/OpenAleph navigation, adaptation, permissions and acceptance; add missing executable follow-ups without claiming runtime completion.",
   "inputs": [
     "PROJECT_SCOPE.md",
@@ -57,6 +57,10 @@
     {
       "at": "2026-11-05T11:14:38.750030+00:00",
       "text": "Claimed by codex-ui-scope-20261105"
+    },
+    {
+      "at": "2026-11-05T11:20:49.361539+00:00",
+      "text": "Agent finished implementation and opened human review"
     }
   ]
 }
