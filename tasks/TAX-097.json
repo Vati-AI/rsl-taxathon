@@ -5,7 +5,7 @@
   "owner": "Gupta",
   "area": "ai",
   "phase": "pilot",
-  "status": "IN_REVIEW",
+  "status": "DONE",
   "priority": "P0",
   "depends_on": [
     "TAX-089",
@@ -77,6 +77,10 @@
     {
       "at": "2026-11-05T13:27:20.662199+00:00",
       "text": "Review PR #244 opened; local checks recorded in the PR (Actions blocked by billing limit)."
+    },
+    {
+      "at": "2026-11-05T13:52:56.789439+00:00",
+      "text": "Verified merge of #244 (2026-11-05T13:43:44Z); all 3 acceptance criteria have recorded evidence"
     }
   ]
 }
