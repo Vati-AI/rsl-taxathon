@@ -82,6 +82,13 @@ OVERRIDE_RECORD: Final = "override.record"
 EXPORT_REQUEST: Final = "export.request"
 EXPORT_APPROVE: Final = "export.approve"
 EXPORT_READ: Final = "export.read"
+# Objections, appeals and their reviewed outcomes (TAX-069). A taxpayer lodges
+# a challenge to an approved decision on its own case (an officer may record
+# one on the taxpayer's behalf); a supervisor who neither proposed nor approved
+# the decision reviews it. The original decision and evidence never change.
+CHALLENGE_LODGE: Final = "challenge.lodge"
+CHALLENGE_REVIEW: Final = "challenge.review"
+CHALLENGE_READ: Final = "challenge.read"
 
 ACTION_ROLES: Final[dict[str, frozenset[Role]]] = {
     SUBMISSION_CREATE: frozenset({TAXPAYER}),
@@ -109,6 +116,9 @@ ACTION_ROLES: Final[dict[str, frozenset[Role]]] = {
     EXPORT_REQUEST: frozenset({AUDITOR, SPECIALIST, SUPERVISOR}),
     EXPORT_APPROVE: frozenset({SUPERVISOR}),
     EXPORT_READ: frozenset({AUDITOR, SPECIALIST, SUPERVISOR}),
+    CHALLENGE_LODGE: frozenset({TAXPAYER, AUDITOR, SUPERVISOR}),
+    CHALLENGE_REVIEW: frozenset({SUPERVISOR}),
+    CHALLENGE_READ: frozenset({TAXPAYER, AUDITOR, SPECIALIST, SUPERVISOR, SERVICE}),
 }
 
 # Consequential human decisions. Never granted to a service identity, even if
@@ -127,11 +137,20 @@ HUMAN_ONLY_ACTIONS: Final[frozenset[str]] = frozenset(
         EXPORT_REQUEST,
         EXPORT_APPROVE,
         EXPORT_READ,
+        CHALLENGE_LODGE,
+        CHALLENGE_REVIEW,
     }
 )
 # Actions on a taxpayer's own records; taxpayers need a matching taxpayer_id.
 TAXPAYER_OWNED_ACTIONS: Final[frozenset[str]] = frozenset(
-    {SUBMISSION_CREATE, SUBMISSION_READ, EVIDENCE_RESPOND, EVIDENCE_REGISTER}
+    {
+        SUBMISSION_CREATE,
+        SUBMISSION_READ,
+        EVIDENCE_RESPOND,
+        EVIDENCE_REGISTER,
+        CHALLENGE_LODGE,
+        CHALLENGE_READ,
+    }
 )
 # The approver must differ from the proposer (separation of duties).
 SEPARATION_OF_DUTIES: Final[frozenset[str]] = frozenset({DECISION_APPROVE, EXPORT_APPROVE})
