@@ -3,6 +3,10 @@ on:
   pull_request:
   push:
     branches: [main]
+# A newer commit replaces obsolete work only within the same PR/ref.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 permissions:
   contents: read
 jobs:
