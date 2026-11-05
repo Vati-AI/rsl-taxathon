@@ -797,6 +797,62 @@
           "503": { "$ref": "#/components/responses/DependencyUnavailable" }
         }
       }
+    },
+    "/api/v1/management/integrity": {
+      "get": {
+        "operationId": "getIntegrityReview",
+        "tags": [
+          "management"
+        ],
+        "summary": "Read restricted policy-gap and integrity aggregates for supervisors.",
+        "description": "Supervisor-only (TAX-029 Vati Supervisor role in the selected tenant); any other principal gets 403 forbidden with no data. Aggregates only: cells covering fewer than min_group_size people are combined, and no officer or taxpayer is identified. Policy exposure is about the rules, never taxpayer noncompliance; review signals are prompts, never accusations. Reading the ledger is itself recorded (TAX-059).",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/TenantHeader"
+          },
+          {
+            "$ref": "#/components/parameters/CorrelationIdHeader"
+          },
+          {
+            "$ref": "#/components/parameters/WindowDaysQuery"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Integrity review.",
+            "headers": {
+              "X-Correlation-ID": {
+                "$ref": "#/components/headers/CorrelationId"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IntegrityReviewEnvelope"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthenticated"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          },
+          "503": {
+            "$ref": "#/components/responses/DependencyUnavailable"
+          }
+        }
+      }
     }
   },
   "components": {
@@ -2765,6 +2821,385 @@
             "items": { "$ref": "#/components/schemas/TaxpayerFacingConfirmedItem" }
           },
           "message": { "type": ["string", "null"], "minLength": 1, "maxLength": 2000 }
+        }
+      },
+      "IntegrityRow": {
+        "type": "object",
+        "description": "One aggregate cell. It covers at least min_group_size people (taxpayers, or both recording supervisors and affected officers). No person is identified.",
+        "additionalProperties": false,
+        "required": [
+          "key",
+          "label",
+          "count",
+          "cases"
+        ],
+        "properties": {
+          "key": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 80
+          },
+          "label": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "count": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "cases": {
+            "type": "integer",
+            "minimum": 0
+          }
+        }
+      },
+      "IntegrityCombinedRow": {
+        "type": "object",
+        "description": "Cells too small to show alone, combined (with the smallest visible cells if needed) so no small cell can be derived from the total.",
+        "additionalProperties": false,
+        "required": [
+          "key",
+          "label",
+          "count",
+          "cases",
+          "groups_combined"
+        ],
+        "properties": {
+          "key": {
+            "const": "combined"
+          },
+          "label": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "count": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "cases": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "groups_combined": {
+            "type": "integer",
+            "minimum": 1
+          }
+        }
+      },
+      "IntegrityUnavailable": {
+        "type": "object",
+        "description": "This source could not be read in this environment (the audit ledger, or the case findings store before TAX-086); see missing_data.",
+        "additionalProperties": false,
+        "required": [
+          "status"
+        ],
+        "properties": {
+          "status": {
+            "const": "unavailable"
+          }
+        }
+      },
+      "PolicyExposure": {
+        "type": "object",
+        "description": "Reviewer-confirmed findings without a verified legal route (TAX-052), by policy area. About the rules, never a finding of taxpayer noncompliance. insufficient_volume returns no counts.",
+        "additionalProperties": false,
+        "required": [
+          "status",
+          "note",
+          "confirmed_gaps",
+          "pending_review",
+          "areas",
+          "combined"
+        ],
+        "properties": {
+          "status": {
+            "enum": [
+              "available",
+              "insufficient_volume"
+            ]
+          },
+          "note": {
+            "type": "string"
+          },
+          "confirmed_gaps": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 0
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "pending_review": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "areas": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/IntegrityRow"
+            }
+          },
+          "combined": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/IntegrityCombinedRow"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        }
+      },
+      "IntegrityReview": {
+        "type": "object",
+        "description": "Restricted management review of policy gaps and integrity patterns (TAX-077, ADR-036). Aggregates only; no person is identified.",
+        "additionalProperties": false,
+        "required": [
+          "tenant_id",
+          "generated_at",
+          "window",
+          "min_group_size",
+          "privacy_note",
+          "policy_exposure",
+          "override_patterns",
+          "review_signals",
+          "ledger",
+          "missing_data",
+          "synthetic"
+        ],
+        "properties": {
+          "tenant_id": {
+            "$ref": "#/components/schemas/Uuid"
+          },
+          "generated_at": {
+            "$ref": "#/components/schemas/Timestamp"
+          },
+          "window": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "since",
+              "until",
+              "days"
+            ],
+            "properties": {
+              "since": {
+                "$ref": "#/components/schemas/Timestamp"
+              },
+              "until": {
+                "$ref": "#/components/schemas/Timestamp"
+              },
+              "days": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 365
+              }
+            }
+          },
+          "min_group_size": {
+            "type": "integer",
+            "minimum": 2
+          },
+          "privacy_note": {
+            "type": "string"
+          },
+          "policy_exposure": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/PolicyExposure"
+              },
+              {
+                "$ref": "#/components/schemas/IntegrityUnavailable"
+              }
+            ]
+          },
+          "override_patterns": {
+            "anyOf": [
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "status",
+                  "note",
+                  "total_overrides",
+                  "by_control",
+                  "combined"
+                ],
+                "properties": {
+                  "status": {
+                    "enum": [
+                      "available",
+                      "insufficient_volume"
+                    ]
+                  },
+                  "note": {
+                    "type": "string"
+                  },
+                  "total_overrides": {
+                    "anyOf": [
+                      {
+                        "type": "integer",
+                        "minimum": 0
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "by_control": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/IntegrityRow"
+                    }
+                  },
+                  "combined": {
+                    "anyOf": [
+                      {
+                        "$ref": "#/components/schemas/IntegrityCombinedRow"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  }
+                }
+              },
+              {
+                "$ref": "#/components/schemas/IntegrityUnavailable"
+              }
+            ],
+            "description": "TAX-059 control overrides in the window, by control. Describes how controls are used, never an officer's conduct."
+          },
+          "review_signals": {
+            "anyOf": [
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "status",
+                  "note",
+                  "by_kind",
+                  "withheld_about_viewer"
+                ],
+                "properties": {
+                  "status": {
+                    "const": "review_only"
+                  },
+                  "note": {
+                    "type": "string"
+                  },
+                  "by_kind": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "kind",
+                        "signals"
+                      ],
+                      "properties": {
+                        "kind": {
+                          "enum": [
+                            "repeated_overrides",
+                            "repeated_separation_of_duties_attempts",
+                            "decision_overturned",
+                            "ledger_integrity"
+                          ]
+                        },
+                        "signals": {
+                          "type": "integer",
+                          "minimum": 1
+                        }
+                      }
+                    }
+                  },
+                  "withheld_about_viewer": {
+                    "type": "integer",
+                    "minimum": 0
+                  }
+                }
+              },
+              {
+                "$ref": "#/components/schemas/IntegrityUnavailable"
+              }
+            ],
+            "description": "TAX-059 review signals counted by kind. Subjects are never returned; signals about the viewer are withheld and only counted."
+          },
+          "ledger": {
+            "anyOf": [
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "available",
+                  "intact"
+                ],
+                "properties": {
+                  "available": {
+                    "const": true
+                  },
+                  "intact": {
+                    "type": "boolean"
+                  }
+                }
+              },
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "available"
+                ],
+                "properties": {
+                  "available": {
+                    "const": false
+                  }
+                }
+              }
+            ]
+          },
+          "missing_data": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "metric",
+                "detail"
+              ],
+              "properties": {
+                "metric": {
+                  "enum": [
+                    "policy_exposure",
+                    "integrity"
+                  ]
+                },
+                "detail": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "synthetic": {
+            "type": "boolean"
+          }
+        }
+      },
+      "IntegrityReviewEnvelope": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "data"
+        ],
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/IntegrityReview"
+          }
         }
       },
       "ErrorCode": {

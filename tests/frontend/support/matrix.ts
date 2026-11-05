@@ -63,6 +63,8 @@ export const AUDITOR_ROUTES: MatrixRoute[] = [
     heading: 'Synthetic Border Retail',
   },
   { name: 'management', path: '/auditor/management', heading: 'Management dashboard' },
+  // TAX-077: supervisors only; the harness's default auditor sees the denied state.
+  { name: 'integrity', path: '/auditor/management/integrity', heading: 'Integrity review' },
   { name: 'showcase', path: '/auditor/showcase', heading: 'Component showcase' },
   { name: 'not-found', path: '/auditor/no-such-page', heading: 'Page not found' },
 ];

@@ -60,7 +60,7 @@ Callers check actions with `permissions.require_action(action, tenant_id, taxpay
 | `case.assign`* | | | | yes | |
 | `playbook.approve`* (TAX-065: approve or reject a learned workflow version) | | | | yes, not one you recorded | |
 | `decision.execute` (TAX-046: resend an approved decision to Jube) | | | | yes | yes |
-| `ledger.read`* (TAX-059: audit ledger, integrity check, signals, summary) | | | | yes | |
+| `ledger.read`* (TAX-059: audit ledger, integrity check, signals, summary; TAX-077: integrity review aggregates) | | | | yes | |
 | `override.record`* (TAX-059: exception to a named control) | | | | yes, not on own work | |
 | `export.request`* (TAX-062: request a scoped evidence export) | | yes | yes | yes | |
 | `export.approve`* (TAX-062: authorise or refuse an export) | | | | yes, not own request | |
