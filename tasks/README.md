@@ -2,7 +2,7 @@
 
 ## Delivery order (ADR-038)
 
-From 2026-11-05 Keletso owns every open task except TAX-104 and TAX-102 (Leseli). Take the ready task with the lowest `sequence`. A later task can start early when its dependencies are DONE.
+From 2026-11-05 Keletso owns every open task except TAX-104, TAX-102 and TAX-110 (Leseli). Take the ready task with the lowest `sequence`. A later task can start early when its dependencies are DONE.
 
 | Seq | Task | Title |
 |---|---|---|
@@ -128,4 +128,4 @@ Human owner = accountability. AI agent = implementer recorded in `claimed_by`. T
 | [TAX-107](TAX-107.json) | Keletso | pilot | Configure and verify Jube native tax investigation screens | TAX-085, TAX-034, TAX-035, TAX-046 |
 | [TAX-108](TAX-108.json) | Keletso | pilot | Configure and verify OpenAleph tax evidence and graph screens | TAX-085, TAX-032, TAX-036, TAX-037 |
 | [TAX-109](TAX-109.json) | Keletso | pilot | Protected original-document access from case evidence and citations | TAX-032, TAX-090, TAX-108 |
-| [TAX-110](TAX-110.json) | Keletso | pilot | Reliable hosted briefing and evidence reading within free-tier limits | TAX-097 |
+| [TAX-110](TAX-110.json) | Leseli | pilot | Reliable hosted briefing and evidence reading within free-tier limits | TAX-097 |
