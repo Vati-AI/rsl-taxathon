@@ -128,3 +128,10 @@ jobs:
       - run: python -m unittest discover -s tests/ai -p 'test_network*.py' -v
         env:
           LANGSMITH_TRACING: 'false'
+      # TAX-089: model router (mock default, fake transports; no network or keys).
+      - run: python -m unittest discover -s tests/ai -p 'test_model*.py' -v
+        env:
+          LANGSMITH_TRACING: 'false'
+      - run: python -m ai.models.smoke
+        env:
+          LANGSMITH_TRACING: 'false'
