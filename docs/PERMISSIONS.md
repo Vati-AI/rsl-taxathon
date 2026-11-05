@@ -157,3 +157,17 @@ A permitted workflow only orders steps that were each approved before. Every ste
 | Lodge an appeal (`stage: appeal`) | as above | objection not yet reviewed; objection overturned or withdrawn; already appealed; parent is not an objection. The refusal is recorded |
 | Review (`review_challenge`) | a supervisor (`challenge.review`) | the decision's proposer or approver, the lodger, or for an appeal the objection's reviewer; auditor, specialist, service or taxpayer; unknown outcome; reason shorter than 20 characters; stale `expected_version`; already reviewed; decision changed since lodging. The refusal is recorded |
 | Read the history (`get_challenge_history`) | the taxpayer (own), staff, service (`challenge.read`) | another taxpayer or tenant (`not_found`). The read is recorded |
+
+## Frappe to Jube bridge (TAX-039)
+
+See [ADR-028](decisions/ADR-028-frappe-jube-submission-bridge.md).
+
+| Record or method | Who | Refused when |
+| --- | --- | --- |
+| Send a submission (registers the case, enqueues `case.registered`) | the taxpayer, as before (TAX-031) | as before; staff and mirror writes never enqueue |
+| `Vati Case Sync` (read) | System Manager; auditors, specialists and supervisors of the tenant | taxpayers (no DocPerm, no `taxpayer_id`); staff of another tenant |
+| `Vati Bridge Inbound Event` (read) | System Manager | everyone else |
+| `receive_case_status` | a service identity of the tenant (`integration.callback`) | taxpayers and staff (403); another tenant (403 `tenant_scope_denied`); an envelope for a case outside the tenant (`not_found`); a payload field outside the allowlist; an older observation (409 `version_conflict`); the same `event_id` with changed content (422 `idempotency_conflict`) |
+| `get_review_status` | the submission's own taxpayer | anyone else (`not_found`). Returns only `review_status` and `review_status_at` |
+
+The submission's `review_status` and `review_status_at` are server-owned: every save keeps the stored values, so no client can set them. The bridge writes them, and the sync record, with direct database writes that run no controller, hook or outbox event, so a mirror update never sends anything back to Jube.
