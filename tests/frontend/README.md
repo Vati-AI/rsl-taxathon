@@ -64,7 +64,11 @@ Everything is answered inside the test browser; no account or password exists.
   Records come from `list_submissions(scope)` in
   `backend/vati_tax/vati_tax/portal/fixtures.py`, so the mock follows the
   same TAX-029 ownership rules as the Frappe app. Responses follow Frappe v16
-  shapes (`{ message }`, or HTTP 403 with `exc_type`). Personas:
+  shapes (`{ message }`, or HTTP 403 with `exc_type`). Since TAX-092 the
+  session, list and status answer `mode: live` like the server, and a claim
+  sent in the test is listed first as "Under review";
+  `mockTaxpayerSession(page, persona, { dataMode: 'fixture' })` answers as a
+  fixture server instead, to check the fixture notice. Personas:
   - `taxpayer`: `taxpayer.a@example.test` with the taxpayer membership from
     docs/PERMISSIONS.md; sees only SUB-SYN-0001, and another taxpayer's
     submission is "not found".

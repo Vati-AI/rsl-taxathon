@@ -1,12 +1,21 @@
 /**
- * Shapes returned by vati_tax.portal.api. The submissions list and status are
- * fixture mode; the VAT refund claim (TAX-043) is live.
+ * Shapes returned by vati_tax.portal.api. The session, submissions list and
+ * status are live from TAX-092 (Frappe records with the TAX-039 review status).
+ * Fixture mode stays supported for development servers that explicitly label
+ * their data synthetic; the portal shows the fixture notice only then.
  */
+
+export interface LiveMeta {
+  mode: 'live';
+}
 
 export interface FixtureMeta {
   mode: 'fixture';
   synthetic: true;
 }
+
+/** Every read says where its data comes from; anything else is refused. */
+export type DataMeta = LiveMeta | FixtureMeta;
 
 /** A taxpayer the signed-in user may act for (TAX-029 membership). */
 export interface TaxpayerScope {
@@ -14,12 +23,12 @@ export interface TaxpayerScope {
   taxpayer_id: string;
 }
 
-export interface PortalSession extends FixtureMeta {
+export type PortalSession = DataMeta & {
   user: string;
   full_name: string;
   /** Present from TAX-043; selects the tenant for evidence uploads. */
   taxpayers?: TaxpayerScope[];
-}
+};
 
 /** One uploaded supporting document (TAX-032 evidence view; never a file path or URL). */
 export interface EvidenceView {
@@ -57,7 +66,7 @@ export interface SubmissionStep {
 }
 
 export type SubmissionStatus =
-  'draft' | 'under_review' | 'evidence_requested' | 'correction_needed' | 'completed';
+  'draft' | 'under_review' | 'evidence_requested' | 'correction_needed' | 'completed' | 'withdrawn';
 
 export interface Submission {
   id: string;
@@ -69,14 +78,15 @@ export interface Submission {
   amount: string | null;
   currency: string;
   status: SubmissionStatus;
-  submitted_at: string;
+  /** null until the submission is sent (a draft). */
+  submitted_at: string | null;
   next_step: string;
   steps: SubmissionStep[];
 }
 
-export interface FixtureEnvelope<T> extends FixtureMeta {
+export type DataEnvelope<T> = DataMeta & {
   data: T;
-}
+};
 
 /** Taxpayer-facing statuses of an evidence request (TAX-045); nothing else is shown. */
 export type EvidenceRequestStatus = 'awaiting_response' | 'response_sent' | 'no_longer_needed';

@@ -32,6 +32,10 @@ const state = computed(() => sessionState.value);
 const fullName = computed(() =>
   state.value.status === 'ready' ? state.value.session.full_name : '',
 );
+// TAX-092: the server says where its data comes from; the notice is for fixture data only.
+const fixtureMode = computed(
+  () => state.value.status === 'ready' && state.value.session.mode === 'fixture',
+);
 const loggingOut = ref(false);
 
 async function onLogout() {
@@ -73,7 +77,10 @@ function retry() {
     <DesktopShell v-else-if="desktop">
       <template #sidebar>
         <Sidebar :collapsible="false" aria-label="Taxpayer portal">
-          <SidebarHeader title="Vati taxpayer portal" subtitle="Synthetic fixture" />
+          <SidebarHeader
+            title="Vati taxpayer portal"
+            :subtitle="fixtureMode ? 'Synthetic fixture' : 'Live data'"
+          />
           <div class="flex-1 overflow-y-auto">
             <SidebarItem
               label="Submissions"
@@ -113,14 +120,14 @@ function retry() {
         </Sidebar>
       </template>
       <main id="main" class="taxpayer-page mx-auto w-full max-w-4xl px-6 py-6">
-        <FixtureNotice />
+        <FixtureNotice v-if="fixtureMode" />
         <RouterView />
       </main>
     </DesktopShell>
 
     <MobileShell v-else>
       <main id="main" class="taxpayer-page px-4 py-4">
-        <FixtureNotice />
+        <FixtureNotice v-if="fixtureMode" />
         <RouterView />
       </main>
       <template #nav>
