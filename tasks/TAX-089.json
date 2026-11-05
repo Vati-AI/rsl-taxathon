@@ -32,11 +32,11 @@
   "acceptance": [
     {
       "text": "Agents obtain models only via get_model(role); no graph imports a provider SDK or reads a key; with no keys the mock provider is used and agent_eval --check, smoke and tests pass offline; new packages are pinned in ai/requirements.lock",
-      "done": false
+      "done": true
     },
     {
       "text": "Per call fallback hosted -> local -> template on 429, timeout, refusal, invalid structured output or failed validation, each case unit-tested; every output records provider, model id, role, prompt version, settings, fallback level, latency and token use",
-      "done": false
+      "done": true
     },
     {
       "text": "Opt-in live smoke (skipped without keys) runs each configured role once against synthetic data and records observed model ids, account rate limits, latency and tokens; the Gemini document model id is confirmed by the team or the role is left unconfigured as recorded in ADR-031",
@@ -54,7 +54,16 @@
     "update-project-task",
     "finish-task"
   ],
-  "evidence": [],
+  "evidence": [
+    {
+      "criterion": 1,
+      "text": "ai/models get_model(role) returns a RoutedModel satisfying the TAX-053 BriefingModel port (model_id, config, draft) plus complete(CompletionTask) for structured JSON. VATI_MODEL_PROVIDER unset/mock/unknown, or hosted without keys, uses the mock fixture provider with no network (tests use a transport that fails if called). tests/ai/test_model_router.py ArchitectureTests scan ai/workflows, ai/tools, ai/evaluation, ai/agents: no provider/config/router or SDK/HTTP import and no key or VATI_MODEL_ variable read. Stdlib urllib only: no new packages, ai/requirements.lock unchanged (asserted by test). Offline with no keys (.venv-ai): ai/smoke.py passed; python -m ai.models.smoke exit 0 (all roles mock, validation passed); unittest discover -s tests/ai 274 tests OK (1 live test skipped); agent_eval --check gate PASS (0 known failures, 0 regressions); ruff/format/mypy (214 files) clean."
+    },
+    {
+      "criterion": 2,
+      "text": "RoutedModel.complete walks hosted (Groq openai/gpt-oss-120b / -20b, Gemini) or mock at level 0, optional Ollama at level 1, deterministic template at level 2. Fake-transport tests: HTTP 429, transport timeout, 504, refusal (message.refusal, content_filter, JSON refusal), invalid/non-object output, truncated output (length / MAX_TOKENS), failed validation, 5xx, 401, connection failure and malformed body each fall back hosted -> local (level 1) and, without local, -> template (level 2); local 429/timeout/invalid/validation failures fall to template; Gemini blockReason/SAFETY refusals, truncation and 429 fall back; call, token and input-size budgets stop hosted calls; timeout clamped to 1-120 s and passed to the transport; output tokens capped. Every output carries provenance: provider, observed/configured model id, role, task, prompt_version, settings (temperature, max_output_tokens, timeout_s), fallback_level and name, each attempt with outcome/http status/latency/tokens, latency_ms, tokens, rate-limit headers, validation result. Briefing graph with get_model('reasoning'): mock gives the template's sections with model.config.provenance; a hosted draft with a forbidden statement fails validate_draft and falls back to the template; a valid hosted draft is used at level 0. Keys never appear in repr, config, provenance or errors (leaky-transport test); Secret refuses pickling. Existing tests unchanged and passing."
+    }
+  ],
   "notes": [
     {
       "at": "2026-11-05T06:39:04.925015+00:00",
