@@ -1,0 +1,1164 @@
+{
+  "description": "TAX-074 synthetic scheme, ownership and intermediary graph inputs. Synthetic only; names, numbers and documents are invented.",
+  "synthetic": true,
+  "inputs": [
+    {
+      "version": "scheme_graph_input.v1",
+      "synthetic": true,
+      "tenant_id": "10000000-0000-4000-8000-000000000001",
+      "case_id": "74000000-0000-4000-8000-000000000001",
+      "case_taxpayer_id": "TP-X",
+      "entity_bundle": {
+        "version": "tax_entity_bundle.v1",
+        "tenant_id": "10000000-0000-4000-8000-000000000001",
+        "evidence": [
+          {
+            "evidence_id": "75000000-0000-4000-8000-000000000001",
+            "document_sha256": "20ab262286fcd26969c10e187c0ccb14b83e387902278d32fec9210059b5e826",
+            "file_name": "registry-extract.csv",
+            "media_type": "text/csv",
+            "size": 1024,
+            "received_on": "2026-02-01"
+          },
+          {
+            "evidence_id": "75000000-0000-4000-8000-000000000002",
+            "document_sha256": "1d9f69902738f15123463928cbf275709355fd8615d48f73ab2ef6d28446ed63",
+            "file_name": "bo-declaration.pdf",
+            "media_type": "application/pdf",
+            "size": 4096,
+            "received_on": "2026-02-01"
+          },
+          {
+            "evidence_id": "75000000-0000-4000-8000-000000000003",
+            "document_sha256": "2666e012ce3fb080a8e94b23f78f500345b785b80c13c3ddb58fdf6b145601b5",
+            "file_name": "engagement-letter.pdf",
+            "media_type": "application/pdf",
+            "size": 2048,
+            "received_on": "2026-02-01"
+          },
+          {
+            "evidence_id": "75000000-0000-4000-8000-000000000004",
+            "document_sha256": "d64733dbaef335cc14df70a6b1a31df316b701d0df405e909b693bcf65ce71a4",
+            "file_name": "arrangement-memo.pdf",
+            "media_type": "application/pdf",
+            "size": 8192,
+            "received_on": "2026-02-01"
+          }
+        ],
+        "parties": [
+          {
+            "id": "TP-X",
+            "kind": "company",
+            "name": "Synthetic Highland Trading (Pty) Ltd",
+            "role": "taxpayer",
+            "source": {
+              "system": "synthetic_fixture",
+              "record_type": "company",
+              "record_id": "TP-X"
+            },
+            "country": "ls",
+            "evidence": [
+              {
+                "evidence_id": "75000000-0000-4000-8000-000000000001",
+                "document_sha256": "20ab262286fcd26969c10e187c0ccb14b83e387902278d32fec9210059b5e826",
+                "locator": {
+                  "page": null,
+                  "record": "row-2"
+                }
+              }
+            ]
+          },
+          {
+            "id": "HOLD-1",
+            "kind": "company",
+            "name": "Synthetic Holdings Ltd",
+            "role": "owner",
+            "source": {
+              "system": "synthetic_fixture",
+              "record_type": "company",
+              "record_id": "HOLD-1"
+            },
+            "country": "ls",
+            "evidence": [
+              {
+                "evidence_id": "75000000-0000-4000-8000-000000000001",
+                "document_sha256": "20ab262286fcd26969c10e187c0ccb14b83e387902278d32fec9210059b5e826",
+                "locator": {
+                  "page": null,
+                  "record": "row-3"
+                }
+              }
+            ]
+          },
+          {
+            "id": "NOM-1",
+            "kind": "company",
+            "name": "Synthetic Nominee Services Ltd",
+            "role": "counterparty",
+            "source": {
+              "system": "synthetic_fixture",
+              "record_type": "company",
+              "record_id": "NOM-1"
+            },
+            "country": "ls"
+          },
+          {
+            "id": "ADV-1",
+            "kind": "company",
+            "name": "Synthetic Tax Advisory Partners",
+            "role": "counterparty",
+            "source": {
+              "system": "synthetic_fixture",
+              "record_type": "company",
+              "record_id": "ADV-1"
+            },
+            "country": "ls"
+          },
+          {
+            "id": "MGMT-1",
+            "kind": "company",
+            "name": "Synthetic Management Services Ltd",
+            "role": "counterparty",
+            "source": {
+              "system": "synthetic_fixture",
+              "record_type": "company",
+              "record_id": "MGMT-1"
+            },
+            "country": "ls"
+          },
+          {
+            "id": "P-1",
+            "kind": "person",
+            "name": "Synthetic Person One",
+            "role": "owner",
+            "source": {
+              "system": "synthetic_fixture",
+              "record_type": "person",
+              "record_id": "P-1"
+            }
+          },
+          {
+            "id": "P-2",
+            "kind": "person",
+            "name": "Synthetic Person Two",
+            "role": "owner",
+            "source": {
+              "system": "synthetic_fixture",
+              "record_type": "person",
+              "record_id": "P-2"
+            }
+          }
+        ],
+        "ownership": [
+          {
+            "id": "OWN-X-1",
+            "owner_id": "HOLD-1",
+            "asset_id": "TP-X",
+            "percentage": "100",
+            "ownership_type": "direct",
+            "start_date": "2025-01-01",
+            "source": {
+              "system": "synthetic_fixture",
+              "record_type": "ownership",
+              "record_id": "OWN-X-1"
+            },
+            "evidence": [
+              {
+                "evidence_id": "75000000-0000-4000-8000-000000000001",
+                "document_sha256": "20ab262286fcd26969c10e187c0ccb14b83e387902278d32fec9210059b5e826",
+                "locator": {
+                  "page": null,
+                  "record": "row-4"
+                }
+              }
+            ]
+          },
+          {
+            "id": "OWN-X-2",
+            "owner_id": "P-1",
+            "asset_id": "TP-X",
+            "percentage": "60",
+            "ownership_type": "beneficial",
+            "start_date": "2025-01-01",
+            "source": {
+              "system": "synthetic_fixture",
+              "record_type": "ownership",
+              "record_id": "OWN-X-2"
+            },
+            "evidence": [
+              {
+                "evidence_id": "75000000-0000-4000-8000-000000000002",
+                "document_sha256": "1d9f69902738f15123463928cbf275709355fd8615d48f73ab2ef6d28446ed63",
+                "locator": {
+                  "page": 1,
+                  "record": null
+                }
+              }
+            ]
+          },
+          {
+            "id": "OWN-X-3",
+            "owner_id": "P-1",
+            "asset_id": "TP-X",
+            "percentage": "75",
+            "ownership_type": "beneficial",
+            "start_date": "2025-01-01",
+            "source": {
+              "system": "synthetic_fixture",
+              "record_type": "ownership",
+              "record_id": "OWN-X-3"
+            },
+            "evidence": [
+              {
+                "evidence_id": "75000000-0000-4000-8000-000000000001",
+                "document_sha256": "20ab262286fcd26969c10e187c0ccb14b83e387902278d32fec9210059b5e826",
+                "locator": {
+                  "page": null,
+                  "record": "row-7"
+                }
+              }
+            ]
+          },
+          {
+            "id": "OWN-X-4",
+            "owner_id": "P-2",
+            "asset_id": "TP-X",
+            "percentage": "40",
+            "ownership_type": "beneficial",
+            "start_date": "2025-01-01",
+            "source": {
+              "system": "synthetic_fixture",
+              "record_type": "ownership",
+              "record_id": "OWN-X-4"
+            },
+            "evidence": [
+              {
+                "evidence_id": "75000000-0000-4000-8000-000000000002",
+                "document_sha256": "1d9f69902738f15123463928cbf275709355fd8615d48f73ab2ef6d28446ed63",
+                "locator": {
+                  "page": 1,
+                  "record": null
+                }
+              }
+            ]
+          },
+          {
+            "id": "OWN-X-5",
+            "owner_id": "NOM-1",
+            "asset_id": "HOLD-1",
+            "percentage": "100",
+            "ownership_type": "direct",
+            "start_date": "2025-01-01",
+            "source": {
+              "system": "synthetic_fixture",
+              "record_type": "ownership",
+              "record_id": "OWN-X-5"
+            },
+            "evidence": [
+              {
+                "evidence_id": "75000000-0000-4000-8000-000000000001",
+                "document_sha256": "20ab262286fcd26969c10e187c0ccb14b83e387902278d32fec9210059b5e826",
+                "locator": {
+                  "page": null,
+                  "record": "row-9"
+                }
+              }
+            ]
+          }
+        ],
+        "contracts": [],
+        "invoices": [],
+        "payments": []
+      },
+      "directorships": [
+        {
+          "id": "DIR-X-1",
+          "director_id": "P-2",
+          "organization_id": "TP-X",
+          "role": "director",
+          "start_date": "2024-03-01",
+          "source": {
+            "system": "synthetic_fixture",
+            "record_type": "directorship",
+            "record_id": "DIR-X-1"
+          },
+          "evidence": [
+            {
+              "evidence_id": "75000000-0000-4000-8000-000000000001",
+              "document_sha256": "20ab262286fcd26969c10e187c0ccb14b83e387902278d32fec9210059b5e826",
+              "locator": {
+                "page": null,
+                "record": "row-12"
+              }
+            }
+          ]
+        },
+        {
+          "id": "DIR-X-2",
+          "director_id": "P-1",
+          "organization_id": "HOLD-1",
+          "role": "director",
+          "source": {
+            "system": "synthetic_fixture",
+            "record_type": "directorship",
+            "record_id": "DIR-X-2"
+          },
+          "evidence": [
+            {
+              "evidence_id": "75000000-0000-4000-8000-000000000001",
+              "document_sha256": "20ab262286fcd26969c10e187c0ccb14b83e387902278d32fec9210059b5e826",
+              "locator": {
+                "page": null,
+                "record": "row-13"
+              }
+            }
+          ]
+        }
+      ],
+      "representations": [
+        {
+          "id": "REP-X-1",
+          "agent_id": "ADV-1",
+          "client_id": "TP-X",
+          "role": "tax_adviser",
+          "start_date": "2025-01-15",
+          "source": {
+            "system": "synthetic_fixture",
+            "record_type": "representation",
+            "record_id": "REP-X-1"
+          },
+          "evidence": [
+            {
+              "evidence_id": "75000000-0000-4000-8000-000000000003",
+              "document_sha256": "2666e012ce3fb080a8e94b23f78f500345b785b80c13c3ddb58fdf6b145601b5",
+              "locator": {
+                "page": 1,
+                "record": null
+              }
+            }
+          ]
+        },
+        {
+          "id": "REP-X-2",
+          "agent_id": "NOM-1",
+          "client_id": "P-1",
+          "role": "nominee_shareholder",
+          "source": {
+            "system": "synthetic_fixture",
+            "record_type": "representation",
+            "record_id": "REP-X-2"
+          },
+          "evidence": [
+            {
+              "evidence_id": "75000000-0000-4000-8000-000000000002",
+              "document_sha256": "1d9f69902738f15123463928cbf275709355fd8615d48f73ab2ef6d28446ed63",
+              "locator": {
+                "page": 2,
+                "record": null
+              }
+            }
+          ]
+        }
+      ],
+      "schemes": [
+        {
+          "id": "SCH-1",
+          "name": "Synthetic group management-fee arrangement 2025",
+          "description": "Management services charged by a group company to the taxpayer, as described in the arrangement memo.",
+          "start_date": "2025-01-01",
+          "source": {
+            "system": "synthetic_fixture",
+            "record_type": "scheme",
+            "record_id": "SCH-1"
+          },
+          "evidence": [
+            {
+              "evidence_id": "75000000-0000-4000-8000-000000000004",
+              "document_sha256": "d64733dbaef335cc14df70a6b1a31df316b701d0df405e909b693bcf65ce71a4",
+              "locator": {
+                "page": 1,
+                "record": null
+              }
+            }
+          ]
+        }
+      ],
+      "scheme_participants": [
+        {
+          "id": "SP-X-1",
+          "scheme_id": "SCH-1",
+          "party_id": "TP-X",
+          "role": "participant",
+          "source": {
+            "system": "synthetic_fixture",
+            "record_type": "scheme_participant",
+            "record_id": "SP-X-1"
+          },
+          "evidence": [
+            {
+              "evidence_id": "75000000-0000-4000-8000-000000000004",
+              "document_sha256": "d64733dbaef335cc14df70a6b1a31df316b701d0df405e909b693bcf65ce71a4",
+              "locator": {
+                "page": 2,
+                "record": null
+              }
+            }
+          ]
+        },
+        {
+          "id": "SP-X-2",
+          "scheme_id": "SCH-1",
+          "party_id": "MGMT-1",
+          "role": "counterparty",
+          "source": {
+            "system": "synthetic_fixture",
+            "record_type": "scheme_participant",
+            "record_id": "SP-X-2"
+          },
+          "evidence": [
+            {
+              "evidence_id": "75000000-0000-4000-8000-000000000004",
+              "document_sha256": "d64733dbaef335cc14df70a6b1a31df316b701d0df405e909b693bcf65ce71a4",
+              "locator": {
+                "page": 2,
+                "record": null
+              }
+            }
+          ]
+        },
+        {
+          "id": "SP-X-3",
+          "scheme_id": "SCH-1",
+          "party_id": "ADV-1",
+          "role": "adviser",
+          "source": {
+            "system": "synthetic_fixture",
+            "record_type": "scheme_participant",
+            "record_id": "SP-X-3"
+          },
+          "evidence": [
+            {
+              "evidence_id": "75000000-0000-4000-8000-000000000004",
+              "document_sha256": "d64733dbaef335cc14df70a6b1a31df316b701d0df405e909b693bcf65ce71a4",
+              "locator": {
+                "page": 3,
+                "record": null
+              }
+            }
+          ]
+        }
+      ],
+      "case_scheme_links": [
+        {
+          "id": "LINK-X-1",
+          "scheme_id": "SCH-1",
+          "source": {
+            "system": "synthetic_fixture",
+            "record_type": "case_scheme_link",
+            "record_id": "LINK-X-1"
+          },
+          "evidence": [
+            {
+              "evidence_id": "75000000-0000-4000-8000-000000000004",
+              "document_sha256": "d64733dbaef335cc14df70a6b1a31df316b701d0df405e909b693bcf65ce71a4",
+              "locator": {
+                "page": 1,
+                "record": null
+              }
+            }
+          ]
+        }
+      ],
+      "extraction_revisions": [
+        {
+          "evidence_id": "75000000-0000-4000-8000-000000000002",
+          "document_sha256": "1d9f69902738f15123463928cbf275709355fd8615d48f73ab2ef6d28446ed63",
+          "extraction_id": "EXT-DECL-1",
+          "revision": 1
+        },
+        {
+          "evidence_id": "75000000-0000-4000-8000-000000000004",
+          "document_sha256": "d64733dbaef335cc14df70a6b1a31df316b701d0df405e909b693bcf65ce71a4",
+          "extraction_id": "EXT-MEMO-2",
+          "revision": 2
+        }
+      ]
+    },
+    {
+      "version": "scheme_graph_input.v1",
+      "synthetic": true,
+      "tenant_id": "10000000-0000-4000-8000-000000000001",
+      "case_id": "74000000-0000-4000-8000-000000000002",
+      "case_taxpayer_id": "TP-Y",
+      "entity_bundle": {
+        "version": "tax_entity_bundle.v1",
+        "tenant_id": "10000000-0000-4000-8000-000000000001",
+        "evidence": [
+          {
+            "evidence_id": "75000000-0000-4000-8000-000000000011",
+            "document_sha256": "0aef7492c04ddde12dd0e66c2358a5188de79f7c7a00e9fe388881fefd0b2802",
+            "file_name": "registry-extract-y.csv",
+            "media_type": "text/csv",
+            "size": 900,
+            "received_on": "2026-02-01"
+          },
+          {
+            "evidence_id": "75000000-0000-4000-8000-000000000012",
+            "document_sha256": "343be5f4cd63d90f7b07640dab73faeff8919c7cabf4c0d640302b9797c14514",
+            "file_name": "engagement-letter-y.pdf",
+            "media_type": "application/pdf",
+            "size": 2000,
+            "received_on": "2026-02-01"
+          },
+          {
+            "evidence_id": "75000000-0000-4000-8000-000000000013",
+            "document_sha256": "08020127f3a99fbd95bbb75fb59e06d6d2ffa81958cf753a63333ec1da7bbe9d",
+            "file_name": "arrangement-memo-y.pdf",
+            "media_type": "application/pdf",
+            "size": 3000,
+            "received_on": "2026-02-01"
+          }
+        ],
+        "parties": [
+          {
+            "id": "TP-Y",
+            "kind": "company",
+            "name": "Synthetic Border Retail (Pty) Ltd",
+            "role": "taxpayer",
+            "source": {
+              "system": "synthetic_fixture",
+              "record_type": "company",
+              "record_id": "TP-Y"
+            },
+            "country": "ls"
+          },
+          {
+            "id": "ADV-1",
+            "kind": "company",
+            "name": "Synthetic Tax Advisory Partners",
+            "role": "counterparty",
+            "source": {
+              "system": "synthetic_fixture",
+              "record_type": "company",
+              "record_id": "ADV-1"
+            },
+            "country": "ls"
+          },
+          {
+            "id": "P-9",
+            "kind": "person",
+            "name": "Synthetic Person Nine",
+            "role": "owner",
+            "source": {
+              "system": "synthetic_fixture",
+              "record_type": "person",
+              "record_id": "P-9"
+            }
+          }
+        ],
+        "ownership": [
+          {
+            "id": "OWN-Y-1",
+            "owner_id": "P-9",
+            "asset_id": "TP-Y",
+            "percentage": "100",
+            "ownership_type": "direct",
+            "start_date": "2025-01-01",
+            "source": {
+              "system": "synthetic_fixture",
+              "record_type": "ownership",
+              "record_id": "OWN-Y-1"
+            },
+            "evidence": [
+              {
+                "evidence_id": "75000000-0000-4000-8000-000000000011",
+                "document_sha256": "0aef7492c04ddde12dd0e66c2358a5188de79f7c7a00e9fe388881fefd0b2802",
+                "locator": {
+                  "page": null,
+                  "record": "row-1"
+                }
+              }
+            ]
+          }
+        ],
+        "contracts": [],
+        "invoices": [],
+        "payments": []
+      },
+      "directorships": [],
+      "representations": [
+        {
+          "id": "REP-Y-1",
+          "agent_id": "ADV-1",
+          "client_id": "TP-Y",
+          "role": "tax_adviser",
+          "source": {
+            "system": "synthetic_fixture",
+            "record_type": "representation",
+            "record_id": "REP-Y-1"
+          },
+          "evidence": [
+            {
+              "evidence_id": "75000000-0000-4000-8000-000000000012",
+              "document_sha256": "343be5f4cd63d90f7b07640dab73faeff8919c7cabf4c0d640302b9797c14514",
+              "locator": {
+                "page": 1,
+                "record": null
+              }
+            }
+          ]
+        }
+      ],
+      "schemes": [
+        {
+          "id": "SCH-1",
+          "name": "Synthetic group management-fee arrangement 2025",
+          "description": "Management services charged by a group company to the taxpayer, as described in the arrangement memo.",
+          "start_date": "2025-01-01",
+          "source": {
+            "system": "synthetic_fixture",
+            "record_type": "scheme",
+            "record_id": "SCH-1"
+          },
+          "evidence": [
+            {
+              "evidence_id": "75000000-0000-4000-8000-000000000013",
+              "document_sha256": "08020127f3a99fbd95bbb75fb59e06d6d2ffa81958cf753a63333ec1da7bbe9d",
+              "locator": {
+                "page": 1,
+                "record": null
+              }
+            }
+          ]
+        }
+      ],
+      "scheme_participants": [
+        {
+          "id": "SP-Y-1",
+          "scheme_id": "SCH-1",
+          "party_id": "TP-Y",
+          "role": "participant",
+          "source": {
+            "system": "synthetic_fixture",
+            "record_type": "scheme_participant",
+            "record_id": "SP-Y-1"
+          },
+          "evidence": [
+            {
+              "evidence_id": "75000000-0000-4000-8000-000000000013",
+              "document_sha256": "08020127f3a99fbd95bbb75fb59e06d6d2ffa81958cf753a63333ec1da7bbe9d",
+              "locator": {
+                "page": 1,
+                "record": null
+              }
+            }
+          ]
+        }
+      ],
+      "case_scheme_links": [
+        {
+          "id": "LINK-Y-1",
+          "scheme_id": "SCH-1",
+          "source": {
+            "system": "synthetic_fixture",
+            "record_type": "case_scheme_link",
+            "record_id": "LINK-Y-1"
+          },
+          "evidence": [
+            {
+              "evidence_id": "75000000-0000-4000-8000-000000000013",
+              "document_sha256": "08020127f3a99fbd95bbb75fb59e06d6d2ffa81958cf753a63333ec1da7bbe9d",
+              "locator": {
+                "page": 1,
+                "record": null
+              }
+            }
+          ]
+        }
+      ],
+      "extraction_revisions": []
+    },
+    {
+      "version": "scheme_graph_input.v1",
+      "synthetic": true,
+      "tenant_id": "10000000-0000-4000-8000-000000000002",
+      "case_id": "74000000-0000-4000-8000-000000000003",
+      "case_taxpayer_id": "TP-X",
+      "entity_bundle": {
+        "version": "tax_entity_bundle.v1",
+        "tenant_id": "10000000-0000-4000-8000-000000000002",
+        "evidence": [
+          {
+            "evidence_id": "76000000-0000-4000-8000-000000000001",
+            "document_sha256": "20ab262286fcd26969c10e187c0ccb14b83e387902278d32fec9210059b5e826",
+            "file_name": "registry-extract.csv",
+            "media_type": "text/csv",
+            "size": 1024,
+            "received_on": "2026-02-01"
+          },
+          {
+            "evidence_id": "76000000-0000-4000-8000-000000000002",
+            "document_sha256": "1d9f69902738f15123463928cbf275709355fd8615d48f73ab2ef6d28446ed63",
+            "file_name": "bo-declaration.pdf",
+            "media_type": "application/pdf",
+            "size": 4096,
+            "received_on": "2026-02-01"
+          },
+          {
+            "evidence_id": "76000000-0000-4000-8000-000000000003",
+            "document_sha256": "2666e012ce3fb080a8e94b23f78f500345b785b80c13c3ddb58fdf6b145601b5",
+            "file_name": "engagement-letter.pdf",
+            "media_type": "application/pdf",
+            "size": 2048,
+            "received_on": "2026-02-01"
+          },
+          {
+            "evidence_id": "76000000-0000-4000-8000-000000000004",
+            "document_sha256": "d64733dbaef335cc14df70a6b1a31df316b701d0df405e909b693bcf65ce71a4",
+            "file_name": "arrangement-memo.pdf",
+            "media_type": "application/pdf",
+            "size": 8192,
+            "received_on": "2026-02-01"
+          }
+        ],
+        "parties": [
+          {
+            "id": "TP-X",
+            "kind": "company",
+            "name": "Synthetic Highland Trading (Pty) Ltd",
+            "role": "taxpayer",
+            "source": {
+              "system": "synthetic_fixture",
+              "record_type": "company",
+              "record_id": "TP-X"
+            },
+            "country": "ls",
+            "evidence": [
+              {
+                "evidence_id": "76000000-0000-4000-8000-000000000001",
+                "document_sha256": "20ab262286fcd26969c10e187c0ccb14b83e387902278d32fec9210059b5e826",
+                "locator": {
+                  "page": null,
+                  "record": "row-2"
+                }
+              }
+            ]
+          },
+          {
+            "id": "HOLD-1",
+            "kind": "company",
+            "name": "Synthetic Holdings Ltd",
+            "role": "owner",
+            "source": {
+              "system": "synthetic_fixture",
+              "record_type": "company",
+              "record_id": "HOLD-1"
+            },
+            "country": "ls",
+            "evidence": [
+              {
+                "evidence_id": "76000000-0000-4000-8000-000000000001",
+                "document_sha256": "20ab262286fcd26969c10e187c0ccb14b83e387902278d32fec9210059b5e826",
+                "locator": {
+                  "page": null,
+                  "record": "row-3"
+                }
+              }
+            ]
+          },
+          {
+            "id": "NOM-1",
+            "kind": "company",
+            "name": "Synthetic Nominee Services Ltd",
+            "role": "counterparty",
+            "source": {
+              "system": "synthetic_fixture",
+              "record_type": "company",
+              "record_id": "NOM-1"
+            },
+            "country": "ls"
+          },
+          {
+            "id": "ADV-1",
+            "kind": "company",
+            "name": "Synthetic Tax Advisory Partners",
+            "role": "counterparty",
+            "source": {
+              "system": "synthetic_fixture",
+              "record_type": "company",
+              "record_id": "ADV-1"
+            },
+            "country": "ls"
+          },
+          {
+            "id": "MGMT-1",
+            "kind": "company",
+            "name": "Synthetic Management Services Ltd",
+            "role": "counterparty",
+            "source": {
+              "system": "synthetic_fixture",
+              "record_type": "company",
+              "record_id": "MGMT-1"
+            },
+            "country": "ls"
+          },
+          {
+            "id": "P-1",
+            "kind": "person",
+            "name": "Synthetic Person One",
+            "role": "owner",
+            "source": {
+              "system": "synthetic_fixture",
+              "record_type": "person",
+              "record_id": "P-1"
+            }
+          },
+          {
+            "id": "P-2",
+            "kind": "person",
+            "name": "Synthetic Person Two",
+            "role": "owner",
+            "source": {
+              "system": "synthetic_fixture",
+              "record_type": "person",
+              "record_id": "P-2"
+            }
+          }
+        ],
+        "ownership": [
+          {
+            "id": "OWN-X-1",
+            "owner_id": "HOLD-1",
+            "asset_id": "TP-X",
+            "percentage": "100",
+            "ownership_type": "direct",
+            "start_date": "2025-01-01",
+            "source": {
+              "system": "synthetic_fixture",
+              "record_type": "ownership",
+              "record_id": "OWN-X-1"
+            },
+            "evidence": [
+              {
+                "evidence_id": "76000000-0000-4000-8000-000000000001",
+                "document_sha256": "20ab262286fcd26969c10e187c0ccb14b83e387902278d32fec9210059b5e826",
+                "locator": {
+                  "page": null,
+                  "record": "row-4"
+                }
+              }
+            ]
+          },
+          {
+            "id": "OWN-X-2",
+            "owner_id": "P-1",
+            "asset_id": "TP-X",
+            "percentage": "60",
+            "ownership_type": "beneficial",
+            "start_date": "2025-01-01",
+            "source": {
+              "system": "synthetic_fixture",
+              "record_type": "ownership",
+              "record_id": "OWN-X-2"
+            },
+            "evidence": [
+              {
+                "evidence_id": "76000000-0000-4000-8000-000000000002",
+                "document_sha256": "1d9f69902738f15123463928cbf275709355fd8615d48f73ab2ef6d28446ed63",
+                "locator": {
+                  "page": 1,
+                  "record": null
+                }
+              }
+            ]
+          },
+          {
+            "id": "OWN-X-3",
+            "owner_id": "P-1",
+            "asset_id": "TP-X",
+            "percentage": "75",
+            "ownership_type": "beneficial",
+            "start_date": "2025-01-01",
+            "source": {
+              "system": "synthetic_fixture",
+              "record_type": "ownership",
+              "record_id": "OWN-X-3"
+            },
+            "evidence": [
+              {
+                "evidence_id": "76000000-0000-4000-8000-000000000001",
+                "document_sha256": "20ab262286fcd26969c10e187c0ccb14b83e387902278d32fec9210059b5e826",
+                "locator": {
+                  "page": null,
+                  "record": "row-7"
+                }
+              }
+            ]
+          },
+          {
+            "id": "OWN-X-4",
+            "owner_id": "P-2",
+            "asset_id": "TP-X",
+            "percentage": "40",
+            "ownership_type": "beneficial",
+            "start_date": "2025-01-01",
+            "source": {
+              "system": "synthetic_fixture",
+              "record_type": "ownership",
+              "record_id": "OWN-X-4"
+            },
+            "evidence": [
+              {
+                "evidence_id": "76000000-0000-4000-8000-000000000002",
+                "document_sha256": "1d9f69902738f15123463928cbf275709355fd8615d48f73ab2ef6d28446ed63",
+                "locator": {
+                  "page": 1,
+                  "record": null
+                }
+              }
+            ]
+          },
+          {
+            "id": "OWN-X-5",
+            "owner_id": "NOM-1",
+            "asset_id": "HOLD-1",
+            "percentage": "100",
+            "ownership_type": "direct",
+            "start_date": "2025-01-01",
+            "source": {
+              "system": "synthetic_fixture",
+              "record_type": "ownership",
+              "record_id": "OWN-X-5"
+            },
+            "evidence": [
+              {
+                "evidence_id": "76000000-0000-4000-8000-000000000001",
+                "document_sha256": "20ab262286fcd26969c10e187c0ccb14b83e387902278d32fec9210059b5e826",
+                "locator": {
+                  "page": null,
+                  "record": "row-9"
+                }
+              }
+            ]
+          }
+        ],
+        "contracts": [],
+        "invoices": [],
+        "payments": []
+      },
+      "directorships": [
+        {
+          "id": "DIR-X-1",
+          "director_id": "P-2",
+          "organization_id": "TP-X",
+          "role": "director",
+          "start_date": "2024-03-01",
+          "source": {
+            "system": "synthetic_fixture",
+            "record_type": "directorship",
+            "record_id": "DIR-X-1"
+          },
+          "evidence": [
+            {
+              "evidence_id": "76000000-0000-4000-8000-000000000001",
+              "document_sha256": "20ab262286fcd26969c10e187c0ccb14b83e387902278d32fec9210059b5e826",
+              "locator": {
+                "page": null,
+                "record": "row-12"
+              }
+            }
+          ]
+        },
+        {
+          "id": "DIR-X-2",
+          "director_id": "P-1",
+          "organization_id": "HOLD-1",
+          "role": "director",
+          "source": {
+            "system": "synthetic_fixture",
+            "record_type": "directorship",
+            "record_id": "DIR-X-2"
+          },
+          "evidence": [
+            {
+              "evidence_id": "76000000-0000-4000-8000-000000000001",
+              "document_sha256": "20ab262286fcd26969c10e187c0ccb14b83e387902278d32fec9210059b5e826",
+              "locator": {
+                "page": null,
+                "record": "row-13"
+              }
+            }
+          ]
+        }
+      ],
+      "representations": [
+        {
+          "id": "REP-X-1",
+          "agent_id": "ADV-1",
+          "client_id": "TP-X",
+          "role": "tax_adviser",
+          "start_date": "2025-01-15",
+          "source": {
+            "system": "synthetic_fixture",
+            "record_type": "representation",
+            "record_id": "REP-X-1"
+          },
+          "evidence": [
+            {
+              "evidence_id": "76000000-0000-4000-8000-000000000003",
+              "document_sha256": "2666e012ce3fb080a8e94b23f78f500345b785b80c13c3ddb58fdf6b145601b5",
+              "locator": {
+                "page": 1,
+                "record": null
+              }
+            }
+          ]
+        },
+        {
+          "id": "REP-X-2",
+          "agent_id": "NOM-1",
+          "client_id": "P-1",
+          "role": "nominee_shareholder",
+          "source": {
+            "system": "synthetic_fixture",
+            "record_type": "representation",
+            "record_id": "REP-X-2"
+          },
+          "evidence": [
+            {
+              "evidence_id": "76000000-0000-4000-8000-000000000002",
+              "document_sha256": "1d9f69902738f15123463928cbf275709355fd8615d48f73ab2ef6d28446ed63",
+              "locator": {
+                "page": 2,
+                "record": null
+              }
+            }
+          ]
+        }
+      ],
+      "schemes": [
+        {
+          "id": "SCH-1",
+          "name": "Synthetic group management-fee arrangement 2025",
+          "description": "Management services charged by a group company to the taxpayer, as described in the arrangement memo.",
+          "start_date": "2025-01-01",
+          "source": {
+            "system": "synthetic_fixture",
+            "record_type": "scheme",
+            "record_id": "SCH-1"
+          },
+          "evidence": [
+            {
+              "evidence_id": "76000000-0000-4000-8000-000000000004",
+              "document_sha256": "d64733dbaef335cc14df70a6b1a31df316b701d0df405e909b693bcf65ce71a4",
+              "locator": {
+                "page": 1,
+                "record": null
+              }
+            }
+          ]
+        }
+      ],
+      "scheme_participants": [
+        {
+          "id": "SP-X-1",
+          "scheme_id": "SCH-1",
+          "party_id": "TP-X",
+          "role": "participant",
+          "source": {
+            "system": "synthetic_fixture",
+            "record_type": "scheme_participant",
+            "record_id": "SP-X-1"
+          },
+          "evidence": [
+            {
+              "evidence_id": "76000000-0000-4000-8000-000000000004",
+              "document_sha256": "d64733dbaef335cc14df70a6b1a31df316b701d0df405e909b693bcf65ce71a4",
+              "locator": {
+                "page": 2,
+                "record": null
+              }
+            }
+          ]
+        },
+        {
+          "id": "SP-X-2",
+          "scheme_id": "SCH-1",
+          "party_id": "MGMT-1",
+          "role": "counterparty",
+          "source": {
+            "system": "synthetic_fixture",
+            "record_type": "scheme_participant",
+            "record_id": "SP-X-2"
+          },
+          "evidence": [
+            {
+              "evidence_id": "76000000-0000-4000-8000-000000000004",
+              "document_sha256": "d64733dbaef335cc14df70a6b1a31df316b701d0df405e909b693bcf65ce71a4",
+              "locator": {
+                "page": 2,
+                "record": null
+              }
+            }
+          ]
+        },
+        {
+          "id": "SP-X-3",
+          "scheme_id": "SCH-1",
+          "party_id": "ADV-1",
+          "role": "adviser",
+          "source": {
+            "system": "synthetic_fixture",
+            "record_type": "scheme_participant",
+            "record_id": "SP-X-3"
+          },
+          "evidence": [
+            {
+              "evidence_id": "76000000-0000-4000-8000-000000000004",
+              "document_sha256": "d64733dbaef335cc14df70a6b1a31df316b701d0df405e909b693bcf65ce71a4",
+              "locator": {
+                "page": 3,
+                "record": null
+              }
+            }
+          ]
+        }
+      ],
+      "case_scheme_links": [
+        {
+          "id": "LINK-X-1",
+          "scheme_id": "SCH-1",
+          "source": {
+            "system": "synthetic_fixture",
+            "record_type": "case_scheme_link",
+            "record_id": "LINK-X-1"
+          },
+          "evidence": [
+            {
+              "evidence_id": "76000000-0000-4000-8000-000000000004",
+              "document_sha256": "d64733dbaef335cc14df70a6b1a31df316b701d0df405e909b693bcf65ce71a4",
+              "locator": {
+                "page": 1,
+                "record": null
+              }
+            }
+          ]
+        }
+      ],
+      "extraction_revisions": [
+        {
+          "evidence_id": "76000000-0000-4000-8000-000000000002",
+          "document_sha256": "1d9f69902738f15123463928cbf275709355fd8615d48f73ab2ef6d28446ed63",
+          "extraction_id": "EXT-DECL-1",
+          "revision": 1
+        },
+        {
+          "evidence_id": "76000000-0000-4000-8000-000000000004",
+          "document_sha256": "d64733dbaef335cc14df70a6b1a31df316b701d0df405e909b693bcf65ce71a4",
+          "extraction_id": "EXT-MEMO-2",
+          "revision": 2
+        }
+      ]
+    }
+  ]
+}

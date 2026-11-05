@@ -79,6 +79,37 @@ USED: dict[str, list[str]] = {
         "proof",
     ],
     "Document": ["fileName", "title", "mimeType", "fileSize", "date"],
+    # TAX-074 scheme / directorship / adviser graph (integration/followthemoney/scheme_graph.py).
+    "Directorship": [
+        "director",
+        "organization",
+        "role",
+        "startDate",
+        "endDate",
+        "recordId",
+        "proof",
+        "description",
+    ],
+    "Representation": [
+        "agent",
+        "client",
+        "role",
+        "startDate",
+        "endDate",
+        "recordId",
+        "proof",
+        "description",
+    ],
+    "Project": ["name", "projectId", "description", "startDate", "endDate", "proof"],
+    "ProjectParticipant": [
+        "project",
+        "participant",
+        "role",
+        "startDate",
+        "endDate",
+        "recordId",
+        "proof",
+    ],
 }
 
 
@@ -109,7 +140,9 @@ def build() -> dict[str, Any]:
     for path in sorted(SCHEMA_DIR.glob("*.yaml")):
         for name, body in _load_yaml(path).items():
             raw[name] = body or {}
-            files[path.name] = hashlib.sha256(path.read_bytes()).hexdigest()
+            # Hash LF bytes so a Windows checkout (CRLF) records the same digest.
+            body_bytes = path.read_bytes().replace(b"\r\n", b"\n")
+            files[path.name] = hashlib.sha256(body_bytes).hexdigest()
 
     def ancestors(name: str) -> list[str]:
         seen: list[str] = []
