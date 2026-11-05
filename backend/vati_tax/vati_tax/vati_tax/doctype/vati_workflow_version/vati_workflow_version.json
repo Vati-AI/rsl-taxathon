@@ -1,0 +1,213 @@
+{
+ "actions": [],
+ "autoname": "hash",
+ "creation": "2026-11-05 09:00:00.000000",
+ "description": "Learned workflow version (TAX-065): a TAX-064 proposal as recorded, and the supervisor decision on it. Never executes anything.",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "tenant_id",
+  "workflow",
+  "version",
+  "status",
+  "record_version",
+  "steps",
+  "proposal_section",
+  "proposal_id",
+  "observer_version",
+  "proposal_digest",
+  "holdout_evaluation",
+  "request_digest",
+  "proposed_by",
+  "proposed_at",
+  "decision_section",
+  "decided_by",
+  "decided_at",
+  "decision_reason",
+  "keys_section",
+  "version_key"
+ ],
+ "fields": [
+  {
+   "fieldname": "tenant_id",
+   "fieldtype": "Data",
+   "label": "Tenant ID",
+   "length": 36,
+   "reqd": 1,
+   "search_index": 1,
+   "set_only_once": 1,
+   "in_standard_filter": 1
+  },
+  {
+   "fieldname": "workflow",
+   "fieldtype": "Data",
+   "label": "Workflow",
+   "length": 64,
+   "reqd": 1,
+   "search_index": 1,
+   "set_only_once": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "version",
+   "fieldtype": "Data",
+   "label": "Version",
+   "length": 16,
+   "reqd": 1,
+   "set_only_once": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "label": "Status",
+   "options": "proposed\napproved\nrejected",
+   "reqd": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1
+  },
+  {
+   "fieldname": "record_version",
+   "fieldtype": "Int",
+   "label": "Record Version",
+   "reqd": 1,
+   "default": "1"
+  },
+  {
+   "fieldname": "steps",
+   "fieldtype": "Long Text",
+   "label": "Steps (JSON)",
+   "reqd": 1,
+   "set_only_once": 1
+  },
+  {
+   "fieldname": "proposal_section",
+   "fieldtype": "Section Break",
+   "label": "Proposal (TAX-064)"
+  },
+  {
+   "fieldname": "proposal_id",
+   "fieldtype": "Data",
+   "label": "Proposal ID",
+   "length": 24,
+   "reqd": 1,
+   "set_only_once": 1
+  },
+  {
+   "fieldname": "observer_version",
+   "fieldtype": "Data",
+   "label": "Observer Version",
+   "length": 64,
+   "reqd": 1,
+   "set_only_once": 1
+  },
+  {
+   "fieldname": "proposal_digest",
+   "fieldtype": "Data",
+   "label": "Proposal SHA-256",
+   "length": 64,
+   "reqd": 1,
+   "set_only_once": 1
+  },
+  {
+   "fieldname": "holdout_evaluation",
+   "fieldtype": "Long Text",
+   "label": "Held-out Evaluation (JSON)",
+   "reqd": 1,
+   "set_only_once": 1
+  },
+  {
+   "fieldname": "request_digest",
+   "fieldtype": "Data",
+   "label": "Request Digest",
+   "length": 64,
+   "read_only": 1,
+   "set_only_once": 1
+  },
+  {
+   "fieldname": "proposed_by",
+   "fieldtype": "Data",
+   "label": "Recorded By",
+   "length": 140,
+   "reqd": 1,
+   "set_only_once": 1
+  },
+  {
+   "fieldname": "proposed_at",
+   "fieldtype": "Datetime",
+   "label": "Recorded At (UTC)",
+   "reqd": 1,
+   "set_only_once": 1
+  },
+  {
+   "fieldname": "decision_section",
+   "fieldtype": "Section Break",
+   "label": "Supervisor decision"
+  },
+  {
+   "fieldname": "decided_by",
+   "fieldtype": "Data",
+   "label": "Decided By",
+   "length": 140
+  },
+  {
+   "fieldname": "decided_at",
+   "fieldtype": "Datetime",
+   "label": "Decided At (UTC)"
+  },
+  {
+   "fieldname": "decision_reason",
+   "fieldtype": "Long Text",
+   "label": "Decision Reason"
+  },
+  {
+   "fieldname": "keys_section",
+   "fieldtype": "Section Break",
+   "label": "Uniqueness keys",
+   "collapsible": 1
+  },
+  {
+   "fieldname": "version_key",
+   "fieldtype": "Data",
+   "label": "Version Key",
+   "length": 64,
+   "read_only": 1,
+   "unique": 1
+  }
+ ],
+ "in_create": 1,
+ "index_web_pages_for_search": 0,
+ "links": [],
+ "modified": "2026-11-05 09:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Vati Tax",
+ "name": "Vati Workflow Version",
+ "naming_rule": "Random",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "read": 1,
+   "report": 1,
+   "export": 1,
+   "role": "System Manager"
+  },
+  {
+   "read": 1,
+   "report": 1,
+   "role": "Vati Supervisor"
+  },
+  {
+   "read": 1,
+   "role": "Vati Auditor"
+  },
+  {
+   "read": 1,
+   "role": "Vati Specialist"
+  }
+ ],
+ "search_fields": "workflow,version,status",
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "workflow"
+}

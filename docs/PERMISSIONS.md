@@ -57,13 +57,17 @@ Callers check actions with `permissions.require_action(action, tenant_id, taxpay
 | `specialist.opinion.record`* | | | yes | | |
 | `decision.propose`* | | yes | yes | yes | |
 | `decision.approve`* | | | | yes, not own proposal | |
-| `case.assign`*, `playbook.approve`* | | | | yes | |
+| `case.assign`* | | | | yes | |
+| `playbook.approve`* (TAX-065: approve or reject a learned workflow version) | | | | yes, not one you recorded | |
 | `decision.execute` (TAX-046: resend an approved decision to Jube) | | | | yes | yes |
 | `ledger.read`* (TAX-059: audit ledger, integrity check, signals, summary) | | | | yes | |
 | `override.record`* (TAX-059: exception to a named control) | | | | yes, not on own work | |
 | `export.request`* (TAX-062: request a scoped evidence export) | | yes | yes | yes | |
 | `export.approve`* (TAX-062: authorise or refuse an export) | | | | yes, not own request | |
 | `export.read`* (TAX-062: export status; manifest for requester and approver only) | | yes | yes | yes | |
+| `workflow.propose` (TAX-065: record a TAX-064 workflow proposal for review) | | yes | yes | yes | yes |
+| `workflow.activate`* (TAX-065: put an approved version in force, or roll back) | | | | yes | |
+| `workflow.read` (TAX-065: versions, history, execution check) | | yes | yes | yes | yes |
 | `integration.callback` | | | | | yes |
 
 \* Human-only. A service identity is refused these actions even if the matrix is widened by mistake. Stale approvals, idempotent decision records and the Jube transition are TAX-046 (see Decisions below).
@@ -125,3 +129,17 @@ An export hands named evidence of one case to a named recipient. It produces a f
 | Read the retention policy (`get_retention_policy`) | auditor, specialist, supervisor | taxpayer or service |
 
 Retention is metadata only (`pilot-synthetic-unverified-1`, `policy_verified: false`). Nothing is disposed of automatically. A site's `vati_retention_days` can only add a `review_after` date, and the audit ledger is permanent.
+
+## Learned workflows (TAX-065)
+
+A TAX-064 workflow proposal becomes a `Vati Workflow Version` (`proposed`). A supervisor decides it, a supervisor puts it in force, and every activation and rollback is appended to `Vati Workflow Activation`. Both DocTypes are tenant-scoped. Staff read them in Desk; nothing is written there, and neither can be edited after the fact or deleted. Every step and refusal is sealed into the audit ledger (subject type `workflow`). See [ADR-023](decisions/ADR-023-learned-workflow-approval-rollback.md).
+
+| Step | Who | Refused when |
+| --- | --- | --- |
+| Record a proposal (`propose_workflow`) | auditor, specialist, supervisor, service (`workflow.propose`) | taxpayer; proposal already approved or active; unknown step; no held-out evaluation; same version with different content. The refusal is recorded |
+| Approve or reject (`approve_workflow`, `reject_workflow`) | a supervisor who did not record the version (`playbook.approve`) | the person who recorded it; auditor, specialist, service or taxpayer; already decided; stale `expected_version`; no reason; approval without `holdout_reviewed`. The refusal is recorded |
+| Activate (`activate_workflow`) | a supervisor (`workflow.activate`) | anyone else, including the service; version not approved; already active; stale `expected_seq`; no reason. The refusal is recorded |
+| Roll back (`rollback_workflow`) | a supervisor (`workflow.activate`) | anyone else; no earlier approved version; stale `expected_seq`; no reason. The refusal is recorded |
+| Check before running (`check_workflow_execution`) | staff or service (`workflow.read`) | the version is proposed or rejected, approved but not in force, or unknown. The refusal is recorded |
+
+A permitted workflow only orders steps that were each approved before. Every step still needs its own officer approval (TAX-046/TAX-047).

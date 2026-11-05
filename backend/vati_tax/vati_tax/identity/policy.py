@@ -82,6 +82,14 @@ OVERRIDE_RECORD: Final = "override.record"
 EXPORT_REQUEST: Final = "export.request"
 EXPORT_APPROVE: Final = "export.approve"
 EXPORT_READ: Final = "export.read"
+# Learned workflows (TAX-065). A TAX-064 proposal is recorded for review (staff,
+# or the observer's service identity: recording approves nothing); a different
+# supervisor approves it (``playbook.approve``); a supervisor activates an
+# approved version or rolls back to the previous one; anyone who may run or
+# inspect workflows can read status and check that a version may execute.
+WORKFLOW_PROPOSE: Final = "workflow.propose"
+WORKFLOW_ACTIVATE: Final = "workflow.activate"
+WORKFLOW_READ: Final = "workflow.read"
 
 ACTION_ROLES: Final[dict[str, frozenset[Role]]] = {
     SUBMISSION_CREATE: frozenset({TAXPAYER}),
@@ -109,6 +117,9 @@ ACTION_ROLES: Final[dict[str, frozenset[Role]]] = {
     EXPORT_REQUEST: frozenset({AUDITOR, SPECIALIST, SUPERVISOR}),
     EXPORT_APPROVE: frozenset({SUPERVISOR}),
     EXPORT_READ: frozenset({AUDITOR, SPECIALIST, SUPERVISOR}),
+    WORKFLOW_PROPOSE: frozenset({AUDITOR, SPECIALIST, SUPERVISOR, SERVICE}),
+    WORKFLOW_ACTIVATE: frozenset({SUPERVISOR}),
+    WORKFLOW_READ: frozenset({AUDITOR, SPECIALIST, SUPERVISOR, SERVICE}),
 }
 
 # Consequential human decisions. Never granted to a service identity, even if
@@ -127,6 +138,7 @@ HUMAN_ONLY_ACTIONS: Final[frozenset[str]] = frozenset(
         EXPORT_REQUEST,
         EXPORT_APPROVE,
         EXPORT_READ,
+        WORKFLOW_ACTIVATE,
     }
 )
 # Actions on a taxpayer's own records; taxpayers need a matching taxpayer_id.
@@ -134,7 +146,9 @@ TAXPAYER_OWNED_ACTIONS: Final[frozenset[str]] = frozenset(
     {SUBMISSION_CREATE, SUBMISSION_READ, EVIDENCE_RESPOND, EVIDENCE_REGISTER}
 )
 # The approver must differ from the proposer (separation of duties).
-SEPARATION_OF_DUTIES: Final[frozenset[str]] = frozenset({DECISION_APPROVE, EXPORT_APPROVE})
+SEPARATION_OF_DUTIES: Final[frozenset[str]] = frozenset(
+    {DECISION_APPROVE, EXPORT_APPROVE, PLAYBOOK_APPROVE}
+)
 
 
 class PolicyError(Exception):

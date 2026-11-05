@@ -46,6 +46,7 @@ SUBJECT_TYPES: Final[tuple[str, ...]] = (
     "ledger",
     "control",
     "export",  # TAX-062 evidence export requests
+    "workflow",  # TAX-065 learned workflow versions
 )
 
 # Decision and evidence-request actions (TAX-046) and their ledger category.
@@ -62,11 +63,18 @@ _ACTION_CATEGORY: Final[dict[str, Category]] = {
     "export.requested": "write",
     "export.approved": "approval",
     "export.rejected": "approval",
+    # TAX-065: a learned workflow is proposed (write); approval, rejection,
+    # activation and rollback are supervisor decisions (approval).
+    "workflow.proposed": "write",
+    "workflow.approved": "approval",
+    "workflow.rejected": "approval",
+    "workflow.activated": "approval",
+    "workflow.rolled_back": "approval",
 }
 
 # Refused attempts that break separation of duties when repeated.
 SOD_DENIALS: Final[frozenset[str]] = frozenset(
-    {"decision.approve", "override.record", "export.approve"}
+    {"decision.approve", "override.record", "export.approve", "playbook.approve"}
 )
 
 REVIEW_ONLY_NOTE: Final = (
