@@ -59,6 +59,10 @@
     {
       "criterion": 3,
       "text": "validate.py, compileall, tests/data 3, tests/integration 168, contract.py (26 examples), tests/contracts 84 and backend Frappe-free 322 (40 skipped) pass with the venv interpreter; ruff check and format clean on changed files; mypy clean (169 files). tests/tooling: the 2 existing Windows-only file-permission tests fail locally (pass on Linux CI). Frappe verify summary: migrate_1 ok, migrate_2 ok, app tests 322 OK, site tests 142 OK, dropped_after_verify true. Not run: a live Jube stack. Review PR opened with task.py-equivalent finish steps."
+    },
+    {
+      "criterion": 3,
+      "text": "After merging origin/main (16 commits incl. TAX-044/055/065/069): Frappe verify on a fresh disposable site with the stack recreated from the merged compose file: install, migrate_1 ok, migrate_2 ok, app tests 389 OK (42 skipped), site tests 161 OK, Frappe-free 347 OK, site dropped. tests/integration 227, tests/contracts 84, contract.py, validate.py and mypy (198 files) pass."
     }
   ],
   "notes": [
