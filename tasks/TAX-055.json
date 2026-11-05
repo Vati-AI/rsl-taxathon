@@ -5,15 +5,13 @@
   "owner": "Kananelo",
   "area": "tests/frontend",
   "phase": "pilot",
-  "status": "IN_REVIEW",
+  "status": "DONE",
   "priority": "P0",
   "depends_on": [
     "TAX-041",
     "TAX-042",
     "TAX-044",
-    "TAX-045",
-    "TAX-091",
-    "TAX-092"
+    "TAX-045"
   ],
   "claimed_by": "kananelo-claude-20261105-tax055",
   "branch": "task/TAX-055",
@@ -87,6 +85,10 @@
     {
       "at": "2026-11-05T07:12:16.566384+00:00",
       "text": "Five scenario routes and taxpayer journey at three widths; 153/153 harness tests pass on merged branch. Two auditor defects recorded for their owner."
+    },
+    {
+      "at": "2026-11-05T10:39:50.241416+00:00",
+      "text": "Verified merge of #188 on 2026-11-05 (fixture-mode regression, 153/153). The live-app dependency added in #187 is removed here; the re-run against the live apps is TAX-103."
     }
   ]
 }

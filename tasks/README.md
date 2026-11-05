@@ -41,10 +41,10 @@ Human owner = accountability. AI agent = implementer recorded in `claimed_by`. T
 | [TAX-052](TAX-052.json) | Gupta | pilot | Legal-route registry and policy-gap gate | TAX-022, TAX-024 |
 | [TAX-053](TAX-053.json) | Leseli | pilot | Evidence search and cited case briefing agents | TAX-036, TAX-038, TAX-047 |
 | [TAX-054](TAX-054.json) | Leseli | pilot | End-to-end pipeline and degraded-service behavior | TAX-039, TAX-037, TAX-038, TAX-047, TAX-053, TAX-087, TAX-088 |
-| [TAX-055](TAX-055.json) | Kananelo | pilot | Portal and auditor end-to-end regression | TAX-041, TAX-042, TAX-044, TAX-045, TAX-091, TAX-092 |
+| [TAX-055](TAX-055.json) | Kananelo | pilot | Portal and auditor end-to-end regression | TAX-041, TAX-042, TAX-044, TAX-045 |
 | [TAX-056](TAX-056.json) | Leseli | pilot | Agent evaluation and injection regression | TAX-049, TAX-050, TAX-051, TAX-052, TAX-053 |
 | [TAX-057](TAX-057.json) | Leseli | pilot | Tenant isolation, replay and failure matrix | TAX-054, TAX-046 |
-| [TAX-058](TAX-058.json) | Keletso | pilot | Five-scenario demo and measured acceptance | TAX-055, TAX-056, TAX-057, TAX-089, TAX-091, TAX-092, TAX-093, TAX-094, TAX-095, TAX-097, TAX-101 |
+| [TAX-058](TAX-058.json) | Keletso | pilot | Five-scenario demo and measured acceptance | TAX-055, TAX-056, TAX-057, TAX-089, TAX-091, TAX-092, TAX-093, TAX-094, TAX-095, TAX-097, TAX-103 |
 | [TAX-059](TAX-059.json) | Leseli | pilot | Audit ledger and segregation of duties | TAX-046 |
 | [TAX-060](TAX-060.json) | Leseli | pilot | Management workload and assurance dashboard | TAX-040, TAX-059 |
 | [TAX-061](TAX-061.json) | Gupta | pilot | Approved playbook and reusable tool registry | TAX-047, TAX-052 |
@@ -88,4 +88,6 @@ Human owner = accountability. AI agent = implementer recorded in `claimed_by`. T
 | [TAX-099](TAX-099.json) | Gupta | pilot | Taxpayer evidence-response assistant | TAX-098, TAX-045 |
 | [TAX-100](TAX-100.json) | Edga | pilot | Taxpayer-scoped assistant service in Frappe | TAX-096, TAX-029, TAX-031, TAX-032 |
 | [TAX-101](TAX-101.json) | Kananelo | pilot | Taxpayer portal assistant UI | TAX-100, TAX-098, TAX-092 |
-| [TAX-102](TAX-102.json) | Yellow | pilot | Taxpayer assistant scenarios, expected outcomes and leakage tests | TAX-024 |
+| [TAX-102](TAX-102.json) | Leseli | pilot | Taxpayer assistant scenarios, expected outcomes and leakage tests | TAX-024 |
+| [TAX-103](TAX-103.json) | Kananelo | pilot | Live-app end-to-end regression re-run | TAX-055, TAX-091, TAX-092, TAX-094 |
+| [TAX-104](TAX-104.json) | Leseli | pilot | Fix auditor defects found by TAX-055 | TAX-055 |

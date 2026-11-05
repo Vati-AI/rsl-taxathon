@@ -2,7 +2,7 @@
   "id": "TAX-102",
   "kind": "task",
   "title": "Taxpayer assistant scenarios, expected outcomes and leakage tests",
-  "owner": "Yellow",
+  "owner": "Leseli",
   "area": "data",
   "phase": "pilot",
   "status": "BACKLOG",
@@ -50,6 +50,10 @@
     {
       "at": "2026-11-05T10:07:38.336884+00:00",
       "text": "Added 2026-11-05 to record the agreed AI architecture (ADR-031): hosted models through a role router with local/template fallback, and the taxpayer-side assistant."
+    },
+    {
+      "at": "2026-11-05T10:39:50.241416+00:00",
+      "text": "Owner moved from Yellow to Leseli by Keletso 2026-11-05: Leseli owns independent AI evaluation fixtures (TAX-056), which keeps these fixtures independent of the assistant implementation."
     }
   ]
 }
