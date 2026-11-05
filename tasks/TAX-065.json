@@ -5,14 +5,14 @@
   "owner": "Edga",
   "area": "backend",
   "phase": "expansion",
-  "status": "BACKLOG",
+  "status": "IN_REVIEW",
   "priority": "P1",
   "depends_on": [
     "TAX-064"
   ],
-  "claimed_by": null,
-  "branch": null,
-  "pr": null,
+  "claimed_by": "edga-claude-code-20261105-065",
+  "branch": "task/TAX-065",
+  "pr": "https://github.com/Vati-AI/rsl-taxathon/pull/176",
   "scope": "Store supervisor decisions, activation history and rollback references for learned workflows",
   "inputs": [
     "PROJECT.md",
@@ -26,11 +26,11 @@
   "acceptance": [
     {
       "text": "Store supervisor decisions, activation history and rollback references for learned workflows",
-      "done": false
+      "done": true
     },
     {
       "text": "Reject self-approval and unapproved version execution; rollback restores previous approved version",
-      "done": false
+      "done": true
     },
     {
       "text": "Record relevant tests and evidence, update task status and open a human-review PR",
@@ -44,6 +44,24 @@
     "update-project-task",
     "finish-task"
   ],
-  "evidence": [],
-  "notes": []
+  "evidence": [
+    {
+      "criterion": 1,
+      "text": "Implemented vati_tax.workflows (rules/service/store/api) + Vati Workflow Version and Vati Workflow Activation DocTypes: TAX-064 proposals recorded unchanged as proposed versions (proposal digest + held-out evaluation kept), supervisor decisions with reason and holdout acknowledgement, append-only activation history with replaced_version and rollback_to references; every step and refusal sealed into the TAX-059 ledger. Observed 2026-11-05 in .venv-dev: 20 Frappe-free tests pass (workflows/test_service.py, including real TAX-064 propose_workflows output); full backend suite 319 tests OK (40 site-backed skipped); repo-wide mypy (169 files) and ruff clean. ADR-025."
+    },
+    {
+      "criterion": 2,
+      "text": "Observed 2026-11-05 (python -m unittest workflows.test_service): self-approval refused via playbook.approve separation of duties, recorded as playbook.approve.denied and raising the repeated_separation_of_duties_attempts signal; officers/service cannot approve or activate; unapproved versions cannot be activated; check_execution refuses proposed/rejected (unapproved_version), inactive (not_active) and unknown versions and records each refusal; rollback re-activates the previous approved version and repeated rollbacks walk back v3->v2->v1. Mutation check: removing SoD, the approved-only or active-only execution check, or the rollback target each fails the suite. LIMITATION: site-backed workflows/test_workflows_bench.py written but NOT run - isolated frappe_dev.py init failed (concurrent MariaDB init, then host disk full); run scripts/frappe_dev.py verify before relying on the Frappe binding."
+    }
+  ],
+  "notes": [
+    {
+      "at": "2026-11-05T02:12:33.205590+00:00",
+      "text": "Claimed by edga-claude-code-20261105-065"
+    },
+    {
+      "at": "2026-11-05T03:27:37.987015+00:00",
+      "text": "Agent finished implementation and opened human review. Local finish gates cannot pass on Windows (2 POSIX-mode tooling tests; no Node for npm steps); site-backed bench tests not run (isolated init failed: concurrent MariaDB init, then host disk full); org GitHub Actions blocked by billing, so CI must be rerun before merge."
+    }
+  ]
 }

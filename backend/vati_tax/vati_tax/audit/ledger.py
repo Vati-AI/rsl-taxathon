@@ -46,6 +46,7 @@ SUBJECT_TYPES: Final[tuple[str, ...]] = (
     "ledger",
     "control",
     "export",  # TAX-062 evidence export requests
+    "workflow",  # TAX-065 learned workflow versions
     "challenge",  # TAX-069 objections and appeals against a decision
 )
 
@@ -63,6 +64,13 @@ _ACTION_CATEGORY: Final[dict[str, Category]] = {
     "export.requested": "write",
     "export.approved": "approval",
     "export.rejected": "approval",
+    # TAX-065: a learned workflow is proposed (write); approval, rejection,
+    # activation and rollback are supervisor decisions (approval).
+    "workflow.proposed": "write",
+    "workflow.approved": "approval",
+    "workflow.rejected": "approval",
+    "workflow.activated": "approval",
+    "workflow.rolled_back": "approval",
     # TAX-069: a challenge is lodged (write) and its outcome reviewed (approval).
     "challenge.lodged": "write",
     "challenge.reviewed": "approval",
@@ -70,7 +78,13 @@ _ACTION_CATEGORY: Final[dict[str, Category]] = {
 
 # Refused attempts that break separation of duties when repeated.
 SOD_DENIALS: Final[frozenset[str]] = frozenset(
-    {"decision.approve", "override.record", "export.approve", "challenge.review"}
+    {
+        "decision.approve",
+        "override.record",
+        "export.approve",
+        "playbook.approve",
+        "challenge.review",
+    }
 )
 # Reviewed challenge outcomes (TAX-069) that overturn some or all of a decision.
 # Each one is a review prompt about the original decision, never a finding

@@ -25,6 +25,11 @@ async function ready(page: Page) {
 }
 
 async function axe(page: Page) {
+  // Let open/close transitions finish first: axe measures the colours it sees, so a
+  // dialog caught mid fade-in reports false colour-contrast failures.
+  await page.waitForFunction(() =>
+    document.getAnimations().every((animation) => animation.playState !== 'running'),
+  );
   const results = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa']).analyze();
   expect(results.violations.map((v) => v.id)).toEqual([]);
 }
