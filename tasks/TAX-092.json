@@ -27,15 +27,15 @@
   "acceptance": [
     {
       "text": "get_submissions and get_submission read Vati Submission/Refund Claim records for the signed-in taxpayer with mode live; the session is labelled live; the fixture notice appears only in fixture mode",
-      "done": false
+      "done": true
     },
     {
       "text": "A claim the taxpayer submits appears in their list with its current taxpayer-safe status; another taxpayer's submissions are never visible; internal risk details are never shown",
-      "done": false
+      "done": true
     },
     {
       "text": "Record relevant tests and evidence, update task status and open a human-review PR",
-      "done": false
+      "done": true
     }
   ],
   "verification": "A claim the taxpayer submits appears in their list with its current taxpayer-safe status; another taxpayer's submissions are never visible; internal risk details are never shown",
@@ -45,7 +45,20 @@
     "update-project-task",
     "finish-task"
   ],
-  "evidence": [],
+  "evidence": [
+    {
+      "criterion": 1,
+      "text": "portal.api get_session/get_submissions/get_submission return mode live from the caller's own Vati Submission + Vati Refund Claim rows (portal/submissions.py view). Bench: test_session_and_lists_are_live; vitest router.test accepts live or labelled fixture only; browser: fixture notice and 'Synthetic fixture' label only in fixture mode, 'Live data' otherwise. Live HTTP: session labelled live."
+    },
+    {
+      "criterion": 2,
+      "text": "Bench (frappe_dev.py verify, fresh site, 167 OK): a sent claim is listed with status under_review; mirrored evidence_requested/completed shown; taxpayer B (same tenant) and C (other tenant) never see it and get not found; payload has no case/risk/Jube/finding/tenant detail and only allowlisted keys. Live HTTP on the isolated stack 16/16 (REF-2026-000017, 404 for B and C, 403 guest, mirrored statuses). Browser: a claim sent in the portal appears first as Under review at 3 widths."
+    },
+    {
+      "criterion": 3,
+      "text": "docs/evidence/TAX-092/README.md and 12 screenshots; test_submissions.py 6/6; backend 395 OK; vitest 67/67; full browser harness 159 passed 0 failed; ruff, mypy, eslint, typechecks and validate.py pass; human-review PR opened. GitHub Actions blocked by org billing, so CI has not confirmed."
+    }
+  ],
   "notes": [
     {
       "at": "2026-11-05T06:39:04.925015+00:00",
