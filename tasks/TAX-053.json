@@ -5,7 +5,7 @@
   "owner": "Leseli",
   "area": "ai",
   "phase": "pilot",
-  "status": "IN_PROGRESS",
+  "status": "IN_REVIEW",
   "priority": "P0",
   "depends_on": [
     "TAX-036",
@@ -14,7 +14,7 @@
   ],
   "claimed_by": "leseli-claude-20261105-053",
   "branch": "task/TAX-053",
-  "pr": null,
+  "pr": "https://github.com/Vati-AI/rsl-taxathon/pull/166",
   "scope": "Generate structured what-happened/checked/explained/unresolved/next-action briefing with source references",
   "inputs": [
     "PROJECT.md",
@@ -36,7 +36,7 @@
     },
     {
       "text": "Record relevant tests and evidence, update task status and open a human-review PR",
-      "done": false
+      "done": true
     }
   ],
   "verification": "Validate citation IDs exist, source permissions are enforced and tool/document prompt injection is ignored",
@@ -54,6 +54,10 @@
     {
       "criterion": 2,
       "text": "Citations: invented, cross-tenant, misplaced and malformed references are rejected with reason codes; fact and explanation sections must cite evidence; missing information cites only searches that found nothing and can't be worded as a discrepancy. Permissions: callers without evidence.read in the tenant (taxpayer, other tenant, unauthenticated, mixed scope) are refused before any document is read; only the active tenant and case are searched; superseded and unextracted documents are excluded; EVIDENCE_READ_ROLES is kept equal to vati_tax.identity.policy. Injection: document text is fenced in untrusted_evidence and flagged when instruction-like, and changes no scope, question or action; a model that obeys injected text is contained (all statements rejected); poisoned tool output from another tenant or case stops the run with tool_scope_mismatch. Also covered: step budget and a checkpointed replay that doesn't redraft. tests/ai/test_case_briefing_search.py 13 tests and test_case_briefing.py 14 tests pass with LangGraph 1.2.19 (locked); the full tests/ai suite (144 tests) passes."
+    },
+    {
+      "criterion": 3,
+      "text": "Tests and results recorded under criteria 1 and 2. dev.py check steps pass with the venv interpreter, apart from 2 existing Windows-only tests/tooling file-permission checks. ruff and mypy pass. Review PR #166 opened, asking Gupta (AI area) to review."
     }
   ],
   "notes": [
@@ -64,6 +68,10 @@
     {
       "at": "2026-11-05T00:43:45.886592+00:00",
       "text": "Claimed by leseli-claude-20261105-053"
+    },
+    {
+      "at": "2026-11-05T01:01:21.913508+00:00",
+      "text": "Agent leseli-claude-20261105-053 finished implementation and opened review (https://github.com/Vati-AI/rsl-taxathon/pull/166). Hosted model not used (none approved); deterministic template model with validated output. Design in ADR-021."
     }
   ]
 }
