@@ -193,6 +193,9 @@ def check():
         ["python3", "-m", "unittest", "discover", "-s", "tests/ai", "-p", "test_action*.py"],
         # TAX-053 evidence search (pure); cited briefing graph tests skip without LangGraph.
         ["python3", "-m", "unittest", "discover", "-s", "tests/ai", "-p", "test_case_briefing*.py"],
+        # TAX-066 risk calibration and drift evaluation (pure Python) and its baseline gate.
+        ["python3", "-m", "unittest", "discover", "-s", "tests/ai", "-p", "test_risk_cal*.py"],
+        ["python3", "-m", "ai.evaluation.risk_calibration", "--check"],
         # TAX-056 agent evaluation and injection regression; skips without LangGraph.
         ["python3", "-m", "unittest", "discover", "-s", "tests/ai", "-p", "test_agent_eval*.py"],
         # TAX-068 institutional knowledge retrieval (pure Python).
