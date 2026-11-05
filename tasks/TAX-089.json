@@ -5,7 +5,7 @@
   "owner": "Gupta",
   "area": "ai",
   "phase": "pilot",
-  "status": "IN_REVIEW",
+  "status": "DONE",
   "priority": "P0",
   "depends_on": [
     "TAX-022",
@@ -96,6 +96,10 @@
     {
       "at": "2026-11-05T10:41:36+00:00",
       "text": "Merged main after ADR-031 approval: gemini-3.6-flash is now set in .env.example (VATI_MODEL_DOCUMENT); the code keeps no built-in document default, so the role stays unconfigured until set in .env. Its context window and observed limits remain unverified because the live smoke has not run (no keys)."
+    },
+    {
+      "at": "2026-11-05T11:22:18.503831+00:00",
+      "text": "Verified merges of #216 (router) and #224 (User-Agent fix + live smoke evidence)"
     }
   ]
 }
