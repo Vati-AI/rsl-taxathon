@@ -5,7 +5,7 @@
   "owner": "Kananelo",
   "area": "apps/taxpayer-web",
   "phase": "pilot",
-  "status": "IN_PROGRESS",
+  "status": "IN_REVIEW",
   "priority": "P0",
   "depends_on": [
     "TAX-043",
@@ -13,7 +13,7 @@
   ],
   "claimed_by": "kananelo-claude-20261105-tax044",
   "branch": "task/TAX-044",
-  "pr": null,
+  "pr": "https://github.com/Vati-AI/rsl-taxathon/pull/173",
   "scope": "Show explained amounts, missing invoices and correction prompts before submission",
   "inputs": [
     "PROJECT.md",
@@ -35,7 +35,7 @@
     },
     {
       "text": "Record relevant tests and evidence, update task status and open a human-review PR",
-      "done": false
+      "done": true
     },
     {
       "text": "Follow docs/DESIGN_STANDARD.md; supply relevant viewport/state screenshots and keyboard/accessibility evidence for human visual review",
@@ -61,12 +61,20 @@
     {
       "criterion": 4,
       "text": "Observed 2026-11-05 on Windows 11, Edge, Playwright 1.64.1: frappe-ui components and shared tokens per docs/DESIGN_STANDARD.md (fieldset per invoice, right-aligned tabular amounts, text-and-colour alerts, one primary action per step). 48 screenshots in docs/evidence/TAX-044 (15 claim states x 1440/1024/390 incl. invoices empty/filled/errors and review-with-checks, plus whole-panel checks-panel captures; a 390px wrapping defect in the panel was found and fixed). Full harness on the merged branch (--workers=2): 131 passed, 9 skipped (opt-in visual), 1 transient page-load timeout in the unrelated TAX-045 responses spec that passed 72/72 on 3x repeat at all widths. claim.spec runs axe (WCAG 2.1 A/AA serious/critical) and reflow on the new steps, keyboard-only completion through the invoice step, focus to the first invalid row field, and Change buttons described by their prompt. Human visual approval pending reviewer; not assumed by the agent."
+    },
+    {
+      "criterion": 3,
+      "text": "Observed 2026-11-05: tests and evidence recorded in criteria 1, 2 and 4, docs/evidence/TAX-044 and ADR-023; branch refreshed from main 038d881 (clean merge) and all affected checks rerun; status set to IN_REVIEW; human-review PR https://github.com/Vati-AI/rsl-taxathon/pull/173 opened against main with code-owner reviews requested from @Vati-AI/backend (TAX-031 extension) and @Kellybrackets (dev-stack change); not merged by the agent. task.py finish could not run unmodified on Windows (dev.py check stops at two pre-existing POSIX file-mode tooling tests), so its steps were run by hand in the same order."
     }
   ],
   "notes": [
     {
       "at": "2026-11-05T01:07:31.525943+00:00",
       "text": "Claimed by kananelo-claude-20261105-tax044"
+    },
+    {
+      "at": "2026-11-05T02:42:59.251077+00:00",
+      "text": "Agent finished implementation and opened human review; code-owner reviews requested"
     }
   ]
 }
