@@ -33,3 +33,11 @@ Prototype v1 uses [the shared engineering standard](ENGINEERING_STANDARD.md) and
 ## V1 standards update (TAX-083)
 
 Shared engineering/API/AI standards and ADR-002 define a consistent prototype stack and essential controls. Pinned Python/web quality tools run locally and in CI; the AI installation smoke also runs in CI. Agent finish now refreshes main and runs quality checks. Current first-party sources were normalized with the shared formatters. Product build/contracts/permission tests remain acceptance work for the relevant foundation tasks, not claimed as implemented by tooling.
+
+## Demo laptop profile (TAX-095), status 2026-11-05
+
+Built: `scripts/demo.py` (`up`, `down`, `status`, `memory`, `capture`, `verify-live`) and the runbook [DEMO_LAPTOP.md](DEMO_LAPTOP.md). In the reduced profile Frappe, Jube and the ADR-031 model router are live. Docling, OpenAleph and yente are shown only from captures with provenance under `data/demo/recorded/`. Ports are loopback-only, and status reports each service as live, recorded or unavailable, with the model fallback level. Behaviour tests: `tests/tooling/test_demo.py`.
+
+Not yet done: no recordings have been captured, and no rehearsal has run on the demo laptop. Cold-start time, peak memory, the laptop memory limit, observed Groq/Gemini rate limits and the offline fallback walk-through are therefore not recorded. Screen-level live/recorded labelling is UI work. This profile is not native-UI acceptance for Jube or OpenAleph (TAX-105).
+
+Service status corrections: Frappe has a running developer site with service adapters configured, and the TAX-085 live check proved an officer decision reaches the real local Jube. Docling, OpenAleph and yente adapters exist (TAX-038/036/037) and are configured as Frappe factories, but have not been live-checked through Frappe. See `integration/services.json`.

@@ -12,7 +12,8 @@
     "local_url": "http://127.0.0.1:55501",
     "source_commit": "01c4afdbcdb186cc36b128ed79283d544cfb9ec9",
     "evidence": "TAX-025: integration/jube/README.md (auth, denied access, Swagger, resource use); TAX-034: case lifecycle contract run in the same README",
-    "adapter_status": "case_lifecycle_contract_tested_not_wired"
+    "adapter_status": "wired_into_frappe_live_checked (TAX-085)",
+    "demo_profile": "live"
   },
   "openaleph": {
     "upstream": "https://github.com/openaleph/openaleph",
@@ -28,7 +29,8 @@
     "source_commit": "f89ff18d83fcfebdadc6b2db83fb9e2fbb5397c2",
     "version": "5.4.0-rc1 (release candidate)",
     "evidence": "TAX-026: integration/openaleph/README.md (multi-user auth, restricted collection, ingest/retrieve, denied access)",
-    "adapter_status": "not_implemented"
+    "adapter_status": "adapter_implemented_TAX-036_frappe_factory_configured_TAX-085_not_live_checked_in_frappe",
+    "demo_profile": "recorded"
   },
   "yente": {
     "upstream": "https://github.com/opensanctions/yente",
@@ -45,7 +47,8 @@
     "version": "5.5.0",
     "dataset": "vati_synthetic 2026110301 (local synthetic only; no OpenSanctions data)",
     "evidence": "TAX-027: integration/yente/README.md (alias match, two ambiguous candidates with dataset version, negative checks)",
-    "adapter_status": "not_implemented"
+    "adapter_status": "adapter_implemented_TAX-037_frappe_factory_configured_TAX-085_not_live_checked_in_frappe",
+    "demo_profile": "recorded"
   },
   "docling": {
     "upstream": "https://github.com/docling-project/docling-serve",
@@ -61,7 +64,8 @@
     "source_commit": "9c058dbb58f61021e3a16e37edb8a7527b2cb2d4",
     "version": "1.38.2 (cpu image)",
     "evidence": "TAX-028: integration/docling/README.md (auth 401, scanned OCR, table, page provenance, size policy)",
-    "adapter_status": "not_implemented"
+    "adapter_status": "adapter_implemented_TAX-038_frappe_factory_configured_TAX-085_not_live_checked_in_frappe",
+    "demo_profile": "recorded"
   },
   "frappe": {
     "upstream": "https://github.com/frappe/frappe_docker",
@@ -70,10 +74,13 @@
     "base_url_env": "FRAPPE_BASE_URL",
     "mode": "external",
     "fork_required": false,
-    "verified_on": "2026-11-03",
-    "deployment_status": "not_connected",
+    "verified_on": "2026-11-05",
+    "deployment_status": "dev_site_running_service_adapters_configured",
     "source_status": "locked_source_fetched_on_setup_machine",
-    "development_status": "local_site_app_migrated_and_authenticated_health_verified"
+    "development_status": "local_site_app_migrated_and_authenticated_health_verified",
+    "demo_profile": "live",
+    "evidence": "TAX-085: frappe_dev.py verify --live-services on a disposable verify-* site; an officer decision reached the real local Jube (tasks/TAX-085.json evidence)",
+    "local_url": "http://127.0.0.1:58000"
   },
   "langgraph": {
     "upstream": "https://github.com/langchain-ai/langgraph",
@@ -85,7 +92,8 @@
     "verified_on": "2026-11-03",
     "deployment_status": "not_connected",
     "source_status": "locked_source_fetched_on_setup_machine",
-    "development_status": "locked_dependencies_installed_and_interrupt_resume_smoke_passed"
+    "development_status": "locked_dependencies_installed_and_interrupt_resume_smoke_passed",
+    "demo_profile": "live (in-process AI runtime, ADR-031 router)"
   },
   "followthemoney": {
     "upstream": "https://github.com/opensanctions/followthemoney",
@@ -96,6 +104,15 @@
     "fork_required": false,
     "verified_on": "2026-11-03",
     "deployment_status": "not_connected",
-    "source_status": "locked_source_fetched_on_setup_machine"
+    "source_status": "locked_source_fetched_on_setup_machine",
+    "demo_profile": "not_run (library used by adapters)"
+  },
+  "_demo_profile": {
+    "task": "TAX-095",
+    "command": "python scripts/demo.py up|status|memory|capture|down",
+    "runbook": "docs/DEMO_LAPTOP.md",
+    "recorded_outputs": "data/demo/recorded/<service>/<scenario>.json (none captured yet)",
+    "rehearsal": "not yet run on the demo laptop: no cold-start time, memory peak or observed rate limits recorded",
+    "native_ui_acceptance": "not provided by this profile (TAX-105)"
   }
 }
