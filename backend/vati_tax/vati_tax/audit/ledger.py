@@ -46,6 +46,7 @@ SUBJECT_TYPES: Final[tuple[str, ...]] = (
     "ledger",
     "control",
     "export",  # TAX-062 evidence export requests
+    "challenge",  # TAX-069 objections and appeals against a decision
 )
 
 # Decision and evidence-request actions (TAX-046) and their ledger category.
@@ -62,12 +63,19 @@ _ACTION_CATEGORY: Final[dict[str, Category]] = {
     "export.requested": "write",
     "export.approved": "approval",
     "export.rejected": "approval",
+    # TAX-069: a challenge is lodged (write) and its outcome reviewed (approval).
+    "challenge.lodged": "write",
+    "challenge.reviewed": "approval",
 }
 
 # Refused attempts that break separation of duties when repeated.
 SOD_DENIALS: Final[frozenset[str]] = frozenset(
-    {"decision.approve", "override.record", "export.approve"}
+    {"decision.approve", "override.record", "export.approve", "challenge.review"}
 )
+# Reviewed challenge outcomes (TAX-069) that overturn some or all of a decision.
+# Each one is a review prompt about the original decision, never a finding
+# against the officer who made it.
+OVERTURNED_OUTCOMES: Final[frozenset[str]] = frozenset({"overturned", "partially_overturned"})
 
 REVIEW_ONLY_NOTE: Final = (
     "A review signal for an authorised supervisor. It is not a finding against any "
@@ -324,7 +332,14 @@ def integrity_signals(
     )
     overrides: dict[str, list[LedgerEntry]] = defaultdict(list)
     sod_attempts: dict[str, list[LedgerEntry]] = defaultdict(list)
+    overturned: dict[str, list[LedgerEntry]] = defaultdict(list)
     for entry in in_window:
+        if (
+            entry.action == "challenge.reviewed"
+            and entry.outcome in OVERTURNED_OUTCOMES
+            and entry.target_actor
+        ):
+            overturned[entry.target_actor.lower()].append(entry)
         if entry.category == "override":
             overrides[entry.actor.lower()].append(entry)
         elif entry.category == "denied" and entry.action.removesuffix(".denied") in SOD_DENIALS:
@@ -354,6 +369,17 @@ def integrity_signals(
                     window_end=window_end,
                 )
             )
+    for actor, hits in sorted(overturned.items()):
+        signals.append(
+            _signal(
+                "decision_overturned",
+                actor=actor,
+                hits=hits,
+                threshold=1,
+                window_start=window_start,
+                window_end=window_end,
+            )
+        )
     integrity = verify_chain(entries)
     if not integrity["intact"]:
         signals.append(
