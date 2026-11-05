@@ -5,15 +5,15 @@
   "owner": "Gupta",
   "area": "ai",
   "phase": "pilot",
-  "status": "BACKLOG",
+  "status": "IN_PROGRESS",
   "priority": "P0",
   "depends_on": [
     "TAX-022",
     "TAX-053",
     "TAX-056"
   ],
-  "claimed_by": null,
-  "branch": null,
+  "claimed_by": "gupta-claude-20261105-089",
+  "branch": "task/TAX-089",
   "pr": null,
   "scope": "Implement get_model(\"reasoning\" | \"fast\" | \"document\") per ADR-031: mock provider as default, Groq GPT-OSS 120B/20B and Gemini Flash adapters behind the existing model ports, optional local open-weights model (e.g. Ollama), and the deterministic template as the last fallback; mapping and keys only from the ignored .env; record provider, model id, role, prompt version, settings, fallback level, latency and tokens on every output",
   "inputs": [
@@ -63,6 +63,10 @@
     {
       "at": "2026-11-05T10:07:38.336884+00:00",
       "text": "Rescoped 2026-11-05 per ADR-031: the agreed plan uses Groq/Gemini free tiers as primary for synthetic data; the local model is a fallback, not the only path. Dependency on TAX-088 removed (the router does not need live cases; TAX-088 now depends on this)."
+    },
+    {
+      "at": "2026-11-05T10:28:40.191262+00:00",
+      "text": "Claimed by gupta-claude-20261105-089"
     }
   ]
 }
