@@ -1,0 +1,38 @@
+{
+  "name": "error_finding_feedback_taxpayer_forbidden",
+  "operation_id": "recordFindingFeedback",
+  "scenario": "SYN-004",
+  "synthetic": true,
+  "description": "A taxpayer session cannot record officer feedback.",
+  "request": {
+    "method": "POST",
+    "path": "/api/v1/cases/40000000-0000-4000-8000-000000000004/findings/70000000-0000-4000-8000-000000000041/feedback",
+    "headers": {
+      "Authorization": "Bearer synthetic-taxpayer-token-not-a-secret",
+      "X-Vati-Tenant-ID": "10000000-0000-4000-8000-000000000001",
+      "X-Correlation-ID": "c0000000-0000-4000-8000-00000000002f",
+      "Idempotency-Key": "taxpayer:finding-feedback:70000000-0000-4000-8000-000000000041:v1"
+    },
+    "body": {
+      "verdict": "rejected",
+      "reason_code": "other",
+      "reason": "I do not agree with this finding.",
+      "modified_explanation": null
+    }
+  },
+  "response": {
+    "status": 403,
+    "headers": {
+      "X-Correlation-ID": "c0000000-0000-4000-8000-00000000002f"
+    },
+    "body": {
+      "error": {
+        "code": "forbidden",
+        "message": "This operation is not available to you.",
+        "retryable": false,
+        "correlation_id": "c0000000-0000-4000-8000-00000000002f",
+        "service": "vati"
+      }
+    }
+  }
+}

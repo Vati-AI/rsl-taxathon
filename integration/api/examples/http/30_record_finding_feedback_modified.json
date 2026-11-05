@@ -1,0 +1,110 @@
+{
+  "name": "record_finding_feedback_modified",
+  "operation_id": "recordFindingFeedback",
+  "scenario": "SYN-004",
+  "synthetic": true,
+  "description": "The auditor marks an agent finding as modified with a reason and corrected wording; the actor comes from the session and the finding itself is unchanged.",
+  "request": {
+    "method": "POST",
+    "path": "/api/v1/cases/40000000-0000-4000-8000-000000000004/findings/70000000-0000-4000-8000-000000000041/feedback",
+    "headers": {
+      "Authorization": "Bearer synthetic-dev-token-not-a-secret",
+      "X-Vati-Tenant-ID": "10000000-0000-4000-8000-000000000001",
+      "X-Correlation-ID": "c0000000-0000-4000-8000-00000000002a",
+      "Idempotency-Key": "auditor:finding-feedback:70000000-0000-4000-8000-000000000041:v1"
+    },
+    "body": {
+      "verdict": "modified",
+      "reason_code": "missing_context",
+      "reason": "Withholding may sit on a separate return; the gap is real but should say so.",
+      "modified_explanation": "No withholding or reverse-charge record is linked to this case yet; it may have been filed under a separate return."
+    }
+  },
+  "response": {
+    "status": 201,
+    "headers": {
+      "X-Correlation-ID": "c0000000-0000-4000-8000-00000000002a"
+    },
+    "body": {
+      "data": {
+        "feedback_id": "b1000000-0000-4000-8000-000000000041",
+        "finding_id": "70000000-0000-4000-8000-000000000041",
+        "case_id": "40000000-0000-4000-8000-000000000004",
+        "tenant_id": "10000000-0000-4000-8000-000000000001",
+        "verdict": "modified",
+        "reason_code": "missing_context",
+        "reason": "Withholding may sit on a separate return; the gap is real but should say so.",
+        "modified_explanation": "No withholding or reverse-charge record is linked to this case yet; it may have been filed under a separate return.",
+        "recorded_by": {
+          "officer_id": "80000000-0000-4000-8000-000000000001",
+          "role": "auditor"
+        },
+        "recorded_at": "2026-11-03T13:20:00Z",
+        "previous_feedback_id": null,
+        "finding": {
+          "kind": "missing_evidence",
+          "category": "imported_services",
+          "producer": "langgraph_run",
+          "producer_version": "imported_services_review@1",
+          "analysis_provenance": {
+            "provider": "template",
+            "model_id": "deterministic-template-v1",
+            "configured_model_id": "deterministic-template-v1",
+            "role": "reasoning",
+            "task": "imported_services_review",
+            "prompt_version": "imported-services-instructions-v1",
+            "settings": {
+              "kind": "template",
+              "temperature": null,
+              "sampling": null
+            },
+            "fallback_level": 2,
+            "fallback_level_name": "template",
+            "fell_back": true,
+            "attempts": [
+              {
+                "level": 0,
+                "name": "hosted",
+                "provider": "groq",
+                "model_id": "openai/gpt-oss-120b",
+                "outcome": "rate_limited",
+                "http_status": 429,
+                "latency_ms": 180
+              },
+              {
+                "level": 1,
+                "name": "local",
+                "provider": null,
+                "model_id": null,
+                "outcome": "unconfigured",
+                "http_status": null,
+                "latency_ms": null
+              },
+              {
+                "level": 2,
+                "name": "template",
+                "provider": "template",
+                "model_id": "deterministic-template-v1",
+                "outcome": "ok",
+                "http_status": null,
+                "latency_ms": 2
+              }
+            ],
+            "latency_ms": 190,
+            "token_usage": {
+              "input": null,
+              "output": null,
+              "total": null
+            },
+            "validation": {
+              "status": "passed",
+              "reason": null
+            },
+            "router_version": "tax089-router-v1"
+          }
+        },
+        "changes_finding": false
+      }
+    }
+  }
+}

@@ -18,6 +18,13 @@
 | getCaseReview | `GET /api/v1/cases/{case_id}/review` |
 | proposeDecision | `POST /api/v1/cases/{case_id}/decisions` |
 | reviewDecision | `POST /api/v1/cases/{case_id}/decisions/{decision_id}/review` |
+| getCaseBriefing | `GET /api/v1/cases/{case_id}/briefing` |
+| recordFindingFeedback | `POST /api/v1/cases/{case_id}/findings/{finding_id}/feedback` |
+| explainValidationResults | `POST /api/v1/taxpayers/{taxpayer_id}/assistance/validation-explanations` |
+| reviewSubmissionDocuments | `POST /api/v1/taxpayers/{taxpayer_id}/assistance/document-reviews` |
+| draftEvidenceResponse | `POST /api/v1/taxpayers/{taxpayer_id}/assistance/evidence-response-drafts` |
+| getEvidenceResponseDraft | `GET /api/v1/taxpayers/{taxpayer_id}/assistance/evidence-response-drafts/{draft_id}` |
+| confirmEvidenceResponseDraft | `POST /api/v1/taxpayers/{taxpayer_id}/assistance/evidence-response-drafts/{draft_id}/confirm` |
 
 Rules every implementation must keep (see [ADR-003](../../docs/decisions/ADR-003-vati-api-contract.md)):
 
@@ -33,6 +40,8 @@ Rules every implementation must keep (see [ADR-003](../../docs/decisions/ADR-003
 `getCaseReview`, `proposeDecision` and `reviewDecision` were added for officer decisions, approvals and specialist referrals (TAX-042, [ADR-018](../../docs/decisions/ADR-018-officer-review-contract.md)). They project the Frappe decision records of [ADR-013](../../docs/decisions/ADR-013-decisions-approvals-evidence-requests.md). Refusals use `version_conflict` (409) or `invalid_domain_input` (422) with the reason in `field_errors[].code`, e.g. `stale_case_version`, `decision_pending`, `proposal_expired`, `case_state_changed`, `citation_required`.
 
 `getManagementSummary` (TAX-060, [ADR-020](../../docs/decisions/ADR-020-management-summary-contract.md)) gives supervisors measured workload and assurance counts. Anyone else gets `403 forbidden`. Every ratio carries its denominator, gaps are listed in `missing_data`, and review signals are counted by kind only.
+
+`getCaseBriefing` and `recordFindingFeedback` (officers) and the five taxpayer-assistance operations (TAX-096, [ADR-034](../../docs/decisions/ADR-034-ai-briefing-feedback-taxpayer-assistance-contract.md)) carry `AnalysisProvenance` and `AiDisclosure`. Taxpayer-assistance operations are marked `x-vati-audience: taxpayer` and may use only closed `TaxpayerFacing*` schemas plus a few shared primitives. `lint_spec` refuses officer-only schemas or field names there, and `check_example` checks `taxpayer_id` against the path. They are not served by the fixture server (404) until TAX-090 and TAX-100 implement them. See [API_CONTRACTS.md](../../docs/API_CONTRACTS.md).
 
 ## Fixture server
 

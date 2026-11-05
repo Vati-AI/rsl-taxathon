@@ -1,0 +1,100 @@
+{
+  "name": "explain_validation_results_refund_draft",
+  "operation_id": "explainValidationResults",
+  "scenario": "SYN-001",
+  "synthetic": true,
+  "description": "A taxpayer asks why their draft claim is incomplete. The deterministic result is returned unchanged next to a plain-language explanation from the fast model; nothing is changed or sent.",
+  "request": {
+    "method": "POST",
+    "path": "/api/v1/taxpayers/20000000-0000-4000-8000-000000000001/assistance/validation-explanations",
+    "headers": {
+      "Authorization": "Bearer synthetic-taxpayer-token-not-a-secret",
+      "X-Vati-Tenant-ID": "10000000-0000-4000-8000-000000000001",
+      "X-Correlation-ID": "c0000000-0000-4000-8000-000000000030",
+      "Idempotency-Key": "taxpayer:explain:30000000-0011:v1"
+    },
+    "body": {
+      "submission_id": "30000000-0000-4000-8000-000000000011"
+    }
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "X-Correlation-ID": "c0000000-0000-4000-8000-000000000030"
+    },
+    "body": {
+      "data": {
+        "explanation_id": "f0000000-0000-4000-8000-000000000001",
+        "tenant_id": "10000000-0000-4000-8000-000000000001",
+        "taxpayer_id": "20000000-0000-4000-8000-000000000001",
+        "submission_id": "30000000-0000-4000-8000-000000000011",
+        "validation": {
+          "calculation_version": "tax048-reconciliation-v1",
+          "complete": false,
+          "figures": {
+            "claimed_refund": {
+              "amount": "4500.00",
+              "currency": "LSL"
+            },
+            "output_vat": {
+              "amount": "1500.00",
+              "currency": "LSL"
+            },
+            "documented_input_vat": {
+              "amount": "6000.00",
+              "currency": "LSL"
+            },
+            "explained_amount": {
+              "amount": "3600.00",
+              "currency": "LSL"
+            },
+            "unresolved_amount": {
+              "amount": "900.00",
+              "currency": "LSL"
+            }
+          },
+          "issues": [
+            {
+              "code": "payment_evidence_missing",
+              "invoice_number": 2,
+              "message": "Invoice 2: add the amount paid, if you have paid this invoice."
+            }
+          ]
+        },
+        "explanations": [
+          {
+            "issue_code": "payment_evidence_missing",
+            "invoice_number": 2,
+            "explanation": "Invoice 2 has no amount paid yet, so its VAT is not counted as supported. If you have paid it, adding the payment lets the check match it to the invoice.",
+            "suggested_steps": [
+              "Open invoice 2 in the invoice schedule.",
+              "Enter the amount you paid and the payment date.",
+              "Run the check again before you send the claim."
+            ],
+            "document_refs": [
+              {
+                "evidence_id": "50000000-0000-4000-8000-000000000112",
+                "document_sha256": "1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c",
+                "locator": {
+                  "page": 1,
+                  "record": null
+                },
+                "file_name": "synthetic-invoice-0002.pdf"
+              }
+            ],
+            "requires_taxpayer_confirmation": true
+          }
+        ],
+        "disclosure": {
+          "source": "hosted_model",
+          "provider": "groq",
+          "model_id": "openai/gpt-oss-20b",
+          "fell_back": false,
+          "advisory_only": true
+        },
+        "changes_declared_figures": false,
+        "generated_at": "2026-11-05T09:00:02Z"
+      }
+    }
+  }
+}

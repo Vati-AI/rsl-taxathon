@@ -68,6 +68,54 @@ VALIDATION_KEYWORDS = {
     "anyOf",
 }
 ANNOTATION_KEYWORDS = {"description", "default", "title", "examples", "deprecated"}
+
+# Taxpayer-assistance operations (TAX-096, ADR-031) run in the taxpayer permission
+# context. Their request and success schemas may reference only taxpayer-facing schemas
+# plus these shared primitives, every object in them must be closed, and none may carry
+# a field name that belongs to the officer side. This makes leakage of risk scores,
+# findings, internal notes or provenance a contract error, not a runtime hope.
+AUDIENCE_KEY = "x-vati-audience"
+TAXPAYER_AUDIENCE = "taxpayer"
+TAXPAYER_PATH_PREFIX = "/api/v1/taxpayers/{taxpayer_id}/assistance/"
+TAXPAYER_SCHEMA_PREFIX = "TaxpayerFacing"
+TAXPAYER_SHARED_SCHEMAS = {
+    "Uuid",
+    "Timestamp",
+    "Sha256",
+    "Money",
+    "EvidenceLocator",
+    "DocumentType",
+    "AiDisclosure",
+    "ModelProvider",
+}
+TAXPAYER_FORBIDDEN_FIELDS = {
+    "alternative_explanations",
+    "analysis_provenance",
+    "assigned_to",
+    "authorised_by",
+    "case_id",
+    "case_status",
+    "case_version",
+    "confidence",
+    "findings",
+    "indicators",
+    "legal_route",
+    "notes",
+    "proposed_by",
+    "provenance",
+    "recorded_by",
+    "reviewed_by",
+    "selection_reasons",
+    "service_links",
+}
+TAXPAYER_FORBIDDEN_FRAGMENTS = re.compile(r"risk|score|finding|internal|officer|lane|jube|audit")
+# AiDisclosure.source for each AnalysisProvenance.fallback_level_name.
+DISCLOSURE_SOURCE = {
+    "mock": "mock_fixture",
+    "hosted": "hosted_model",
+    "local": "local_model",
+    "template": "template",
+}
 UUID_RE = re.compile(r"^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$")
 UTC_DATETIME_RE = re.compile(r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d{1,6})?Z$")
 
@@ -233,6 +281,75 @@ def operations(spec: dict[str, Any]) -> list[tuple[str, str, dict[str, Any]]]:
     ]
 
 
+def taxpayer_forbidden(name: str) -> bool:
+    return name in TAXPAYER_FORBIDDEN_FIELDS or bool(TAXPAYER_FORBIDDEN_FRAGMENTS.search(name))
+
+
+def lint_taxpayer_schema(
+    spec: dict[str, Any], schema: Any, where: str, seen: set[str] | None = None
+) -> list[str]:
+    """Reject anything a taxpayer-context schema could use to carry internal data."""
+    seen = set() if seen is None else seen
+    if not isinstance(schema, dict):
+        return []
+    errors: list[str] = []
+    if "$ref" in schema:
+        name = str(schema["$ref"]).rsplit("/", 1)[-1]
+        if not (name.startswith(TAXPAYER_SCHEMA_PREFIX) or name in TAXPAYER_SHARED_SCHEMAS):
+            return [f"{where}: taxpayer operations may not reference {name}"]
+        if name in seen:
+            return []
+        seen.add(name)
+        try:
+            target = resolve(spec, schema["$ref"])
+        except (KeyError, TypeError):
+            return [f"{where}: unresolved $ref {schema['$ref']}"]
+        return lint_taxpayer_schema(spec, target, f"#/components/schemas/{name}", seen)
+    types = schema.get("type", [])
+    if "object" in (types if isinstance(types, list) else [types]):
+        if schema.get("additionalProperties") is not False:
+            errors.append(f"{where}: taxpayer-facing objects must set additionalProperties false")
+    for key, sub in schema.get("properties", {}).items():
+        if taxpayer_forbidden(key):
+            errors.append(f"{where}: internal-only field {key!r} in a taxpayer-facing schema")
+        errors += lint_taxpayer_schema(spec, sub, f"{where}.{key}", seen)
+    if isinstance(schema.get("items"), dict):
+        errors += lint_taxpayer_schema(spec, schema["items"], f"{where}/items", seen)
+    for i, sub in enumerate(schema.get("anyOf", [])):
+        errors += lint_taxpayer_schema(spec, sub, f"{where}/anyOf/{i}", seen)
+    return errors
+
+
+def lint_taxpayer_operations(spec: dict[str, Any]) -> list[str]:
+    errors: list[str] = []
+    for method, path, op in operations(spec):
+        where = f"{method.upper()} {path}"
+        audience = op.get(AUDIENCE_KEY)
+        if audience not in (None, TAXPAYER_AUDIENCE):
+            errors.append(f"{where}: unknown {AUDIENCE_KEY} {audience!r}")
+        on_path = path.startswith(TAXPAYER_PATH_PREFIX)
+        if on_path != (audience == TAXPAYER_AUDIENCE):
+            errors.append(
+                f"{where}: taxpayer-assistance routes and {AUDIENCE_KEY}: taxpayer must coincide"
+            )
+        if audience != TAXPAYER_AUDIENCE:
+            continue
+        schemas = []
+        body = op.get("requestBody", {}).get("content", {}).get("application/json", {})
+        if body:
+            schemas.append(("request", body.get("schema")))
+        for status, raw in op.get("responses", {}).items():
+            if status.startswith("2"):
+                try:
+                    content = _deref(spec, raw)["content"]["application/json"]
+                except (KeyError, TypeError):
+                    continue
+                schemas.append((status, content.get("schema")))
+        for label, schema in schemas:
+            errors += lint_taxpayer_schema(spec, schema, f"{where} {label}")
+    return list(dict.fromkeys(errors))  # shared schemas are reported once
+
+
 def lint_spec(spec: dict[str, Any]) -> list[str]:
     errors: list[str] = []
     if not str(spec.get("openapi", "")).startswith("3.1."):
@@ -291,7 +408,7 @@ def lint_spec(spec: dict[str, Any]) -> list[str]:
                 errors.append(f"{where} {status}: must declare X-Correlation-ID")
             if status[0] in "45" and schema.get("$ref") != "#/components/schemas/ErrorResponse":
                 errors.append(f"{where} {status}: errors must use ErrorResponse")
-    return errors
+    return errors + lint_taxpayer_operations(spec)
 
 
 # --- request and example checks --------------------------------------------------------
@@ -434,11 +551,54 @@ def check_example(spec: dict[str, Any], example: dict[str, Any]) -> list[str]:
     if status.startswith("2"):
         tenant = req_headers.get(TENANT_HEADER)
         case_id = path_values.get("case_id")
+        taxpayer_id = path_values.get("taxpayer_id")
         for item in _data_items(res.get("body")):
             if item.get("tenant_id") != tenant:
                 errors.append(f"{name}: response tenant_id differs from request tenant")
             if case_id and item.get("case_id") != case_id:
                 errors.append(f"{name}: response case_id differs from path case_id")
+            if taxpayer_id and item.get("taxpayer_id") != taxpayer_id:
+                errors.append(f"{name}: response taxpayer_id differs from path taxpayer_id")
+        if op.get(AUDIENCE_KEY) == TAXPAYER_AUDIENCE:
+            errors += [f"{name}: {e}" for e in _internal_fields(res.get("body"), "response")]
+        errors += [f"{name}: {e}" for e in _disclosure_mismatches(res.get("body"), "response")]
+    return errors
+
+
+def _internal_fields(value: Any, where: str) -> list[str]:
+    """Officer-only field names anywhere in a taxpayer response (defence in depth)."""
+    errors: list[str] = []
+    if isinstance(value, dict):
+        for key, item in value.items():
+            if taxpayer_forbidden(str(key)):
+                errors.append(f"{where}.{key}: internal-only field in a taxpayer response")
+            errors += _internal_fields(item, f"{where}.{key}")
+    elif isinstance(value, list):
+        for i, item in enumerate(value):
+            errors += _internal_fields(item, f"{where}[{i}]")
+    return errors
+
+
+def _disclosure_mismatches(value: Any, where: str) -> list[str]:
+    """A disclosure must say what the provenance recorded: model, local model or template."""
+    errors: list[str] = []
+    if isinstance(value, dict):
+        provenance, disclosure = value.get("analysis_provenance"), value.get("disclosure")
+        if isinstance(provenance, dict) and isinstance(disclosure, dict):
+            expected = {
+                "source": DISCLOSURE_SOURCE.get(str(provenance.get("fallback_level_name"))),
+                "provider": provenance.get("provider"),
+                "model_id": provenance.get("model_id"),
+                "fell_back": provenance.get("fell_back"),
+            }
+            for key, want in expected.items():
+                if disclosure.get(key) != want:
+                    errors.append(f"{where}.disclosure.{key}: does not match analysis_provenance")
+        for key, item in value.items():
+            errors += _disclosure_mismatches(item, f"{where}.{key}")
+    elif isinstance(value, list):
+        for i, item in enumerate(value):
+            errors += _disclosure_mismatches(item, f"{where}[{i}]")
     return errors
 
 
