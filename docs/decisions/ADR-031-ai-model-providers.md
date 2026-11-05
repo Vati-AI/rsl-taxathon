@@ -1,6 +1,6 @@
 # ADR-031: AI model providers, routing and fallback
 
-Status: proposed (team decision recorded; Gemini model ID needs confirmation, see Blockers)
+Status: accepted (approved by Keletso, 2026-11-05; document model confirmed as `gemini-3.6-flash`)
 Owner and task: Gupta (AI area). Implemented by TAX-089 (router), TAX-097 (investigation agents), TAX-098/TAX-099 (taxpayer assistant). Review: Keletso (contract), Leseli (evaluation), Kananelo and Leseli (disclosure in the UIs).
 Date: 2026-11-05
 
@@ -14,7 +14,7 @@ Decision:
   |---|---|---|
   | `reasoning` | Investigation reasoning, hypotheses and alternatives, related-party analysis, case briefings | Groq `openai/gpt-oss-120b` |
   | `fast` | Classification, short summaries, evidence categorisation, routine tool selection, taxpayer explanations | Groq `openai/gpt-oss-20b` |
-  | `document` | Long contracts, financial statements, reasoning over Docling output | Google Gemini Flash (ID to confirm, see Blockers) |
+  | `document` | Long contracts, financial statements, reasoning over Docling output | Google `gemini-3.6-flash` |
 
 - **Fallback chain, per call:** configured hosted model → optional local open-weights model (Ollama) → deterministic template. A rate limit, timeout, refusal, invalid structured output or failed validation moves to the next level. The level used is recorded on the output and shown in the UI. A failure is never hidden, and a fallback never invents a finding.
 - **`mock` is the default provider.** With no keys configured, every role returns deterministic fixture responses, so CI, `agent_eval --check` and ordinary development need no network and no keys. Live provider tests are opt-in, skipped without keys, and record model ID, settings, latency and token use.
@@ -37,7 +37,7 @@ Official sources and version/date checked (2026-11-05):
 
 Blockers:
 
-- **Gemini 2.5 Flash cannot be the `document` model.** New projects cannot use it, and it is rerouted on 2026-12-01. Following the team rule (record, don't swap silently), the configuration ships with no default document model ID. The team must confirm a replacement. The proposal is `gemini-3.6-flash`, the stable previous-generation Flash, with its context window verified on its model page. Until then the `document` role falls back down the chain.
+- **Gemini 2.5 Flash cannot be the `document` model.** New projects cannot use it, and it is rerouted on 2026-12-01. Following the team rule (record, don't swap silently), the configuration ships with no default document model ID. Resolved 2026-11-05: Keletso confirmed `gemini-3.6-flash`, the stable previous-generation Flash. TAX-089 must verify its context window and the project's observed free-tier limits before relying on it; until verified, the `document` role falls back down the chain.
 
 Verification performed (or named implementation task): Documentation only. TAX-089 implements the router, mock provider, adapters and opt-in live smoke, and records observed limits. TAX-097 enables routed models in the investigation agents and must keep `agent_eval --check` passing in mock mode and over three recorded live runs per scenario. TAX-098/TAX-099/TAX-102 do the same for the taxpayer assistant, including leakage tests. No live call has been made for this ADR.
 

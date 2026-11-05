@@ -1,0 +1,56 @@
+{
+  "id": "TAX-104",
+  "kind": "task",
+  "title": "Fix auditor defects found by TAX-055",
+  "owner": "Leseli",
+  "area": "apps/auditor-web",
+  "phase": "pilot",
+  "status": "BACKLOG",
+  "priority": "P1",
+  "depends_on": [
+    "TAX-055"
+  ],
+  "claimed_by": null,
+  "branch": null,
+  "pr": null,
+  "scope": "Fix the two open auditor-app defects recorded in docs/evidence/TAX-055/README.md: field-error colour contrast and the wrong disabled-suggestion reason on resolved cases",
+  "inputs": [
+    "PROJECT.md",
+    "docs/ARCHITECTURE.md",
+    "docs/API_CONTRACTS.md",
+    "docs/REQUIREMENTS.md",
+    "docs/ENGINEERING_STANDARD.md",
+    "docs/V1_ACCEPTANCE.md",
+    "docs/DESIGN_STANDARD.md",
+    "docs/evidence/TAX-055/README.md",
+    "apps/auditor-web/src/components/SuggestionList.vue"
+  ],
+  "acceptance": [
+    {
+      "text": "Auditor field errors meet 4.5:1 contrast (e.g. the reject-reason error, currently #e03434 on white = 4.45:1) and the KNOWN_A11Y_ISSUES entry for it is removed",
+      "done": false
+    },
+    {
+      "text": "On a resolved case the disabled 'Use as a starting point' explains that the case is resolved, not that a decision is waiting; tests assert both fixes and the auditor e2e and TAX-055 suites pass",
+      "done": false
+    },
+    {
+      "text": "Record relevant tests and evidence, update task status and open a human-review PR",
+      "done": false
+    }
+  ],
+  "verification": "On a resolved case the disabled 'Use as a starting point' explains that the case is resolved, not that a decision is waiting; tests assert both fixes and the auditor e2e and TAX-055 suites pass",
+  "skills": [
+    "start-task",
+    "implement-change",
+    "update-project-task",
+    "finish-task"
+  ],
+  "evidence": [],
+  "notes": [
+    {
+      "at": "2026-11-05T10:39:50.241416+00:00",
+      "text": "Added 2026-11-05: two product defects TAX-055 recorded for the auditor owner had no task."
+    }
+  ]
+}

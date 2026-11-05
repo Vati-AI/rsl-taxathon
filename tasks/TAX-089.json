@@ -63,6 +63,10 @@
     {
       "at": "2026-11-05T10:07:38.336884+00:00",
       "text": "Rescoped 2026-11-05 per ADR-031: the agreed plan uses Groq/Gemini free tiers as primary for synthetic data; the local model is a fallback, not the only path. Dependency on TAX-088 removed (the router does not need live cases; TAX-088 now depends on this)."
+    },
+    {
+      "at": "2026-11-05T10:39:50.241416+00:00",
+      "text": "Keletso approved ADR-031 on 2026-11-05 and confirmed gemini-3.6-flash as the document model; verify its context window and observed free-tier limits before relying on it."
     }
   ]
 }

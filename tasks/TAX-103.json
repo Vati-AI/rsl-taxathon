@@ -1,0 +1,59 @@
+{
+  "id": "TAX-103",
+  "kind": "task",
+  "title": "Live-app end-to-end regression re-run",
+  "owner": "Kananelo",
+  "area": "tests/frontend",
+  "phase": "pilot",
+  "status": "BACKLOG",
+  "priority": "P0",
+  "depends_on": [
+    "TAX-055",
+    "TAX-091",
+    "TAX-092",
+    "TAX-094"
+  ],
+  "claimed_by": null,
+  "branch": null,
+  "pr": null,
+  "scope": "Re-run the TAX-055 browser regression against the live taxpayer portal and the Frappe-hosted auditor app with seeded demo data, instead of the fixture API and session mocks",
+  "inputs": [
+    "PROJECT.md",
+    "docs/ARCHITECTURE.md",
+    "docs/API_CONTRACTS.md",
+    "docs/REQUIREMENTS.md",
+    "docs/ENGINEERING_STANDARD.md",
+    "docs/V1_ACCEPTANCE.md",
+    "docs/DESIGN_STANDARD.md",
+    "docs/evidence/TAX-055/README.md",
+    "tests/frontend/scenarios.spec.ts"
+  ],
+  "acceptance": [
+    {
+      "text": "The TAX-055 suite (or a live profile of it) runs against the Frappe-hosted apps with real logins and the TAX-094 seed, covering both personas, three widths and accessibility states",
+      "done": false
+    },
+    {
+      "text": "All five scenario routes pass live, including an officer evidence request reaching the taxpayer portal; failures are recorded with fixes or owners; fixture-only paths are clearly separated",
+      "done": false
+    },
+    {
+      "text": "Record relevant tests and evidence, update task status and open a human-review PR",
+      "done": false
+    }
+  ],
+  "verification": "All five scenario routes pass live, including an officer evidence request reaching the taxpayer portal; failures are recorded with fixes or owners; fixture-only paths are clearly separated",
+  "skills": [
+    "start-task",
+    "implement-change",
+    "update-project-task",
+    "finish-task"
+  ],
+  "evidence": [],
+  "notes": [
+    {
+      "at": "2026-11-05T10:39:50.241416+00:00",
+      "text": "Added 2026-11-05: TAX-055 was delivered against fixtures before the live apps existed; this is the live re-run TAX-058 needs."
+    }
+  ]
+}
