@@ -130,7 +130,7 @@ class ReviewTests(unittest.TestCase):
             self.assertNotIn(word, text, word)
         missing = next(p for p in result["prompts"]
                        if p["code"] == "refund_claim_exceeds_documented_input_vat")  # fmt: skip
-        self.assertIn("LSL 3700.00", missing["message"])
+        self.assertIn("LSL 3,700.00", missing["message"])
 
     def test_indicators_and_lane_never_reach_the_taxpayer(self):
         fake = {

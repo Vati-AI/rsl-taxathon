@@ -68,7 +68,7 @@ app=root/'apps/vati_tax'
 if not app.exists():
     app.symlink_to('/workspace/vati_tax', target_is_directory=True)
 cmd([str(root/'env/bin/python'),'-m','pip','install','-e',str(app)])
-# TAX-044 / ADR-020: make the read-only ai/ mount importable as `ai` without installing
+# TAX-044 / ADR-022: make the read-only ai/ mount importable as `ai` without installing
 # its dependencies (langgraph is never installed in the Frappe bench).
 site_packages=subprocess.check_output([str(root/'env/bin/python'),'-c','import sysconfig;print(sysconfig.get_paths()["purelib"])'],text=True).strip()
 pathlib.Path(site_packages,'vati_shared.pth').write_text('/workspace/vati_shared')

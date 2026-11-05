@@ -31,6 +31,19 @@ placed on the matching field and step. Rules: `src/lib/validation.ts` and
 `src/lib/documents.ts` mirror `vati_tax/portal/claims.py` and the evidence
 limits; the server re-checks everything.
 
+## Purchase invoices and pre-submission checks (TAX-044)
+
+Claim details also ask for the period's output and input VAT. A **Purchase
+invoices** step lists each invoice behind the claim (number, date, supplier,
+amounts excluding VAT, VAT and total, optional amount paid and contract), each
+linked to an uploaded document; totals are added in whole cents and the server
+recomputes them. On **Review and send**, a "Before you send" panel shows the
+claimed amount, the VAT on the listed invoices, what the documents support and
+the rest, with correction prompts that link back to the right step. The checks
+come from `vati_tax.portal.api.review_refund_claim` (the TAX-048 reconciliation);
+they are guidance only and never block sending. Rules: `src/lib/schedule.ts`
+mirrors `vati_tax/submissions/invoices.py`.
+
 ## Evidence requests (TAX-045)
 
 `/taxpayer/requests` lists the taxpayer's own evidence requests with

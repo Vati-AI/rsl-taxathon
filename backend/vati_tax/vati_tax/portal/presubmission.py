@@ -4,7 +4,7 @@ Reuses the TAX-048 deterministic reconciliation (``ai.tools.refund_reconciliatio
 without changing it: that file is pinned by approved playbooks (ADR-017) and uses
 only the standard library. This module is the only place in the Frappe app that
 imports from ``ai``, and it imports only that module (``test_presubmission``
-enforces both). See ADR-020.
+enforces both). See ADR-022.
 
 What the taxpayer sees is limited on purpose:
 
@@ -120,7 +120,9 @@ INVOICE_PROMPTS: Final[dict[str, str]] = {
 
 
 def _money(value: Any) -> str:
-    return f"{domain.CURRENCY} {value['amount']}" if isinstance(value, dict) else str(value)
+    """``LSL 8,210.55``: grouped like every other amount the portal shows."""
+    amount = value.get("amount") if isinstance(value, dict) else value
+    return f"{domain.CURRENCY} {domain.parse_money(amount, 'amount'):,.2f}"
 
 
 def taxpayer_review(result: dict[str, Any], rows: Sequence[InvoiceRow]) -> dict[str, Any]:

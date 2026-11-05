@@ -29,9 +29,12 @@ export interface ClaimDraft {
   explanation: string;
   contactEmail: string;
   declaration: boolean;
+  /** TAX-044: the period's declared output and input VAT. */
+  outputVat: string;
+  inputVat: string;
 }
 
-export type ClaimField = keyof ClaimDraft | 'documents';
+export type ClaimField = keyof ClaimDraft | 'documents' | 'invoices';
 export type ClaimErrors = Partial<Record<ClaimField, string>>;
 
 export function emptyClaim(): ClaimDraft {
@@ -42,6 +45,8 @@ export function emptyClaim(): ClaimDraft {
     explanation: '',
     contactEmail: '',
     declaration: false,
+    outputVat: '',
+    inputVat: '',
   };
 }
 
@@ -102,6 +107,18 @@ export function validateDetails(draft: ClaimDraft, today: Date = new Date()): Cl
   if (email !== '' && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
     errors.contactEmail = 'Enter an email address like name@example.com, or leave it blank.';
   }
+
+  // TAX-044: the period's figures are required; zero is a valid answer.
+  for (const [field, label] of [
+    ['outputVat', 'output VAT'],
+    ['inputVat', 'input VAT'],
+  ] as const) {
+    const raw = draft[field].trim();
+    if (raw === '') errors[field] = `Enter the ${label} for the period, or 0.00 if there was none.`;
+    else if (normaliseAmount(raw) === null) {
+      errors[field] = 'Enter numbers only, with up to two decimal places, for example 1500.00.';
+    }
+  }
   return errors;
 }
 
@@ -114,6 +131,9 @@ const SERVER_FIELDS: Record<string, ClaimField> = {
   contact_email: 'contactEmail',
   evidence_ids: 'documents',
   declaration: 'declaration',
+  period_output_vat: 'outputVat',
+  period_input_vat: 'inputVat',
+  invoices: 'invoices',
 };
 
 /** Place server field errors on the form; unknown fields are returned separately. */
@@ -124,7 +144,8 @@ export function mapServerErrors(fieldErrors: { field: string; message: string }[
   const errors: ClaimErrors = {};
   const other: string[] = [];
   for (const item of fieldErrors) {
-    const field = SERVER_FIELDS[item.field];
+    // Row errors (`invoices.N.field`) belong to the invoice step (TAX-044).
+    const field = item.field.startsWith('invoices.') ? 'invoices' : SERVER_FIELDS[item.field];
     if (field) errors[field] ??= item.message;
     else other.push(item.message);
   }
@@ -132,8 +153,9 @@ export function mapServerErrors(fieldErrors: { field: string; message: string }[
 }
 
 /** Which step holds a field, so a server error can send the taxpayer back to it. */
-export function stepForField(field: ClaimField): 'details' | 'documents' | 'review' {
+export function stepForField(field: ClaimField): 'details' | 'documents' | 'invoices' | 'review' {
   if (field === 'documents') return 'documents';
+  if (field === 'invoices') return 'invoices';
   if (field === 'declaration') return 'review';
   return 'details';
 }

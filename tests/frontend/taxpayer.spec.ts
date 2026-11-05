@@ -149,7 +149,7 @@ test.describe('taxpayer portal', () => {
     await period.press('Enter');
 
     await expect(
-      page.getByRole('alert').filter({ hasText: 'Fix 2 fields to continue' }),
+      page.getByRole('alert').filter({ hasText: 'Fix 4 fields to continue' }),
     ).toBeVisible();
     const amount = page.getByLabel('Amount claimed (LSL)');
     await expect(amount).toBeFocused();

@@ -9,10 +9,11 @@ import { mockTaxpayerSession, type PortalMock } from './support/sessions';
 // shapes the Frappe methods use; the server-side rules themselves are covered by
 // vati_tax/portal/test_refund_claim_bench.py on a disposable Frappe site.
 //
-// CAPTURE_SCREENSHOTS=1 also writes review screenshots to docs/evidence/TAX-043
+// CAPTURE_SCREENSHOTS=1 also writes review screenshots to docs/evidence/TAX-044
+// (the claim form as extended by TAX-044; docs/evidence/TAX-043 stays as merged)
 // (evidence for human review only; nothing is compared or approved here).
 const capture = Boolean(process.env.CAPTURE_SCREENSHOTS);
-const out = path.resolve(__dirname, '../../docs/evidence/TAX-043');
+const out = path.resolve(__dirname, '../../docs/evidence/TAX-044');
 const NEW_CLAIM = '/taxpayer/submissions/new';
 const HEADING = 'New VAT refund claim';
 
@@ -48,6 +49,8 @@ async function chooseReason(page: Page, label: string) {
 async function fillDetails(page: Page) {
   await page.getByLabel('Tax period').fill('2026-09');
   await page.getByLabel('Amount claimed (LSL)').fill('48,210.55');
+  await page.getByLabel('Output VAT for the period (LSL)').fill('0');
+  await page.getByLabel('Input VAT for the period (LSL)').fill('48210.55');
   await chooseReason(page, 'More input VAT than output VAT');
   await page.getByLabel('Contact email (optional)').fill('accounts@example.test');
   await page.getByRole('button', { name: 'Continue to documents' }).click();
@@ -62,9 +65,41 @@ async function upload(page: Page, file = pdf()) {
     .filter({ has: page.getByText(file.name, { exact: true }) });
 }
 
-async function toReview(page: Page) {
+/** A row field by its visible label; frappe-ui appends " (required)" to required ones. */
+function field(row: ReturnType<Page['getByRole']>, label: string) {
+  const escaped = label.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  // Match the accessible name, which frappe-ui computes as "<label> (required)".
+  return row.getByRole('textbox', { name: new RegExp(`^${escaped}( \\(required\\))?$`) });
+}
+
+/** TAX-044: one purchase invoice behind the claim (its copy is the only upload). */
+async function fillInvoice(page: Page, overrides: Record<string, string> = {}) {
+  const row = page.getByRole('group', { name: 'Invoice 1' });
+  const values: Record<string, string> = {
+    'Invoice number': 'INV-2026-0912',
+    'Invoice date': '2026-09-12',
+    Supplier: 'Synthetic Highland Supplies',
+    'Amount excluding VAT (LSL)': '321403.67',
+    'VAT (LSL)': '48210.55',
+    'Total including VAT (LSL)': '369614.22',
+    ...overrides,
+  };
+  for (const [label, value] of Object.entries(values)) {
+    await field(row, label).fill(value);
+  }
+}
+
+async function toInvoices(page: Page) {
+  await page.getByRole('button', { name: 'Continue to invoices' }).click();
+  await expect(page.getByRole('heading', { name: 'Purchase invoices' })).toBeFocused();
+}
+
+async function toReview(page: Page, invoice: Record<string, string> = {}) {
+  await toInvoices(page);
+  await fillInvoice(page, invoice);
   await page.getByRole('button', { name: 'Continue to review' }).click();
   await expect(page.getByRole('heading', { name: 'Check your claim' })).toBeFocused();
+  await expect(page.getByRole('heading', { name: 'Before you send' })).toBeVisible();
 }
 
 const width = (project: string) => project.split('-')[1];
@@ -93,7 +128,8 @@ test.describe('VAT refund claim (TAX-043)', () => {
     await shot(page, 'documents-uploaded', w);
 
     await toReview(page);
-    await expect(page.getByText('LSL 48,210.55')).toBeVisible();
+    // The claimed amount, as shown in the claim details on the review page.
+    await expect(page.getByText('LSL 48,210.55').first()).toBeVisible();
     await expect(page.getByText('September 2026')).toBeVisible();
     await expect(page.getByText('More input VAT than output VAT')).toBeVisible();
     await accessible(page);
@@ -124,7 +160,7 @@ test.describe('VAT refund claim (TAX-043)', () => {
     await chooseReason(page, 'Another reason');
     await page.getByRole('button', { name: 'Continue to documents' }).click();
 
-    await expect(page.getByRole('alert').filter({ hasText: 'Fix 3 fields' })).toBeVisible();
+    await expect(page.getByRole('alert').filter({ hasText: 'Fix 5 fields' })).toBeVisible();
     await expect(page.getByLabel('Tax period')).toBeFocused();
     await expect(page.getByText('The amount claimed must be more than 0.00.')).toBeVisible();
     await expect(page.getByText('Explain why you are claiming a refund.')).toBeVisible();
@@ -135,9 +171,11 @@ test.describe('VAT refund claim (TAX-043)', () => {
     // The declaration is required before sending.
     await page.getByLabel('Tax period').fill('2026-09');
     await page.getByLabel('Amount claimed (LSL)').fill('100');
+    await page.getByLabel('Output VAT for the period (LSL)').fill('0');
+    await page.getByLabel('Input VAT for the period (LSL)').fill('100');
     await page.getByLabel('Explanation').fill('Synthetic: equipment bought before trading began.');
     await page.getByRole('button', { name: 'Continue to documents' }).click();
-    await page.getByRole('button', { name: 'Continue to review' }).click();
+    await page.getByRole('button', { name: 'Continue to invoices' }).click();
     await expect(page.getByText(/Upload at least one supporting document/).first()).toBeVisible();
     await expect(page.getByLabel('Choose a file to upload')).toBeFocused();
     await (await upload(page)).getByText('Uploaded').waitFor();
@@ -220,7 +258,7 @@ test.describe('VAT refund claim (TAX-043)', () => {
     await accessible(page);
     await shot(page, 'documents-rejected', w);
 
-    await page.getByRole('button', { name: 'Continue to review' }).click();
+    await page.getByRole('button', { name: 'Continue to invoices' }).click();
     await expect(
       page.getByRole('alert').filter({ hasText: 'Retry or remove the documents' }),
     ).toBeVisible();
@@ -314,10 +352,32 @@ test.describe('VAT refund claim (TAX-043)', () => {
     await page.keyboard.press('Enter');
     await expect(reason).toContainText('More input VAT than output VAT');
     await expect(reason).toBeFocused();
+    for (const [label, value] of [
+      ['Output VAT for the period (LSL)', '0'],
+      ['Input VAT for the period (LSL)', '15000'],
+    ]) {
+      await page.getByLabel(label).focus();
+      await page.keyboard.type(value);
+    }
     await page.getByLabel('Contact email (optional)').press('Enter');
     await expect(page.getByRole('heading', { name: 'Supporting documents' })).toBeFocused();
 
     await (await upload(page)).getByText('Uploaded').waitFor();
+    await page.getByRole('button', { name: 'Continue to invoices' }).focus();
+    await page.keyboard.press('Enter');
+    await expect(page.getByRole('heading', { name: 'Purchase invoices' })).toBeFocused();
+    const row = page.getByRole('group', { name: 'Invoice 1' });
+    for (const [label, value] of [
+      ['Invoice number', 'INV-1'],
+      ['Invoice date', '2026-09-12'],
+      ['Supplier', 'Synthetic Supplies'],
+      ['Amount excluding VAT (LSL)', '100000'],
+      ['VAT (LSL)', '15000'],
+      ['Total including VAT (LSL)', '115000'],
+    ]) {
+      await field(row, label).focus();
+      await page.keyboard.type(value);
+    }
     await page.getByRole('button', { name: 'Continue to review' }).focus();
     await page.keyboard.press('Enter');
     await expect(page.getByRole('heading', { name: 'Check your claim' })).toBeFocused();
@@ -328,5 +388,75 @@ test.describe('VAT refund claim (TAX-043)', () => {
     await page.getByRole('button', { name: 'Send claim' }).focus();
     await page.keyboard.press('Enter');
     await expect(page.getByRole('heading', { name: 'Claim sent' })).toBeFocused();
+  });
+  test('pre-submission checks: figures and correction prompts, never accusations', async ({
+    page,
+  }, testInfo) => {
+    const w = width(testInfo.project.name);
+    const mock = await open(page);
+    await fillDetails(page);
+    await (await upload(page)).getByText('Uploaded').waitFor();
+    await toInvoices(page);
+    await shot(page, 'invoices-empty', w);
+    // The claim (48,210.55) is more than this invoice's VAT, and no payment or contract.
+    await fillInvoice(page, { 'VAT (LSL)': '40000.00', 'Total including VAT (LSL)': '361403.67' });
+    await expect(page.getByLabel('Invoice totals')).toContainText('LSL 40,000.00');
+    await accessible(page);
+    await shot(page, 'invoices-filled', w);
+    await page.getByRole('button', { name: 'Continue to review' }).click();
+    const checks = page.getByRole('region', { name: 'Before you send' });
+    await expect(checks.getByText('VAT on the invoices you listed', { exact: true })).toBeVisible();
+    await expect(checks.getByText('LSL 8,210.55 more than the VAT')).toBeVisible();
+    await expect(checks.getByText('Invoice 1: add the amount paid')).toBeVisible();
+    await expect(checks).not.toContainText(/fraud|abuse|suspicious|penalt|risk|lane/i);
+    expect(mock.reviews).toBe(1);
+    await accessible(page);
+    await shot(page, 'review-with-checks', w);
+    // The panel itself, whole: page captures stop at the shell's scroll container.
+    if (capture) await checks.screenshot({ path: path.join(out, `checks-panel-${w}.png`) });
+
+    // A prompt links back to the invoice; fixing it clears the guidance.
+    // Each Change button is described by its own prompt for screen readers.
+    const change = checks.getByRole('button', { name: 'Change invoice 1' }).first();
+    await expect(change).toHaveAccessibleDescription(/Invoice 1:/);
+    await change.click();
+    await expect(page.getByRole('heading', { name: 'Purchase invoices' })).toBeFocused();
+    await fillInvoice(page, {
+      'Amount paid (LSL, optional)': '369614.22',
+    });
+    await page.getByRole('button', { name: 'Continue to review' }).click();
+    await expect(checks.getByText('Invoice 1: add the amount paid')).toHaveCount(0);
+    await expect(checks.getByText(/if you have a contract or purchase order/)).toBeVisible();
+    // Prompts never block sending.
+    await page
+      .getByLabel('I declare that the information I have given is true and complete.')
+      .check();
+    await page.getByRole('button', { name: 'Send claim' }).click();
+    await expect(page.getByRole('heading', { name: 'Claim sent' })).toBeFocused();
+    const [stored] = [...mock.claims.values()];
+    expect(stored.body).toContain('INV-2026-0912');
+  });
+
+  test('invoice rows are validated and focus moves to the first problem', async ({
+    page,
+  }, testInfo) => {
+    const w = width(testInfo.project.name);
+    await open(page);
+    await fillDetails(page);
+    await (await upload(page)).getByText('Uploaded').waitFor();
+    await toInvoices(page);
+    await fillInvoice(page, { 'Total including VAT (LSL)': '1.00', 'Invoice date': '2026-10-02' });
+    await page.getByRole('button', { name: 'Continue to review' }).click();
+    const row = page.getByRole('group', { name: 'Invoice 1' });
+    await expect(
+      page.getByRole('alert').filter({ hasText: 'Invoices need attention' }),
+    ).toBeVisible();
+    await expect(
+      row.getByText('The invoice date is after the end of the claim period.'),
+    ).toBeVisible();
+    await expect(row.getByText('must equal the total')).toBeVisible();
+    await expect(field(row, 'Invoice date')).toBeFocused();
+    await accessible(page);
+    await shot(page, 'invoices-errors', w);
   });
 });
