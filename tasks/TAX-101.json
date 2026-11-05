@@ -1,0 +1,58 @@
+{
+  "id": "TAX-101",
+  "kind": "task",
+  "title": "Taxpayer portal assistant UI",
+  "owner": "Kananelo",
+  "area": "apps/taxpayer-web",
+  "phase": "pilot",
+  "status": "BACKLOG",
+  "priority": "P1",
+  "depends_on": [
+    "TAX-100",
+    "TAX-098",
+    "TAX-092"
+  ],
+  "claimed_by": null,
+  "branch": null,
+  "pr": null,
+  "scope": "Add the assistant to the taxpayer portal: guidance in the claim form, upload flow showing extracted fields to confirm and flagged invoices with explanations, pre-submission correction guidance, and evidence-response drafting; every AI suggestion is labelled with its source (model or template) and requires the taxpayer's confirmation",
+  "inputs": [
+    "PROJECT.md",
+    "docs/ARCHITECTURE.md",
+    "docs/API_CONTRACTS.md",
+    "docs/REQUIREMENTS.md",
+    "docs/ENGINEERING_STANDARD.md",
+    "docs/V1_ACCEPTANCE.md",
+    "docs/DESIGN_STANDARD.md",
+    "docs/AI_STANDARD.md",
+    "apps/taxpayer-web"
+  ],
+  "acceptance": [
+    {
+      "text": "The UI distinguishes deterministic validation results from AI explanations, labels model versus template output, and offers no path to submit without explicit confirmation; accessibility checks pass",
+      "done": false
+    },
+    {
+      "text": "The TAX-102 demo flow (upload invoices, see problems, correct, then answer an RSL evidence request) works end to end against the live service",
+      "done": false
+    },
+    {
+      "text": "Record relevant tests and evidence, update task status and open a human-review PR",
+      "done": false
+    }
+  ],
+  "verification": "The TAX-102 demo flow (upload invoices, see problems, correct, then answer an RSL evidence request) works end to end against the live service",
+  "skills": [
+    "start-task",
+    "implement-change",
+    "update-project-task",
+    "finish-task"
+  ],
+  "evidence": [],
+  "notes": [
+    {
+      "at": "2026-11-05T10:07:38.336884+00:00",
+      "text": "Added 2026-11-05 to record the agreed AI architecture (ADR-031): hosted models through a role router with local/template fallback, and the taxpayer-side assistant."
+    }
+  ]
+}

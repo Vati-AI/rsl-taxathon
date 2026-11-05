@@ -87,7 +87,7 @@ bench --site taxathon.localhost execute vati_tax.identity.provision.grant_member
   --kwargs '{"user": "taxpayer.a@example.test", "tenant_id": "10000000-0000-4000-8000-000000000001", "role": "taxpayer", "taxpayer_id": "80015243-dd34-4e97-b085-7356ffdd042f"}'
 ```
 
-The taxpayer above owns fixture `SUB-SYN-0001`. `portal/fixtures.py` maps every portal fixture to its synthetic owner.
+The portal's submissions list and status are live from TAX-092: a taxpayer sees only Vati Submission records with their own `tenant_id` and `taxpayer_id` (filtered in the query), another taxpayer's submission is "not found", and only the allowlisted fields in `portal/submissions.py` are returned, with the TAX-039 taxpayer-facing review status and never case, Jube or risk detail. `portal/fixtures.py` (fixture `SUB-SYN-0001` is owned by the taxpayer above) is no longer served; the browser harness uses it as mock records.
 
 ## Evidence (TAX-032)
 

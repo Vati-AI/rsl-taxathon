@@ -1,6 +1,6 @@
 # ADR-021: Cited case briefing with validated references and fenced evidence text
 
-Status: proposed (TAX-053, pending review)
+Status: proposed (TAX-053, pending review); the "no hosted model" alternative is superseded for synthetic data by ADR-031, and the validation rules below apply to every model
 Owner and task: Leseli (owner, handed over by Gupta), TAX-053; implemented by leseli-claude-20261105-053. Review: Gupta (AI area), Edga for the evidence-read rule.
 Date: 2026-11-05
 

@@ -387,13 +387,16 @@ class PortalScopeTests(IntegrationTestCase):
     def tearDown(self):
         frappe.set_user("Administrator")
 
-    def test_taxpayer_sees_only_own_fixture_submissions(self):
+    def test_taxpayer_sees_only_own_submissions(self):
+        # TAX-092: the list is live; fixture records are no longer served, and the
+        # full own-versus-other scope is covered in portal/test_refund_claim_bench.py.
         frappe.set_user(self.taxpayer)
-        ids = [item["id"] for item in portal_api.get_submissions()["data"]]
-        self.assertEqual(ids, ["SUB-SYN-0001"])
-        self.assertEqual(portal_api.get_submission("SUB-SYN-0001")["data"]["id"], "SUB-SYN-0001")
-        with self.assertRaises(frappe.DoesNotExistError):
-            portal_api.get_submission("SUB-SYN-0002")
+        listed = portal_api.get_submissions()
+        self.assertEqual(listed["mode"], "live")
+        self.assertNotIn("SUB-SYN-0001", [item["id"] for item in listed["data"]])
+        for fixture_id in ("SUB-SYN-0001", "SUB-SYN-0002"):
+            with self.assertRaises(frappe.DoesNotExistError):
+                portal_api.get_submission(fixture_id)
 
     def test_non_taxpayers_are_denied(self):
         for user in (self.officer, "Administrator"):

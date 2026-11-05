@@ -73,6 +73,10 @@
       "text": "Claimed by kananelo-claude-20261105-078"
     },
     {
+      "at": "2026-11-05T10:07:38.336884+00:00",
+      "text": "2026-11-05 (ADR-031): when TAX-098 is available, reminders can use its validation explanations; this task stays deterministic otherwise."
+    },
+    {
       "at": "2026-11-05T10:22:24.150797+00:00",
       "text": "Implementation PR #211 opened for human review"
     }

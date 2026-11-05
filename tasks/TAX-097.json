@@ -1,0 +1,61 @@
+{
+  "id": "TAX-097",
+  "kind": "task",
+  "title": "Model-assisted reasoning in the four investigation agents",
+  "owner": "Gupta",
+  "area": "ai",
+  "phase": "pilot",
+  "status": "BACKLOG",
+  "priority": "P0",
+  "depends_on": [
+    "TAX-089",
+    "TAX-056"
+  ],
+  "claimed_by": null,
+  "branch": null,
+  "pr": null,
+  "scope": "Use routed models in the VAT refund, related-party, evidence and case briefing agents for interpretation only (explain discrepancies, interpret contracts and Docling output, form and challenge hypotheses with legitimate alternatives, draft briefings), over deterministic reconciliation results and cited evidence; every output passes the existing validators",
+  "inputs": [
+    "PROJECT.md",
+    "docs/ARCHITECTURE.md",
+    "docs/API_CONTRACTS.md",
+    "docs/REQUIREMENTS.md",
+    "docs/ENGINEERING_STANDARD.md",
+    "docs/V1_ACCEPTANCE.md",
+    "docs/AI_STANDARD.md",
+    "docs/decisions/ADR-031-ai-model-providers.md",
+    "ai/workflows/case_briefing.py",
+    "ai/workflows/refund_lanes.py",
+    "ai/workflows/related_party_playbook.py",
+    "ai/tools/evidence_search.py",
+    "ai/evaluation/agent_eval.py"
+  ],
+  "acceptance": [
+    {
+      "text": "Figures, thresholds and lanes still come only from deterministic tools; model output that adds a figure, decision, accusation or legal conclusion, or an unresolvable citation, is rejected and falls back; the document role is used only for long documents",
+      "done": false
+    },
+    {
+      "text": "agent_eval --check passes in mock mode; three recorded live runs per scenario (SYN-001..SYN-005) keep citations, alternatives and injection resistance, with failures, latency and tokens reported rather than cherry-picked",
+      "done": false
+    },
+    {
+      "text": "Record relevant tests and evidence, update task status and open a human-review PR",
+      "done": false
+    }
+  ],
+  "verification": "agent_eval --check passes in mock mode; three recorded live runs per scenario (SYN-001..SYN-005) keep citations, alternatives and injection resistance, with failures, latency and tokens reported rather than cherry-picked",
+  "skills": [
+    "start-task",
+    "implement-change",
+    "update-project-task",
+    "finish-task"
+  ],
+  "evidence": [],
+  "notes": [
+    {
+      "at": "2026-11-05T10:07:38.336884+00:00",
+      "text": "Added 2026-11-05 to record the agreed AI architecture (ADR-031): hosted models through a role router with local/template fallback, and the taxpayer-side assistant."
+    }
+  ]
+}

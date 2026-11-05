@@ -1,7 +1,9 @@
 """Explicitly synthetic taxpayer-facing submission fixtures.
 
-These records exist only so the portal shell can render realistic list and
-status screens before TAX-031 adds the Submission DocTypes. Every payload is
+These records let the portal shell render realistic list and status screens
+before TAX-031 added the Submission DocTypes. Since TAX-092 the portal API reads
+live records instead and no longer serves these; the browser harness
+(tests/frontend/support/sessions.ts) still uses them as mock records. Every payload is
 labelled ``mode: fixture`` and ``synthetic: true``. Names echo the synthetic
 scenarios in ``data/scenarios/cases.json``; nothing here is a real taxpayer,
 assessment or decision. Taxpayers never see risk scores or investigation state.

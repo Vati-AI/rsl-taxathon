@@ -88,6 +88,7 @@ export const OTHER_TAXPAYER_SUBMISSION_ID = fixtures.all_ids.find(
 )!;
 
 const FIXTURE = { mode: 'fixture', synthetic: true } as const;
+const LIVE = { mode: 'live' } as const;
 
 function ok(route: Route, message: unknown) {
   return route.fulfill({ status: 200, json: { message } });
@@ -110,6 +111,11 @@ interface StoredClaim {
 }
 
 export interface PortalMock {
+  /**
+   * TAX-092: where get_session/get_submissions/get_submission say their data comes
+   * from. The server is live; 'fixture' checks the portal still labels fixture data.
+   */
+  dataMode: 'live' | 'fixture';
   /** Calls the portal made, in order, for assertions. */
   calls: string[];
   persona: TaxpayerPersona;
@@ -344,11 +350,46 @@ function evidenceRequests(): Map<string, EvidenceRequestMock> {
   ] as [string, EvidenceRequestMock][]); // prettier-ignore
 }
 
+function meta(mock: PortalMock) {
+  return mock.dataMode === 'fixture' ? FIXTURE : LIVE;
+}
+
+/**
+ * The taxpayer's own submissions as portal.submissions.view shapes them: claims sent
+ * in this test first (newest), then the synthetic records from portal/fixtures.py.
+ * A sent claim is "under_review" until the TAX-039 bridge mirrors a Jube state.
+ */
+function ownSubmissions(mock: PortalMock): PortalSubmission[] {
+  const sent = [...mock.claims.values()].reverse().map(({ result }) => {
+    const d = result.data as Record<string, string>;
+    return {
+      id: d.submission_id,
+      reference: d.reference,
+      taxpayer_name: SYNTHETIC_TAXPAYER.full_name,
+      tax_type: 'VAT refund claim',
+      period: d.period,
+      amount: d.claimed_amount,
+      currency: d.currency,
+      status: 'under_review',
+      submitted_at: d.submitted_at,
+      next_step: 'An officer is reviewing your submission. No action is needed from you yet.',
+      steps: [
+        { label: 'Submitted', state: 'complete', at: d.submitted_at },
+        { label: 'Officer review', state: 'current', at: null },
+        { label: 'Outcome issued', state: 'upcoming', at: null },
+      ],
+    };
+  });
+  return [...sent, ...PORTAL_SUBMISSIONS];
+}
+
 export async function mockTaxpayerSession(
   page: Page,
   persona: TaxpayerPersona,
+  options: { dataMode?: 'live' | 'fixture' } = {},
 ): Promise<PortalMock> {
   const mock: PortalMock = {
+    dataMode: options.dataMode ?? 'live',
     calls: [],
     persona,
     evidence: [],
@@ -383,7 +424,7 @@ export async function mockTaxpayerSession(
         return refused(route, 'PermissionError', 403, 'This account is not linked to a taxpayer.');
       const { user, full_name, taxpayer_id } = SYNTHETIC_TAXPAYER;
       return ok(route, {
-        ...FIXTURE,
+        ...meta(mock),
         user,
         full_name,
         taxpayers: [{ tenant_id: SYNTHETIC_TENANT_ID, taxpayer_id }],
@@ -562,14 +603,14 @@ export async function mockTaxpayerSession(
       return ok(route, { mode: 'live', data: mock.reminders });
     }
     if (method === 'vati_tax.portal.api.get_submissions') {
-      return ok(route, { ...FIXTURE, data: PORTAL_SUBMISSIONS });
+      return ok(route, { ...meta(mock), data: ownSubmissions(mock) });
     }
     if (method === 'vati_tax.portal.api.get_submission') {
       const body = (route.request().postDataJSON() ?? {}) as { submission_id?: string };
-      // As find_submission(id, scope): another taxpayer's record is concealed.
-      const item = PORTAL_SUBMISSIONS.find((x) => x.id === body.submission_id);
+      // As the server: another taxpayer's record is concealed as not found.
+      const item = ownSubmissions(mock).find((x) => x.id === body.submission_id);
       return item
-        ? ok(route, { ...FIXTURE, data: item })
+        ? ok(route, { ...meta(mock), data: item })
         : refused(route, 'DoesNotExistError', 404, 'Submission not found.');
     }
     return route.fulfill({

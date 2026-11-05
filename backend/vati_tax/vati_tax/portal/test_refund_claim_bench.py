@@ -560,3 +560,92 @@ class RefundClaimPortalTests(IntegrationTestCase):
             with self.subTest(label):
                 with self.assertRaises(InvalidDomainInput):
                     new_claim(bad)
+
+    # --- live submissions list and status (TAX-092) ------------------------------------
+
+    def sent_claim(self, who: str = "taxpayer-a", tenant: str | None = None) -> str:
+        evidence = self.upload(who, tenant or self.t1)
+        return self.claim(who, [evidence["evidence_id"]])["data"]["submission_id"]
+
+    def mirror(self, submission_id: str, review_status: str) -> None:
+        """What the TAX-039 bridge writes when Jube reports a case state (a direct DB write)."""
+        frappe.db.set_value(
+            SUBMISSION,
+            submission_id,
+            {"review_status": review_status, "review_status_at": frappe.utils.now_datetime()},
+            update_modified=False,
+        )
+
+    def test_session_and_lists_are_live(self):
+        self.as_user("taxpayer-a")
+        self.assertEqual(portal_api.get_session()["mode"], "live")
+        self.assertNotIn("synthetic", portal_api.get_session())
+        listed = portal_api.get_submissions()
+        self.assertEqual((listed["mode"], listed["data"]), ("live", []))
+        # Fixture records are no longer served.
+        with self.assertRaises(frappe.DoesNotExistError):
+            portal_api.get_submission("SUB-SYN-0001")
+
+    def test_a_sent_claim_appears_in_the_list_with_its_status(self):
+        submission_id = self.sent_claim()
+        self.as_user("taxpayer-a")
+        items = portal_api.get_submissions()["data"]
+        self.assertEqual([i["id"] for i in items], [submission_id])
+        item = items[0]
+        reference = frappe.db.get_value(SUBMISSION, submission_id, "reference")
+        self.assertEqual(
+            {k: item[k] for k in ("reference", "tax_type", "period", "amount", "currency", "status",
+                                  "taxpayer_name")},
+            {"reference": reference, "tax_type": "VAT refund claim", "period": "2026-09",
+             "amount": "15000.00", "currency": "LSL", "status": "under_review",
+             "taxpayer_name": "Synthetic Mountain Wholesale"},
+        )  # fmt: skip
+        self.assertEqual(item["steps"][1], {"label": "Officer review", "state": "current",
+                                            "at": None})  # fmt: skip
+        detail = portal_api.get_submission(submission_id)
+        self.assertEqual((detail["mode"], detail["data"]), ("live", item))
+
+    def test_the_mirrored_review_status_is_what_the_taxpayer_sees(self):
+        submission_id = self.sent_claim()
+        for status in ("evidence_requested", "completed"):
+            with self.subTest(status=status):
+                frappe.set_user("Administrator")
+                self.mirror(submission_id, status)
+                self.as_user("taxpayer-a")
+                item = portal_api.get_submission(submission_id)["data"]
+                self.assertEqual(item["status"], status)
+                self.assertTrue(item["steps"][-1]["at"] or item["steps"][1]["at"])
+
+    def test_other_taxpayers_and_tenants_never_see_it(self):
+        submission_id = self.sent_claim()
+        for who in ("taxpayer-b", "taxpayer-c"):
+            with self.subTest(who=who):
+                self.as_user(who)
+                self.assertNotIn(
+                    submission_id, [i["id"] for i in portal_api.get_submissions()["data"]]
+                )
+                with self.assertRaises(frappe.DoesNotExistError):
+                    portal_api.get_submission(submission_id)
+        # Their own claim is listed for them, and only theirs.
+        theirs = self.sent_claim("taxpayer-b")
+        self.as_user("taxpayer-b")
+        self.assertEqual([i["id"] for i in portal_api.get_submissions()["data"]], [theirs])
+
+    def test_staff_cannot_use_the_taxpayer_list(self):
+        self.as_user("auditor-t1")
+        with self.assertRaises(frappe.PermissionError):
+            portal_api.get_submissions()
+
+    def test_internal_case_and_risk_detail_never_reach_the_view(self):
+        submission_id = self.sent_claim()
+        frappe.set_user("Administrator")
+        case_id = frappe.db.get_value(SUBMISSION, submission_id, "case_id")
+        self.as_user("taxpayer-a")
+        payloads = [portal_api.get_submissions(), portal_api.get_submission(submission_id)]
+        text = json.dumps(payloads, default=str)
+        self.assertNotRegex(text, r"(?i)risk|lane|score|jube|finding|case_id|tenant_id")
+        if case_id:
+            self.assertNotIn(case_id, text)
+        allowed = {"id", "reference", "taxpayer_name", "tax_type", "period", "amount", "currency",
+                   "status", "submitted_at", "next_step", "steps"}  # fmt: skip
+        self.assertEqual(set(payloads[1]["data"]), allowed)

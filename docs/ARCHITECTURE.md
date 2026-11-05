@@ -36,6 +36,50 @@ A submission is validated in Frappe, original evidence is hashed, and an outbox 
 
 OpenAleph native search/graph and Jube native investigation interfaces remain available to advanced analysts. Our UI presents the common workflow; do not rebuild all upstream features.
 
+## AI layer
+
+Decision record: [ADR-031](decisions/ADR-031-ai-model-providers.md). LLMs reason over deterministic results and cited evidence. They never produce the figures, legal conclusions or decisions.
+
+```mermaid
+flowchart TB
+  C[Case from Vati API: shared case_id] --> G[LangGraph orchestrator: approved playbooks, state, checkpoints]
+  G --> P[Deterministic Python: reconciliation, VAT, rules, thresholds]
+  G --> E[Vati API tools: case, evidence, entities, Docling output, Jube signals, OpenAleph/yente]
+  G --> R["get_model(role)"]
+  R --> R1[reasoning: Groq GPT-OSS 120B]
+  R --> R2[fast: Groq GPT-OSS 20B]
+  R --> R3[document: Gemini 3.6 Flash]
+  R -. fallback .-> R4[local open-weights model] -. fallback .-> R5[deterministic template]
+  P --> V[Validator: citations resolve, no decisions or legal conclusions]
+  R --> V
+  V --> F[Structured findings and briefing with provenance]
+  F --> H[Human interrupt: authorised officer decides in Frappe]
+  H --> O[Outcome and finding feedback recorded]
+```
+
+| Role | Implementation |
+|---|---|
+| Orchestration, state, tool calls, interrupts, human approval, resume | LangGraph |
+| `reasoning`: investigation reasoning, hypotheses, related-party analysis, briefings | Groq GPT-OSS 120B |
+| `fast`: classification, short summaries, evidence categorisation, routine tool selection, taxpayer explanations | Groq GPT-OSS 20B |
+| `document`: long contracts, financial statements, reasoning over Docling output | Gemini `gemini-3.6-flash` (ADR-031) |
+| Calculations, reconciliation, thresholds, rules, exact comparisons | Deterministic Python (mandatory, never an LLM) |
+| PDF/OCR/table parsing | Docling via the Vati API / TAX-038 adapter |
+| Keyless development and CI | `mock` provider (default) |
+
+Agents only call `get_model(role)`. The mapping and keys live in the ignored `.env` file. Each call falls back from the hosted model to the local model to the template, and the level used is recorded and shown to the user. Every model output passes the same validator and the TAX-056 evaluation gate.
+
+Two permission contexts share the router. **Investigation agents** (VAT refund, related party, evidence, case briefing) act for an authenticated officer and stop at a LangGraph interrupt. The **taxpayer assistant** (submission guidance, document assistance, pre-submission explanations, evidence-response drafting) acts for one taxpayer. It sees only that taxpayer's records and taxpayer-facing requests, never risk scores, internal notes or findings. It never changes declared figures or submits without the taxpayer's confirmation.
+
+| Area | Investigation agents | Taxpayer assistant |
+|---|---|---|
+| AI (Gupta) | TAX-089 router, TAX-097 model reasoning, TAX-088 runtime on real cases | TAX-089 router, TAX-098 compliance assistant, TAX-099 evidence-response assistant |
+| API contract (Keletso) | TAX-096 briefing, provenance and finding feedback | TAX-096 taxpayer assistance operations |
+| Backend (Edga, Keletso) | TAX-086 findings record with provenance and feedback, TAX-087, TAX-090 | TAX-100 taxpayer-scoped assistant service |
+| Frontend | TAX-093 briefing, model disclosure, feedback (Leseli) | TAX-101 portal assistant UI (Kananelo), TAX-078 |
+| Data / QA | TAX-024 scenarios, TAX-056 evaluation | TAX-102 assistant scenarios and leakage tests (Leseli) |
+| Demo | TAX-094 seed, TAX-095 keys/quota/fallback, TAX-058 | same |
+
 ## Runtime and data separation
 
 Use independent vendor stacks and databases. Root PostgreSQL/Redis support Vati integration development only; Frappe uses its documented database/cache configuration. Keep tenant/case access checks at the Vati boundary and in underlying Frappe/OpenAleph permissions. Deploy behind private networking/TLS; local fixture servers are loopback-only and unsuitable for production.
