@@ -23,7 +23,8 @@
     "docs/V1_ACCEPTANCE.md",
     "docs/SERVICE_SETUP.md",
     "integration/services.json",
-    "docs/SETUP_STATUS.md"
+    "docs/SETUP_STATUS.md",
+    "docs/UI_INTEGRATION_SCOPE.md"
   ],
   "acceptance": [
     {
@@ -40,6 +41,10 @@
     },
     {
       "text": "Record relevant tests and evidence, update task status and open a human-review PR",
+      "done": false
+    },
+    {
+      "text": "Distinguish reduced recorded-data demo from full pilot profile; for full native-UI acceptance supply reachable authorized Jube and OpenAleph interfaces on measured suitable local or remote hardware. Recorded outputs alone do not satisfy native search/graph acceptance.",
       "done": false
     }
   ],
@@ -63,6 +68,7 @@
     {
       "at": "2026-11-05T10:39:50.241416+00:00",
       "text": "2026-11-05: aligned with ADR-031 as approved by Keletso (hosted primary, local optional fallback)."
-    }
+    },
+    "TAX-105 scope clarification: Preserve reduced laptop option but do not represent recorded OpenAleph output as interactive native UI readiness."
   ]
 }

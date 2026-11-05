@@ -21,15 +21,15 @@
   "acceptance": [
     {
       "text": "Record source-backed findings and distinguish live observations from historical evidence",
-      "done": false
+      "done": true
     },
     {
       "text": "Define complete screen, login, navigation and service-authority requirements",
-      "done": false
+      "done": true
     },
     {
       "text": "Add missing owned tasks and link integrated acceptance to native-screen work",
-      "done": false
+      "done": true
     }
   ],
   "verification": "Review scope and task dependency consistency; run workspace and quality checks; no documentation-wording tests.",
@@ -38,7 +38,20 @@
     "implement-change",
     "finish-task"
   ],
-  "evidence": [],
+  "evidence": [
+    {
+      "criterion": 1,
+      "text": "Verified main c1ec368 source/configuration and matched local Jube/OpenAleph checkout SHAs to upstream locks; consulted official docs. docs/evidence/TAX-105-ui-scope.md records missing native links, fixture officer login, metadata-only evidence, historical smoke limitations and unsuccessful/inconclusive local HTTP reachability. No authenticated native readiness claimed."
+    },
+    {
+      "criterion": 2,
+      "text": "PROJECT_SCOPE.md, docs/UI_INTEGRATION_SCOPE.md and ADR-034 specify screen inventory, Frappe login/session recovery, native new-tab navigation, separate native sessions initially, FollowTheMoney role, configuration-first tax adaptation and approval/permission boundaries; full pilot differs from reduced recorded-data demonstration."
+    },
+    {
+      "criterion": 3,
+      "text": "Added unclaimed TAX-106\u2013109 with human owners, dependencies and observable acceptance; updated TAX-091/095/103/058 and task index. validate.py, dev.py check and quality.py passed; existing optional/dependency-gated test skips remain. No product code or runtime configuration changed."
+    }
+  ],
   "notes": [
     "User requested verification and scope update covering the frontend and premade UI discussion. New task bootstrapped on local main only because start-task requires an existing task; main is not pushed.",
     {
