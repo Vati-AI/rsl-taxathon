@@ -5,13 +5,13 @@
   "owner": "Edga",
   "area": "backend",
   "phase": "expansion",
-  "status": "BACKLOG",
+  "status": "IN_PROGRESS",
   "priority": "P1",
   "depends_on": [
     "TAX-064"
   ],
-  "claimed_by": null,
-  "branch": null,
+  "claimed_by": "edga-claude-code-20261105-065",
+  "branch": "task/TAX-065",
   "pr": null,
   "scope": "Store supervisor decisions, activation history and rollback references for learned workflows",
   "inputs": [
@@ -45,5 +45,10 @@
     "finish-task"
   ],
   "evidence": [],
-  "notes": []
+  "notes": [
+    {
+      "at": "2026-11-05T02:12:33.205590+00:00",
+      "text": "Claimed by edga-claude-code-20261105-065"
+    }
+  ]
 }
