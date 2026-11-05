@@ -5,7 +5,7 @@
   "owner": "Leseli",
   "area": "apps/auditor-web",
   "phase": "pilot",
-  "status": "IN_REVIEW",
+  "status": "DONE",
   "priority": "P0",
   "depends_on": [
     "TAX-040",
@@ -87,6 +87,10 @@
     {
       "at": "2026-11-04T19:25:41.216983+00:00",
       "text": "Agent leseli-claude-20261104-060 finished implementation and opened review (https://github.com/Vati-AI/rsl-taxathon/pull/158). Contract change (getManagementSummary, ADR-020) for Keletso; ledger read usage for Edga. quality.py steps run individually because the worktree has no .venv-dev of its own."
+    },
+    {
+      "at": "2026-11-05T00:13:06.548433+00:00",
+      "text": "Verified implementation PR #158 merged (4f9d6ac, 2026-11-05T00:03Z); all acceptance criteria and evidence recorded."
     }
   ]
 }
