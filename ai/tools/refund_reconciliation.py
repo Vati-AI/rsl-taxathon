@@ -25,6 +25,8 @@ STANDARD_MAX_UNRESOLVED_SHARE = Decimal("0.50")
 # Two decimal places at most (cents); no exponent, sign or whitespace forms.
 _MONEY = re.compile(r"(0|[1-9][0-9]*)(\.[0-9]{1,2})?")
 _CURRENCY = re.compile(r"[A-Z]{3}")
+# A record identifier that is safe to repeat in officer- or taxpayer-facing text.
+_REFERENCE = re.compile(r"[A-Za-z0-9][A-Za-z0-9._:\-]{0,63}")
 
 Lane: TypeAlias = Literal["fast", "standard", "targeted"]
 
@@ -56,6 +58,16 @@ def parse_money(value: object, *, field: str) -> Decimal:
             "invalid_money", f"{field} must be a non-negative decimal string with at most 2 places"
         )
     return Decimal(value).quantize(CENT)
+
+
+def safe_reference(value: object) -> str | None:
+    """Return ``value`` only if it is a well-formed record identifier, else ``None``.
+
+    Identifiers such as counterparty IDs come from submitted records and are
+    untrusted. Free text (spaces, punctuation, instructions) is never copied
+    into draft questions or findings; callers use a neutral phrase instead.
+    """
+    return value if isinstance(value, str) and _REFERENCE.fullmatch(value) else None
 
 
 def money(amount: Decimal, currency: str) -> dict[str, str]:
@@ -160,6 +172,9 @@ def reconcile_refund(
     line_items: list[dict[str, object]] = []
     explaining_ids: list[str] = []
     related_ids: list[str] = []
+    # Purchase invoices that document input VAT: cited with the return wherever a
+    # finding compares the claim with the documented VAT (TAX-024 ground truth).
+    documented_ids: list[str] = []
     for invoice_id, invoice in invoices.items():
         if invoice.get("direction") != "purchase":
             continue
@@ -195,6 +210,7 @@ def reconcile_refund(
             )
             continue
         documented_vat += vat
+        documented_ids.append(invoice_id)
         reasons: list[str] = []
         status = "explained"
         if net + vat != gross:
@@ -233,7 +249,10 @@ def reconcile_refund(
     context = record.get("economic_context")
     if isinstance(context, dict) and context.get("legal_route") != "verified":
         indicators.append(
-            {"code": "economic_context_requires_human_policy_review", "evidence_ids": [return_id]}
+            {
+                "code": "economic_context_requires_human_policy_review",
+                "evidence_ids": [return_id, *documented_ids],
+            }
         )
 
     supported_refund = max(Decimal("0.00"), explained_vat - output_vat)
@@ -245,13 +264,14 @@ def reconcile_refund(
             {
                 "code": "refund_claim_exceeds_documented_input_vat",
                 "amount": money(undocumented, currency),
-                "evidence_ids": [return_id],
+                "evidence_ids": [return_id, *documented_ids],
             }
         )
     share = (explained / claimed).quantize(SHARE_QUANTUM) if claimed else None
 
     return {
         "case_ref": record.get("case_id"),
+        "return_id": return_id,
         "synthetic": record.get("synthetic") is True,
         "method": "deterministic_decimal",
         "calculation_version": CALCULATION_VERSION,
@@ -312,6 +332,23 @@ def propose_refund_lane(
 
     claimed = amount("claimed_refund")
     unresolved = amount("unresolved_amount")
+    return_id = reconciliation.get("return_id")
+    if not isinstance(return_id, str) or not return_id.strip():
+        raise RefundDataError("invalid_reconciliation", "return_id is required")
+    explaining = reconciliation.get("evidence_ids")
+    if not isinstance(explaining, list):
+        raise RefundDataError("invalid_reconciliation", "evidence_ids must be a list")
+    line_items = reconciliation.get("line_items", [])
+    if not isinstance(line_items, list):
+        raise RefundDataError("invalid_reconciliation", "line_items must be a list")
+    # Invoices whose VAT is documented but not explained: why an amount is unresolved.
+    unexplained = [
+        str(item["invoice_id"])
+        for item in line_items
+        if isinstance(item, dict)
+        and item.get("status") in ("mismatch", "missing_evidence")
+        and isinstance(item.get("invoice_id"), str)
+    ]
     entries = {
         key: _entries(reconciliation, key) for key in ("discrepancies", "indicators", "gaps")
     }
@@ -323,19 +360,28 @@ def propose_refund_lane(
     ]
 
     lane: Lane | None
+    # Every lane-level reason cites the records it rests on (TAX-056 citation coverage).
     if claimed == 0:
         lane = None
-        reasons.insert(0, {"code": "no_refund_claimed", "evidence_ids": []})
+        reasons.insert(0, {"code": "no_refund_claimed", "evidence_ids": [return_id]})
     elif entries["discrepancies"] or codes & ESCALATING_INDICATORS:
         lane = "targeted"
     elif unresolved > claimed * max_unresolved_share:
         lane = "targeted"
-        reasons.insert(0, {"code": "material_unresolved_amount", "evidence_ids": []})
+        reasons.insert(
+            0, {"code": "material_unresolved_amount", "evidence_ids": [return_id, *unexplained]}
+        )
     elif unresolved > 0 or codes & REVIEW_INDICATORS:
         lane = "standard"
     else:
         lane = "fast"
-        reasons.insert(0, {"code": "claim_fully_explained", "evidence_ids": []})
+        reasons.insert(
+            0,
+            {
+                "code": "claim_fully_explained",
+                "evidence_ids": [return_id, *(str(e) for e in explaining if e != return_id)],
+            },
+        )
 
     return {
         "kind": "refund_lane_proposal",

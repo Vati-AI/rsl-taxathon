@@ -20,11 +20,20 @@ doc_events = {
     "DocShare": {"validate": "vati_tax.identity.permissions.validate_share"},
     # TAX-032: an evidence file stays private and in place.
     "File": {"before_validate": "vati_tax.evidence.store.guard_evidence_file"},
+    # TAX-039: a taxpayer's send registers the case and enqueues case.registered.
+    "Vati Submission": {"on_update": "vati_tax.bridge.store.on_submission_update"},
 }
 
 # TAX-033: deliver committed outbox events every minute. Handlers are registered
 # per event type with `vati_outbox_handlers = {"<type>": "dotted.path"}`.
-scheduler_events = {"cron": {"* * * * *": ["vati_tax.outbox.worker.dispatch_scheduled"]}}
+# TAX-039: Jube sends no webhooks, so open cases are polled every five minutes.
+scheduler_events = {
+    "cron": {
+        "* * * * *": ["vati_tax.outbox.worker.dispatch_scheduled"],
+        "*/5 * * * *": ["vati_tax.bridge.store.poll_scheduled"],
+    }
+}
+vati_outbox_handlers = {"case.registered": "vati_tax.bridge.store.handle_case_registered"}
 
 # TAX-021: the Vue taxpayer portal owns client routes under /taxpayer; every
 # deep link renders the guarded www/taxpayer page.

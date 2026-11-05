@@ -24,6 +24,8 @@
   "submitted_at",
   "submitted_by",
   "correction_reason",
+  "review_status",
+  "review_status_at",
   "integration_section",
   "source",
   "idempotency_key",
@@ -170,6 +172,21 @@
    "fieldname": "correction_reason",
    "fieldtype": "Small Text",
    "label": "Correction Needed"
+  },
+  {
+   "description": "Taxpayer-facing review progress mirrored from the Jube case (TAX-039). Server-set by the bridge; never a Jube status or risk detail.",
+   "fieldname": "review_status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Review Status",
+   "options": "\nunder_review\nevidence_requested\ncompleted",
+   "read_only": 1
+  },
+  {
+   "fieldname": "review_status_at",
+   "fieldtype": "Datetime",
+   "label": "Review Status At (UTC)",
+   "read_only": 1
   },
   {
    "collapsible": 1,

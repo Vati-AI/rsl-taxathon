@@ -37,6 +37,10 @@ SERVER = frozenset(
         "submission_key",
     }
 )
+# TAX-039: mirrored from Jube by vati_tax.bridge with a direct database write.
+# Every document save keeps the stored values, so no client (taxpayer, staff or
+# service) can set them, and a save that raced a mirror write cannot undo it.
+MIRRORED = ("review_status", "review_status_at")
 WATCHED = (
     *SERVER,
     "declaration",
@@ -71,6 +75,8 @@ class VatiSubmission(Document):
         submitted_at: str | None
         submitted_by: str | None
         correction_reason: str | None
+        review_status: str | None
+        review_status_at: str | None
         case_id: str | None
         synthetic: int
 
@@ -89,6 +95,8 @@ class VatiSubmission(Document):
         self.version = 1
         self.submitted_at = None
         self.submitted_by = None
+        self.review_status = None
+        self.review_status_at = None
         if actor != "operator":
             self.case_id = None
             self.correction_reason = None
@@ -99,6 +107,8 @@ class VatiSubmission(Document):
         actor = guard.actor_for(self.tenant_id)
         before = None if self.is_new() else self.get_doc_before_save()
         if before is not None:
+            for field in MIRRORED:
+                self.set(field, before.get(field))
             guard.check_writes(self, actor, WRITABLE, SERVER, WATCHED)
             changed = guard.changed_fields(self, TAXPAYER_FIELDS)
             if changed and before.status not in domain.EDITABLE_STATUSES:

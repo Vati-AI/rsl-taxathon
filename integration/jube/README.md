@@ -5,7 +5,7 @@ Risk evaluation and operational investigation case management. Owner: Keletso; L
 - Upstream: https://github.com/jube-home/aml-fraud-transaction-monitoring (AGPL-3.0, kept external, never copied here)
 - Official documentation: https://www.jube.io/docs/GettingStarted/DeployingWithDocker/
 - Configuration: `JUBE_BASE_URL`
-- Status: isolated development stack running and smoke-tested (TAX-025). Versioned synthetic tax-risk rules configured and verified on the local stack (TAX-035). Case lifecycle adapter with live contract tests (TAX-034). Nothing calls the adapter yet: the outbox (TAX-033), the Frappe bridge (TAX-039) and decision execution (TAX-046) wire it into the product.
+- Status: isolated development stack running and smoke-tested (TAX-025). Versioned synthetic tax-risk rules configured and verified on the local stack (TAX-035). Case lifecycle adapter with live contract tests (TAX-034). The Frappe bridge (TAX-039) invokes the risk model and raises the case for each sent submission through the outbox (TAX-033); decision execution (TAX-046) moves it.
 
 ## Run it (TAX-025)
 
@@ -183,3 +183,11 @@ Locked source `01c4afd…`, local stack. Each `contract` run uses a new syntheti
 | Wrong key / retired landlord key | 401 |
 
 `jube_rules.py verify` against the re-homed model: all five scenarios matched the evaluator.
+
+## Frappe bridge (TAX-039)
+
+`risk_invoke.py` sends one risk invocation per sent submission: `POST /api/Invoke/EntityAnalysisModel/{guid}` with the `vati-risk-invoker` key (`JUBE_RISK_INVOKER_API_KEY`). `DeclaredRiskEvaluator` renders the payload from the reviewed ruleset and the facts the taxpayer declared in Frappe (`declared_payload`). It refuses facts that do not name exactly the ruleset's features, and floats. A 404 (model not loaded yet), 429 or 5xx is retryable. A 401 or 403 is not. Neither keeps Jube's response body. Activation names stay in Jube and the outbox ledger reference; they never reach a taxpayer-readable field.
+
+The Frappe side (`backend/vati_tax/vati_tax/bridge`) invokes first and then asks `ensure_case` for the case, because Jube raises cases only from archived invocations. It mirrors Jube's state into the staff-only `Vati Case Sync` and a three-word taxpayer `review_status`. Jube sends no webhooks, so open cases are polled every five minutes, and a service identity may also post `case.status_projected` envelopes. Design: [ADR-028](../../docs/decisions/ADR-028-frappe-jube-submission-bridge.md).
+
+A site wires both ports in `site_config.json`. `vati_case_lifecycle` returns the `JubeCaseAdapter` and `vati_risk_evaluator` returns `DeclaredRiskEvaluator(RiskInvoker(RiskInvokerConfig(...)), tax_risk.load_ruleset())`. Not yet run against the live stack: `tests/integration/test_jube_bridge.py` covers the invoker and adapter together against the Jube fake.

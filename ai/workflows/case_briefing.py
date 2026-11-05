@@ -42,6 +42,7 @@ from ai.tools.contracts import ToolInvocationContext, ToolResultEnvelope, tool_f
 from ai.tools.evidence_search import (
     SearchDenied,
     SearchInputError,
+    case_document_index,
     looks_like_instruction,
     search_case_evidence,
 )
@@ -494,9 +495,16 @@ def build_briefing_graph(
     tool: InvestigationTool,
     model: BriefingModel,
     *,
+    evidence_source: EvidenceSource,
     checkpointer: BaseCheckpointSaver[str] | None = None,
 ) -> CompiledStateGraph[InvestigationState, None, InvestigationState, InvestigationState]:
-    """Compile search_evidence -> draft_briefing. Errors stop the run for officer review."""
+    """Compile search_evidence -> draft_briefing. Errors stop the run for officer review.
+
+    ``evidence_source`` is the evidence store read independently of ``tool``:
+    every hit the tool returns is re-resolved against it for the active tenant
+    and case (evidence ID and document SHA-256), so tool output relabelled with
+    this case's ID cannot smuggle another case's evidence into the briefing.
+    """
 
     def search_evidence(state: InvestigationState) -> dict[str, object]:
         scope = {
@@ -530,13 +538,24 @@ def build_briefing_graph(
                     message="Tool execution failed.",
                     retryable=True,
                 )
-        if result["status"] == "ok" and not _search_in_scope(result["data"], state):
-            result = tool_failure(
-                **scope,
-                code="tool_scope_mismatch",
-                message="Search results did not match the active investigation.",
-                retryable=False,
-            )
+        if result["status"] == "ok":
+            verified: bool | None = _search_in_scope(result["data"], state)
+            if verified:
+                verified = _verify_against_store(result["data"], state, evidence_source)
+            if verified is None:
+                result = tool_failure(
+                    **scope,
+                    code="evidence_verification_failed",
+                    message="Search results could not be checked against the evidence store.",
+                    retryable=True,
+                )
+            elif not verified:
+                result = tool_failure(
+                    **scope,
+                    code="tool_scope_mismatch",
+                    message="Search results did not match the active investigation.",
+                    retryable=False,
+                )
         return {
             "tool_results": [*state["tool_results"], result],
             "step_count": state["step_count"] + 1,
@@ -591,6 +610,38 @@ def _search_in_scope(data: Mapping[str, object], state: InvestigationState) -> b
         if not isinstance(hit, Mapping) or hit.get("citation_id") != citation_id:
             return False
         if hit.get("evidence_id") not in allowed:
+            return False
+    return True
+
+
+def _verify_against_store(
+    data: Mapping[str, object], state: InvestigationState, evidence_source: EvidenceSource
+) -> bool | None:
+    """Re-resolve every document and hit in the evidence store; ``None`` if it can't be read.
+
+    The tool's own ``tenant_id``/``case_id`` labels are not trusted: an evidence ID
+    must exist in the store for the active tenant and case, and the hit's document
+    hash must equal the stored one.
+    """
+    try:
+        index = case_document_index(
+            evidence_source(state["tenant_id"], state["case_id"]) or [],
+            tenant_id=state["tenant_id"],
+            case_id=state["case_id"],
+        )
+    except Exception:
+        return None
+    documents = data.get("documents")
+    hits = data.get("hits")
+    if not isinstance(documents, list) or not isinstance(hits, Mapping):
+        return False
+    if any(str(d) not in index for d in documents):
+        return False
+    for hit in hits.values():
+        if not isinstance(hit, Mapping):
+            return False
+        stored = index.get(str(hit.get("evidence_id")))
+        if stored is None or hit.get("document_sha256") != stored:
             return False
     return True
 

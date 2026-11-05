@@ -182,6 +182,29 @@ def _document(raw: object, tenant_id: str, case_id: str) -> dict[str, object] | 
     }
 
 
+def case_document_index(
+    documents: Iterable[object], *, tenant_id: str, case_id: str
+) -> dict[str, str | None]:
+    """Evidence ID -> document SHA-256 for the well-formed documents of one tenant and case.
+
+    Callers that receive search output from a tool re-resolve every hit against
+    this index, read from the evidence store independently of the tool, so a
+    result relabelled with another case's ID cannot pass as this case's
+    evidence. An ID listed twice with different hashes maps to ``None`` and
+    therefore never verifies.
+    """
+    index: dict[str, str | None] = {}
+    for raw in documents:
+        doc = _document(raw, tenant_id, case_id)
+        if doc is None:
+            continue
+        evidence_id, sha = str(doc["evidence_id"]), str(doc["document_sha256"])
+        index[evidence_id] = sha if index.get(evidence_id, sha) == sha else None
+        if len(index) > MAX_DOCUMENTS:
+            raise SearchInputError("too_many_documents")
+    return index
+
+
 def search_case_evidence(
     documents: Iterable[object],
     *,

@@ -1,5 +1,5 @@
 {
-  "registry_version": "SYN-PBR-2026.11.0",
+  "registry_version": "SYN-PBR-2026.11.1",
   "synthetic": true,
   "notice": "SYNTHETIC PROTOTYPE REGISTRY. Approvals use placeholder supervisor identities and are not RSL activations. Real activation requires supervisor playbook.approve (TAX-046), holdout evaluation and rollback. Digests pin the exact reviewed source; any change makes that version unapproved until a reviewed registry update.",
   "entries": [
@@ -10,12 +10,12 @@
       "status": "approved",
       "proposed_by": "claude-gupta-20261104-tax061",
       "approved_by": "SYN-SUPERVISOR-01",
-      "approved_on": "2026-11-04",
+      "approved_on": "2026-11-05",
       "source_files": [
         "ai/tools/refund_reconciliation.py",
         "ai/workflows/refund_lanes.py"
       ],
-      "content_digest": "d68a2c6bd8c4e0575c386f58715fa3adfbd6cf2fe3716f6eadfcb09d9c0f3ac3",
+      "content_digest": "180f1d0b8903bbbc011c1ad3a3fab43a1ac852cc87f7994592211e50d8879ebf",
       "allowed_operations": [
         "read_case_records"
       ],
@@ -34,12 +34,12 @@
       "status": "approved",
       "proposed_by": "claude-gupta-20261104-tax061",
       "approved_by": "SYN-SUPERVISOR-01",
-      "approved_on": "2026-11-04",
+      "approved_on": "2026-11-05",
       "source_files": [
         "ai/tools/imported_services.py",
         "ai/tools/refund_reconciliation.py"
       ],
-      "content_digest": "600579b6f92ba3c887dbd83e257927b1784df40a3d7fc0114a9afbe55fdd9c7b",
+      "content_digest": "ee05cd1713376a30693d47d30d613fede71ccede9081ce007bd81dcb0eb773dc",
       "allowed_operations": [
         "read_case_records"
       ],
@@ -58,12 +58,12 @@
       "status": "approved",
       "proposed_by": "claude-gupta-20261104-tax061",
       "approved_by": "SYN-SUPERVISOR-01",
-      "approved_on": "2026-11-04",
+      "approved_on": "2026-11-05",
       "source_files": [
         "ai/tools/related_party.py",
         "ai/tools/refund_reconciliation.py"
       ],
-      "content_digest": "931757aea6a02d6a0ed746d8babaf9d8ddd0c120f095eb4394b1de67da8f16e9",
+      "content_digest": "de5d6caeb3b34de43f83ae18092c0b18d0600fe5d14aafdc02ecfac329851947",
       "allowed_operations": [
         "read_case_records"
       ],
@@ -82,12 +82,12 @@
       "status": "approved",
       "proposed_by": "claude-gupta-20261104-tax061",
       "approved_by": "SYN-SUPERVISOR-01",
-      "approved_on": "2026-11-04",
+      "approved_on": "2026-11-05",
       "source_files": [
         "ai/tools/work_arrangement.py",
         "ai/tools/refund_reconciliation.py"
       ],
-      "content_digest": "be4ad9c1ef3ab5dadbb9137d06bb64db99bcf48d6c813e87c727ca4593700c61",
+      "content_digest": "498b7d661da96d18818027ec3fb77f8360245df309a8a76e420bc3d3b9dd0e97",
       "allowed_operations": [
         "read_case_records"
       ],
