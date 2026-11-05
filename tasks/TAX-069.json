@@ -5,7 +5,7 @@
   "owner": "Edga",
   "area": "backend",
   "phase": "expansion",
-  "status": "IN_REVIEW",
+  "status": "DONE",
   "priority": "P1",
   "depends_on": [
     "TAX-046",
@@ -35,7 +35,7 @@
     },
     {
       "text": "Record relevant tests and evidence, update task status and open a human-review PR",
-      "done": false
+      "done": true
     }
   ],
   "verification": "Overturned findings remain traceable and trigger review signals without rewriting original evidence",
@@ -53,6 +53,10 @@
     {
       "criterion": 2,
       "text": "Observed 2026-11-05 on a Frappe site (bench run-tests --module vati_tax.challenges.test_challenges_bench, 6/6 OK): after an overturned review the Vati Decision row (decided fields and modified timestamp) and all earlier audit-ledger entries are unchanged, the chain verifies intact, Jube received no extra call; a review_only decision_overturned signal names the original proposer and is withheld from that viewer. Frappe-free tests also cover decision_changed refusal when the decision differs from the lodged digest and that sync bookkeeping is not treated as a change. scripts/frappe_dev.py verify (clean site, migrate twice, 133 bench + 321 app tests) exit 0. Mutation check: removing proposer/approver exclusion, taxpayer ownership, digest check, overturn signal or approved-only rule each fails the suite."
+    },
+    {
+      "criterion": 3,
+      "text": "Verified 2026-11-05 at DONE time by kananelo-claude-20261105-tax055 (Edga's evidence for criteria 1-2 unchanged): evidence for criteria 1-2 recorded; status IN_REVIEW with human-review PR #174 recorded; #174 merged 2026-11-05T05:36:33Z by Kellybrackets as c016822. Re-run on main ba67f1d: challenges/test_service.py 22/22 OK; scripts/frappe_dev.py verify on a fresh disposable site (install, migrate twice, bench run-tests --app vati_tax 161 OK incl. challenges/test_challenges_bench, app tests 389 OK), site dropped."
     }
   ],
   "notes": [
@@ -63,6 +67,10 @@
     {
       "at": "2026-11-05T03:20:09.432692+00:00",
       "text": "Agent finished implementation and opened human review. frappe_dev.py verify passed (133 bench tests); local finish gate blocked only by Windows-only tooling tests/Store-Python crash and missing Node, so finish steps were run by hand."
+    },
+    {
+      "at": "2026-11-05T08:44:07.957272+00:00",
+      "text": "Implementation PR #174 merged 2026-11-05T05:36:33Z by Kellybrackets; DONE recorded on approval relayed by Kananelo. Owner and claim unchanged."
     }
   ]
 }
