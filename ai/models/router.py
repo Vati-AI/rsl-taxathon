@@ -426,11 +426,19 @@ def get_model(
     settings: Settings | None = None,
     transport: Transport | None = None,
     clock: Callable[[], float] = time.monotonic,
+    offline: bool = False,
 ) -> RoutedModel:
-    """The model for ``role``. Configuration comes from the environment / ignored ``.env``."""
+    """The model for ``role``. Configuration comes from the environment / ignored ``.env``.
+
+    ``offline=True`` ignores the environment and ``.env`` and returns the keyless
+    ``mock`` chain (no network), so a gate such as ``agent_eval --check`` stays
+    offline and deterministic even on a machine whose ``.env`` enables live models.
+    """
+    if settings is None:
+        settings = Settings() if offline else load_settings()
     return RoutedModel(
         role,
-        settings if settings is not None else load_settings(),
+        settings,
         transport=transport,
         clock=clock,
     )

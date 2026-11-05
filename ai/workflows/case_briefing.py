@@ -20,9 +20,15 @@ Rejected statements are kept in the record with a reason code, so an officer can
 see what was removed. Document text reaches the model only inside the
 ``untrusted_evidence`` block of the request; nothing in it can change the scope,
 questions, budgets or validation (AI_STANDARD). The default model is
-deterministic and template-based, so runs are reproducible and need no provider;
-a hosted model can be plugged in through the same port later, with its ID and
-configuration recorded per run.
+deterministic and template-based, so runs are reproducible and need no provider.
+
+TAX-097: with a ``models`` factory (``ai.models.get_model``) the briefing is
+drafted by the ``reasoning`` role and the cited evidence is read by
+``interpretation.interpret_evidence`` (``fast`` role, ``document`` only for long
+text), recorded as a separate ``evidence_interpretation`` finding. A statement
+that states a number not present in the evidence or search it cites is rejected
+(``figure_not_in_evidence``). Every briefing carries contract-shaped
+``analysis_provenance`` and ``disclosure`` (template output included).
 """
 
 from __future__ import annotations
@@ -32,12 +38,14 @@ import json
 import re
 import uuid
 from collections.abc import Callable, Iterable, Mapping, Sequence
+from decimal import Decimal
 from typing import Protocol, TypedDict, cast
 
 from langgraph.checkpoint.base import BaseCheckpointSaver
 from langgraph.graph import END, START, StateGraph
 from langgraph.graph.state import CompiledStateGraph
 
+from ai.models import template_provenance, to_contract_provenance, to_disclosure
 from ai.tools.contracts import ToolInvocationContext, ToolResultEnvelope, tool_failure, tool_success
 from ai.tools.evidence_search import (
     SearchDenied,
@@ -47,6 +55,12 @@ from ai.tools.evidence_search import (
     search_case_evidence,
 )
 from ai.workflows.fake_graph import InvestigationTool, _validate_result
+from ai.workflows.interpretation import (
+    ModelFactory,
+    figures_in,
+    interpret_evidence,
+    statement_figures,
+)
 from ai.workflows.state import InvestigationState
 
 BRIEFING_VERSION = "tax053-briefing-v1"
@@ -420,6 +434,13 @@ def validate_draft(
             if name == "what_was_checked" and "search" not in types:
                 _reject(rejected, name, index, "search_reference_required")
                 continue
+            permitted = _ref_figures(resolved, hits, search_ids)
+            if any(
+                value not in permitted and (alt is None or alt not in permitted)
+                for value, alt in statement_figures(text)
+            ):
+                _reject(rejected, name, index, "figure_not_in_evidence")
+                continue
             if kind == "missing_information" and types != {"search"}:
                 # Evidence cited as "missing" would turn absence into a claim about a document.
                 _reject(rejected, name, index, "missing_information_cites_search_only")
@@ -441,11 +462,64 @@ def validate_draft(
     return sections, rejected
 
 
+def _ref_figures(
+    resolved: list[dict[str, object]],
+    hits: Mapping[str, Mapping[str, object]],
+    searches: Mapping[str, Mapping[str, object]],
+) -> set[Decimal]:
+    """Numbers a statement may state: those in the evidence and searches it cites."""
+    permitted: set[Decimal] = set()
+    for ref in resolved:
+        if ref["type"] == "evidence":
+            permitted |= figures_in(hits[str(ref["citation_id"])].get("excerpt"))
+        elif ref["type"] == "search":
+            found = searches[str(ref["search_id"])]
+            permitted |= figures_in(found.get("topic"))
+            permitted |= figures_in(found.get("documents_searched"))
+            count = len(cast(list[object], found.get("citation_ids") or []))
+            permitted |= {Decimal(n) for n in range(count + 1)}
+    return permitted
+
+
 # --- graph --------------------------------------------------------------------------
 
 
 def _digest(value: object) -> str:
     return hashlib.sha256(json.dumps(value, sort_keys=True, default=str).encode()).hexdigest()
+
+
+def briefing_provenance(
+    model: BriefingModel, draft: object, rejected: list[dict[str, object]]
+) -> dict[str, object]:
+    """Contract ``AnalysisProvenance`` for the draft actually used (TAX-097).
+
+    A routed model records the router's provenance; the template and other ports
+    get an equivalent record. The graph's own validation result is authoritative.
+    """
+    validation: dict[str, object] = {
+        "status": "failed" if rejected else "passed",
+        "reason": str(rejected[0]["reason"]) if rejected else None,
+    }
+    routed = model.config.get("provenance") if isinstance(model.config, Mapping) else None
+    if isinstance(routed, Mapping) and routed.get("task") == "case_briefing":
+        raw: dict[str, object] = {**routed, "validation": validation}
+    else:
+        failed = {
+            "level": 0,
+            "name": "mock",
+            "provider": "mock",
+            "model_id": model.model_id,
+            "outcome": "provider_error",
+        }
+        raw = template_provenance(
+            task="case_briefing",
+            prompt_version=PROMPT_VERSION,
+            model_id=model.model_id,
+            source="template" if model.model_id == DeterministicBriefingModel.model_id else "mock",
+            validation=validation,
+            attempts_before=[failed] if draft is None else None,
+        )
+    return to_contract_provenance(raw, rejected_statements=len(rejected))
 
 
 def briefing_record(
@@ -466,6 +540,7 @@ def briefing_record(
         }
     )
     tenant_id, case_id, run_id = (str(state[k]) for k in ("tenant_id", "case_id", "run_id"))
+    provenance = briefing_provenance(model, draft, rejected)
     return {
         "kind": "case_briefing",
         "briefing_id": str(uuid.uuid5(uuid.NAMESPACE_URL, f"vati:{tenant_id}/{case_id}/{run_id}")),
@@ -476,6 +551,8 @@ def briefing_record(
         "producer_version": BRIEFING_VERSION,
         "workflow_version": state.get("workflow_version"),
         "model": {"id": model.model_id, "config": dict(model.config)},
+        "analysis_provenance": provenance,
+        "disclosure": to_disclosure(provenance),
         "prompt_version": PROMPT_VERSION,
         "sections": sections,
         "rejected_statements": rejected,
@@ -493,12 +570,17 @@ def briefing_record(
 
 def build_briefing_graph(
     tool: InvestigationTool,
-    model: BriefingModel,
+    model: BriefingModel | None = None,
     *,
     evidence_source: EvidenceSource,
     checkpointer: BaseCheckpointSaver[str] | None = None,
+    models: ModelFactory | None = None,
 ) -> CompiledStateGraph[InvestigationState, None, InvestigationState, InvestigationState]:
     """Compile search_evidence -> draft_briefing. Errors stop the run for officer review.
+
+    ``model`` drafts the briefing. When it is ``None``, ``models("reasoning")`` is
+    used if a ``models`` factory (``get_model``) is given, else the deterministic
+    template. With ``models`` the run also records an ``evidence_interpretation``.
 
     ``evidence_source`` is the evidence store read independently of ``tool``:
     every hit the tool returns is re-resolved against it for the active tenant
@@ -576,12 +658,31 @@ def build_briefing_graph(
         if result["status"] != "ok":  # pragma: no cover - routed away above
             return {"requires_human_review": True}
         search = result["data"]
+        drafter: BriefingModel
+        if model is not None:
+            drafter = model
+        elif models is not None:
+            drafter = models("reasoning")  # one routed model per run (budgets)
+        else:
+            drafter = DeterministicBriefingModel()
         try:
-            draft = model.draft(build_request(search))
+            draft = drafter.draft(build_request(search))
         except Exception:
             draft = None  # recorded as an invalid draft; exception text stays out
-        record = briefing_record(state, search, model, draft)
-        return {"findings": [*state["findings"], record], "requires_human_review": True}
+        records = [briefing_record(state, search, drafter, draft)]
+        if models is not None:
+            reading = interpret_evidence(models, search)
+            records.append(
+                {
+                    **reading,
+                    "kind": "evidence_interpretation",
+                    "tenant_id": state["tenant_id"],
+                    "case_id": state["case_id"],
+                    "run_id": state["run_id"],
+                    "requires_officer_approval": True,
+                }
+            )
+        return {"findings": [*state["findings"], *records], "requires_human_review": True}
 
     builder = StateGraph(InvestigationState)
     builder.add_node("search_evidence", search_evidence)

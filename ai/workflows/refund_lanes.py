@@ -1,8 +1,12 @@
 """TAX-048 refund reconciliation tool and advisory lane nodes on the TAX-022 interface.
 
-The graph is model-free: ``reconcile`` runs the deterministic tool through the
-TAX-022 envelope validation, and ``propose_lane`` appends an advisory lane
-finding that always requires officer review. Neither node records a decision.
+``reconcile`` runs the deterministic tool through the TAX-022 envelope
+validation, and ``propose_lane`` appends an advisory lane finding that always
+requires officer review. Neither node records a decision. Amounts, thresholds
+and the lane come only from the deterministic tool. With a ``models`` factory
+(``ai.models.get_model``; TAX-097) the finding also carries a validated
+``interpretation`` from the ``reasoning`` role that explains the reconciliation
+and weighs alternatives; without one the graph stays model-free.
 """
 
 from collections.abc import Callable, Mapping
@@ -23,6 +27,7 @@ from ai.tools.refund_reconciliation import (
     reconcile_refund,
 )
 from ai.workflows.fake_graph import InvestigationTool, _validate_result
+from ai.workflows.interpretation import ModelFactory, interpret_refund_lane
 from ai.workflows.state import InvestigationState
 
 RECONCILIATION_TOOL_NAME = "refund_reconciliation_tool"
@@ -89,8 +94,14 @@ def make_refund_reconciliation_tool(
 
 def build_refund_lane_graph(
     tool: InvestigationTool,
+    *,
+    models: ModelFactory | None = None,
 ) -> CompiledStateGraph[InvestigationState, None, InvestigationState, InvestigationState]:
-    """Compile reconcile -> propose_lane; failures stop and request human review."""
+    """Compile reconcile -> propose_lane; failures stop and request human review.
+
+    ``models`` is ``get_model`` (or a test double with the same signature); it is
+    asked for the ``reasoning`` role only to interpret the deterministic result.
+    """
 
     def reconcile(state: InvestigationState) -> dict[str, object]:
         context: ToolInvocationContext = {
@@ -137,6 +148,8 @@ def build_refund_lane_graph(
             "run_id": state["run_id"],
             "source_tool": result["tool_name"],
         }
+        if models is not None:
+            finding["interpretation"] = interpret_refund_lane(models, proposal, result["data"])
         # A lane is advisory: the graph always hands it to an officer.
         return {"findings": [*state["findings"], finding], "requires_human_review": True}
 
