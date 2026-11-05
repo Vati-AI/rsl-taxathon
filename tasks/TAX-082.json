@@ -5,14 +5,14 @@
   "owner": "Kananelo",
   "area": "tests/frontend",
   "phase": "expansion",
-  "status": "BACKLOG",
+  "status": "IN_PROGRESS",
   "priority": "P1",
   "depends_on": [
     "TAX-055",
     "TAX-060"
   ],
-  "claimed_by": null,
-  "branch": null,
+  "claimed_by": "claude-kananelo",
+  "branch": "task/TAX-082",
   "pr": null,
   "scope": "Create persona onboarding walkthroughs and measure task completion with test participants or scripted proxies",
   "inputs": [
@@ -54,6 +54,10 @@
     {
       "at": "2026-11-03T15:40:40.955115+00:00",
       "text": "Owner reassigned from Jane to Kananelo by team lead Keletso to balance workload; Jane keeps no open tasks for now."
+    },
+    {
+      "at": "2026-11-05T12:25:50.587862+00:00",
+      "text": "Claimed by claude-kananelo"
     }
   ]
 }
