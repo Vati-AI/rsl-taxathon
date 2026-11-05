@@ -171,6 +171,7 @@ def check():
             "integration/followthemoney",
             "integration/openaleph",
             "integration/docling",
+            "integration/yente",
         ],
         ["python3", "-m", "unittest", "discover", "-s", "tests/data", "-v"],
         ["python3", "-m", "unittest", "discover", "-s", "tests/tooling", "-v"],
