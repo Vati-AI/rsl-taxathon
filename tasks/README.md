@@ -23,9 +23,9 @@ Human owner = accountability. AI agent = implementer recorded in `claimed_by`. T
 | [TAX-034](TAX-034.json) | Keletso | pilot | Jube case lifecycle adapter | TAX-018, TAX-025, TAX-030 |
 | [TAX-035](TAX-035.json) | Keletso | pilot | Jube explainable tax-risk configuration | TAX-025, TAX-024 |
 | [TAX-036](TAX-036.json) | Leseli | pilot | OpenAleph and FtM tax entity mapping | TAX-026, TAX-030, TAX-032 |
-| [TAX-037](TAX-037.json) | Keletso | pilot | yente candidate review adapter | TAX-027, TAX-036 |
+| [TAX-037](TAX-037.json) | Leseli | pilot | yente candidate review adapter | TAX-027, TAX-036 |
 | [TAX-038](TAX-038.json) | Keletso | pilot | Docling extraction adapter | TAX-028, TAX-032, TAX-033 |
-| [TAX-039](TAX-039.json) | Keletso | pilot | Frappe to Jube submission and state bridge | TAX-031, TAX-033, TAX-034, TAX-035 |
+| [TAX-039](TAX-039.json) | Leseli | pilot | Frappe to Jube submission and state bridge | TAX-031, TAX-033, TAX-034, TAX-035 |
 | [TAX-040](TAX-040.json) | Leseli | pilot | Auditor case queue and taxpayer profile | TAX-020, TAX-018 |
 | [TAX-041](TAX-041.json) | Leseli | pilot | Evidence viewer and economic relationship view | TAX-040, TAX-036 |
 | [TAX-042](TAX-042.json) | Leseli | pilot | Human decision and specialist referral UI | TAX-040, TAX-046 |
@@ -39,8 +39,8 @@ Human owner = accountability. AI agent = implementer recorded in `claimed_by`. T
 | [TAX-050](TAX-050.json) | Gupta | pilot | Imported-services VAT and withholding evidence playbook | TAX-048, TAX-024 |
 | [TAX-051](TAX-051.json) | Gupta | pilot | Employment versus consultancy specialist playbook | TAX-047, TAX-024 |
 | [TAX-052](TAX-052.json) | Gupta | pilot | Legal-route registry and policy-gap gate | TAX-022, TAX-024 |
-| [TAX-053](TAX-053.json) | Gupta | pilot | Evidence search and cited case briefing agents | TAX-036, TAX-038, TAX-047 |
-| [TAX-054](TAX-054.json) | Keletso | pilot | End-to-end pipeline and degraded-service behavior | TAX-039, TAX-037, TAX-038, TAX-047, TAX-053 |
+| [TAX-053](TAX-053.json) | Leseli | pilot | Evidence search and cited case briefing agents | TAX-036, TAX-038, TAX-047 |
+| [TAX-054](TAX-054.json) | Leseli | pilot | End-to-end pipeline and degraded-service behavior | TAX-039, TAX-037, TAX-038, TAX-047, TAX-053 |
 | [TAX-055](TAX-055.json) | Kananelo | pilot | Portal and auditor end-to-end regression | TAX-041, TAX-042, TAX-044, TAX-045 |
 | [TAX-056](TAX-056.json) | Leseli | pilot | Agent evaluation and injection regression | TAX-049, TAX-050, TAX-051, TAX-052, TAX-053 |
 | [TAX-057](TAX-057.json) | Leseli | pilot | Tenant isolation, replay and failure matrix | TAX-054, TAX-046 |

@@ -2,7 +2,7 @@
   "id": "TAX-037",
   "kind": "task",
   "title": "yente candidate review adapter",
-  "owner": "Keletso",
+  "owner": "Leseli",
   "area": "integration",
   "phase": "pilot",
   "status": "BACKLOG",
@@ -46,5 +46,10 @@
     "finish-task"
   ],
   "evidence": [],
-  "notes": []
+  "notes": [
+    {
+      "at": "2026-11-05T00:32:14.315046+00:00",
+      "text": "Owner reassigned from Keletso to Leseli with Keletso's agreement; Keletso handed this task to Leseli to implement."
+    }
+  ]
 }
