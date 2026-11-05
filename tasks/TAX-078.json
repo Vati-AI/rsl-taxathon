@@ -5,14 +5,14 @@
   "owner": "Kananelo",
   "area": "apps/taxpayer-web",
   "phase": "expansion",
-  "status": "BACKLOG",
+  "status": "IN_PROGRESS",
   "priority": "P1",
   "depends_on": [
     "TAX-044",
     "TAX-069"
   ],
-  "claimed_by": null,
-  "branch": null,
+  "claimed_by": "kananelo-claude-20261105-078",
+  "branch": "task/TAX-078",
   "pr": null,
   "scope": "Offer taxpayer-specific correction reminders from reviewed prior omissions with clear explanation",
   "inputs": [
@@ -50,5 +50,10 @@
     "finish-task"
   ],
   "evidence": [],
-  "notes": []
+  "notes": [
+    {
+      "at": "2026-11-05T08:48:40.331010+00:00",
+      "text": "Claimed by kananelo-claude-20261105-078"
+    }
+  ]
 }
