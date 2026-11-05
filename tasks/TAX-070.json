@@ -5,7 +5,7 @@
   "owner": "Gupta",
   "area": "ai",
   "phase": "expansion",
-  "status": "IN_PROGRESS",
+  "status": "IN_REVIEW",
   "priority": "P1",
   "depends_on": [
     "TAX-068",
@@ -14,7 +14,7 @@
   ],
   "claimed_by": "claude-gupta-20261105-tax070",
   "branch": "task/TAX-070",
-  "pr": null,
+  "pr": "https://github.com/Vati-AI/rsl-taxathon/pull/205",
   "scope": "Propose review of weak playbooks/rules from upheld/overturned outcomes",
   "inputs": [
     "PROJECT.md",
@@ -36,7 +36,7 @@
     },
     {
       "text": "Record relevant tests and evidence, update task status and open a human-review PR",
-      "done": false
+      "done": true
     }
   ],
   "verification": "Prevent automatic legal-interpretation changes and preserve evaluation lineage",
@@ -54,12 +54,20 @@
     {
       "criterion": 2,
       "text": "tests/ai/test_outcome_feedback.py (8 tests, real TAX-061 registry stamps when LangGraph is installed): related_party@1.0 proposal with 3/4 overturned and dec-003 upheld as counter-evidence; below-threshold components reported but not proposed; legal authority only referred with legal_interpretation_change null and automatic_change_permitted false; apply() refuses every proposal with automatic_change_not_permitted and applied_changes is empty; withdrawn/no-final-outcome excluded and a changed original decision (dec-008) reported as a lineage problem and not counted; lineage records content digest, registry version and (decision_id, decision_digest, challenge_id) with a reproducible lineage digest, identical under reordered/duplicate delivery (an ordering bug found by this test was fixed); versions tracked separately; no taxpayer identifiers in output; malformed/cross-tenant/conflicting-lineage input refused. .venv-ai pytest tests/ai: 277 passed; ruff/mypy pass; TAX-056 gate PASS."
+    },
+    {
+      "criterion": 3,
+      "text": "Tests and evidence recorded on task/TAX-070 (criteria 1-2). Branch refreshed from main; conflicts with TAX-067 (#204) in ci.yml/dev.py/README resolved keeping both and all checks rerun (287 AI tests, gate PASS); pushed explicitly; human-review PR https://github.com/Vati-AI/rsl-taxathon/pull/205 opened with the CI billing block documented. Agent will not merge."
     }
   ],
   "notes": [
     {
       "at": "2026-11-05T09:10:57.573547+00:00",
       "text": "Claimed by claude-gupta-20261105-tax070"
+    },
+    {
+      "at": "2026-11-05T09:16:09.788183+00:00",
+      "text": "Agent finished implementation and opened human review. task.py finish steps run individually: its dev.py check/quality.py gate fails on this Windows checkout only (POSIX file-mode tooling tests; CRLF vs Prettier), documented in the PR."
     }
   ]
 }
