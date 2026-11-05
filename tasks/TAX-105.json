@@ -49,7 +49,7 @@
     },
     {
       "criterion": 3,
-      "text": "Added unclaimed TAX-106–109 with human owners, dependencies and observable acceptance; updated TAX-091/095/103/058 and task index. validate.py, dev.py check and quality.py passed; existing optional/dependency-gated test skips remain. No product code or runtime configuration changed."
+      "text": "Added unclaimed TAX-106\u2013109 with human owners, dependencies and observable acceptance; updated TAX-091/095/103/058 and task index. validate.py, dev.py check and quality.py passed; existing optional/dependency-gated test skips remain. No product code or runtime configuration changed."
     }
   ],
   "notes": [
