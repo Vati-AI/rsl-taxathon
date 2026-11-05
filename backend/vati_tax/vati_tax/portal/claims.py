@@ -25,6 +25,7 @@ from decimal import Decimal
 from typing import Any, Final
 
 from vati_tax.submissions import domain
+from vati_tax.submissions import invoices as schedule
 
 # Same choices as the Vati Refund Claim DocType (checked by the bench tests).
 REASONS: Final = ("excess_input_vat", "zero_rated_supplies", "other")
@@ -67,6 +68,10 @@ class ClaimRequest:
     explanation: str | None
     contact_email: str | None
     evidence_ids: tuple[str, ...]
+    # TAX-044: the period's declared figures and the purchase-invoice schedule.
+    period_output_vat: Decimal = Decimal("0.00")
+    period_input_vat: Decimal = Decimal("0.00")
+    invoices: tuple[schedule.InvoiceRow, ...] = ()
 
 
 def _text(value: object) -> str | None:
@@ -95,6 +100,7 @@ def _evidence_list(value: object) -> object:
 def validate_claim(raw: Mapping[str, Any], today: datetime.date) -> ClaimRequest:
     """Validate the whole form; raise ``ClaimInputError`` listing every problem."""
     errors: list[FieldError] = []
+    period_end: datetime.date | None = None
 
     key = raw.get("idempotency_key")
     try:
@@ -123,7 +129,7 @@ def validate_claim(raw: Mapping[str, Any], today: datetime.date) -> ClaimRequest
         )
     else:
         try:
-            domain.parse_period(period, today)
+            period_end = domain.parse_period(period, today).end
         except domain.DomainError as exc:
             message = (
                 "The tax period cannot be in the future."
@@ -201,6 +207,9 @@ def validate_claim(raw: Mapping[str, Any], today: datetime.date) -> ClaimRequest
                 )
             )
 
+    figures = _period_figures(raw, errors)
+    rows = _schedule(raw, period_end, today, set(evidence), errors)
+
     if not _truthy(raw.get("declaration")):
         errors.append(
             FieldError("declaration", "declaration_required", "Confirm the declaration to send.")
@@ -217,7 +226,93 @@ def validate_claim(raw: Mapping[str, Any], today: datetime.date) -> ClaimRequest
         explanation=explanation,
         contact_email=email,
         evidence_ids=tuple(evidence),
+        period_output_vat=figures[0] or Decimal("0.00"),
+        period_input_vat=figures[1] or Decimal("0.00"),
+        invoices=tuple(rows),
     )
+
+
+_FIGURE_LABELS = {"period_output_vat": "output VAT", "period_input_vat": "input VAT"}
+
+
+def _period_figures(
+    raw: Mapping[str, Any], errors: list[FieldError]
+) -> tuple[Decimal | None, Decimal | None]:
+    """The period's declared output and input VAT (TAX-044); zero is allowed."""
+    values: list[Decimal | None] = []
+    for field, label in _FIGURE_LABELS.items():
+        try:
+            values.append(domain.parse_money(raw.get(field), field))
+        except domain.DomainError as exc:
+            message = (
+                f"Enter the {label} for the period, or 0.00 if there was none."
+                if exc.reason == "required"
+                else "Enter numbers only, with up to two decimal places, for example 1500.00."
+            )
+            errors.append(FieldError(field, exc.reason, message))
+            values.append(None)
+    return values[0], values[1]
+
+
+def _schedule(
+    raw: Mapping[str, Any],
+    period_end: datetime.date | None,
+    today: datetime.date,
+    uploaded: set[str],
+    errors: list[FieldError],
+) -> list[schedule.InvoiceRow]:
+    """The purchase-invoice schedule (TAX-044); each row's documents must be uploaded here."""
+    rows_raw = raw.get("invoices")
+    if isinstance(rows_raw, str):
+        try:
+            rows_raw = json.loads(rows_raw)
+        except ValueError:
+            rows_raw = None
+    try:
+        rows = schedule.parse_schedule(rows_raw, period_end=period_end, today=today)
+    except schedule.ScheduleError as exc:
+        for e in exc.errors:
+            field = "invoices" if e.row < 0 else f"invoices.{e.row}.{e.field}"
+            errors.append(FieldError(field, e.code, e.message))
+        return []
+    for index, row in enumerate(rows):
+        for field, evidence_id in (("invoice_evidence_id", row.invoice_evidence_id),
+                                   ("contract_evidence_id", row.contract_evidence_id)):  # fmt: skip
+            if evidence_id and evidence_id not in uploaded:
+                errors.append(
+                    FieldError(
+                        f"invoices.{index}.{field}",
+                        "not_uploaded",
+                        "Choose a document you uploaded for this claim.",
+                    )
+                )
+    return rows
+
+
+def schedule_fingerprint(rows: Any) -> list[tuple[Any, ...]]:
+    """Comparable form of invoice rows, whether parsed or read back from the database."""
+    out = []
+    for row in rows or []:
+        get = row.get if isinstance(row, Mapping) else (lambda f, r=row: getattr(r, f, None))
+        paid = get("amount_paid")
+        out.append(
+            (
+                str(get("invoice_number") or "").strip(),
+                str(get("invoice_date") or "")[:10],
+                str(get("supplier_name") or "").strip(),
+                (str(get("supplier_tin") or "").strip() or None),
+                domain.parse_money(get("net_amount"), "net_amount"),
+                domain.parse_money(get("vat_amount"), "vat_amount"),
+                domain.parse_money(get("gross_amount"), "gross_amount"),
+                # Zero paid is "not paid", as in submissions.invoices.parse_row.
+                None
+                if paid in (None, "") or domain.parse_money(paid, "amount_paid") == 0
+                else domain.parse_money(paid, "amount_paid"),
+                get("invoice_evidence_id"),
+                get("contract_evidence_id") or None,
+            )
+        )
+    return out
 
 
 def same_request(request: ClaimRequest, stored: Mapping[str, Any]) -> bool:
@@ -225,13 +320,17 @@ def same_request(request: ClaimRequest, stored: Mapping[str, Any]) -> bool:
 
     ``stored`` holds the submission and claim fields: ``submission_type``,
     ``period``, ``claimed_amount``, ``claim_reason``, ``explanation``,
-    ``contact_email`` and ``evidence_ids`` (JSON text or a list).
+    ``contact_email`` and ``evidence_ids`` (JSON text or a list), plus (TAX-044)
+    ``period_output_vat``, ``period_input_vat`` and the ``invoices`` rows.
     """
     if stored.get("submission_type") != "refund_claim":
         return False
     try:
         stored_amount = domain.parse_money(stored.get("claimed_amount"), "claimed_amount")
         stored_evidence = domain.evidence_ids(_evidence_list(stored.get("evidence_ids")))
+        stored_output = domain.parse_money(stored.get("period_output_vat") or 0, "output")
+        stored_input = domain.parse_money(stored.get("period_input_vat") or 0, "input")
+        stored_rows = schedule_fingerprint(stored.get("invoices"))
     except domain.DomainError:
         return False
     return (
@@ -241,4 +340,7 @@ def same_request(request: ClaimRequest, stored: Mapping[str, Any]) -> bool:
         and _text(stored.get("explanation")) == request.explanation
         and _text(stored.get("contact_email")) == request.contact_email
         and sorted(stored_evidence) == sorted(request.evidence_ids)
+        and stored_output == request.period_output_vat
+        and stored_input == request.period_input_vat
+        and stored_rows == schedule_fingerprint(request.invoices)
     )

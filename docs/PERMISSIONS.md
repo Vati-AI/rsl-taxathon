@@ -39,7 +39,7 @@ A `DocShare` can only target a user whose scope already reaches the document, so
 
 Server-set fields (reference, version, submission time, period dates, keys, net VAT, masked TIN) are refused when a client changes them. Submitted figures cannot change.
 
-A `Vati Refund Claim` may reference only `Vati Evidence` of its own tenant and taxpayer in `evidence_ids` (TAX-043). A missing ID and another taxpayer's or tenant's evidence are refused the same way (422 `invalid_reference`), so a claim cannot probe for other records. The portal method `vati_tax.portal.api.submit_refund_claim` acts only for the caller's own taxpayer membership.
+A `Vati Refund Claim` may reference only `Vati Evidence` of its own tenant and taxpayer in `evidence_ids` (TAX-043). A missing ID and another taxpayer's or tenant's evidence are refused the same way (422 `invalid_reference`), so a claim cannot probe for other records. The portal method `vati_tax.portal.api.submit_refund_claim` acts only for the caller's own taxpayer membership. TAX-044: invoice schedule rows are part of the claim (same taxpayer write rules), and each row's invoice and contract documents must also be the claim's own taxpayer's evidence. `review_refund_claim` stores nothing and returns only taxpayer-facing figures and prompts; reconciliation indicators and lane proposals are never returned to taxpayers ([ADR-023](decisions/ADR-023-presubmission-reconciliation.md)).
 
 ## Action matrix
 
@@ -68,6 +68,9 @@ Callers check actions with `permissions.require_action(action, tenant_id, taxpay
 | `workflow.propose` (TAX-065: record a TAX-064 workflow proposal for review) | | yes | yes | yes | yes |
 | `workflow.activate`* (TAX-065: put an approved version in force, or roll back) | | | | yes | |
 | `workflow.read` (TAX-065: versions, history, execution check) | | yes | yes | yes | yes |
+| `challenge.lodge`* (TAX-069: object to an approved decision or appeal an objection outcome) | own taxpayer | yes, on the taxpayer's behalf | | yes, on the taxpayer's behalf | |
+| `challenge.review`* (TAX-069: record the reviewed outcome) | | | | yes, not on a decision or challenge they took part in | |
+| `challenge.read` (TAX-069: decision, challenges and final outcome) | own taxpayer | yes | yes | yes | yes |
 | `integration.callback` | | | | | yes |
 
 \* Human-only. A service identity is refused these actions even if the matrix is widened by mistake. Stale approvals, idempotent decision records and the Jube transition are TAX-046 (see Decisions below).
@@ -143,3 +146,14 @@ A TAX-064 workflow proposal becomes a `Vati Workflow Version` (`proposed`). A su
 | Check before running (`check_workflow_execution`) | staff or service (`workflow.read`) | the version is proposed or rejected, approved but not in force, or unknown. The refusal is recorded |
 
 A permitted workflow only orders steps that were each approved before. Every step still needs its own officer approval (TAX-046/TAX-047).
+
+## Objections, appeals and final outcomes (TAX-069)
+
+`Vati Decision Challenge` is one objection to an approved `Vati Decision`, or one appeal against the reviewed outcome of that decision's objection. It is taxpayer-owned (`tenant_id` + `taxpayer_id`). Officers and services read it in Desk; taxpayers have no DocType permission and use `vati_tax.challenges.api`, which hides staff identities. Nothing in this flow changes the decision, its evidence or earlier ledger entries. An overturned outcome asks for a new decision through TAX-046 and raises a review-only `decision_overturned` signal, withheld from the original decider. No deadline or statutory route is enforced (`legal_route_verified: false`). See [ADR-024](decisions/ADR-024-objections-appeals-final-outcomes.md).
+
+| Step | Who | Refused when |
+| --- | --- | --- |
+| Lodge an objection (`lodge_challenge`, `stage: objection`) | the decision's taxpayer, or an auditor or supervisor on its behalf (`challenge.lodge`) | specialist, service or another taxpayer (`not_found`); decision not approved; another challenge to it still open; the decision already has an objection; cited evidence not the taxpayer's. The refusal is recorded |
+| Lodge an appeal (`stage: appeal`) | as above | objection not yet reviewed; objection overturned or withdrawn; already appealed; parent is not an objection. The refusal is recorded |
+| Review (`review_challenge`) | a supervisor (`challenge.review`) | the decision's proposer or approver, the lodger, or for an appeal the objection's reviewer; auditor, specialist, service or taxpayer; unknown outcome; reason shorter than 20 characters; stale `expected_version`; already reviewed; decision changed since lodging. The refusal is recorded |
+| Read the history (`get_challenge_history`) | the taxpayer (own), staff, service (`challenge.read`) | another taxpayer or tenant (`not_found`). The read is recorded |

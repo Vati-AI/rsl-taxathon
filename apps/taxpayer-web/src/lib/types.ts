@@ -112,3 +112,27 @@ export interface LiveEnvelope<T> {
   data: T;
   replayed?: boolean;
 }
+
+/** TAX-044 pre-submission check: taxpayer-facing figures and guidance only. */
+export interface ReviewPrompt {
+  code: string;
+  /** Zero-based invoice row, or null for the claim as a whole. */
+  invoice: number | null;
+  message: string;
+}
+
+export interface PresubmissionReview {
+  calculation_version: string | null;
+  figures: Partial<
+    Record<
+      | 'claimed_refund'
+      | 'output_vat'
+      | 'documented_input_vat'
+      | 'explained_amount'
+      | 'unresolved_amount',
+      string
+    >
+  >;
+  prompts: ReviewPrompt[];
+  complete: boolean;
+}

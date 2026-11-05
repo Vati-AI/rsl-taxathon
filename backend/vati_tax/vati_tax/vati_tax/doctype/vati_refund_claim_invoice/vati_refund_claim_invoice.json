@@ -1,0 +1,121 @@
+{
+ "actions": [],
+ "creation": "2026-11-05 10:00:00.000000",
+ "description": "One purchase invoice in a VAT refund claim's schedule (TAX-044). Typed in by the taxpayer; the parent claim validates the figures and recomputes totals.",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "istable": 1,
+ "field_order": [
+  "invoice_number",
+  "invoice_date",
+  "supplier_name",
+  "supplier_tin",
+  "currency",
+  "net_amount",
+  "vat_amount",
+  "gross_amount",
+  "amount_paid",
+  "invoice_evidence_id",
+  "contract_evidence_id"
+ ],
+ "fields": [
+  {
+   "fieldname": "invoice_number",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Invoice number",
+   "length": 140,
+   "reqd": 1
+  },
+  {
+   "fieldname": "invoice_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Invoice date",
+   "reqd": 1
+  },
+  {
+   "fieldname": "supplier_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Supplier",
+   "length": 140,
+   "reqd": 1
+  },
+  {
+   "fieldname": "supplier_tin",
+   "fieldtype": "Data",
+   "label": "Supplier TIN",
+   "length": 30
+  },
+  {
+   "default": "LSL",
+   "fieldname": "currency",
+   "fieldtype": "Data",
+   "hidden": 1,
+   "label": "Currency",
+   "length": 3,
+   "read_only": 1
+  },
+  {
+   "fieldname": "net_amount",
+   "fieldtype": "Currency",
+   "label": "Amount excluding VAT (LSL)",
+   "options": "currency",
+   "non_negative": 1,
+   "reqd": 1
+  },
+  {
+   "fieldname": "vat_amount",
+   "fieldtype": "Currency",
+   "label": "VAT (LSL)",
+   "options": "currency",
+   "non_negative": 1,
+   "reqd": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "gross_amount",
+   "fieldtype": "Currency",
+   "label": "Total including VAT (LSL)",
+   "options": "currency",
+   "non_negative": 1,
+   "reqd": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "amount_paid",
+   "fieldtype": "Currency",
+   "label": "Amount paid (LSL)",
+   "options": "currency",
+   "non_negative": 1
+  },
+  {
+   "description": "TAX-032 evidence UUID of the uploaded invoice copy.",
+   "fieldname": "invoice_evidence_id",
+   "fieldtype": "Data",
+   "label": "Invoice document",
+   "length": 36,
+   "reqd": 1
+  },
+  {
+   "description": "Optional TAX-032 evidence UUID of a contract or purchase order.",
+   "fieldname": "contract_evidence_id",
+   "fieldtype": "Data",
+   "label": "Contract document",
+   "length": 36
+  }
+ ],
+ "index_web_pages_for_search": 0,
+ "links": [],
+ "modified": "2026-11-05 10:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Vati Tax",
+ "name": "Vati Refund Claim Invoice",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "creation",
+ "sort_order": "ASC",
+ "states": []
+}
