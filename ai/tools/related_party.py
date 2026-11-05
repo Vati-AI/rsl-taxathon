@@ -32,6 +32,7 @@ from ai.tools.refund_reconciliation import (
     _unique_ids,
     money,
     parse_money,
+    safe_reference,
 )
 
 REVIEW_VERSION = "tax049-related-party-v1"
@@ -136,8 +137,10 @@ def _test_contract(
     period: str,
     currency: str,
 ) -> dict[str, object]:
-    counterparty = contract.get("counterparty_id")
-    party = counterparty if isinstance(counterparty, str) else "the related party"
+    # The counterparty ID is untrusted record text: only a well-formed identifier
+    # is repeated in draft questions or the output (TAX-056 finding F3).
+    counterparty = safe_reference(contract.get("counterparty_id"))
+    party = counterparty or "the related party"
     invoice_ids = [invoice_id for invoice_id, _ in invoices]
     base = [contract_id, *invoice_ids]
     tests: list[dict[str, object]] = []
@@ -281,7 +284,7 @@ def _test_contract(
 
     return {
         "contract_id": contract_id,
-        "counterparty_id": counterparty if isinstance(counterparty, str) else None,
+        "counterparty_id": counterparty,
         "invoice_ids": invoice_ids,
         "tests": tests,
     }
