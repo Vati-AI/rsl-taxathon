@@ -30,15 +30,15 @@
   "acceptance": [
     {
       "text": "Create expected output/citation checks and hostile-document fixtures for every playbook",
-      "done": false
+      "done": true
     },
     {
       "text": "Measure false positives, citation coverage and human-interrupt compliance; report failures without hand-waving",
-      "done": false
+      "done": true
     },
     {
       "text": "Record relevant tests and evidence, update task status and open a human-review PR",
-      "done": false
+      "done": true
     }
   ],
   "verification": "Measure false positives, citation coverage and human-interrupt compliance; report failures without hand-waving",
@@ -48,7 +48,20 @@
     "update-project-task",
     "finish-task"
   ],
-  "evidence": [],
+  "evidence": [
+    {
+      "criterion": 1,
+      "text": "data/synthetic/tax056_evaluation_fixtures.json (expected outputs written from the TAX-024 ground truth for every approved playbook: refund_lanes, imported_services, related_party, work_arrangement; plus the TAX-052 policy-gap gate, TAX-053 cited briefing and TAX-047 approved-action checkpoint). Citation checks require each claim to cite IDs of the case, and expected codes to cite the TAX-024 evidence. Hostile fixtures: instruction text in descriptions, amounts, counterparty IDs and documents; records, documents and tool output from another tenant or case; fake, wrong-version, unverified, inapplicable and malformed citations; enforcement proposals; 11 hostile model statements; unauthorised readers and 13 invalid resumes. Harness ai/evaluation/agent_eval.py (ADR-029)."
+    },
+    {
+      "criterion": 2,
+      "text": "python -m ai.evaluation.agent_eval --check (2026-11-05, 3 runs per scenario): 724 checks, 713 passed, 11 failed. Overall: expected output 74/78, false positives 0/152, citation coverage 171/174, interrupt compliance 134/134, hostile resistance 152/156, determinism 30/30. Every failure is listed by ID in docs/evidence/TAX-056/README.md as findings F1-F4: refund lane reasons without or with partial citations (TAX-048), counterparty IDs echoed into draft questions (TAX-049/050), and consistently relabelled search output not detected (TAX-053). All are recorded as known failures with owner and reason; the CI gate fails on any new failure or any stale known failure. tests/ai/test_agent_evaluation.py: 18 tests including seeded-fault tests, OK."
+    },
+    {
+      "criterion": 3,
+      "text": "Full tests/ai suite with locked LangGraph 1.2.19: 162 tests OK. dev.py check steps with the venv interpreter: validate, compileall, data 3, integration 213, contract.py (26 examples), contracts 84, backend 365 (41 skipped) OK; tests/tooling 43 of 45 (2 existing Windows-only file-permission failures). ruff 0.17.3 check and format clean; mypy 2.4.1 with requirements-dev.lock: no issues in 189 files. CI ai-smoke runs the new tests and the --check gate. Review PR opened for Gupta (AI area)."
+    }
+  ],
   "notes": [
     {
       "at": "2026-11-03T15:40:40.955115+00:00",
