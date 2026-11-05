@@ -27,11 +27,11 @@
   "acceptance": [
     {
       "text": "Index reviewed case reasoning, accepted alternatives and legal authority versions under case permissions",
-      "done": false
+      "done": true
     },
     {
       "text": "Retrieve relevant authorized cases with citations and clearly distinguish institutional memory from binding precedent",
-      "done": false
+      "done": true
     },
     {
       "text": "Record relevant tests and evidence, update task status and open a human-review PR",
@@ -45,7 +45,16 @@
     "update-project-task",
     "finish-task"
   ],
-  "evidence": [],
+  "evidence": [
+    {
+      "criterion": 1,
+      "text": "ai/workflows/institutional_knowledge.py build_index keeps only independently reviewed outcomes (TAX-046 decisions status approved, reviewer_role supervisor, reviewer != proposer) with officer reasoning, accepted alternatives (with EvidenceRefs), cited EvidenceRefs (SHA-256 + page/record locator) and legal authority versions recorded at decision time; drafts/proposed/self-reviewed decisions are counted as skipped, never indexed. Retrieval is case-permission scoped: TAX-053 check_read_access before any record is read, then a required deny-by-default can_read_case per case (exceptions and non-True deny), restricted records supervisor-only, active case excluded, taxpayer/reviewer identifiers omitted."
+    },
+    {
+      "criterion": 2,
+      "text": "tests/ai/test_institutional_knowledge.py (9 tests): officer gets only the authorised, cited prior case (k1) with its EvidenceRef and accepted alternative; other-team, restricted and active cases withheld (withheld_by_permission 2) while a supervisor with full permission sees all three; unauthenticated/other-tenant/taxpayer callers refused before the permission callback runs; failing or non-True permission checks return nothing and a missing check is refused. Every result and response is nature institutional_memory, binding false, with a notice that it is not binding precedent or legal authority; cited authority SYN-PLACEHOLDER-AUTH-001@2024.1 reported no_longer_in_force with 2025.1 in force now, AUTH-002 unverified, unknown authority flagged. Instruction-like reasoning flagged not obeyed; deterministic ranking; invalid records fail closed. .venv-ai pytest tests/ai: 204 passed; ruff/mypy (188 files) pass."
+    }
+  ],
   "notes": [
     {
       "at": "2026-11-05T08:26:04.829335+00:00",
