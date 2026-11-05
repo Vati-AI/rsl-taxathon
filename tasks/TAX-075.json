@@ -5,14 +5,14 @@
   "owner": "Gupta",
   "area": "ai",
   "phase": "expansion",
-  "status": "BACKLOG",
+  "status": "IN_PROGRESS",
   "priority": "P1",
   "depends_on": [
     "TAX-074",
     "TAX-067"
   ],
-  "claimed_by": null,
-  "branch": null,
+  "claimed_by": "claude-gupta-20261105-tax075",
+  "branch": "task/TAX-075",
   "pr": null,
   "scope": "Detect unexplained network patterns with explainable evidence and analyst review queue",
   "inputs": [
@@ -46,5 +46,10 @@
     "finish-task"
   ],
   "evidence": [],
-  "notes": []
+  "notes": [
+    {
+      "at": "2026-11-05T09:24:05.304851+00:00",
+      "text": "Claimed by claude-gupta-20261105-tax075"
+    }
+  ]
 }
