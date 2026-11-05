@@ -73,7 +73,7 @@ Human owner = accountability. AI agent = implementer recorded in `claimed_by`. T
 | [TAX-083](TAX-083.json) | Keletso | foundation | Prototype engineering standards and checks | none |
 | [TAX-085](TAX-085.json) | Keletso | pilot | Service adapters packaged and configured inside Frappe | TAX-034, TAX-038 |
 | [TAX-086](TAX-086.json) | Edga | pilot | Case findings record for rule and agent output | TAX-030, TAX-035, TAX-046, TAX-096 |
-| [TAX-087](TAX-087.json) | Keletso | pilot | Event wiring from Frappe to Jube, Docling, OpenAleph and yente | TAX-085, TAX-039, TAX-036, TAX-037, TAX-038 |
+| [TAX-087](TAX-087.json) | Leseli | pilot | Event wiring from Frappe to Jube, Docling, OpenAleph and yente | TAX-085, TAX-039, TAX-036, TAX-037, TAX-038 |
 | [TAX-088](TAX-088.json) | Gupta | pilot | AI investigation runtime on real cases | TAX-087, TAX-086, TAX-047, TAX-053, TAX-089, TAX-097 |
 | [TAX-089](TAX-089.json) | Gupta | pilot | Model router with Groq/Gemini providers, local and template fallback | TAX-022, TAX-053, TAX-056 |
 | [TAX-090](TAX-090.json) | Keletso | pilot | Vati /api/v1 service in Frappe for the auditor app | TAX-086, TAX-039, TAX-096 |
@@ -82,7 +82,7 @@ Human owner = accountability. AI agent = implementer recorded in `claimed_by`. T
 | [TAX-093](TAX-093.json) | Leseli | pilot | Auditor screens for AI briefing and specialist opinion | TAX-090, TAX-088, TAX-096 |
 | [TAX-094](TAX-094.json) | Keletso | pilot | Demo seed and reset for the five scenarios | TAX-085, TAX-086 |
 | [TAX-095](TAX-095.json) | Keletso | pilot | Presentation environment on the demo laptop | TAX-085 |
-| [TAX-096](TAX-096.json) | Keletso | pilot | AI briefing, provenance, feedback and taxpayer-assistance contract | TAX-018 |
+| [TAX-096](TAX-096.json) | Leseli | pilot | AI briefing, provenance, feedback and taxpayer-assistance contract | TAX-018 |
 | [TAX-097](TAX-097.json) | Gupta | pilot | Model-assisted reasoning in the four investigation agents | TAX-089, TAX-056 |
 | [TAX-098](TAX-098.json) | Gupta | pilot | Taxpayer compliance assistant agent | TAX-089, TAX-096, TAX-044, TAX-038 |
 | [TAX-099](TAX-099.json) | Gupta | pilot | Taxpayer evidence-response assistant | TAX-098, TAX-045 |

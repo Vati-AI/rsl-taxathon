@@ -2,7 +2,7 @@
   "id": "TAX-087",
   "kind": "task",
   "title": "Event wiring from Frappe to Jube, Docling, OpenAleph and yente",
-  "owner": "Keletso",
+  "owner": "Leseli",
   "area": "integration",
   "phase": "pilot",
   "status": "BACKLOG",
@@ -55,6 +55,10 @@
     {
       "at": "2026-11-05T06:39:04.925015+00:00",
       "text": "Added 2026-11-05 after a runtime gap analysis for the RSL demo: the component code existed but this link was not wired at runtime and no task covered it."
+    },
+    {
+      "at": "2026-11-05T11:41:17.444794+00:00",
+      "text": "Owner reassigned from Keletso to Leseli with Keletso's agreement. Keletso handed TAX-087 to Leseli to implement."
     }
   ]
 }
