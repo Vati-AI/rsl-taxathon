@@ -5,7 +5,7 @@
   "owner": "Leseli",
   "area": "integration",
   "phase": "pilot",
-  "status": "IN_PROGRESS",
+  "status": "IN_REVIEW",
   "priority": "P0",
   "depends_on": [
     "TAX-027",
@@ -13,7 +13,7 @@
   ],
   "claimed_by": "leseli-claude-20261105-037",
   "branch": "task/TAX-037",
-  "pr": null,
+  "pr": "https://github.com/Vati-AI/rsl-taxathon/pull/170",
   "scope": "Normalize match candidates, dataset versions and review decisions; never merge entities solely on score",
   "inputs": [
     "PROJECT.md",
@@ -67,6 +67,10 @@
     {
       "at": "2026-11-05T01:09:07.056285+00:00",
       "text": "Claimed by leseli-claude-20261105-037"
+    },
+    {
+      "at": "2026-11-05T01:19:14.316593+00:00",
+      "text": "Agent leseli-claude-20261105-037 finished implementation and opened review (https://github.com/Vati-AI/rsl-taxathon/pull/170); Keletso asked to review as integration area owner."
     }
   ]
 }
