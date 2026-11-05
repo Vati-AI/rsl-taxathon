@@ -5,15 +5,21 @@ HTTP 403 before the function body runs. Callers also need an enabled taxpayer
 membership (TAX-029), and only see their own taxpayer's records: another
 taxpayer's submission is reported as not found.
 
-The submissions list and status pages still serve explicitly synthetic fixture
-data (``mode: fixture``). ``submit_refund_claim`` (TAX-043) is live: it stores a
-VAT refund claim in the TAX-031 DocTypes (``mode: live``). Supporting documents
+The session, the submissions list and the submission status (TAX-092) are live:
+they read the caller's own Vati Submission and Vati Refund Claim records with the
+taxpayer-facing review status mirrored from Jube (TAX-039), never case or risk
+detail (``portal.submissions``). ``submit_refund_claim`` (TAX-043) stores a VAT
+refund claim in the TAX-031 DocTypes (``mode: live``). Supporting documents
 are uploaded first through ``vati_tax.evidence.api.upload_evidence`` (TAX-032)
 and referenced here by evidence ID.
 
 The evidence request methods (TAX-045) are live too: the caller's own TAX-046
 evidence requests in their taxpayer-facing form, and a structured response to
 one of them (``vati_tax.responses``).
+
+``get_correction_reminders`` (TAX-078) lists the caller's own reminders from
+reviewed omissions in earlier claims, and ``review_refund_claim`` marks the
+prompts they cover (``vati_tax.reminders``).
 """
 
 from __future__ import annotations
@@ -24,12 +30,15 @@ from typing import Any, NoReturn
 import frappe
 from frappe import _
 
+from vati_tax.bridge import rules as bridge_rules
 from vati_tax.bridge import store as bridge_store
 from vati_tax.identity.permissions import get_principal
 from vati_tax.identity.policy import TAXPAYER, canonical_uuid
 from vati_tax.ids.canonical import CaseNotFound, MappingError
 from vati_tax.portal import claims, presubmission
-from vati_tax.portal.fixtures import FIXTURE_META, find_submission, list_submissions
+from vati_tax.portal import submissions as portal_submissions
+from vati_tax.reminders import rules as reminder_rules
+from vati_tax.reminders import store as reminder_store
 from vati_tax.responses import rules as response_rules
 from vati_tax.responses import store as response_store
 from vati_tax.submissions import domain
@@ -38,6 +47,21 @@ from vati_tax.vati_tax.doctype.vati_refund_claim.vati_refund_claim import foreig
 
 SUBMISSION = "Vati Submission"
 REFUND_CLAIM = "Vati Refund Claim"
+TAXPAYER_DOCTYPE = "Vati Taxpayer"
+# Read for the taxpayer's own list; nothing here is case, risk or staff data.
+SUBMISSION_FIELDS = (
+    "name",
+    "reference",
+    "submission_type",
+    "period",
+    "currency",
+    "status",
+    "submitted_at",
+    "review_status",
+    "review_status_at",
+    "taxpayer_id",
+    "creation",
+)
 INVOICE_ROW = "Vati Refund Claim Invoice"
 INVOICE_FIELDS = (
     "invoice_number",
@@ -121,7 +145,7 @@ def _fail(
 def get_session() -> dict[str, Any]:
     user, scope = _require_taxpayer()
     return {
-        **FIXTURE_META,
+        **LIVE_META,
         "user": user,
         "full_name": frappe.utils.get_fullname(user),
         # Lets the portal send X-Vati-Tenant-ID with evidence uploads (TAX-043).
@@ -131,19 +155,87 @@ def get_session() -> dict[str, Any]:
     }
 
 
+def _local_iso(value: Any) -> str | None:
+    """A stored Datetime as the portal shows it elsewhere (TAX-043 confirmation)."""
+    if not value:
+        return None
+    return frappe.utils.get_datetime(value).strftime("%Y-%m-%dT%H:%M:%S")
+
+
+def _utc_iso(value: Any) -> str | None:
+    """The bridge's UTC timestamp (review_status_at), as bridge.store.taxpayer_view gives it."""
+    if not value:
+        return None
+    return bridge_rules.iso(frappe.utils.get_datetime(value))
+
+
+def _own_submissions(
+    scope: list[tuple[str, str]], submission_id: str | None = None
+) -> list[portal_submissions.SubmissionView]:
+    """The caller's own submissions; filtered by tenant and taxpayer in the query itself."""
+    rows: list[Any] = []
+    for tenant_id, taxpayer_id in scope:
+        filters: dict[str, Any] = {"tenant_id": tenant_id, "taxpayer_id": taxpayer_id}
+        if submission_id is not None:
+            filters["name"] = submission_id
+        rows.extend(frappe.get_all(SUBMISSION, filters=filters, fields=list(SUBMISSION_FIELDS)))
+    if not rows:
+        return []
+    names = [row.name for row in rows]
+    amounts = {
+        claim.submission_id: claim.claimed_amount
+        for claim in frappe.get_all(
+            REFUND_CLAIM,
+            filters={"submission_id": ["in", names]},
+            fields=["submission_id", "claimed_amount"],
+        )
+    }
+    taxpayers = {row.taxpayer_id for row in rows}
+    display = {
+        item.name: item.display_name
+        for item in frappe.get_all(
+            TAXPAYER_DOCTYPE,
+            filters={"name": ["in", list(taxpayers)]},
+            fields=["name", "display_name"],
+        )
+    }
+    items = []
+    for row in rows:
+        amount = amounts.get(row.name)
+        items.append(
+            portal_submissions.view(
+                submission_id=row.name,
+                reference=row.reference,
+                submission_type=row.submission_type,
+                period=row.period,
+                currency=row.currency,
+                status=bridge_rules.taxpayer_status(row.status, row.review_status),
+                submitted_at=_local_iso(row.submitted_at),
+                status_at=_utc_iso(row.review_status_at),
+                amount=None
+                if amount is None
+                else domain.format_money(domain.parse_money(amount, "claimed_amount")),
+                taxpayer_name=display.get(row.taxpayer_id),
+            )
+        )
+    created = {row.name: _local_iso(row.creation) for row in rows}
+    return portal_submissions.newest_first(items, created)
+
+
 @frappe.whitelist()
 def get_submissions() -> dict[str, Any]:
     _user, scope = _require_taxpayer()
-    return {**FIXTURE_META, "data": list_submissions(scope)}
+    return {**LIVE_META, "data": _own_submissions(scope)}
 
 
 @frappe.whitelist()
 def get_submission(submission_id: str) -> dict[str, Any]:
     _user, scope = _require_taxpayer()
-    item = find_submission(submission_id, scope)
-    if item is None:
+    found = _own_submissions(scope, submission_id=str(submission_id or ""))
+    if not found:
+        # Another taxpayer's submission is concealed as not found.
         raise frappe.DoesNotExistError(_("Submission not found."))
-    return {**FIXTURE_META, "data": item}
+    return {**LIVE_META, "data": found[0]}
 
 
 # --- VAT refund claim (TAX-043) ----------------------------------------------------
@@ -506,5 +598,24 @@ def review_refund_claim(
         )
     except presubmission.ReconciliationUnavailable as exc:
         _fail(503, "service_unavailable", str(exc), action=action)
+    # TAX-078: mark prompts the taxpayer was reminded about after an earlier claim.
+    reminders = reminder_store.taxpayer_reminders([(tenant, taxpayer)])
+    result["prompts"] = reminder_rules.annotate_prompts(result["prompts"], reminders)
     _log(action, "reviewed", prompts=len(result["prompts"]))
     return {**LIVE_META, "data": result}
+
+
+# --- correction reminders (TAX-078) -------------------------------------------------
+
+
+@frappe.whitelist()
+def get_correction_reminders() -> dict[str, Any]:
+    """The caller's own active reminders from reviewed omissions in earlier claims.
+
+    One per topic, newest first. A reminder whose decision is challenged or was
+    overturned, or that staff withdrew, is not returned. Guidance only.
+    """
+    _user, scope = _require_taxpayer()
+    data = reminder_store.taxpayer_reminders(scope)
+    _log("get_correction_reminders", "listed", reminders=len(data))
+    return {**LIVE_META, "data": data}

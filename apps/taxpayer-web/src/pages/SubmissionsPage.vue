@@ -77,7 +77,8 @@ onMounted(load);
               {{ item.tax_type }} · {{ formatPeriod(item.period) }}
             </p>
             <p class="break-words text-sm text-ink-gray-6">
-              {{ item.reference }} · Sent {{ formatDate(item.submitted_at) }}
+              {{ item.reference }} ·
+              {{ item.submitted_at ? `Sent ${formatDate(item.submitted_at)}` : 'Not sent yet' }}
             </p>
           </div>
           <p class="text-right font-medium tabular-nums text-ink-gray-8">

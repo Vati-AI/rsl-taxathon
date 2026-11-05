@@ -53,6 +53,7 @@ responses are small JSON and still come from it, including its access rules.
 | `taxpayer.spec.ts`                   | Positive navigation, guest and API-denied access, logout, keyboard, axe/reflow matrix.                                                                                                                                                                               |
 | `visual.spec.ts`                     | Opt-in screenshots and baseline comparison (below).                                                                                                                                                                                                                  |
 | `claim.spec.ts`                      | TAX-043 VAT refund claim: send, duplicate retry, invalid documents, cross-scope evidence, keyboard, axe/reflow. `CAPTURE_SCREENSHOTS=1` writes `docs/evidence/TAX-044` (TAX-044 invoice schedule and pre-submission checks included).                                |
+| `reminders.spec.ts`                  | TAX-078 correction reminders: earlier-claim reminders on the claim form, no panel for first-time claimants, load failure that never blocks the claim, recurring pre-submission prompts labelled, axe/reflow. `CAPTURE_SCREENSHOTS=1` writes `docs/evidence/TAX-078`. |
 | `responses.spec.ts`                  | TAX-045 evidence request responses: allowlisted statuses, structured answers, retry, read-only states, concealed requests, keyboard, axe/reflow. `CAPTURE_SCREENSHOTS=1` writes `docs/evidence/TAX-045`.                                                             |
 | `scenarios.spec.ts`                  | TAX-055 end-to-end regression: the five scenario routes (SYN-001 to SYN-005) from queue to recorded outcome, the taxpayer journey from claim to evidence response, and forced-colours/reduced-motion states. `CAPTURE_SCREENSHOTS=1` writes `docs/evidence/TAX-055`. |
 
@@ -64,7 +65,11 @@ Everything is answered inside the test browser; no account or password exists.
   Records come from `list_submissions(scope)` in
   `backend/vati_tax/vati_tax/portal/fixtures.py`, so the mock follows the
   same TAX-029 ownership rules as the Frappe app. Responses follow Frappe v16
-  shapes (`{ message }`, or HTTP 403 with `exc_type`). Personas:
+  shapes (`{ message }`, or HTTP 403 with `exc_type`). Since TAX-092 the
+  session, list and status answer `mode: live` like the server, and a claim
+  sent in the test is listed first as "Under review";
+  `mockTaxpayerSession(page, persona, { dataMode: 'fixture' })` answers as a
+  fixture server instead, to check the fixture notice. Personas:
   - `taxpayer`: `taxpayer.a@example.test` with the taxpayer membership from
     docs/PERMISSIONS.md; sees only SUB-SYN-0001, and another taxpayer's
     submission is "not found".

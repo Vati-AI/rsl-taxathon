@@ -212,8 +212,8 @@ class LedgerTests(unittest.TestCase):
 class ExampleTests(unittest.TestCase):
     def test_contract_examples_match_the_fixture_responses(self):
         for name, role in (
-            ("27_get_integrity_review.json", "supervisor"),
-            ("28_error_integrity_review_forbidden.json", "auditor"),
+            ("46_get_integrity_review.json", "supervisor"),
+            ("47_error_integrity_review_forbidden.json", "auditor"),
         ):
             with self.subTest(example=name):
                 example = json.loads((EXAMPLES / name).read_text(encoding="utf-8"))

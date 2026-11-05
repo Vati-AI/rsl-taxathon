@@ -1,0 +1,55 @@
+{
+  "id": "TAX-109",
+  "kind": "task",
+  "title": "Protected original-document access from case evidence and citations",
+  "owner": "Leseli",
+  "area": "apps/auditor-web",
+  "phase": "pilot",
+  "status": "BACKLOG",
+  "priority": "P0",
+  "depends_on": [
+    "TAX-032",
+    "TAX-090",
+    "TAX-108"
+  ],
+  "claimed_by": null,
+  "branch": null,
+  "pr": null,
+  "scope": "Connect evidence metadata and citations to the authorized original through Frappe or the verified native OpenAleph viewer without copying an entire document UI.",
+  "inputs": [
+    "PROJECT_SCOPE.md",
+    "docs/UI_INTEGRATION_SCOPE.md",
+    "docs/ARCHITECTURE.md",
+    "docs/decisions/ADR-034-native-ui-integration.md",
+    "docs/DESIGN_STANDARD.md"
+  ],
+  "acceptance": [
+    {
+      "text": "From case evidence and a finding citation, an authorized officer opens the correct immutable document/version and page or record where supported; otherwise visibly identify the locator without pretending page navigation occurred.",
+      "done": false
+    },
+    {
+      "text": "Enforce tenant/case permission at content retrieval, protect direct URLs and avoid public originals, credential URLs or unrestricted previews; unavailable content, denied access and extraction failures are distinct states.",
+      "done": false
+    },
+    {
+      "text": "Run synthetic success and cross-tenant/case-denial tests, verify fingerprint/version against the original and capture viewport/keyboard/accessibility evidence with human review.",
+      "done": false
+    },
+    {
+      "text": "Record tests and limitations, update evidence and open a human-review PR; do not claim native runtime readiness from fixtures.",
+      "done": false
+    }
+  ],
+  "verification": "Authenticated synthetic native-screen and connected navigation checks; denied access, unavailable service and documented human visual review.",
+  "skills": [
+    "start-task",
+    "implement-change",
+    "integrate-service",
+    "finish-task"
+  ],
+  "evidence": [],
+  "notes": [
+    "Added by TAX-105 from user-requested complete frontend/native UI scope; not implemented or claimed."
+  ]
+}

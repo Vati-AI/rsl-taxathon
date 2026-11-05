@@ -1,0 +1,210 @@
+{
+ "actions": [],
+ "autoname": "field:reminder_id",
+ "creation": "2026-11-05 12:00:00.000000",
+ "description": "Correction reminder for one taxpayer from a reviewed omission in an earlier claim (TAX-078). Guidance only; staff correct or withdraw it with a reason, and it is hidden while its decision is challenged or after it was overturned.",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "reminder_id",
+  "tenant_id",
+  "taxpayer_id",
+  "case_id",
+  "decision_id",
+  "topic",
+  "status",
+  "version",
+  "reminder_section",
+  "explanation",
+  "recorded_by",
+  "recorded_at",
+  "request_digest",
+  "change_section",
+  "updated_by",
+  "updated_at",
+  "change_reason",
+  "history",
+  "keys_section",
+  "reminder_key"
+ ],
+ "fields": [
+  {
+   "fieldname": "reminder_id",
+   "fieldtype": "Data",
+   "label": "Reminder ID",
+   "length": 36,
+   "reqd": 1,
+   "unique": 1,
+   "set_only_once": 1
+  },
+  {
+   "fieldname": "tenant_id",
+   "fieldtype": "Data",
+   "label": "Tenant ID",
+   "length": 36,
+   "reqd": 1,
+   "search_index": 1,
+   "set_only_once": 1,
+   "in_standard_filter": 1
+  },
+  {
+   "fieldname": "taxpayer_id",
+   "fieldtype": "Data",
+   "label": "Taxpayer ID",
+   "length": 36,
+   "reqd": 1,
+   "search_index": 1,
+   "set_only_once": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1
+  },
+  {
+   "fieldname": "case_id",
+   "fieldtype": "Data",
+   "label": "Case ID",
+   "length": 36,
+   "reqd": 1,
+   "search_index": 1,
+   "set_only_once": 1
+  },
+  {
+   "fieldname": "decision_id",
+   "fieldtype": "Data",
+   "label": "Decision ID",
+   "length": 36,
+   "reqd": 1,
+   "search_index": 1,
+   "set_only_once": 1
+  },
+  {
+   "fieldname": "topic",
+   "fieldtype": "Select",
+   "label": "Topic",
+   "options": "missing_invoices\nperiod_figures\ninvoice_totals\npayment_details\ncontract_documents",
+   "reqd": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "label": "Status",
+   "options": "active\nwithdrawn",
+   "reqd": 1,
+   "default": "active",
+   "in_list_view": 1,
+   "in_standard_filter": 1
+  },
+  {
+   "fieldname": "version",
+   "fieldtype": "Int",
+   "label": "Version",
+   "reqd": 1,
+   "default": "1"
+  },
+  {
+   "fieldname": "reminder_section",
+   "fieldtype": "Section Break",
+   "label": "Reminder"
+  },
+  {
+   "fieldname": "explanation",
+   "fieldtype": "Long Text",
+   "label": "Explanation for the taxpayer",
+   "reqd": 1
+  },
+  {
+   "fieldname": "recorded_by",
+   "fieldtype": "Data",
+   "label": "Recorded by",
+   "reqd": 1,
+   "set_only_once": 1
+  },
+  {
+   "fieldname": "recorded_at",
+   "fieldtype": "Datetime",
+   "label": "Recorded at",
+   "reqd": 1,
+   "set_only_once": 1
+  },
+  {
+   "fieldname": "request_digest",
+   "fieldtype": "Data",
+   "label": "Request digest",
+   "length": 64,
+   "reqd": 1,
+   "set_only_once": 1
+  },
+  {
+   "fieldname": "change_section",
+   "fieldtype": "Section Break",
+   "label": "Last change"
+  },
+  {
+   "fieldname": "updated_by",
+   "fieldtype": "Data",
+   "label": "Updated by"
+  },
+  {
+   "fieldname": "updated_at",
+   "fieldtype": "Datetime",
+   "label": "Updated at"
+  },
+  {
+   "fieldname": "change_reason",
+   "fieldtype": "Long Text",
+   "label": "Reason for the change"
+  },
+  {
+   "fieldname": "history",
+   "fieldtype": "Long Text",
+   "label": "Earlier versions (JSON)"
+  },
+  {
+   "fieldname": "keys_section",
+   "fieldtype": "Section Break",
+   "label": "Keys",
+   "collapsible": 1
+  },
+  {
+   "fieldname": "reminder_key",
+   "fieldtype": "Data",
+   "label": "Reminder key",
+   "length": 64,
+   "unique": 1
+  }
+ ],
+ "in_create": 1,
+ "index_web_pages_for_search": 0,
+ "links": [],
+ "modified": "2026-11-05 12:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Vati Tax",
+ "name": "Vati Correction Reminder",
+ "naming_rule": "By fieldname",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "export": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager"
+  },
+  {
+   "read": 1,
+   "role": "Vati Auditor"
+  },
+  {
+   "read": 1,
+   "role": "Vati Specialist"
+  },
+  {
+   "read": 1,
+   "role": "Vati Supervisor"
+  }
+ ],
+ "search_fields": "taxpayer_id,topic,status",
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "topic"
+}

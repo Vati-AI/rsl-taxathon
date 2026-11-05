@@ -1,0 +1,56 @@
+{
+  "id": "TAX-107",
+  "kind": "task",
+  "title": "Configure and verify Jube native tax investigation screens",
+  "owner": "Keletso",
+  "area": "integration",
+  "phase": "pilot",
+  "status": "BACKLOG",
+  "priority": "P0",
+  "depends_on": [
+    "TAX-085",
+    "TAX-034",
+    "TAX-035",
+    "TAX-046"
+  ],
+  "claimed_by": null,
+  "branch": null,
+  "pr": null,
+  "scope": "Adapt Jube native workflow screens through supported tax-specific configuration and prove permissions preserve Frappe decision authority.",
+  "inputs": [
+    "PROJECT_SCOPE.md",
+    "docs/UI_INTEGRATION_SCOPE.md",
+    "docs/ARCHITECTURE.md",
+    "docs/decisions/ADR-034-native-ui-integration.md",
+    "docs/DESIGN_STANDARD.md"
+  ],
+  "acceptance": [
+    {
+      "text": "Configure and record tax statuses, queues, display fields, forms, selection reasons, assignments and rule administration using the pinned deployment; preserve source/version and canonical IDs.",
+      "done": false
+    },
+    {
+      "text": "Run authenticated synthetic auditor/specialist/supervisor/admin cases: native status, closure and approval-like actions cannot bypass Frappe approval or separation of duties; deny unsafe operations server-side and route them through Vati if necessary; permitted changes project back with audit evidence.",
+      "done": false
+    },
+    {
+      "text": "Record actual native case URL patterns for TAX-106, login/denied-access/session behavior, screenshots and human usability review; compare ordinary-user and administrator grants without shared admin credentials.",
+      "done": false
+    },
+    {
+      "text": "Record tests and limitations, update evidence and open a human-review PR; do not claim native runtime readiness from fixtures.",
+      "done": false
+    }
+  ],
+  "verification": "Authenticated synthetic native-screen and connected navigation checks; denied access, unavailable service and documented human visual review.",
+  "skills": [
+    "start-task",
+    "implement-change",
+    "integrate-service",
+    "finish-task"
+  ],
+  "evidence": [],
+  "notes": [
+    "Added by TAX-105 from user-requested complete frontend/native UI scope; not implemented or claimed."
+  ]
+}

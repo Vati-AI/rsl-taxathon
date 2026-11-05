@@ -63,6 +63,9 @@ CLOSED = 3
 SEMVER = re.compile(r"\d+\.\d+\.\d+")
 RETRYABLE_HTTP = {429, 502, 503, 504}
 MAX_RETRY_AFTER_S = 10.0
+# Plain HTTP stays on the developer's machine: loopback, or host.docker.internal, Docker's
+# name for that machine as seen from the Frappe developer container (TAX-085).
+LOCAL_HTTP_HOSTS = ("127.0.0.1", "localhost", "::1", "host.docker.internal")
 
 log = logging.getLogger("vati.jube_case")
 
@@ -269,7 +272,7 @@ class AdapterConfig:
         parsed = urllib.parse.urlparse(base_url)
         if parsed.scheme not in ("http", "https") or not parsed.hostname:
             raise ConfigError("JUBE_BASE_URL must be an http(s) URL")
-        if parsed.scheme == "http" and parsed.hostname not in ("127.0.0.1", "localhost", "::1"):
+        if parsed.scheme == "http" and parsed.hostname not in LOCAL_HTTP_HOSTS:
             raise ConfigError("plain HTTP to Jube is only allowed on loopback")
         if not api_key or len(api_key) < 20:
             raise ConfigError("the Jube case adapter API key is missing")

@@ -4,7 +4,7 @@
   "info": {
     "title": "Vati Integration API",
     "version": "1.0.0-draft",
-    "summary": "Versioned Vati coordination boundary for cases, evidence, entities, findings, investigations and evidence requests.",
+    "summary": "Versioned Vati coordination boundary for cases, evidence, entities, findings, investigations and evidence requests, AI briefings, finding feedback and taxpayer assistance.",
     "description": "Proposed Vati routes (TAX-018). These are Vati contracts, not claims about Jube, Frappe, OpenAleph, yente, Docling or LangGraph endpoints. Jube is the operational case authority; Frappe owns users, submissions, evidence requests and approved decisions; Vati stores cross-service links, idempotency and delivery state. Tenant context is resolved from the authenticated principal; the X-Vati-Tenant-ID header selects a tenant and must fall inside the principal's permitted scope. Case IDs alone never authorise access. No route performs tax assessment, refund denial/payment, enforcement or referral outside the tax office (a specialist referral is an internal officer review). Synthetic data only."
   },
   "servers": [
@@ -23,7 +23,9 @@
     { "name": "evidence-requests" },
     { "name": "decisions" },
     { "name": "taxpayers" },
-    { "name": "management" }
+    { "name": "management" },
+    { "name": "briefings" },
+    { "name": "taxpayer-assistance" }
   ],
   "paths": {
     "/api/v1/cases": {
@@ -539,6 +541,263 @@
         }
       }
     },
+    "/api/v1/cases/{case_id}/briefing": {
+      "get": {
+        "operationId": "getCaseBriefing",
+        "tags": ["briefings"],
+        "summary": "Read the cited AI case briefing for an officer, with provenance, disclosure and checkpoint state.",
+        "description": "Officer context only: auditor, specialist or supervisor of the tenant (taxpayers and other principals get 403 forbidden). Returns the briefing recorded once per run by ADR-021's validated workflow: every statement cites evidence (EvidenceRef), a search or an in-scope document; rejected statements are listed with a reason. decision, legal_conclusion and enforcement_conclusion are always null. 404 not_found when the case has no briefing yet or run_id is not one of its runs.",
+        "parameters": [
+          { "$ref": "#/components/parameters/TenantHeader" },
+          { "$ref": "#/components/parameters/CorrelationIdHeader" },
+          { "$ref": "#/components/parameters/CaseIdPath" },
+          { "$ref": "#/components/parameters/RunIdQuery" }
+        ],
+        "responses": {
+          "200": {
+            "description": "Latest (or the requested run's) briefing.",
+            "headers": { "X-Correlation-ID": { "$ref": "#/components/headers/CorrelationId" } },
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/CaseBriefingEnvelope" } } }
+          },
+          "400": { "$ref": "#/components/responses/BadRequest" },
+          "401": { "$ref": "#/components/responses/Unauthenticated" },
+          "403": { "$ref": "#/components/responses/Forbidden" },
+          "404": { "$ref": "#/components/responses/NotFound" },
+          "429": { "$ref": "#/components/responses/RateLimited" },
+          "503": { "$ref": "#/components/responses/DependencyUnavailable" }
+        }
+      }
+    },
+    "/api/v1/cases/{case_id}/findings/{finding_id}/feedback": {
+      "post": {
+        "operationId": "recordFindingFeedback",
+        "tags": ["findings"],
+        "summary": "Record an officer's accepted, modified or rejected judgement of a rule or agent finding.",
+        "description": "auditor, specialist or supervisor of the tenant; taxpayers and service principals get 403 forbidden. The actor and role come from the session and are recorded. Append-only: a newer feedback by the same officer supersedes (previous_feedback_id) but never deletes the earlier one. Feedback never edits the finding, case or a decision and is not an approval: decisions still go through proposeDecision/reviewDecision by different officers (TAX-046). Officer-authored findings take no feedback (422 invalid_domain_input, officer_finding). Missing reason for modified/rejected: 422 reason_required; modified without text: modified_text_required; text without modified: modified_text_not_allowed. Same Idempotency-Key and body replays the stored feedback (Idempotent-Replayed: true); a changed body is 422 idempotency_conflict.",
+        "parameters": [
+          { "$ref": "#/components/parameters/TenantHeader" },
+          { "$ref": "#/components/parameters/IdempotencyKeyHeader" },
+          { "$ref": "#/components/parameters/CorrelationIdHeader" },
+          { "$ref": "#/components/parameters/CaseIdPath" },
+          { "$ref": "#/components/parameters/FindingIdPath" }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/FindingFeedbackRequest" } } }
+        },
+        "responses": {
+          "201": {
+            "description": "Feedback recorded.",
+            "headers": {
+              "X-Correlation-ID": { "$ref": "#/components/headers/CorrelationId" },
+              "Idempotent-Replayed": { "$ref": "#/components/headers/IdempotentReplayed" }
+            },
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/FindingFeedbackEnvelope" } } }
+          },
+          "400": { "$ref": "#/components/responses/BadRequest" },
+          "401": { "$ref": "#/components/responses/Unauthenticated" },
+          "403": { "$ref": "#/components/responses/Forbidden" },
+          "404": { "$ref": "#/components/responses/NotFound" },
+          "409": { "$ref": "#/components/responses/Conflict" },
+          "422": { "$ref": "#/components/responses/InvalidDomainInput" },
+          "429": { "$ref": "#/components/responses/RateLimited" },
+          "503": { "$ref": "#/components/responses/DependencyUnavailable" }
+        }
+      }
+    },
+    "/api/v1/taxpayers/{taxpayer_id}/assistance/validation-explanations": {
+      "post": {
+        "operationId": "explainValidationResults",
+        "tags": ["taxpayer-assistance"],
+        "summary": "Explain the deterministic pre-submission validation results of the taxpayer's own submission in plain language.",
+        "description": "Recomputes the TAX-044/TAX-048 validation for the stored draft or correction-needed submission and returns it unchanged (validation) next to AI explanations with actionable steps. Explanations never change declared figures and never submit. A submission that is not the taxpayer's, or is already submitted, is 422 invalid_domain_input (submission_not_editable / not_found). Taxpayer context only (ADR-031): the caller must be the taxpayer named in the path, through its own membership in the header tenant. Another taxpayer's ID returns 404 not_found, reported exactly like a missing one; officers, specialists, supervisors and service principals get 403 forbidden. The response schema is taxpayer-facing and closed (additionalProperties false): it cannot carry risk scores, refund lanes, selection reasons, findings, case IDs, internal notes, officer identities or analysis provenance. Runs the taxpayer assistant (fast role; document role only for long documents) within a finite server budget of 25 seconds; on a timeout, rate limit or failed validation the router falls back to the deterministic template, so the call still answers and disclosure says so. The result and its provenance are stored; a replay with the same Idempotency-Key returns the stored result without a model call.",
+        "x-vati-audience": "taxpayer",
+        "parameters": [
+          { "$ref": "#/components/parameters/TenantHeader" },
+          { "$ref": "#/components/parameters/IdempotencyKeyHeader" },
+          { "$ref": "#/components/parameters/CorrelationIdHeader" },
+          { "$ref": "#/components/parameters/TaxpayerIdPath" }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": { "schema": { "$ref": "#/components/schemas/TaxpayerFacingExplainValidationRequest" } }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Validation result and explanations.",
+            "headers": {
+              "X-Correlation-ID": { "$ref": "#/components/headers/CorrelationId" },
+              "Idempotent-Replayed": { "$ref": "#/components/headers/IdempotentReplayed" }
+            },
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/TaxpayerFacingValidationExplanationEnvelope" } }
+            }
+          },
+          "400": { "$ref": "#/components/responses/BadRequest" },
+          "401": { "$ref": "#/components/responses/Unauthenticated" },
+          "403": { "$ref": "#/components/responses/Forbidden" },
+          "404": { "$ref": "#/components/responses/NotFound" },
+          "409": { "$ref": "#/components/responses/Conflict" },
+          "422": { "$ref": "#/components/responses/InvalidDomainInput" },
+          "429": { "$ref": "#/components/responses/RateLimited" },
+          "503": { "$ref": "#/components/responses/DependencyUnavailable" }
+        }
+      }
+    },
+    "/api/v1/taxpayers/{taxpayer_id}/assistance/document-reviews": {
+      "post": {
+        "operationId": "reviewSubmissionDocuments",
+        "tags": ["taxpayer-assistance"],
+        "summary": "Document assistance: extracted fields the taxpayer should confirm and invoice rows flagged by deterministic checks.",
+        "description": "Reads Docling output (TAX-038) of the taxpayer's own documents attached to the submission. Document text is untrusted data. Extracted values are proposals the taxpayer confirms or corrects in the form; nothing here changes the submission. Taxpayer context only (ADR-031): the caller must be the taxpayer named in the path, through its own membership in the header tenant. Another taxpayer's ID returns 404 not_found, reported exactly like a missing one; officers, specialists, supervisors and service principals get 403 forbidden. The response schema is taxpayer-facing and closed (additionalProperties false): it cannot carry risk scores, refund lanes, selection reasons, findings, case IDs, internal notes, officer identities or analysis provenance. Runs the taxpayer assistant (fast role; document role only for long documents) within a finite server budget of 25 seconds; on a timeout, rate limit or failed validation the router falls back to the deterministic template, so the call still answers and disclosure says so. The result and its provenance are stored; a replay with the same Idempotency-Key returns the stored result without a model call.",
+        "x-vati-audience": "taxpayer",
+        "parameters": [
+          { "$ref": "#/components/parameters/TenantHeader" },
+          { "$ref": "#/components/parameters/IdempotencyKeyHeader" },
+          { "$ref": "#/components/parameters/CorrelationIdHeader" },
+          { "$ref": "#/components/parameters/TaxpayerIdPath" }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": { "schema": { "$ref": "#/components/schemas/TaxpayerFacingDocumentAssistanceRequest" } }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Fields to confirm and flagged invoices.",
+            "headers": {
+              "X-Correlation-ID": { "$ref": "#/components/headers/CorrelationId" },
+              "Idempotent-Replayed": { "$ref": "#/components/headers/IdempotentReplayed" }
+            },
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/TaxpayerFacingDocumentAssistanceEnvelope" } }
+            }
+          },
+          "400": { "$ref": "#/components/responses/BadRequest" },
+          "401": { "$ref": "#/components/responses/Unauthenticated" },
+          "403": { "$ref": "#/components/responses/Forbidden" },
+          "404": { "$ref": "#/components/responses/NotFound" },
+          "409": { "$ref": "#/components/responses/Conflict" },
+          "422": { "$ref": "#/components/responses/InvalidDomainInput" },
+          "429": { "$ref": "#/components/responses/RateLimited" },
+          "503": { "$ref": "#/components/responses/DependencyUnavailable" }
+        }
+      }
+    },
+    "/api/v1/taxpayers/{taxpayer_id}/assistance/evidence-response-drafts": {
+      "post": {
+        "operationId": "draftEvidenceResponse",
+        "tags": ["taxpayer-assistance"],
+        "summary": "Draft a structured response to one of the taxpayer's own RSL evidence requests, saved as a draft only.",
+        "description": "Explains the request in plain language, matches each item to documents the taxpayer already supplied and marks the rest missing. It never claims a document exists that does not and cites only the taxpayer's own documents. The request text is untrusted data. The draft is saved with status draft; nothing is sent until confirmEvidenceResponseDraft. A closed request is 422 invalid_domain_input (request_closed). Taxpayer context only (ADR-031): the caller must be the taxpayer named in the path, through its own membership in the header tenant. Another taxpayer's ID returns 404 not_found, reported exactly like a missing one; officers, specialists, supervisors and service principals get 403 forbidden. The response schema is taxpayer-facing and closed (additionalProperties false): it cannot carry risk scores, refund lanes, selection reasons, findings, case IDs, internal notes, officer identities or analysis provenance. Runs the taxpayer assistant (fast role; document role only for long documents) within a finite server budget of 25 seconds; on a timeout, rate limit or failed validation the router falls back to the deterministic template, so the call still answers and disclosure says so. The result and its provenance are stored; a replay with the same Idempotency-Key returns the stored result without a model call.",
+        "x-vati-audience": "taxpayer",
+        "parameters": [
+          { "$ref": "#/components/parameters/TenantHeader" },
+          { "$ref": "#/components/parameters/IdempotencyKeyHeader" },
+          { "$ref": "#/components/parameters/CorrelationIdHeader" },
+          { "$ref": "#/components/parameters/TaxpayerIdPath" }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": { "schema": { "$ref": "#/components/schemas/TaxpayerFacingDraftEvidenceResponseRequest" } }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Draft saved; nothing sent.",
+            "headers": {
+              "X-Correlation-ID": { "$ref": "#/components/headers/CorrelationId" },
+              "Idempotent-Replayed": { "$ref": "#/components/headers/IdempotentReplayed" }
+            },
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/TaxpayerFacingEvidenceResponseDraftEnvelope" } }
+            }
+          },
+          "400": { "$ref": "#/components/responses/BadRequest" },
+          "401": { "$ref": "#/components/responses/Unauthenticated" },
+          "403": { "$ref": "#/components/responses/Forbidden" },
+          "404": { "$ref": "#/components/responses/NotFound" },
+          "409": { "$ref": "#/components/responses/Conflict" },
+          "422": { "$ref": "#/components/responses/InvalidDomainInput" },
+          "429": { "$ref": "#/components/responses/RateLimited" },
+          "503": { "$ref": "#/components/responses/DependencyUnavailable" }
+        }
+      }
+    },
+    "/api/v1/taxpayers/{taxpayer_id}/assistance/evidence-response-drafts/{draft_id}": {
+      "get": {
+        "operationId": "getEvidenceResponseDraft",
+        "tags": ["taxpayer-assistance"],
+        "summary": "Read one of the taxpayer's own evidence-response drafts.",
+        "description": "No model call. Taxpayer context only (ADR-031): the caller must be the taxpayer named in the path, through its own membership in the header tenant. Another taxpayer's ID returns 404 not_found, reported exactly like a missing one; officers, specialists, supervisors and service principals get 403 forbidden. The response schema is taxpayer-facing and closed (additionalProperties false): it cannot carry risk scores, refund lanes, selection reasons, findings, case IDs, internal notes, officer identities or analysis provenance.",
+        "x-vati-audience": "taxpayer",
+        "parameters": [
+          { "$ref": "#/components/parameters/TenantHeader" },
+          { "$ref": "#/components/parameters/CorrelationIdHeader" },
+          { "$ref": "#/components/parameters/TaxpayerIdPath" },
+          { "$ref": "#/components/parameters/DraftIdPath" }
+        ],
+        "responses": {
+          "200": {
+            "description": "The draft.",
+            "headers": { "X-Correlation-ID": { "$ref": "#/components/headers/CorrelationId" } },
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/TaxpayerFacingEvidenceResponseDraftEnvelope" } }
+            }
+          },
+          "400": { "$ref": "#/components/responses/BadRequest" },
+          "401": { "$ref": "#/components/responses/Unauthenticated" },
+          "403": { "$ref": "#/components/responses/Forbidden" },
+          "404": { "$ref": "#/components/responses/NotFound" },
+          "429": { "$ref": "#/components/responses/RateLimited" },
+          "503": { "$ref": "#/components/responses/DependencyUnavailable" }
+        }
+      }
+    },
+    "/api/v1/taxpayers/{taxpayer_id}/assistance/evidence-response-drafts/{draft_id}/confirm": {
+      "post": {
+        "operationId": "confirmEvidenceResponseDraft",
+        "tags": ["taxpayer-assistance"],
+        "summary": "The taxpayer's explicit confirmation: send the (possibly edited) answers as their TAX-045 evidence response.",
+        "description": "The only step that sends anything to RSL. Separate, audited and idempotent: same Idempotency-Key and body replays the confirmation; a changed body is 422 idempotency_conflict; a stale expected_version (the draft changed or was already confirmed with another key) is 409 version_conflict with current_version. Attached evidence must be the taxpayer's own and not attached to another request (422 invalid_domain_input, TAX-045 rules). No model call. Taxpayer context only (ADR-031): the caller must be the taxpayer named in the path, through its own membership in the header tenant. Another taxpayer's ID returns 404 not_found, reported exactly like a missing one; officers, specialists, supervisors and service principals get 403 forbidden. The response schema is taxpayer-facing and closed (additionalProperties false): it cannot carry risk scores, refund lanes, selection reasons, findings, case IDs, internal notes, officer identities or analysis provenance.",
+        "x-vati-audience": "taxpayer",
+        "parameters": [
+          { "$ref": "#/components/parameters/TenantHeader" },
+          { "$ref": "#/components/parameters/IdempotencyKeyHeader" },
+          { "$ref": "#/components/parameters/CorrelationIdHeader" },
+          { "$ref": "#/components/parameters/TaxpayerIdPath" },
+          { "$ref": "#/components/parameters/DraftIdPath" }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/TaxpayerFacingConfirmDraftRequest" } } }
+        },
+        "responses": {
+          "200": {
+            "description": "Draft confirmed and the evidence response recorded.",
+            "headers": {
+              "X-Correlation-ID": { "$ref": "#/components/headers/CorrelationId" },
+              "Idempotent-Replayed": { "$ref": "#/components/headers/IdempotentReplayed" }
+            },
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/TaxpayerFacingEvidenceResponseDraftEnvelope" } }
+            }
+          },
+          "400": { "$ref": "#/components/responses/BadRequest" },
+          "401": { "$ref": "#/components/responses/Unauthenticated" },
+          "403": { "$ref": "#/components/responses/Forbidden" },
+          "404": { "$ref": "#/components/responses/NotFound" },
+          "409": { "$ref": "#/components/responses/Conflict" },
+          "422": { "$ref": "#/components/responses/InvalidDomainInput" },
+          "429": { "$ref": "#/components/responses/RateLimited" },
+          "503": { "$ref": "#/components/responses/DependencyUnavailable" }
+        }
+      }
+    },
     "/api/v1/management/integrity": {
       "get": {
         "operationId": "getIntegrityReview",
@@ -691,6 +950,27 @@
         "in": "path",
         "required": true,
         "description": "Decision UUID; must belong to the case in the path. Missing or malformed: 400 invalid_request.",
+        "schema": { "$ref": "#/components/schemas/Uuid" }
+      },
+      "FindingIdPath": {
+        "name": "finding_id",
+        "in": "path",
+        "required": true,
+        "description": "Finding UUID; must belong to the case in the path. Missing or malformed: 400 invalid_request.",
+        "schema": { "$ref": "#/components/schemas/Uuid" }
+      },
+      "DraftIdPath": {
+        "name": "draft_id",
+        "in": "path",
+        "required": true,
+        "description": "Assistant draft UUID; must belong to the taxpayer in the path. Missing or malformed: 400 invalid_request.",
+        "schema": { "$ref": "#/components/schemas/Uuid" }
+      },
+      "RunIdQuery": {
+        "name": "run_id",
+        "in": "query",
+        "required": false,
+        "description": "A specific investigation run of this case; default the latest run with a briefing.",
         "schema": { "$ref": "#/components/schemas/Uuid" }
       }
     },
@@ -956,7 +1236,13 @@
           "thread_id": { "type": "string", "minLength": 1, "maxLength": 255, "description": "LangGraph thread derived from tenant/case/run." },
           "case_version": { "type": "integer", "minimum": 1 },
           "created_at": { "$ref": "#/components/schemas/Timestamp" },
-          "deadline_at": { "$ref": "#/components/schemas/Timestamp" }
+          "deadline_at": { "$ref": "#/components/schemas/Timestamp" },
+          "analysis_provenance": {
+            "type": "array",
+            "description": "TAX-096. One entry per model call the run has made so far, in order. Optional; empty while queued.",
+            "maxItems": 50,
+            "items": { "$ref": "#/components/schemas/AnalysisProvenance" }
+          }
         }
       },
       "InvestigationRunEnvelope": {
@@ -1142,7 +1428,15 @@
           "proposed_action": { "$ref": "#/components/schemas/ProposedAction" },
           "producer": { "type": "string", "enum": ["jube_rule", "langgraph_run", "officer"] },
           "producer_version": { "type": "string", "minLength": 1, "maxLength": 128 },
-          "created_at": { "$ref": "#/components/schemas/Timestamp" }
+          "created_at": { "$ref": "#/components/schemas/Timestamp" },
+          "analysis_provenance": {
+            "anyOf": [{ "$ref": "#/components/schemas/AnalysisProvenance" }, { "type": "null" }],
+            "description": "TAX-096. Present for langgraph_run findings; null for jube_rule and officer findings. Optional for backward compatibility."
+          },
+          "feedback_summary": {
+            "anyOf": [{ "$ref": "#/components/schemas/FindingFeedbackSummary" }, { "type": "null" }],
+            "description": "TAX-096. Officer feedback so far; null for officer findings. Optional for backward compatibility."
+          }
         }
       },
       "FindingList": {
@@ -1768,6 +2062,765 @@
           "data": {
             "$ref": "#/components/schemas/ManagementSummary"
           }
+        }
+      },
+      "ModelRole": {
+        "type": "string",
+        "description": "get_model role (ADR-031). Agents choose a role, never a provider.",
+        "enum": ["reasoning", "fast", "document"]
+      },
+      "ModelProvider": {
+        "type": "string",
+        "description": "Provider that produced the output. mock: keyless deterministic fixture provider (CI and development). ollama: local open-weights model. template: deterministic template, the last fallback.",
+        "enum": ["mock", "groq", "gemini", "ollama", "template"]
+      },
+      "FallbackLevelName": {
+        "type": "string",
+        "description": "Level of the per-call fallback chain that produced the output: hosted model (or mock in keyless mode), local model, deterministic template.",
+        "enum": ["mock", "hosted", "local", "template"]
+      },
+      "TokenUsage": {
+        "type": "object",
+        "description": "Token use reported by the provider; null when the provider does not report it. Template output uses no tokens.",
+        "additionalProperties": false,
+        "required": ["input", "output", "total"],
+        "properties": {
+          "input": { "type": ["integer", "null"], "minimum": 0 },
+          "output": { "type": ["integer", "null"], "minimum": 0 },
+          "total": { "type": ["integer", "null"], "minimum": 0 }
+        }
+      },
+      "ProvenanceValidation": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["status", "reason"],
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": ["passed", "failed", "not_run"],
+            "description": "Result of the output validator for the level that was used. failed output is never returned as a finding; the call falls back instead."
+          },
+          "reason": { "type": ["string", "null"], "pattern": "^[a-z][a-z0-9_]*$", "maxLength": 64 },
+          "rejected_statements": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Statements the validator removed (briefings). Omitted when not applicable."
+          }
+        }
+      },
+      "ProvenanceAttempt": {
+        "type": "object",
+        "description": "One level tried for this call. Every skipped or failed level is listed, so a fallback is never hidden.",
+        "additionalProperties": false,
+        "required": ["level", "name", "provider", "model_id", "outcome"],
+        "properties": {
+          "level": { "type": "integer", "minimum": 0, "maximum": 3 },
+          "name": { "$ref": "#/components/schemas/FallbackLevelName" },
+          "provider": { "anyOf": [{ "$ref": "#/components/schemas/ModelProvider" }, { "type": "null" }] },
+          "model_id": { "type": ["string", "null"], "minLength": 1, "maxLength": 128 },
+          "outcome": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_]*$",
+            "maxLength": 64,
+            "description": "ok, or why the call moved on: rate_limited, timeout, refusal, invalid_output, validation_failed, unconfigured, provider_error, call_budget_exhausted, token_budget_exhausted, input_budget_exceeded, ..."
+          },
+          "http_status": { "type": ["integer", "null"], "minimum": 100, "maximum": 599 },
+          "latency_ms": { "type": ["integer", "null"], "minimum": 0 }
+        }
+      },
+      "AnalysisProvenance": {
+        "type": "object",
+        "description": "How an AI output was produced (ADR-031): provider, model, role, prompt version, settings, fallback level, latency, token use and validation result. Recorded for officer audit; never shown to taxpayers (they see AiDisclosure only). Deterministic rule output has no provenance (null).",
+        "additionalProperties": false,
+        "required": ["provider", "model_id", "configured_model_id", "role", "task", "prompt_version", "settings", "fallback_level", "fallback_level_name", "fell_back", "attempts", "latency_ms", "token_usage", "validation", "router_version"],
+        "properties": {
+          "provider": { "$ref": "#/components/schemas/ModelProvider" },
+          "model_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128,
+            "description": "Model that actually produced the output (observed ID when the provider reports one), or the template ID."
+          },
+          "configured_model_id": {
+            "type": ["string", "null"],
+            "minLength": 1,
+            "maxLength": 128,
+            "description": "Model configured for the level used; null when the role is unconfigured."
+          },
+          "role": { "$ref": "#/components/schemas/ModelRole" },
+          "task": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_]*$",
+            "maxLength": 64,
+            "description": "Router task name, e.g. case_briefing, validation_explanation."
+          },
+          "prompt_version": { "type": "string", "pattern": "^[A-Za-z0-9._:@/-]+$", "minLength": 1, "maxLength": 128 },
+          "settings": {
+            "type": "object",
+            "description": "Generation settings of the level used (temperature, response format, output-token and timeout limits). Scalar values only; a fractional temperature is a decimal string such as \"0.2\".",
+            "additionalProperties": { "type": ["string", "integer", "boolean", "null"], "maxLength": 128 }
+          },
+          "fallback_level": { "type": "integer", "minimum": 0, "maximum": 3 },
+          "fallback_level_name": { "$ref": "#/components/schemas/FallbackLevelName" },
+          "fell_back": { "type": "boolean", "description": "True when any earlier level was tried and not used." },
+          "attempts": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 4,
+            "items": { "$ref": "#/components/schemas/ProvenanceAttempt" }
+          },
+          "latency_ms": { "type": "integer", "minimum": 0 },
+          "token_usage": { "$ref": "#/components/schemas/TokenUsage" },
+          "validation": { "$ref": "#/components/schemas/ProvenanceValidation" },
+          "router_version": {
+            "type": ["string", "null"],
+            "minLength": 1,
+            "maxLength": 64,
+            "description": "Model router version (TAX-089); null for output recorded before the router existed."
+          }
+        }
+      },
+      "AiDisclosure": {
+        "type": "object",
+        "description": "Model-versus-template disclosure shown next to every AI-produced item, for officers and taxpayers.",
+        "additionalProperties": false,
+        "required": ["source", "provider", "model_id", "fell_back", "advisory_only"],
+        "properties": {
+          "source": {
+            "type": "string",
+            "enum": ["hosted_model", "local_model", "template", "mock_fixture"],
+            "description": "What a UI must disclose: hosted model, local model, deterministic template or keyless fixture. Derived from fallback_level_name (hosted -> hosted_model, local -> local_model, template -> template, mock -> mock_fixture)."
+          },
+          "provider": { "$ref": "#/components/schemas/ModelProvider" },
+          "model_id": { "type": "string", "minLength": 1, "maxLength": 128 },
+          "fell_back": { "type": "boolean" },
+          "advisory_only": {
+            "const": true,
+            "description": "AI output is a suggestion. It never decides, assesses tax or changes declared figures."
+          }
+        }
+      },
+      "FindingFeedbackVerdict": { "type": "string", "enum": ["accepted", "modified", "rejected"] },
+      "FindingFeedbackReasonCode": {
+        "type": "string",
+        "description": "Structured reason for the TAX-070 feedback loop; the free-text reason explains it.",
+        "enum": ["evidence_supports", "evidence_does_not_support", "citation_incorrect", "missing_context", "legitimate_explanation", "wrong_category", "wording_unclear", "other"]
+      },
+      "FindingFeedbackRequest": {
+        "type": "object",
+        "description": "The actor is taken from the authenticated session, never from the body.",
+        "additionalProperties": false,
+        "required": ["verdict", "reason_code", "reason", "modified_explanation"],
+        "properties": {
+          "verdict": { "$ref": "#/components/schemas/FindingFeedbackVerdict" },
+          "reason_code": { "$ref": "#/components/schemas/FindingFeedbackReasonCode" },
+          "reason": {
+            "type": ["string", "null"],
+            "minLength": 10,
+            "maxLength": 2000,
+            "description": "Required (at least 10 characters) for modified and rejected; optional for accepted. Otherwise 422 invalid_domain_input, field_errors code reason_required."
+          },
+          "modified_explanation": {
+            "type": ["string", "null"],
+            "minLength": 1,
+            "maxLength": 4000,
+            "description": "The officer's corrected wording. Required for modified (modified_text_required) and must be null otherwise (modified_text_not_allowed)."
+          }
+        }
+      },
+      "FeedbackActor": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["officer_id", "role"],
+        "properties": {
+          "officer_id": { "$ref": "#/components/schemas/Uuid" },
+          "role": { "$ref": "#/components/schemas/OfficerRole" }
+        }
+      },
+      "FindingSnapshot": {
+        "type": "object",
+        "description": "What was judged: the finding's producer and provenance when the feedback was recorded.",
+        "additionalProperties": false,
+        "required": ["kind", "category", "producer", "producer_version", "analysis_provenance"],
+        "properties": {
+          "kind": {
+            "type": "string",
+            "enum": ["observed_fact", "inference", "missing_evidence", "unverified_evidence", "contradictory_evidence"]
+          },
+          "category": {
+            "type": "string",
+            "enum": ["refund_reconciliation", "related_party", "worker_classification", "imported_services", "policy_gap", "other"]
+          },
+          "producer": { "type": "string", "enum": ["jube_rule", "langgraph_run"] },
+          "producer_version": { "type": "string", "minLength": 1, "maxLength": 128 },
+          "analysis_provenance": { "anyOf": [{ "$ref": "#/components/schemas/AnalysisProvenance" }, { "type": "null" }] }
+        }
+      },
+      "FindingFeedback": {
+        "type": "object",
+        "description": "One append-only officer judgement of a rule or agent finding (TAX-086 stores it; TAX-070 reads it).",
+        "additionalProperties": false,
+        "required": ["feedback_id", "finding_id", "case_id", "tenant_id", "verdict", "reason_code", "reason", "modified_explanation", "recorded_by", "recorded_at", "previous_feedback_id", "finding", "changes_finding"],
+        "properties": {
+          "feedback_id": { "$ref": "#/components/schemas/Uuid" },
+          "finding_id": { "$ref": "#/components/schemas/Uuid" },
+          "case_id": { "$ref": "#/components/schemas/Uuid" },
+          "tenant_id": { "$ref": "#/components/schemas/Uuid" },
+          "verdict": { "$ref": "#/components/schemas/FindingFeedbackVerdict" },
+          "reason_code": { "$ref": "#/components/schemas/FindingFeedbackReasonCode" },
+          "reason": { "type": ["string", "null"], "minLength": 10, "maxLength": 2000 },
+          "modified_explanation": { "type": ["string", "null"], "minLength": 1, "maxLength": 4000 },
+          "recorded_by": { "$ref": "#/components/schemas/FeedbackActor" },
+          "recorded_at": { "$ref": "#/components/schemas/Timestamp" },
+          "previous_feedback_id": {
+            "anyOf": [{ "$ref": "#/components/schemas/Uuid" }, { "type": "null" }],
+            "description": "The same officer's earlier feedback on this finding, which this one supersedes. Both stay in the append-only record."
+          },
+          "finding": { "$ref": "#/components/schemas/FindingSnapshot" },
+          "changes_finding": {
+            "const": false,
+            "description": "Feedback never edits the finding, the case or a decision, and is not an approval."
+          }
+        }
+      },
+      "FindingFeedbackEnvelope": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["data"],
+        "properties": { "data": { "$ref": "#/components/schemas/FindingFeedback" } }
+      },
+      "FindingFeedbackSummary": {
+        "type": "object",
+        "description": "Counts of each officer's latest verdict on this finding.",
+        "additionalProperties": false,
+        "required": ["accepted", "modified", "rejected", "viewer_verdict"],
+        "properties": {
+          "accepted": { "type": "integer", "minimum": 0 },
+          "modified": { "type": "integer", "minimum": 0 },
+          "rejected": { "type": "integer", "minimum": 0 },
+          "viewer_verdict": {
+            "anyOf": [{ "$ref": "#/components/schemas/FindingFeedbackVerdict" }, { "type": "null" }],
+            "description": "The requesting officer's latest verdict, or null."
+          }
+        }
+      },
+      "BriefingEvidenceCitation": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["type", "citation_id", "evidence_ref"],
+        "properties": {
+          "type": { "const": "evidence" },
+          "citation_id": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}#[A-Za-z0-9._:-]{1,128}$",
+            "description": "<evidence_id>#<extraction item id> from the permitted evidence search."
+          },
+          "evidence_ref": { "$ref": "#/components/schemas/EvidenceRef" }
+        }
+      },
+      "BriefingSearchRef": {
+        "type": "object",
+        "description": "A search the run performed (used to report missing information).",
+        "additionalProperties": false,
+        "required": ["type", "search_id"],
+        "properties": { "type": { "const": "search" }, "search_id": { "type": "string", "pattern": "^search-[0-9]{2}$" } }
+      },
+      "BriefingDocumentRef": {
+        "type": "object",
+        "description": "An in-scope document as a whole (for example one that could not be searched).",
+        "additionalProperties": false,
+        "required": ["type", "evidence_id"],
+        "properties": { "type": { "const": "document" }, "evidence_id": { "$ref": "#/components/schemas/Uuid" } }
+      },
+      "BriefingRef": {
+        "anyOf": [
+          { "$ref": "#/components/schemas/BriefingEvidenceCitation" },
+          { "$ref": "#/components/schemas/BriefingSearchRef" },
+          { "$ref": "#/components/schemas/BriefingDocumentRef" }
+        ]
+      },
+      "BriefingStatement": {
+        "type": "object",
+        "description": "A validated briefing statement. Every statement resolves to evidence, a search or an in-scope document of this run.",
+        "additionalProperties": false,
+        "required": ["kind", "text", "refs", "action"],
+        "properties": {
+          "kind": {
+            "type": "string",
+            "enum": ["observed_fact", "check", "explained", "missing_information", "unsearchable", "untrusted_content", "proposed_action"]
+          },
+          "text": { "type": "string", "minLength": 1, "maxLength": 600 },
+          "refs": { "type": "array", "minItems": 1, "maxItems": 10, "items": { "$ref": "#/components/schemas/BriefingRef" } },
+          "action": {
+            "anyOf": [
+              { "type": "string", "enum": ["request_evidence", "human_clearance", "specialist_review"] },
+              { "type": "null" }
+            ],
+            "description": "Set only for next_action statements; always a proposal for an officer."
+          }
+        }
+      },
+      "BriefingSections": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["what_happened", "what_was_checked", "what_is_explained", "what_is_unresolved", "next_action"],
+        "properties": {
+          "what_happened": { "type": "array", "maxItems": 20, "items": { "$ref": "#/components/schemas/BriefingStatement" } },
+          "what_was_checked": { "type": "array", "maxItems": 20, "items": { "$ref": "#/components/schemas/BriefingStatement" } },
+          "what_is_explained": { "type": "array", "maxItems": 20, "items": { "$ref": "#/components/schemas/BriefingStatement" } },
+          "what_is_unresolved": { "type": "array", "maxItems": 20, "items": { "$ref": "#/components/schemas/BriefingStatement" } },
+          "next_action": { "type": "array", "maxItems": 20, "items": { "$ref": "#/components/schemas/BriefingStatement" } }
+        }
+      },
+      "BriefingSearch": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["search_id", "question_id", "topic", "terms", "documents_searched", "citation_ids"],
+        "properties": {
+          "search_id": { "type": "string", "pattern": "^search-[0-9]{2}$" },
+          "question_id": { "type": "string", "pattern": "^[a-z0-9_.-]+$", "maxLength": 64 },
+          "topic": { "type": "string", "minLength": 1, "maxLength": 200 },
+          "terms": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 8,
+            "items": { "type": "string", "pattern": "^[a-z0-9]+$", "maxLength": 40 }
+          },
+          "documents_searched": { "type": "integer", "minimum": 0 },
+          "citation_ids": {
+            "type": "array",
+            "maxItems": 5,
+            "items": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}#[A-Za-z0-9._:-]{1,128}$",
+              "description": "<evidence_id>#<extraction item id> from the permitted evidence search."
+            }
+          }
+        }
+      },
+      "BriefingRejectedStatement": {
+        "type": "object",
+        "description": "A drafted statement the validator removed, kept so an officer can see what was dropped and why.",
+        "additionalProperties": false,
+        "required": ["section", "index", "reason"],
+        "properties": {
+          "section": { "type": "string", "minLength": 1, "maxLength": 64 },
+          "index": { "type": "integer", "minimum": 0 },
+          "reason": { "type": "string", "pattern": "^[a-z][a-z0-9_]*$", "maxLength": 64 }
+        }
+      },
+      "CheckpointInterrupt": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["type", "action_id", "kind", "case_version", "payload_digest", "proposed_by", "resume_requires", "last_rejection"],
+        "properties": {
+          "type": { "const": "approval_required" },
+          "action_id": { "type": "string", "minLength": 1, "maxLength": 255 },
+          "kind": {
+            "type": "string",
+            "enum": ["request_further_evidence", "continue_investigation", "escalate_to_supervisor", "close_no_further_action", "close_after_correction"]
+          },
+          "case_version": { "type": "integer", "minimum": 1 },
+          "payload_digest": { "$ref": "#/components/schemas/Sha256" },
+          "proposed_by": { "type": "string", "minLength": 1, "maxLength": 128, "description": "Agent identifier; never an officer." },
+          "resume_requires": {
+            "const": "approved_decision",
+            "description": "The run resumes only with an approved TAX-046 decision for this exact action digest (TAX-047)."
+          },
+          "last_rejection": { "type": ["string", "null"], "pattern": "^[a-z][a-z0-9_]*$", "maxLength": 64 }
+        }
+      },
+      "BriefingCheckpoint": {
+        "type": "object",
+        "description": "Human-checkpoint state of the run that produced the briefing.",
+        "additionalProperties": false,
+        "required": ["run_status", "awaiting_human", "interrupt"],
+        "properties": {
+          "run_status": { "type": "string", "enum": ["queued", "running", "awaiting_human", "completed", "failed", "cancelled"] },
+          "awaiting_human": { "type": "boolean" },
+          "interrupt": { "anyOf": [{ "$ref": "#/components/schemas/CheckpointInterrupt" }, { "type": "null" }] }
+        }
+      },
+      "CaseBriefing": {
+        "type": "object",
+        "description": "Cited officer briefing recorded once per run (ADR-021). Officer context only.",
+        "additionalProperties": false,
+        "required": ["briefing_id", "case_id", "tenant_id", "run_id", "case_version", "producer", "producer_version", "workflow_version", "prompt_version", "sections", "rejected_statements", "searches", "evidence_ids", "documents_in_scope", "instruction_like_items", "search_digest", "analysis_provenance", "disclosure", "checkpoint", "decision", "legal_conclusion", "enforcement_conclusion", "requires_officer_approval", "created_at"],
+        "properties": {
+          "briefing_id": { "$ref": "#/components/schemas/Uuid" },
+          "case_id": { "$ref": "#/components/schemas/Uuid" },
+          "tenant_id": { "$ref": "#/components/schemas/Uuid" },
+          "run_id": { "$ref": "#/components/schemas/Uuid" },
+          "case_version": { "type": "integer", "minimum": 1 },
+          "producer": { "const": "langgraph_run" },
+          "producer_version": { "type": "string", "minLength": 1, "maxLength": 128 },
+          "workflow_version": { "type": ["string", "null"], "minLength": 1, "maxLength": 128 },
+          "prompt_version": { "type": "string", "pattern": "^[A-Za-z0-9._:@/-]+$", "minLength": 1, "maxLength": 128 },
+          "sections": { "$ref": "#/components/schemas/BriefingSections" },
+          "rejected_statements": { "type": "array", "maxItems": 100, "items": { "$ref": "#/components/schemas/BriefingRejectedStatement" } },
+          "searches": { "type": "array", "maxItems": 12, "items": { "$ref": "#/components/schemas/BriefingSearch" } },
+          "evidence_ids": { "type": "array", "maxItems": 500, "items": { "$ref": "#/components/schemas/Uuid" } },
+          "documents_in_scope": { "type": "integer", "minimum": 0 },
+          "instruction_like_items": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Evidence items whose text looked like instructions; flagged for the officer, never followed."
+          },
+          "search_digest": { "$ref": "#/components/schemas/Sha256" },
+          "analysis_provenance": { "$ref": "#/components/schemas/AnalysisProvenance" },
+          "disclosure": { "$ref": "#/components/schemas/AiDisclosure" },
+          "checkpoint": { "$ref": "#/components/schemas/BriefingCheckpoint" },
+          "decision": { "type": "null" },
+          "legal_conclusion": { "type": "null" },
+          "enforcement_conclusion": { "type": "null" },
+          "requires_officer_approval": { "const": true },
+          "created_at": { "$ref": "#/components/schemas/Timestamp" }
+        }
+      },
+      "CaseBriefingEnvelope": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["data"],
+        "properties": { "data": { "$ref": "#/components/schemas/CaseBriefing" } }
+      },
+      "TaxpayerFacingIssueCode": {
+        "type": "string",
+        "description": "Deterministic pre-submission issue codes shown to taxpayers (TAX-044 allowlist plus the TAX-098 checks). Nothing outside this list reaches a taxpayer.",
+        "enum": ["refund_claim_exceeds_documented_input_vat", "return_arithmetic_mismatch", "invoice_total_mismatch", "payment_total_differs_from_invoice", "payment_evidence_missing", "contract_evidence_missing", "duplicate_invoice", "invoice_period_mismatch", "supporting_document_missing"]
+      },
+      "TaxpayerFacingDocumentRef": {
+        "type": "object",
+        "description": "One of the requesting taxpayer's own documents. Never another taxpayer's or an officer upload.",
+        "additionalProperties": false,
+        "required": ["evidence_id", "document_sha256", "locator", "file_name"],
+        "properties": {
+          "evidence_id": { "$ref": "#/components/schemas/Uuid" },
+          "document_sha256": { "$ref": "#/components/schemas/Sha256" },
+          "locator": { "$ref": "#/components/schemas/EvidenceLocator" },
+          "file_name": { "type": ["string", "null"], "minLength": 1, "maxLength": 255 }
+        }
+      },
+      "TaxpayerFacingValidationIssue": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["code", "invoice_number", "message"],
+        "properties": {
+          "code": { "$ref": "#/components/schemas/TaxpayerFacingIssueCode" },
+          "invoice_number": {
+            "type": ["integer", "null"],
+            "minimum": 1,
+            "description": "1-based row in the submission's invoice schedule; null for claim-level issues."
+          },
+          "message": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 500,
+            "description": "Fixed deterministic prompt text, not model output."
+          }
+        }
+      },
+      "TaxpayerFacingFigures": {
+        "type": "object",
+        "description": "Deterministic TAX-048 figures for the taxpayer's own claim (ADR-023). Never model output.",
+        "additionalProperties": false,
+        "required": ["claimed_refund", "output_vat", "documented_input_vat", "explained_amount", "unresolved_amount"],
+        "properties": {
+          "claimed_refund": { "anyOf": [{ "$ref": "#/components/schemas/Money" }, { "type": "null" }] },
+          "output_vat": { "anyOf": [{ "$ref": "#/components/schemas/Money" }, { "type": "null" }] },
+          "documented_input_vat": { "anyOf": [{ "$ref": "#/components/schemas/Money" }, { "type": "null" }] },
+          "explained_amount": { "anyOf": [{ "$ref": "#/components/schemas/Money" }, { "type": "null" }] },
+          "unresolved_amount": { "anyOf": [{ "$ref": "#/components/schemas/Money" }, { "type": "null" }] }
+        }
+      },
+      "TaxpayerFacingValidationResult": {
+        "type": "object",
+        "description": "Deterministic validation result, recomputed by the server from the stored submission; the UI shows it apart from AI explanations.",
+        "additionalProperties": false,
+        "required": ["calculation_version", "complete", "figures", "issues"],
+        "properties": {
+          "calculation_version": { "type": "string", "minLength": 1, "maxLength": 64 },
+          "complete": { "type": "boolean" },
+          "figures": { "$ref": "#/components/schemas/TaxpayerFacingFigures" },
+          "issues": {
+            "type": "array",
+            "maxItems": 200,
+            "items": { "$ref": "#/components/schemas/TaxpayerFacingValidationIssue" }
+          }
+        }
+      },
+      "TaxpayerFacingExplanation": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["issue_code", "invoice_number", "explanation", "suggested_steps", "document_refs", "requires_taxpayer_confirmation"],
+        "properties": {
+          "issue_code": { "$ref": "#/components/schemas/TaxpayerFacingIssueCode" },
+          "invoice_number": {
+            "type": ["integer", "null"],
+            "minimum": 1,
+            "description": "1-based row in the submission's invoice schedule; null for claim-level issues."
+          },
+          "explanation": { "type": "string", "minLength": 1, "maxLength": 1000 },
+          "suggested_steps": {
+            "type": "array",
+            "description": "Actionable steps for the taxpayer, in order.",
+            "maxItems": 5,
+            "items": { "type": "string", "minLength": 1, "maxLength": 300 }
+          },
+          "document_refs": { "type": "array", "maxItems": 10, "items": { "$ref": "#/components/schemas/TaxpayerFacingDocumentRef" } },
+          "requires_taxpayer_confirmation": { "const": true, "description": "A suggestion: the taxpayer makes any correction in the form themselves." }
+        }
+      },
+      "TaxpayerFacingValidationExplanation": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["explanation_id", "tenant_id", "taxpayer_id", "submission_id", "validation", "explanations", "disclosure", "changes_declared_figures", "generated_at"],
+        "properties": {
+          "explanation_id": { "$ref": "#/components/schemas/Uuid" },
+          "tenant_id": { "$ref": "#/components/schemas/Uuid" },
+          "taxpayer_id": { "$ref": "#/components/schemas/Uuid" },
+          "submission_id": { "$ref": "#/components/schemas/Uuid" },
+          "validation": { "$ref": "#/components/schemas/TaxpayerFacingValidationResult" },
+          "explanations": { "type": "array", "maxItems": 200, "items": { "$ref": "#/components/schemas/TaxpayerFacingExplanation" } },
+          "disclosure": { "$ref": "#/components/schemas/AiDisclosure" },
+          "changes_declared_figures": { "const": false },
+          "generated_at": { "$ref": "#/components/schemas/Timestamp" }
+        }
+      },
+      "TaxpayerFacingValidationExplanationEnvelope": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["data"],
+        "properties": { "data": { "$ref": "#/components/schemas/TaxpayerFacingValidationExplanation" } }
+      },
+      "TaxpayerFacingExplainValidationRequest": {
+        "type": "object",
+        "description": "The taxpayer's own draft or correction-needed submission. Validation results are recomputed server-side; the client never supplies them.",
+        "additionalProperties": false,
+        "required": ["submission_id"],
+        "properties": { "submission_id": { "$ref": "#/components/schemas/Uuid" } }
+      },
+      "TaxpayerFacingFieldToConfirm": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["field", "extracted_value", "declared_value", "locator", "reason", "explanation", "requires_taxpayer_confirmation"],
+        "properties": {
+          "field": { "type": "string", "pattern": "^[a-z][a-z0-9_]*$", "maxLength": 64 },
+          "extracted_value": {
+            "type": ["string", "null"],
+            "minLength": 0,
+            "maxLength": 255,
+            "description": "Short plain value read from the document (amounts as decimal strings); null when not found."
+          },
+          "declared_value": {
+            "type": ["string", "null"],
+            "minLength": 0,
+            "maxLength": 255,
+            "description": "What the taxpayer entered, if anything."
+          },
+          "locator": { "$ref": "#/components/schemas/EvidenceLocator" },
+          "reason": {
+            "type": "string",
+            "enum": ["differs_from_declared", "not_found_in_document", "low_extraction_quality", "ambiguous_value"]
+          },
+          "explanation": { "type": "string", "minLength": 1, "maxLength": 600 },
+          "requires_taxpayer_confirmation": { "const": true }
+        }
+      },
+      "TaxpayerFacingDocumentReview": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["evidence_id", "document_sha256", "document_type", "file_name", "extraction_status", "fields_to_confirm"],
+        "properties": {
+          "evidence_id": { "$ref": "#/components/schemas/Uuid" },
+          "document_sha256": { "$ref": "#/components/schemas/Sha256" },
+          "document_type": { "$ref": "#/components/schemas/DocumentType" },
+          "file_name": { "type": ["string", "null"], "minLength": 1, "maxLength": 255 },
+          "extraction_status": { "type": "string", "enum": ["completed", "pending", "failed", "unsupported"] },
+          "fields_to_confirm": { "type": "array", "maxItems": 50, "items": { "$ref": "#/components/schemas/TaxpayerFacingFieldToConfirm" } }
+        }
+      },
+      "TaxpayerFacingFlaggedInvoice": {
+        "type": "object",
+        "description": "An invoice row with deterministic issues, explained for the taxpayer.",
+        "additionalProperties": false,
+        "required": ["invoice_number", "issue_codes", "explanation", "suggested_steps", "document_refs", "requires_taxpayer_confirmation"],
+        "properties": {
+          "invoice_number": { "type": "integer", "minimum": 1 },
+          "issue_codes": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 9,
+            "items": { "$ref": "#/components/schemas/TaxpayerFacingIssueCode" }
+          },
+          "explanation": { "type": "string", "minLength": 1, "maxLength": 1000 },
+          "suggested_steps": {
+            "type": "array",
+            "description": "Actionable steps for the taxpayer, in order.",
+            "maxItems": 5,
+            "items": { "type": "string", "minLength": 1, "maxLength": 300 }
+          },
+          "document_refs": { "type": "array", "maxItems": 10, "items": { "$ref": "#/components/schemas/TaxpayerFacingDocumentRef" } },
+          "requires_taxpayer_confirmation": { "const": true }
+        }
+      },
+      "TaxpayerFacingDocumentAssistance": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["assistance_id", "tenant_id", "taxpayer_id", "submission_id", "documents", "flagged_invoices", "disclosure", "changes_declared_figures", "generated_at"],
+        "properties": {
+          "assistance_id": { "$ref": "#/components/schemas/Uuid" },
+          "tenant_id": { "$ref": "#/components/schemas/Uuid" },
+          "taxpayer_id": { "$ref": "#/components/schemas/Uuid" },
+          "submission_id": { "$ref": "#/components/schemas/Uuid" },
+          "documents": { "type": "array", "maxItems": 50, "items": { "$ref": "#/components/schemas/TaxpayerFacingDocumentReview" } },
+          "flagged_invoices": { "type": "array", "maxItems": 200, "items": { "$ref": "#/components/schemas/TaxpayerFacingFlaggedInvoice" } },
+          "disclosure": { "$ref": "#/components/schemas/AiDisclosure" },
+          "changes_declared_figures": { "const": false },
+          "generated_at": { "$ref": "#/components/schemas/Timestamp" }
+        }
+      },
+      "TaxpayerFacingDocumentAssistanceEnvelope": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["data"],
+        "properties": { "data": { "$ref": "#/components/schemas/TaxpayerFacingDocumentAssistance" } }
+      },
+      "TaxpayerFacingDocumentAssistanceRequest": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["submission_id", "evidence_ids"],
+        "properties": {
+          "submission_id": { "$ref": "#/components/schemas/Uuid" },
+          "evidence_ids": {
+            "type": "array",
+            "description": "Subset of the submission's own documents; empty means all of them. Another taxpayer's or an unknown ID is 422 invalid_domain_input (not_found), reported the same way.",
+            "maxItems": 50,
+            "items": { "$ref": "#/components/schemas/Uuid" }
+          }
+        }
+      },
+      "TaxpayerFacingDraftEvidenceResponseRequest": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["request_id", "taxpayer_note"],
+        "properties": {
+          "request_id": {
+            "$ref": "#/components/schemas/Uuid",
+            "description": "One of the taxpayer's own open evidence requests (TAX-045)."
+          },
+          "taxpayer_note": {
+            "type": ["string", "null"],
+            "minLength": 1,
+            "maxLength": 1000,
+            "description": "Optional context from the taxpayer. Treated as untrusted data, like the request text."
+          }
+        }
+      },
+      "TaxpayerFacingDraftItem": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["item_number", "document_type", "plain_language_request", "match", "proposed_documents", "missing_explanation"],
+        "properties": {
+          "item_number": { "type": "integer", "minimum": 1 },
+          "document_type": { "$ref": "#/components/schemas/DocumentType" },
+          "plain_language_request": { "type": "string", "minLength": 1, "maxLength": 1000 },
+          "match": { "type": "string", "enum": ["matched", "partially_matched", "missing"] },
+          "proposed_documents": { "type": "array", "maxItems": 20, "items": { "$ref": "#/components/schemas/TaxpayerFacingDocumentRef" } },
+          "missing_explanation": {
+            "type": ["string", "null"],
+            "minLength": 1,
+            "maxLength": 600,
+            "description": "What is still missing. A missing item never cites a document."
+          }
+        }
+      },
+      "TaxpayerFacingConfirmedItem": {
+        "type": "object",
+        "description": "The taxpayer's final answer to one item: their own documents, or a reason they cannot provide it (TAX-045 rules).",
+        "additionalProperties": false,
+        "required": ["item_number", "evidence_ids", "reason_unavailable"],
+        "properties": {
+          "item_number": { "type": "integer", "minimum": 1 },
+          "evidence_ids": { "type": "array", "maxItems": 20, "items": { "$ref": "#/components/schemas/Uuid" } },
+          "reason_unavailable": { "type": ["string", "null"], "minLength": 1, "maxLength": 1000 }
+        }
+      },
+      "TaxpayerFacingDraftConfirmation": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["confirmed_at", "items", "message", "evidence_response_id"],
+        "properties": {
+          "confirmed_at": { "$ref": "#/components/schemas/Timestamp" },
+          "items": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 20,
+            "items": { "$ref": "#/components/schemas/TaxpayerFacingConfirmedItem" }
+          },
+          "message": { "type": ["string", "null"], "minLength": 1, "maxLength": 2000 },
+          "evidence_response_id": {
+            "$ref": "#/components/schemas/Uuid",
+            "description": "The TAX-045 evidence response created on confirmation."
+          }
+        }
+      },
+      "TaxpayerFacingEvidenceResponseDraft": {
+        "type": "object",
+        "description": "An assistant-drafted evidence response. Saved as a draft only; nothing reaches RSL until the taxpayer confirms it.",
+        "additionalProperties": false,
+        "required": ["draft_id", "tenant_id", "taxpayer_id", "request_id", "status", "version", "due_date", "request_summary", "items", "proposed_message", "disclosure", "created_at", "confirmation", "sent_to_rsl"],
+        "properties": {
+          "draft_id": { "$ref": "#/components/schemas/Uuid" },
+          "tenant_id": { "$ref": "#/components/schemas/Uuid" },
+          "taxpayer_id": { "$ref": "#/components/schemas/Uuid" },
+          "request_id": { "$ref": "#/components/schemas/Uuid" },
+          "status": {
+            "type": "string",
+            "enum": ["draft", "confirmed", "request_closed"],
+            "description": "draft: saved, nothing sent. confirmed: the taxpayer confirmed and the TAX-045 response was recorded. request_closed: the request was withdrawn or answered another way; the draft can no longer be confirmed."
+          },
+          "version": { "type": "integer", "minimum": 1 },
+          "due_date": { "anyOf": [{ "type": "string", "format": "date" }, { "type": "null" }] },
+          "request_summary": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1000,
+            "description": "Plain-language summary of what RSL asked for."
+          },
+          "items": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 20,
+            "items": { "$ref": "#/components/schemas/TaxpayerFacingDraftItem" }
+          },
+          "proposed_message": { "type": ["string", "null"], "minLength": 1, "maxLength": 2000 },
+          "disclosure": { "$ref": "#/components/schemas/AiDisclosure" },
+          "created_at": { "$ref": "#/components/schemas/Timestamp" },
+          "confirmation": { "anyOf": [{ "$ref": "#/components/schemas/TaxpayerFacingDraftConfirmation" }, { "type": "null" }] },
+          "sent_to_rsl": { "type": "boolean", "description": "False until the taxpayer confirms." }
+        }
+      },
+      "TaxpayerFacingEvidenceResponseDraftEnvelope": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["data"],
+        "properties": { "data": { "$ref": "#/components/schemas/TaxpayerFacingEvidenceResponseDraft" } }
+      },
+      "TaxpayerFacingConfirmDraftRequest": {
+        "type": "object",
+        "description": "The taxpayer's final, possibly edited answers. Every requested item needs one of their own documents or a reason (422 invalid_domain_input otherwise).",
+        "additionalProperties": false,
+        "required": ["expected_version", "declaration", "items", "message"],
+        "properties": {
+          "expected_version": { "type": "integer", "minimum": 1 },
+          "declaration": { "const": true, "description": "The taxpayer confirms the answers are theirs and correct." },
+          "items": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 20,
+            "items": { "$ref": "#/components/schemas/TaxpayerFacingConfirmedItem" }
+          },
+          "message": { "type": ["string", "null"], "minLength": 1, "maxLength": 2000 }
         }
       },
       "IntegrityRow": {

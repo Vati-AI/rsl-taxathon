@@ -1,0 +1,99 @@
+{
+  "name": "review_submission_documents_refund_draft",
+  "operation_id": "reviewSubmissionDocuments",
+  "scenario": "SYN-001",
+  "synthetic": true,
+  "description": "Document assistance for the taxpayer's own invoices. The hosted model timed out, so the deterministic template answered and the disclosure says so.",
+  "request": {
+    "method": "POST",
+    "path": "/api/v1/taxpayers/20000000-0000-4000-8000-000000000001/assistance/document-reviews",
+    "headers": {
+      "Authorization": "Bearer synthetic-taxpayer-token-not-a-secret",
+      "X-Vati-Tenant-ID": "10000000-0000-4000-8000-000000000001",
+      "X-Correlation-ID": "c0000000-0000-4000-8000-000000000033",
+      "Idempotency-Key": "taxpayer:document-review:30000000-0011:v1"
+    },
+    "body": {
+      "submission_id": "30000000-0000-4000-8000-000000000011",
+      "evidence_ids": []
+    }
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "X-Correlation-ID": "c0000000-0000-4000-8000-000000000033"
+    },
+    "body": {
+      "data": {
+        "assistance_id": "f0000000-0000-4000-8000-000000000002",
+        "tenant_id": "10000000-0000-4000-8000-000000000001",
+        "taxpayer_id": "20000000-0000-4000-8000-000000000001",
+        "submission_id": "30000000-0000-4000-8000-000000000011",
+        "documents": [
+          {
+            "evidence_id": "50000000-0000-4000-8000-000000000111",
+            "document_sha256": "1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b",
+            "document_type": "invoice",
+            "file_name": "synthetic-invoice-0001.pdf",
+            "extraction_status": "completed",
+            "fields_to_confirm": []
+          },
+          {
+            "evidence_id": "50000000-0000-4000-8000-000000000112",
+            "document_sha256": "1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c",
+            "document_type": "invoice",
+            "file_name": "synthetic-invoice-0002.pdf",
+            "extraction_status": "completed",
+            "fields_to_confirm": [
+              {
+                "field": "vat_amount",
+                "extracted_value": "600.00",
+                "declared_value": "690.00",
+                "locator": {
+                  "page": 1,
+                  "record": null
+                },
+                "reason": "differs_from_declared",
+                "explanation": "The VAT on the document is different from the VAT you entered for invoice 2. Check which is correct.",
+                "requires_taxpayer_confirmation": true
+              }
+            ]
+          }
+        ],
+        "flagged_invoices": [
+          {
+            "invoice_number": 2,
+            "issue_codes": [
+              "payment_evidence_missing"
+            ],
+            "explanation": "Invoice 2: add the amount paid, if you have paid this invoice.",
+            "suggested_steps": [
+              "Enter the amount paid for invoice 2, or leave it empty if it is unpaid."
+            ],
+            "document_refs": [
+              {
+                "evidence_id": "50000000-0000-4000-8000-000000000112",
+                "document_sha256": "1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c",
+                "locator": {
+                  "page": 1,
+                  "record": null
+                },
+                "file_name": "synthetic-invoice-0002.pdf"
+              }
+            ],
+            "requires_taxpayer_confirmation": true
+          }
+        ],
+        "disclosure": {
+          "source": "template",
+          "provider": "template",
+          "model_id": "deterministic-template-v1",
+          "fell_back": true,
+          "advisory_only": true
+        },
+        "changes_declared_figures": false,
+        "generated_at": "2026-11-05T09:01:30Z"
+      }
+    }
+  }
+}

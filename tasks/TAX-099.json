@@ -1,0 +1,57 @@
+{
+  "id": "TAX-099",
+  "kind": "task",
+  "title": "Taxpayer evidence-response assistant",
+  "owner": "Gupta",
+  "area": "ai",
+  "phase": "pilot",
+  "status": "BACKLOG",
+  "priority": "P1",
+  "depends_on": [
+    "TAX-098",
+    "TAX-045"
+  ],
+  "claimed_by": null,
+  "branch": null,
+  "pr": null,
+  "scope": "Help a taxpayer understand an RSL evidence request in plain language, match it to documents the taxpayer already supplied, identify what is still missing, and draft a structured response for the taxpayer to review, edit and confirm",
+  "inputs": [
+    "PROJECT.md",
+    "docs/ARCHITECTURE.md",
+    "docs/API_CONTRACTS.md",
+    "docs/REQUIREMENTS.md",
+    "docs/ENGINEERING_STANDARD.md",
+    "docs/V1_ACCEPTANCE.md",
+    "docs/AI_STANDARD.md",
+    "docs/decisions/ADR-031-ai-model-providers.md",
+    "ai/workflows/eoi_drafting.py"
+  ],
+  "acceptance": [
+    {
+      "text": "Drafts cite only the taxpayer's own documents, mark missing items as missing, never claim a document exists that does not, and are saved only as drafts until the taxpayer confirms; the request text is treated as untrusted data",
+      "done": false
+    },
+    {
+      "text": "With mock models the TAX-102 evidence-request scenario produces the expected matched and missing items; three live runs are recorded with model provenance",
+      "done": false
+    },
+    {
+      "text": "Record relevant tests and evidence, update task status and open a human-review PR",
+      "done": false
+    }
+  ],
+  "verification": "With mock models the TAX-102 evidence-request scenario produces the expected matched and missing items; three live runs are recorded with model provenance",
+  "skills": [
+    "start-task",
+    "implement-change",
+    "update-project-task",
+    "finish-task"
+  ],
+  "evidence": [],
+  "notes": [
+    {
+      "at": "2026-11-05T10:07:38.336884+00:00",
+      "text": "Added 2026-11-05 to record the agreed AI architecture (ADR-031): hosted models through a role router with local/template fallback, and the taxpayer-side assistant."
+    }
+  ]
+}

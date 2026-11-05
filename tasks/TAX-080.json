@@ -5,15 +5,15 @@
   "owner": "Gupta",
   "area": "ai",
   "phase": "future",
-  "status": "BACKLOG",
+  "status": "DONE",
   "priority": "P2",
   "depends_on": [
     "TAX-061",
     "TAX-070"
   ],
-  "claimed_by": null,
-  "branch": null,
-  "pr": null,
+  "claimed_by": "gupta-claude-20261105-080",
+  "branch": "task/TAX-080",
+  "pr": "https://github.com/Vati-AI/rsl-taxathon/pull/218",
   "scope": "Define governed extension contracts for PAYE, withholding, treaty/permanent-establishment and digital-services playbooks",
   "inputs": [
     "PROJECT.md",
@@ -27,15 +27,15 @@
   "acceptance": [
     {
       "text": "Define governed extension contracts for PAYE, withholding, treaty/permanent-establishment and digital-services playbooks",
-      "done": false
+      "done": true
     },
     {
       "text": "Each proposed domain names required sources, legal-review gate and evaluation fixtures before implementation",
-      "done": false
+      "done": true
     },
     {
       "text": "Record relevant tests and evidence, update task status and open a human-review PR",
-      "done": false
+      "done": true
     }
   ],
   "verification": "Each proposed domain names required sources, legal-review gate and evaluation fixtures before implementation",
@@ -45,6 +45,32 @@
     "update-project-task",
     "finish-task"
   ],
-  "evidence": [],
-  "notes": []
+  "evidence": [
+    {
+      "criterion": 1,
+      "text": "ai/workflows/playbook_extensions.synthetic.json defines design-stage contracts for paye_reconciliation, withholding_review, treaty_pe_facts and digital_services_review (scope, deterministic checks, get_model roles, operations/provenance subsets of the TAX-061 allowlists, advisory finding codes, alternative explanations, budgets); ai/workflows/playbook_extensions.py loader refuses 20 policy violations and check_registry refuses a TAX-061 playbook entry for a blocked domain (ADR-033). tests/ai/test_playbook_extensions.py: 11 tests OK in .venv-ai."
+    },
+    {
+      "criterion": 2,
+      "text": "Every domain names required_sources (system of record, v1 status), a legal_review_gate (rsl_legal_reviewer, open questions, reviewer) and six evaluation fixtures (legitimate, missing, contradictory, hostile, no verified route, cross-tenant); the loader rejects a domain missing any of them. python -m ai.workflows.playbook_extensions observed all four blocked: source_not_in_v1, legal_review_pending, finding_code_not_in_legal_registry, fixture_not_authored and (except digital services) contract_category_pending. test_readiness_clears_only_when_every_gate_is_met passes."
+    },
+    {
+      "criterion": 3,
+      "text": "Observed locally on Windows: scripts/validate.py OK; .venv-ai unittest discover -s tests/ai 255 tests OK; ai.evaluation.agent_eval --check gate PASS (0 regressions); playbook_registry digests all ok (no registered source changed); every dev.py check step OK except the two known Windows file-mode tooling tests (438 != 384); quality.py ruff/format/mypy OK, Prettier fails only on pre-existing CRLF files. GitHub Actions cannot start (org billing limit)."
+    }
+  ],
+  "notes": [
+    {
+      "at": "2026-11-05T10:28:12.172111+00:00",
+      "text": "Claimed by gupta-claude-20261105-080"
+    },
+    {
+      "at": "2026-11-05T10:42:16.384572+00:00",
+      "text": "Agent finished implementation and opened human review; local checks recorded in PR (Actions blocked by org billing limit)"
+    },
+    {
+      "at": "2026-11-05T10:48:32.967538+00:00",
+      "text": "Verified merge of #218 at ae086db"
+    }
+  ]
 }

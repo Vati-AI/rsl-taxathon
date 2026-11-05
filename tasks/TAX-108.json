@@ -1,0 +1,56 @@
+{
+  "id": "TAX-108",
+  "kind": "task",
+  "title": "Configure and verify OpenAleph tax evidence and graph screens",
+  "owner": "Leseli",
+  "area": "integration",
+  "phase": "pilot",
+  "status": "BACKLOG",
+  "priority": "P0",
+  "depends_on": [
+    "TAX-085",
+    "TAX-032",
+    "TAX-036",
+    "TAX-037"
+  ],
+  "claimed_by": null,
+  "branch": null,
+  "pr": null,
+  "scope": "Deliver native OpenAleph evidence search and interactive relationship exploration using FtM tax mappings, protected sources and case-scoped grants.",
+  "inputs": [
+    "PROJECT_SCOPE.md",
+    "docs/UI_INTEGRATION_SCOPE.md",
+    "docs/ARCHITECTURE.md",
+    "docs/decisions/ADR-034-native-ui-integration.md",
+    "docs/DESIGN_STANDARD.md"
+  ],
+  "acceptance": [
+    {
+      "text": "Provision restricted synthetic collections and mapped taxpayers, companies, ownership, payment and evidence records; demonstrate search/filter, entity navigation and an interactive network diagram with source/conflict and candidate-match disclosure.",
+      "done": false
+    },
+    {
+      "text": "Prove collection grants implement case authorization including two different cases within one tenant, direct entity/document URLs, search and graph; native editing cannot silently overwrite authoritative originals or decisions.",
+      "done": false
+    },
+    {
+      "text": "Record deployed collection/entity/document/diagram navigation patterns and authentication requirements for TAX-106/109; capture configured screens, keyboard/accessibility checks and human review; identify any unsupported behavior rather than inventing routes.",
+      "done": false
+    },
+    {
+      "text": "Record tests and limitations, update evidence and open a human-review PR; do not claim native runtime readiness from fixtures.",
+      "done": false
+    }
+  ],
+  "verification": "Authenticated synthetic native-screen and connected navigation checks; denied access, unavailable service and documented human visual review.",
+  "skills": [
+    "start-task",
+    "implement-change",
+    "integrate-service",
+    "finish-task"
+  ],
+  "evidence": [],
+  "notes": [
+    "Added by TAX-105 from user-requested complete frontend/native UI scope; not implemented or claimed."
+  ]
+}

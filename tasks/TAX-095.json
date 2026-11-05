@@ -13,7 +13,7 @@
   "claimed_by": null,
   "branch": null,
   "pr": null,
-  "scope": "Make the RSL presentation runnable on the demo laptop: Frappe, Jube and the AI runtime live; Docling, OpenAleph and yente run beforehand with their results recorded and clearly labelled as recorded; one start command, a combined health page, restricted access and up-to-date service status docs",
+  "scope": "Make the RSL presentation runnable on the demo laptop: Frappe, Jube and the AI runtime live (ADR-031 hosted models with local/template fallback); Docling, OpenAleph and yente run beforehand with their results recorded and clearly labelled as recorded; one start command, a combined health page, restricted access and up-to-date service status docs",
   "inputs": [
     "PROJECT.md",
     "docs/ARCHITECTURE.md",
@@ -23,11 +23,12 @@
     "docs/V1_ACCEPTANCE.md",
     "docs/SERVICE_SETUP.md",
     "integration/services.json",
-    "docs/SETUP_STATUS.md"
+    "docs/SETUP_STATUS.md",
+    "docs/UI_INTEGRATION_SCOPE.md"
   ],
   "acceptance": [
     {
-      "text": "A demo profile that fits the laptop's memory (live: Frappe, Jube, AI runtime and local model; recorded: Docling, OpenAleph, yente outputs captured from real runs with provenance), one start/stop command, a combined health/status page, loopback-only or authenticated access, and integration/services.json plus docs/SETUP_STATUS.md updated to reality",
+      "text": "A demo profile that fits the laptop's memory (live: Frappe, Jube, AI runtime with ADR-031 hosted models and an optional local fallback model; recorded: Docling, OpenAleph, yente outputs captured from real runs with provenance), one start/stop command, a combined health/status page, loopback-only or authenticated access, and integration/services.json plus docs/SETUP_STATUS.md updated to reality",
       "done": false
     },
     {
@@ -35,7 +36,15 @@
       "done": false
     },
     {
+      "text": "Model keys are set only in the demo laptop's ignored .env (Groq org with Zero Data Retention enabled); observed rate limits are recorded; the demo still completes, visibly labelled, on the local or template fallback when offline or rate-limited",
+      "done": false
+    },
+    {
       "text": "Record relevant tests and evidence, update task status and open a human-review PR",
+      "done": false
+    },
+    {
+      "text": "Distinguish reduced recorded-data demo from full pilot profile; for full native-UI acceptance supply reachable authorized Jube and OpenAleph interfaces on measured suitable local or remote hardware. Recorded outputs alone do not satisfy native search/graph acceptance.",
       "done": false
     }
   ],
@@ -51,6 +60,15 @@
     {
       "at": "2026-11-05T06:39:04.925015+00:00",
       "text": "Added 2026-11-05 after a runtime gap analysis for the RSL demo: the component code existed but this link was not wired at runtime and no task covered it."
-    }
+    },
+    {
+      "at": "2026-11-05T10:07:38.336884+00:00",
+      "text": "2026-11-05 (ADR-031): added model key, quota and fallback handling for the presentation."
+    },
+    {
+      "at": "2026-11-05T10:39:50.241416+00:00",
+      "text": "2026-11-05: aligned with ADR-031 as approved by Keletso (hosted primary, local optional fallback)."
+    },
+    "TAX-105 scope clarification: Preserve reduced laptop option but do not represent recorded OpenAleph output as interactive native UI readiness."
   ]
 }

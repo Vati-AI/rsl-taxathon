@@ -11,7 +11,9 @@
     "TAX-087",
     "TAX-086",
     "TAX-047",
-    "TAX-053"
+    "TAX-053",
+    "TAX-089",
+    "TAX-097"
   ],
   "claimed_by": null,
   "branch": null,
@@ -30,7 +32,7 @@
   ],
   "acceptance": [
     {
-      "text": "A worker or outbox handler starts the right playbook when a case is ready; state is loaded from Frappe/Jube records, outputs are written to the TAX-086 findings record with playbook id/version and citations; checkpoints persist outside a local SQLite file or are documented for the demo host",
+      "text": "A worker or outbox handler starts the right playbook when a case is ready; state is loaded from Frappe/Jube records, outputs are written to the TAX-086 findings record with playbook id/version and citations; checkpoints persist outside a local SQLite file or are documented for the demo host; agents run through the model router (live models when keys are configured, recorded fallback otherwise)",
       "done": false
     },
     {
@@ -54,6 +56,10 @@
     {
       "at": "2026-11-05T06:39:04.925015+00:00",
       "text": "Added 2026-11-05 after a runtime gap analysis for the RSL demo: the component code existed but this link was not wired at runtime and no task covered it."
+    },
+    {
+      "at": "2026-11-05T10:07:38.336884+00:00",
+      "text": "2026-11-05 (ADR-031): depends on the model router (TAX-089) and model-assisted agents (TAX-097)."
     }
   ]
 }

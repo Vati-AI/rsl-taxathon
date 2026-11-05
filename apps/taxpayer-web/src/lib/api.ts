@@ -1,8 +1,9 @@
 import { call } from './frappe-call';
 import type {
+  CorrectionReminder,
   EvidenceRequestView,
   EvidenceView,
-  FixtureEnvelope,
+  DataEnvelope,
   LiveEnvelope,
   PresubmissionReview,
   PortalSession,
@@ -63,9 +64,12 @@ export function classifyError(error: unknown, guestCheck = false): PortalError {
   return new PortalError('unavailable', 'The portal could not be reached. Try again in a moment.');
 }
 
-function assertFixture(payload: { mode?: string; synthetic?: boolean }): void {
-  // Fixture mode must be explicit; anything else means the contract changed.
-  if (payload.mode !== 'fixture' || payload.synthetic !== true) {
+function assertMode(payload: { mode?: string; synthetic?: boolean }): void {
+  // The source must be explicit: live data, or fixture data labelled synthetic.
+  // Anything else means the contract changed.
+  const live = payload.mode === 'live';
+  const fixture = payload.mode === 'fixture' && payload.synthetic === true;
+  if (!live && !fixture) {
     throw new PortalError('unavailable', 'The portal returned data in an unexpected format.');
   }
 }
@@ -81,7 +85,7 @@ async function request<T extends { mode?: string; synthetic?: boolean }>(
   } catch (error) {
     throw error instanceof PortalError ? error : classifyError(error, guestCheck);
   }
-  assertFixture(payload);
+  assertMode(payload);
   return payload;
 }
 
@@ -90,12 +94,12 @@ export function fetchSession(): Promise<PortalSession> {
 }
 
 export async function fetchSubmissions(): Promise<Submission[]> {
-  return (await request<FixtureEnvelope<Submission[]>>('vati_tax.portal.api.get_submissions')).data;
+  return (await request<DataEnvelope<Submission[]>>('vati_tax.portal.api.get_submissions')).data;
 }
 
 export async function fetchSubmission(id: string): Promise<Submission> {
   return (
-    await request<FixtureEnvelope<Submission>>('vati_tax.portal.api.get_submission', {
+    await request<DataEnvelope<Submission>>('vati_tax.portal.api.get_submission', {
       submission_id: id,
     })
   ).data;
@@ -309,6 +313,17 @@ export async function reviewRefundClaim(
     throw new PortalError('unavailable', 'The portal returned data in an unexpected format.');
   }
   return result.data;
+}
+
+/** TAX-078: the caller's own reminders from reviewed omissions in earlier claims. */
+export async function fetchCorrectionReminders(): Promise<CorrectionReminder[]> {
+  const data = await liveRequest<CorrectionReminder[]>(
+    'vati_tax.portal.api.get_correction_reminders',
+  );
+  if (!Array.isArray(data)) {
+    throw new PortalError('unavailable', 'The portal returned data in an unexpected format.');
+  }
+  return data;
 }
 
 export async function logout(): Promise<void> {

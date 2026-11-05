@@ -1,0 +1,74 @@
+{
+  "id": "TAX-096",
+  "kind": "task",
+  "title": "AI briefing, provenance, feedback and taxpayer-assistance contract",
+  "owner": "Keletso",
+  "area": "integration",
+  "phase": "pilot",
+  "status": "IN_REVIEW",
+  "priority": "P0",
+  "depends_on": [
+    "TAX-018"
+  ],
+  "claimed_by": "keletso-claude-20261105-096",
+  "branch": "task/TAX-096",
+  "pr": "https://github.com/Vati-AI/rsl-taxathon/pull/221",
+  "scope": "Extend integration/api/openapi.json with a CaseBriefing schema and read operation, an analysis_provenance block on findings, briefings and runs (provider, model id, role, prompt version, fallback level, validation result), an officer finding-feedback operation (accepted/modified/rejected with reason), and taxpayer-scoped assistance operations (explain validation results, document assistance, draft evidence response) whose responses exclude risk scores, internal notes and findings",
+  "inputs": [
+    "PROJECT.md",
+    "docs/ARCHITECTURE.md",
+    "docs/API_CONTRACTS.md",
+    "docs/REQUIREMENTS.md",
+    "docs/ENGINEERING_STANDARD.md",
+    "docs/V1_ACCEPTANCE.md",
+    "docs/AI_STANDARD.md",
+    "docs/decisions/ADR-031-ai-model-providers.md",
+    "integration/api/openapi.json",
+    "integration/api/README.md"
+  ],
+  "acceptance": [
+    {
+      "text": "Schemas and operations have examples validated by integration/api/contract.py tests; feedback and assistant drafts are idempotent and tenant/taxpayer scoped; taxpayer operations cannot return internal-only fields (negative tests)",
+      "done": true
+    },
+    {
+      "text": "Contract changes are reviewed by Gupta (AI), Edga (backend), Leseli and Kananelo (frontends); docs/API_CONTRACTS.md describes the briefing, provenance, feedback and taxpayer-assistance shapes",
+      "done": false
+    },
+    {
+      "text": "Record relevant tests and evidence, update task status and open a human-review PR",
+      "done": true
+    }
+  ],
+  "verification": "Contract changes are reviewed by Gupta (AI), Edga (backend), Leseli and Kananelo (frontends); docs/API_CONTRACTS.md describes the briefing, provenance, feedback and taxpayer-assistance shapes",
+  "skills": [
+    "start-task",
+    "implement-change",
+    "update-project-task",
+    "finish-task"
+  ],
+  "evidence": [
+    {
+      "criterion": 1,
+      "text": "integration/api/openapi.json adds AnalysisProvenance, AiDisclosure, CaseBriefing (getCaseBriefing), FindingFeedback (recordFindingFeedback) and five taxpayer-assistance operations with closed TaxpayerFacing* schemas. python3 integration/api/contract.py: contract valid, 45 HTTP examples (19 new, every new operation has a success example) and 2 events. python3 -m unittest discover -s tests/contracts: 113 tests OK, 29 in tests/contracts/test_ai_assistance_contract.py. These cover the lint refusing officer schemas, open objects and internal field names (risk_score, finding_ids, internal_notes, case_id, analysis_provenance, ...) in taxpayer operations; taxpayer responses carrying internal fields or another taxpayer's or tenant's data; feedback replay (same key and body) and conflict (422); actor in body refused; draft unsent until confirmed; confirmation replay; stale second confirmation (409); and missing declaration (400)."
+    },
+    {
+      "criterion": 3,
+      "text": "Local verification on the PR head (hosted CI blocked by billing): scripts/validate.py passed; scripts/dev.py check passed (LangGraph-dependent AI tests skipped, no .venv-ai); scripts/quality.py passed (ruff, ruff format, mypy, npm run check). Task set IN_REVIEW and human-review PR opened by scripts/task.py finish; criterion 2 (review by Gupta, Edga, Leseli and Kananelo) stays open until they review."
+    }
+  ],
+  "notes": [
+    {
+      "at": "2026-11-05T10:07:38.336884+00:00",
+      "text": "Added 2026-11-05 to record the agreed AI architecture (ADR-031): hosted models through a role router with local/template fallback, and the taxpayer-side assistant."
+    },
+    {
+      "at": "2026-11-05T10:45:29.144183+00:00",
+      "text": "Claimed by keletso-claude-20261105-096"
+    },
+    {
+      "at": "2026-11-05T11:01:46.748697+00:00",
+      "text": "Agent finished implementation and opened human review"
+    }
+  ]
+}

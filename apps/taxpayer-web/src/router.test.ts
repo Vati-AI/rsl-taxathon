@@ -20,8 +20,7 @@ const { createPortalRouter } = await import('./router');
 const { logout, resetSession, sessionState } = await import('./lib/session');
 
 const SESSION = {
-  mode: 'fixture',
-  synthetic: true,
+  mode: 'live',
   user: 'a@example.test',
   full_name: 'Taxpayer A',
 };
@@ -66,12 +65,20 @@ describe('portal router session boundary', () => {
     expect(sessionState.value).toMatchObject({ status: 'error', error: { kind: 'unavailable' } });
   });
 
-  it('rejects a session payload that is not explicitly synthetic fixture data', async () => {
-    call.mockResolvedValue({ ...SESSION, mode: 'live' });
-    const router = createPortalRouter(createMemoryHistory(), nav());
-    await router.push('/submissions');
-    expect(sessionState.value.status).toBe('error');
+  it('accepts fixture data only when it is labelled synthetic (TAX-092)', async () => {
+    call.mockResolvedValue({ ...SESSION, mode: 'fixture', synthetic: true });
+    await createPortalRouter(createMemoryHistory(), nav()).push('/submissions');
+    expect(sessionState.value.status).toBe('ready');
   });
+
+  for (const payload of [{ mode: 'fixture' }, { mode: 'demo' }, { mode: undefined }]) {
+    it(`rejects a session that does not say where its data comes from: ${JSON.stringify(payload)}`, async () => {
+      resetSession();
+      call.mockResolvedValue({ ...SESSION, ...payload });
+      await createPortalRouter(createMemoryHistory(), nav()).push('/submissions');
+      expect(sessionState.value.status).toBe('error');
+    });
+  }
 
   it('routes unknown portal paths to the not-found page', async () => {
     call.mockResolvedValue(SESSION);

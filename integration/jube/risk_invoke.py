@@ -58,7 +58,8 @@ class RiskInvokerConfig:
         if not self.base_url.startswith(("http://", "https://")):
             raise RiskConfigError("JUBE_BASE_URL must be an http(s) URL")
         if self.base_url.startswith("http://") and not self.base_url.startswith(
-            ("http://127.0.0.1", "http://localhost", "http://[::1]")
+            # host.docker.internal: the developer's machine seen from the Frappe container.
+            ("http://127.0.0.1", "http://localhost", "http://[::1]", "http://host.docker.internal:")
         ):
             raise RiskConfigError("plain HTTP to Jube is only allowed on loopback")
         if not self.api_key or len(self.api_key) < 20:

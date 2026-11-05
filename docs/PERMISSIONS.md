@@ -71,6 +71,9 @@ Callers check actions with `permissions.require_action(action, tenant_id, taxpay
 | `challenge.lodge`* (TAX-069: object to an approved decision or appeal an objection outcome) | own taxpayer | yes, on the taxpayer's behalf | | yes, on the taxpayer's behalf | |
 | `challenge.review`* (TAX-069: record the reviewed outcome) | | | | yes, not on a decision or challenge they took part in | |
 | `challenge.read` (TAX-069: decision, challenges and final outcome) | own taxpayer | yes | yes | yes | yes |
+| `reminder.record`* (TAX-078: record a correction reminder from a reviewed omission) | | yes | | yes | |
+| `reminder.correct`* (TAX-078: correct or withdraw a reminder, with a reason) | | yes | | yes | |
+| `reminder.read` (TAX-078: correction reminders) | own taxpayer, active ones through the portal only | yes | yes | yes | |
 | `integration.callback` | | | | | yes |
 
 \* Human-only. A service identity is refused these actions even if the matrix is widened by mistake. Stale approvals, idempotent decision records and the Jube transition are TAX-046 (see Decisions below).
@@ -84,7 +87,7 @@ bench --site taxathon.localhost execute vati_tax.identity.provision.grant_member
   --kwargs '{"user": "taxpayer.a@example.test", "tenant_id": "10000000-0000-4000-8000-000000000001", "role": "taxpayer", "taxpayer_id": "80015243-dd34-4e97-b085-7356ffdd042f"}'
 ```
 
-The taxpayer above owns fixture `SUB-SYN-0001`. `portal/fixtures.py` maps every portal fixture to its synthetic owner.
+The portal's submissions list and status are live from TAX-092: a taxpayer sees only Vati Submission records with their own `tenant_id` and `taxpayer_id` (filtered in the query), another taxpayer's submission is "not found", and only the allowlisted fields in `portal/submissions.py` are returned, with the TAX-039 taxpayer-facing review status and never case, Jube or risk detail. `portal/fixtures.py` (fixture `SUB-SYN-0001` is owned by the taxpayer above) is no longer served; the browser harness uses it as mock records.
 
 ## Evidence (TAX-032)
 
@@ -157,6 +160,17 @@ A permitted workflow only orders steps that were each approved before. Every ste
 | Lodge an appeal (`stage: appeal`) | as above | objection not yet reviewed; objection overturned or withdrawn; already appealed; parent is not an objection. The refusal is recorded |
 | Review (`review_challenge`) | a supervisor (`challenge.review`) | the decision's proposer or approver, the lodger, or for an appeal the objection's reviewer; auditor, specialist, service or taxpayer; unknown outcome; reason shorter than 20 characters; stale `expected_version`; already reviewed; decision changed since lodging. The refusal is recorded |
 | Read the history (`get_challenge_history`) | the taxpayer (own), staff, service (`challenge.read`) | another taxpayer or tenant (`not_found`). The read is recorded |
+
+## Correction reminders (TAX-078)
+
+`Vati Correction Reminder` holds one taxpayer-facing reminder from a reviewed omission in an earlier claim. It is taxpayer-owned (`tenant_id` + `taxpayer_id`). Staff read it in Desk; taxpayers and services have no DocType permission. Taxpayers read their own active reminders through `vati_tax.portal.api.get_correction_reminders`, which returns no case or decision IDs, staff identities or history. A reminder is hidden while its decision is challenged or after any review overturned it (TAX-069). See [ADR-032](decisions/ADR-032-correction-reminders.md).
+
+| Step | Who | Refused when |
+| --- | --- | --- |
+| Record (`vati_tax.reminders.api.record_reminder`) | auditor or supervisor (`reminder.record`) | taxpayer, specialist or service; decision in another tenant (`not_found`); decision not approved; outcome not `close_after_correction` or `request_further_evidence`; decision challenged or overturned; a reminder on that topic already exists for the decision. The refusal is recorded |
+| Correct or withdraw (`correct_reminder`) | auditor or supervisor (`reminder.correct`) | taxpayer, specialist or service; reason shorter than 20 characters; stale `expected_version`; nothing changed; already withdrawn; topic already used for that decision. The refusal is recorded |
+| Staff history (`get_reminders`) | staff (`reminder.read`) | taxpayer or service. The read is recorded |
+| Portal list (`get_correction_reminders`) | the taxpayer, own reminders only | other taxpayers' and tenants' reminders are never returned |
 
 ## Frappe to Jube bridge (TAX-039)
 

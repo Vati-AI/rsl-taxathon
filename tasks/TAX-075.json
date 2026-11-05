@@ -5,15 +5,15 @@
   "owner": "Gupta",
   "area": "ai",
   "phase": "expansion",
-  "status": "BACKLOG",
+  "status": "DONE",
   "priority": "P1",
   "depends_on": [
     "TAX-074",
     "TAX-067"
   ],
-  "claimed_by": null,
-  "branch": null,
-  "pr": null,
+  "claimed_by": "claude-gupta-20261105-tax075",
+  "branch": "task/TAX-075",
+  "pr": "https://github.com/Vati-AI/rsl-taxathon/pull/208",
   "scope": "Detect unexplained network patterns with explainable evidence and analyst review queue",
   "inputs": [
     "PROJECT.md",
@@ -27,15 +27,15 @@
   "acceptance": [
     {
       "text": "Detect unexplained network patterns with explainable evidence and analyst review queue",
-      "done": false
+      "done": true
     },
     {
       "text": "Novelty alone cannot trigger enforcement; evaluate false positives and source gaps",
-      "done": false
+      "done": true
     },
     {
       "text": "Record relevant tests and evidence, update task status and open a human-review PR",
-      "done": false
+      "done": true
     }
   ],
   "verification": "Novelty alone cannot trigger enforcement; evaluate false positives and source gaps",
@@ -45,6 +45,32 @@
     "update-project-task",
     "finish-task"
   ],
-  "evidence": [],
-  "notes": []
+  "evidence": [
+    {
+      "criterion": 1,
+      "text": "ai/workflows/network_patterns.py detect_patterns (TAX-053 read-access check first) reads one tenant's TAX-074 case graphs and finds recurring structures - shared intermediary/adviser (>=3 cases), common beneficial owner (>=2), scheme linked to >=3 cases, circular ownership within a case - each explained by its supporting edges with provenance, source record and evidence citations. Patterns fully cited in every supporting case are queued for analyst review (route analyst_review, decided_by analyst, outcome null), ordered by evidence completeness, never by risk."
+    },
+    {
+      "criterion": 2,
+      "text": "tests/ai/test_network_patterns.py (8 tests on real sg.build_case_graph output): queued patterns cite evidence on every edge; novelty is reported (baseline comparison) but novelty_alone_sufficient false, enforcement_action null and novelty changes no status; one case with uncited adviser edges turns shared_intermediary into insufficient_evidence with edge_without_cited_evidence source gaps; circular ownership detected; TAX-074 labelling_terms finds no labelling words in output and no score/risk fields; evaluate_reviews reports false_positive_share and source_gap_share per pattern type and refuses unknown outcomes; taxpayer caller and cross-tenant graphs refused; deterministic under reorder/duplicates. .venv-ai pytest tests/ai: 295 passed; ruff/mypy (206 files) pass; TAX-056 gate PASS."
+    },
+    {
+      "criterion": 3,
+      "text": "Tests and evidence recorded on task/TAX-075 (criteria 1-2). Branch refreshed from main (clean merge, tests rerun), pushed explicitly; human-review PR https://github.com/Vati-AI/rsl-taxathon/pull/208 opened with the CI billing block documented. Agent will not merge."
+    }
+  ],
+  "notes": [
+    {
+      "at": "2026-11-05T09:24:05.304851+00:00",
+      "text": "Claimed by claude-gupta-20261105-tax075"
+    },
+    {
+      "at": "2026-11-05T09:28:43.823163+00:00",
+      "text": "Agent finished implementation and opened human review. task.py finish steps run individually: its dev.py check/quality.py gate fails on this Windows checkout only (POSIX file-mode tooling tests; CRLF vs Prettier), documented in the PR."
+    },
+    {
+      "at": "2026-11-05T10:28:18.402022+00:00",
+      "text": "Verified merge of #208 at 3c7f881"
+    }
+  ]
 }

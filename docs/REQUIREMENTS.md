@@ -25,3 +25,5 @@
 | Additional tax domains | TAX-080 (future) |
 
 Ranges include related tasks; each task file gives exact scope and dependencies. Missing statutory references stay unverified; this matrix does not validate legal statements in the proposal.
+
+Frontend and native-tool acceptance: see [UI integration scope](UI_INTEGRATION_SCOPE.md). TAX-106 owns contextual navigation, TAX-107 Jube adaptation, TAX-108 OpenAleph/FtM exploration, TAX-109 protected document access; TAX-091 owns officer login and TAX-103/058 verify the connected journey.

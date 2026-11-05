@@ -1,0 +1,47 @@
+{
+  "name": "error_confirm_draft_stale_version",
+  "operation_id": "confirmEvidenceResponseDraft",
+  "scenario": "SYN-004",
+  "synthetic": true,
+  "description": "Confirming the already-confirmed draft again with a new key is a stale version (409), not a second response.",
+  "request": {
+    "method": "POST",
+    "path": "/api/v1/taxpayers/20000000-0000-4000-8000-000000000004/assistance/evidence-response-drafts/f1000000-0000-4000-8000-000000000004/confirm",
+    "headers": {
+      "Authorization": "Bearer synthetic-taxpayer-token-not-a-secret",
+      "X-Vati-Tenant-ID": "10000000-0000-4000-8000-000000000001",
+      "X-Correlation-ID": "c0000000-0000-4000-8000-000000000038",
+      "Idempotency-Key": "taxpayer:confirm-response:f1000000-0004:v2"
+    },
+    "body": {
+      "expected_version": 1,
+      "declaration": true,
+      "items": [
+        {
+          "item_number": 1,
+          "evidence_ids": [
+            "50000000-0000-4000-8000-000000000041"
+          ],
+          "reason_unavailable": null
+        }
+      ],
+      "message": "Attached is the withholding record for the consulting service, filed with the September return."
+    }
+  },
+  "response": {
+    "status": 409,
+    "headers": {
+      "X-Correlation-ID": "c0000000-0000-4000-8000-000000000038"
+    },
+    "body": {
+      "error": {
+        "code": "version_conflict",
+        "message": "This draft has already been confirmed.",
+        "retryable": false,
+        "correlation_id": "c0000000-0000-4000-8000-000000000038",
+        "service": "vati",
+        "current_version": 2
+      }
+    }
+  }
+}

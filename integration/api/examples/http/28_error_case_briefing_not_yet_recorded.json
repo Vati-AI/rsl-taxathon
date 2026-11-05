@@ -1,0 +1,31 @@
+{
+  "name": "error_case_briefing_not_yet_recorded",
+  "operation_id": "getCaseBriefing",
+  "scenario": "SYN-005",
+  "synthetic": true,
+  "description": "A case without a recorded briefing is 404, never an invented or empty briefing.",
+  "request": {
+    "method": "GET",
+    "path": "/api/v1/cases/40000000-0000-4000-8000-000000000005/briefing",
+    "headers": {
+      "Authorization": "Bearer synthetic-dev-token-not-a-secret",
+      "X-Vati-Tenant-ID": "10000000-0000-4000-8000-000000000001",
+      "X-Correlation-ID": "c0000000-0000-4000-8000-000000000028"
+    }
+  },
+  "response": {
+    "status": 404,
+    "headers": {
+      "X-Correlation-ID": "c0000000-0000-4000-8000-000000000028"
+    },
+    "body": {
+      "error": {
+        "code": "not_found",
+        "message": "No briefing has been recorded for this case yet.",
+        "retryable": false,
+        "correlation_id": "c0000000-0000-4000-8000-000000000028",
+        "service": "vati"
+      }
+    }
+  }
+}

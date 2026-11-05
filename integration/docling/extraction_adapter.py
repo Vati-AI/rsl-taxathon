@@ -165,7 +165,10 @@ class AdapterConfig:
         parsed = urllib.parse.urlparse(base_url)
         if parsed.scheme not in ("http", "https") or not parsed.hostname:
             raise ConfigError("DOCLING_BASE_URL must be an http(s) URL")
-        if parsed.scheme == "http" and parsed.hostname not in ("127.0.0.1", "localhost", "::1"):
+        # host.docker.internal: the developer's own machine as seen from the Frappe
+        # developer container (TAX-085); plain HTTP never leaves that machine.
+        local = ("127.0.0.1", "localhost", "::1", "host.docker.internal")
+        if parsed.scheme == "http" and parsed.hostname not in local:
             raise ConfigError("plain HTTP to Docling is only allowed on loopback")
         if not api_key or len(api_key) < 16:
             raise ConfigError("DOCLING_API_KEY is missing")

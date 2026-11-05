@@ -16,7 +16,11 @@
     "TAX-092",
     "TAX-093",
     "TAX-094",
-    "TAX-095"
+    "TAX-095",
+    "TAX-097",
+    "TAX-103",
+    "TAX-101",
+    "TAX-102"
   ],
   "claimed_by": null,
   "branch": null,
@@ -29,7 +33,8 @@
     "docs/REQUIREMENTS.md",
     "docs/ENGINEERING_STANDARD.md",
     "docs/V1_ACCEPTANCE.md",
-    "docs/API_STANDARD.md"
+    "docs/API_STANDARD.md",
+    "docs/UI_INTEGRATION_SCOPE.md"
   ],
   "acceptance": [
     {
@@ -42,6 +47,10 @@
     },
     {
       "text": "Record relevant tests and evidence, update task status and open a human-review PR",
+      "done": false
+    },
+    {
+      "text": "Demonstrate the agreed full screen inventory including native Jube investigation, OpenAleph evidence/graph navigation and taxpayer assistance with real authorization and recorded/live disclosure; label reduced profiles separately. Full acceptance cannot be recorded while a required journey is missing.",
       "done": false
     }
   ],
@@ -57,6 +66,15 @@
     {
       "at": "2026-11-05T06:39:04.925015+00:00",
       "text": "2026-11-05: the demo now depends on the live-system tasks TAX-085..095 found missing in the runtime gap analysis."
-    }
+    },
+    {
+      "at": "2026-11-05T10:07:38.336884+00:00",
+      "text": "2026-11-05 (ADR-031): the demo includes model-assisted investigation (TAX-097) and the taxpayer assistant (TAX-101)."
+    },
+    {
+      "at": "2026-11-05T10:39:50.241416+00:00",
+      "text": "Keletso decision 2026-11-05: the taxpayer assistant (TAX-101) is an optional demo segment, shown if ready, so it cannot block the officer pipeline demo. The live-app regression re-run (TAX-103) is required."
+    },
+    "TAX-105 scope clarification: Full native-tool acceptance follows UI_INTEGRATION_SCOPE.md and TAX-103; reduced laptop demos are disclosed."
   ]
 }

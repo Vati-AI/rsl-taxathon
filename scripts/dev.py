@@ -193,10 +193,23 @@ def check():
         ["python3", "-m", "unittest", "discover", "-s", "tests/ai", "-p", "test_action*.py"],
         # TAX-053 evidence search (pure); cited briefing graph tests skip without LangGraph.
         ["python3", "-m", "unittest", "discover", "-s", "tests/ai", "-p", "test_case_briefing*.py"],
+        # TAX-066 risk calibration and drift evaluation (pure Python) and its baseline gate.
+        ["python3", "-m", "unittest", "discover", "-s", "tests/ai", "-p", "test_risk_cal*.py"],
+        ["python3", "-m", "ai.evaluation.risk_calibration", "--check"],
         # TAX-056 agent evaluation and injection regression; skips without LangGraph.
         ["python3", "-m", "unittest", "discover", "-s", "tests/ai", "-p", "test_agent_eval*.py"],
         # TAX-068 institutional knowledge retrieval (pure Python).
         ["python3", "-m", "unittest", "discover", "-s", "tests/ai", "-p", "test_institutional*.py"],
+        # TAX-071 EOI draft packages (pure Python; no transmission capability).
+        ["python3", "-m", "unittest", "discover", "-s", "tests/ai", "-p", "test_eoi*.py"],
+        # TAX-067 baselines and peer comparisons (pure Python).
+        ["python3", "-m", "unittest", "discover", "-s", "tests/ai", "-p", "test_peer*.py"],
+        # TAX-070 outcome/appeal feedback proposals (pure Python; registry stamps with LangGraph).
+        ["python3", "-m", "unittest", "discover", "-s", "tests/ai", "-p", "test_outcome*.py"],
+        # TAX-075 network pattern review (pure Python on TAX-074 graphs).
+        ["python3", "-m", "unittest", "discover", "-s", "tests/ai", "-p", "test_network*.py"],
+        # TAX-089 model router (pure Python; briefing port tests skip without LangGraph).
+        ["python3", "-m", "unittest", "discover", "-s", "tests/ai", "-p", "test_model*.py"],
         ["python3", "integration/api/contract.py"],
         ["python3", "-m", "unittest", "discover", "-s", "tests/contracts", "-v"],
         # Frappe-free app logic (portal boundary/fixtures); bench tests cover the rest.

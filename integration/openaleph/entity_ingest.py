@@ -130,7 +130,9 @@ def ingest(
 def http_transport(base_url: str, api_key: str, timeout_s: float = 30.0) -> Transport:
     """Transport for a real OpenAleph (``Authorization: ApiKey``). The key must belong to a
     non-admin service user with WRITE on only its tenant's collections."""
-    if not base_url.startswith(("http://127.0.0.1", "http://localhost", "https://")):
+    # host.docker.internal: the developer's machine seen from the Frappe container (TAX-085).
+    local = ("http://127.0.0.1", "http://localhost", "http://host.docker.internal:", "https://")
+    if not base_url.startswith(local):
         raise ValueError("OPENALEPH_BASE_URL must be https or loopback")
 
     def call(method: str, path: str, body: Any = None) -> Response:

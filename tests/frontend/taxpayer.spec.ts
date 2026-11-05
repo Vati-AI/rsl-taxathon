@@ -1,3 +1,4 @@
+import path from 'node:path';
 import { expect, test, type Page } from '@playwright/test';
 import {
   hasVisibleFocus,
@@ -6,6 +7,7 @@ import {
   seriousAxeViolations,
   tabUntilFocused,
 } from './support/checks';
+import { DECLARATION, fillDetails, toReview, upload } from './support/claim-flow';
 import { TAXPAYER } from './support/env';
 import { isMobile, TAXPAYER_ROUTES } from './support/matrix';
 import {
@@ -30,7 +32,8 @@ test.describe('taxpayer portal', () => {
     await page.goto(TAXPAYER + '/taxpayer/');
     await expect(page).toHaveURL(/\/taxpayer\/submissions$/);
     await pageReady(page, 'Your submissions');
-    await expect(page.getByText('Synthetic fixture data')).toBeVisible();
+    // TAX-092: the server says the data is live, so the fixture notice is not shown.
+    await expect(page.getByText('Synthetic fixture data')).toHaveCount(0);
     await expect(page.getByRole('list', { name: 'Submissions' }).getByRole('listitem')).toHaveCount(
       PORTAL_SUBMISSIONS.length,
     );
@@ -169,4 +172,76 @@ test.describe('taxpayer portal', () => {
       expect(await horizontalOverflow(page)).toBeLessThanOrEqual(0);
     });
   }
+});
+
+// CAPTURE_SCREENSHOTS=1 writes TAX-092 review screenshots to docs/evidence/TAX-092.
+async function shot092(page: Page, name: string, project: string) {
+  if (!process.env.CAPTURE_SCREENSHOTS) return;
+  const out = path.resolve(__dirname, '../../docs/evidence/TAX-092');
+  await page.screenshot({
+    path: path.join(out, `${name}-${project.split('-')[1]}.png`),
+    fullPage: true,
+  });
+}
+
+test.describe('live submissions (TAX-092)', () => {
+  test('the fixture notice appears only when the server labels its data as fixture', async ({
+    page,
+  }, testInfo) => {
+    const desktop = !isMobile(testInfo.project.name);
+    await mockTaxpayerSession(page, 'taxpayer');
+    await page.goto(TAXPAYER + '/taxpayer/submissions');
+    await pageReady(page, 'Your submissions');
+    await expect(page.getByText('Synthetic fixture data')).toHaveCount(0);
+    if (desktop) await expect(nav(page).getByText('Live data')).toBeVisible();
+    await shot092(page, 'list-live', testInfo.project.name);
+
+    const fixture = await mockTaxpayerSession(page, 'taxpayer', { dataMode: 'fixture' });
+    await page.reload();
+    await pageReady(page, 'Your submissions');
+    expect(fixture.dataMode).toBe('fixture');
+    await expect(page.getByText('Synthetic fixture data')).toBeVisible();
+    if (desktop) await expect(nav(page).getByText('Synthetic fixture')).toBeVisible();
+    expect(await seriousAxeViolations(page)).toEqual([]);
+    await shot092(page, 'list-fixture-mode', testInfo.project.name);
+  });
+
+  test('a claim the taxpayer sends appears in their list with its status', async ({
+    page,
+  }, testInfo) => {
+    test.slow();
+    await mockTaxpayerSession(page, 'taxpayer');
+    await page.goto(TAXPAYER + '/taxpayer/submissions/new');
+    await pageReady(page, 'New VAT refund claim');
+    await fillDetails(page);
+    await (await upload(page)).getByText('Uploaded').waitFor();
+    await toReview(page);
+    await page.getByLabel(DECLARATION).check();
+    await page.getByRole('button', { name: 'Send claim' }).click();
+    await expect(page.getByRole('heading', { name: 'Claim sent' })).toBeFocused();
+    const reference = (await page
+      .getByText(/^REF-2026-\d{6}$/)
+      .first()
+      .textContent())!.trim();
+
+    await nav(page).getByRole('link', { name: 'Submissions', exact: true }).click();
+    await pageReady(page, 'Your submissions');
+    const items = page.getByRole('list', { name: 'Submissions' }).getByRole('listitem');
+    await expect(items).toHaveCount(PORTAL_SUBMISSIONS.length + 1);
+    const sent = items.first();
+    await expect(sent).toContainText(reference);
+    await expect(sent).toContainText('Under review');
+    await expect(sent).toContainText('LSL 48,210.55');
+    await expect(sent).not.toContainText(/risk|lane|score|jube|finding/i);
+    expect(await seriousAxeViolations(page)).toEqual([]);
+    await shot092(page, 'list-with-sent-claim', testInfo.project.name);
+
+    await sent.getByRole('link').click();
+    await pageReady(page, /^VAT refund claim · /);
+    await expect(page.getByText(reference).first()).toBeVisible();
+    await expect(page.getByText('An officer is reviewing your submission.')).toBeVisible();
+    expect(await seriousAxeViolations(page)).toEqual([]);
+    expect(await horizontalOverflow(page)).toBeLessThanOrEqual(0);
+    await shot092(page, 'sent-claim-status', testInfo.project.name);
+  });
 });

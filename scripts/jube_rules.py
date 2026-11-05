@@ -198,6 +198,7 @@ def apply(ruleset: dict[str, Any], request: Request, token: str) -> dict[str, An
 INVOKER_ROLE = "Vati risk invoke (local)"
 INVOKER_USER = "vati-risk-invoker"
 API_KEY_ENV = "JUBE_RISK_INVOKER_API_KEY"
+MODEL_GUID_ENV = "JUBE_RISK_MODEL_GUID"  # read by scripts/frappe_dev.py (TAX-085)
 LEGACY_INVOKER_USER = "vati-tax-risk-invoker"
 
 
@@ -414,7 +415,7 @@ def main() -> None:
     parser = argparse.ArgumentParser(
         description=__doc__, formatter_class=argparse.RawTextHelpFormatter
     )
-    parser.add_argument("command", choices=["evaluate", "apply", "verify"])
+    parser.add_argument("command", choices=["evaluate", "apply", "verify", "record-model"])
     parser.add_argument("--full", action="store_true", help="evaluate: print every rule result")
     parser.add_argument("--approve-local", action="store_true", help="apply: self-approve locally")
     args = parser.parse_args()
@@ -439,6 +440,17 @@ def main() -> None:
             print(json.dumps(result, indent=2))
             return
         model = find_model(jube_dev.request, token, ruleset["jube_model"]["name"])
+    if args.command == "record-model":
+        # TAX-085: the Frappe risk factory needs the model GUID; keep it with the invoker key.
+        if model is None:
+            raise SystemExit("Risk model missing; run apply --approve-local first")
+        recorded = jube_dev.read_env().get(MODEL_GUID_ENV)
+        if recorded not in (None, model["guid"]):
+            raise SystemExit(f"{MODEL_GUID_ENV} in .local/jube.env differs from Jube; review it")
+        if recorded is None:
+            store_api_key(model["guid"], MODEL_GUID_ENV)
+        print(json.dumps({"model_guid": model["guid"], "recorded": recorded is None}))
+        return
     api_key = jube_dev.read_env().get(API_KEY_ENV)
     if model is None or not api_key:
         raise SystemExit("Model or invoke API key missing; run apply --approve-local first")

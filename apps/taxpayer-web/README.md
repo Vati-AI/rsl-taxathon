@@ -4,9 +4,22 @@ Owner: Kananelo. See `tasks/README.md` for work and `docs/ARCHITECTURE.md` for b
 
 Vue 3 + TypeScript + Vite + Frappe UI taxpayer portal (ADR-002), served by the
 `vati_tax` Frappe app at `/taxpayer`. TAX-021 delivers the authenticated shell:
-routes, login/logout, submissions list and submission status. The list and
-status pages still show **explicitly synthetic fixture data** from
-`vati_tax.portal.api`.
+routes, login/logout, submissions list and submission status.
+
+## Live submissions (TAX-092)
+
+The session, the submissions list and the submission status are **live**: the
+signed-in taxpayer's own Vati Submission and Vati Refund Claim records, with the
+taxpayer-facing review status mirrored from Jube by TAX-039 (Under review,
+Evidence requested, Completed; Frappe's own Draft, Correction needed and
+Withdrawn). A claim sent from the form appears in the list. Another taxpayer's
+submission is "not found", and case, risk and officer detail is never sent to
+the browser (`vati_tax.portal.submissions` is an allowlist).
+
+Every read says where its data comes from (`mode`). The portal accepts `live`,
+or `fixture` only when it is also labelled `synthetic: true`, and refuses
+anything else. The "Synthetic fixture data" notice and the "Synthetic fixture"
+sidebar label appear only for fixture data; live data is labelled "Live data".
 
 ## VAT refund claim (TAX-043)
 
@@ -43,6 +56,17 @@ the rest, with correction prompts that link back to the right step. The checks
 come from `vati_tax.portal.api.review_refund_claim` (the TAX-048 reconciliation);
 they are guidance only and never block sending. Rules: `src/lib/schedule.ts`
 mirrors `vati_tax/submissions/invoices.py`.
+
+## Correction reminders (TAX-078)
+
+On the first step of a new claim, a "From your earlier claims" panel lists the
+taxpayer's own reminders from reviewed omissions in earlier claims
+(`vati_tax.portal.api.get_correction_reminders`). It shows a title, the
+officer's explanation and when it was noted or last updated, and it is absent
+for a first-time claimant. On **Review and send**, a prompt that a reminder
+covers is labelled "Also noted on an earlier claim". Reminders are guidance
+only: they never block sending, and if they cannot be loaded the claim can
+still be filled in and sent. Helpers: `src/lib/reminders.ts`.
 
 ## Evidence requests (TAX-045)
 
