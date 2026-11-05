@@ -5,7 +5,7 @@
   "owner": "Leseli",
   "area": "data",
   "phase": "pilot",
-  "status": "IN_REVIEW",
+  "status": "DONE",
   "priority": "P1",
   "depends_on": [
     "TAX-024"
@@ -83,6 +83,10 @@
     {
       "at": "2026-11-05T21:10:55.978301+00:00",
       "text": "PR #257 opened. Fixtures, checker, seeded-fault tests and the agent_eval hook are in; no taxpayer assistant exists yet, so TAX-098/TAX-099 run these cases with taxpayer_assistant_eval.evaluate(factory) or set DEFAULT_ASSISTANT_ENTRY for agent_eval."
+    },
+    {
+      "at": "2026-11-05T21:30:02.876793+00:00",
+      "text": "Verified merge of #257; all 3 acceptance criteria have recorded evidence"
     }
   ],
   "sequence": 20
