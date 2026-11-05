@@ -1,4 +1,4 @@
-# ADR-022: Pre-submission reconciliation reuses the TAX-048 calculation
+# ADR-023: Pre-submission reconciliation reuses the TAX-048 calculation
 
 Status: proposed (code-owner review requested on the TAX-044 PR)
 Owner and task: Kananelo, TAX-044

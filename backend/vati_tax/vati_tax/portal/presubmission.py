@@ -4,7 +4,7 @@ Reuses the TAX-048 deterministic reconciliation (``ai.tools.refund_reconciliatio
 without changing it: that file is pinned by approved playbooks (ADR-017) and uses
 only the standard library. This module is the only place in the Frappe app that
 imports from ``ai``, and it imports only that module (``test_presubmission``
-enforces both). See ADR-022.
+enforces both). See ADR-023.
 
 What the taxpayer sees is limited on purpose:
 
