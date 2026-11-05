@@ -28,11 +28,11 @@
   "acceptance": [
     {
       "text": "Propose review of weak playbooks/rules from upheld/overturned outcomes",
-      "done": false
+      "done": true
     },
     {
       "text": "Prevent automatic legal-interpretation changes and preserve evaluation lineage",
-      "done": false
+      "done": true
     },
     {
       "text": "Record relevant tests and evidence, update task status and open a human-review PR",
@@ -46,7 +46,16 @@
     "update-project-task",
     "finish-task"
   ],
-  "evidence": [],
+  "evidence": [
+    {
+      "criterion": 1,
+      "text": "ai/workflows/outcome_feedback.py evaluate_feedback attributes TAX-069 reviewed final outcomes (upheld/partially_overturned/overturned) to the component versions that informed each decision (TAX-061 playbook/tool stamps, risk rule versions, TAX-052 authority versions). A component version with >=3 final outcomes and overturn share >=1/2 becomes a component_review_proposal (legal authorities: legal_review_referral) citing overturned cases with decision digests and challenge IDs plus upheld counter-evidence; withdrawn/unresolved challenges excluded with reasons. Proposals are status proposed, auto_apply false, approved_by null; requested action is supervisor review leading to a new reviewed version, never an in-place edit."
+    },
+    {
+      "criterion": 2,
+      "text": "tests/ai/test_outcome_feedback.py (8 tests, real TAX-061 registry stamps when LangGraph is installed): related_party@1.0 proposal with 3/4 overturned and dec-003 upheld as counter-evidence; below-threshold components reported but not proposed; legal authority only referred with legal_interpretation_change null and automatic_change_permitted false; apply() refuses every proposal with automatic_change_not_permitted and applied_changes is empty; withdrawn/no-final-outcome excluded and a changed original decision (dec-008) reported as a lineage problem and not counted; lineage records content digest, registry version and (decision_id, decision_digest, challenge_id) with a reproducible lineage digest, identical under reordered/duplicate delivery (an ordering bug found by this test was fixed); versions tracked separately; no taxpayer identifiers in output; malformed/cross-tenant/conflicting-lineage input refused. .venv-ai pytest tests/ai: 277 passed; ruff/mypy pass; TAX-056 gate PASS."
+    }
+  ],
   "notes": [
     {
       "at": "2026-11-05T09:10:57.573547+00:00",
