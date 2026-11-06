@@ -35,7 +35,7 @@ from ai.tools.foreign_payments import three_way_match  # noqa: E402
 from ai.tools.idms_match import match_claim_lines, transpositions  # noqa: E402
 from ai.tools.refund_triage import load_policy, triage_claim  # noqa: E402
 from ai.tools.related_party_signals import related_party_signals  # noqa: E402
-from ai.tools.source_recompute import account_category, recompute  # noqa: E402
+from ai.tools.source_recompute import account_category, match_lines_to_books, recompute  # noqa: E402
 from ai.tools.work_arrangement import review_work_arrangement  # noqa: E402
 from ai.workflows.rule_register import RuleRegister, load_rule_register  # noqa: E402
 from integration.rsl_sources.fixture_source import FixtureRslSources  # noqa: E402
@@ -258,12 +258,17 @@ def assess_taxpayer(
             asycuda_entries=asycuda,
             documents=sub.get("documents", {}),
         )
+        # Import lines are evidenced by ASYCUDA (TAX-112); the books check covers domestic lines.
+        books = match_lines_to_books(
+            [line for line in claim["lines"] if line["kind"] == "domestic"], sub["saft"]
+        )
         score = scores.get(claim["claim_id"]) if use_score else None
         lane = triage_claim(
             claim,
             line_match=match,
             recompute=rec,
             rsl_score=score if score is not None else {"status": "unavailable"},
+            books_match=books,
             taxpayer_flags=taxpayer_flags,
             group_rating=None,
             policy=pol,
@@ -272,12 +277,9 @@ def assess_taxpayer(
             "supplier_not_registered" in line["notes"]
             or AUTHENTICITY_QUESTIONS & set(line["questions"])
             for line in match["lines"]
-        ) or any(
-            f["period"] == claim["period"]
-            for f in rec["findings"]
-            if f["code"] == "declared_input_vat_exceeds_recomputed"
-        )
-        authenticity = authenticity or claim_auth or lane["lane"] == "investigation"
+        ) or any(m["in_books"] is False for m in books.values())
+        # The taxpayer-level flag needs hard evidence; an RSL score can change the lane only.
+        authenticity = authenticity or claim_auth
         claim_results.append(
             {
                 "claim_id": claim["claim_id"],
@@ -323,7 +325,7 @@ def assess_taxpayer(
                 (
                     Decimal(c["lane"]["disputed_amount"]["amount"])
                     for c in claim_results
-                    if c["authenticity_indicator"] or c["lane"]["lane"] == "investigation"
+                    if c["authenticity_indicator"]
                 ),
                 Decimal("0.00"),
             )

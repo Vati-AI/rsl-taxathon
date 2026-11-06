@@ -13,7 +13,7 @@ from ai.tools.foreign_payments import three_way_match
 from ai.tools.idms_match import match_claim_lines
 from ai.tools.refund_triage import add_working_days, load_policy, triage_claim
 from ai.tools.related_party_signals import related_party_signals
-from ai.tools.source_recompute import recompute
+from ai.tools.source_recompute import match_lines_to_books, recompute
 from ai.workflows.rule_register import RuleRegisterError, load_rule_register
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -125,6 +125,33 @@ class RecomputeTests(unittest.TestCase):
             self.assertEqual(r["record_quality"][record], "contradicted")
         self.assertIn("taxpayer remains responsible", r["responsibility_notice"])
 
+    def test_claimed_lines_are_found_in_the_books_across_periods_and_typos(self):
+        g = SAFT["groups"][0]
+        lines = [
+            {
+                "line_id": "late",
+                "supplier_ref": "520000003",
+                "invoice_number": "S3",
+                "vat_amount": "6000.00",
+            },
+            {
+                "line_id": "typo",
+                "supplier_ref": "250000001",
+                "invoice_number": "S1",
+                "vat_amount": "30000.00",
+            },
+            {
+                "line_id": "absent",
+                "supplier_ref": "520000001",
+                "invoice_number": "S9",
+                "vat_amount": "9000.00",
+            },
+        ]
+        got = match_lines_to_books(lines, g["saft"])
+        self.assertEqual(got["late"]["booked_period"], "2026-08")
+        self.assertTrue(got["typo"]["in_books"])
+        self.assertFalse(got["absent"]["in_books"])
+
     def test_float_amounts_are_refused(self):
         g = copy.deepcopy(SAFT["groups"][0])
         g["saft"]["supplier_invoices"][0]["vat"] = 30000.0
@@ -190,6 +217,17 @@ class TriageTests(unittest.TestCase):
         )
         self.assertEqual(out["lane"], "investigation")
         self.assertIn("case_plan_due", out["service_target"])
+
+    def test_invoice_absent_from_books_is_disputed_once(self):
+        out = triage_claim(
+            self.CLAIM,
+            line_match=self.lines("matched", "unmatched", questions=["upload_invoice_copy"]),
+            recompute=self.REC,
+            rsl_score={"score": "0.10"},
+            books_match={"L0": {"in_books": True}, "L1": {"in_books": False}},
+        )
+        self.assertEqual(out["disputed_amount"]["amount"], "10000.00")
+        self.assertEqual(out["inputs"]["recompute"]["lines_not_in_books"], ["L1"])
 
     def test_score_alone_never_moves_a_claim_into_investigation(self):
         out = triage_claim(

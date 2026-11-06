@@ -245,22 +245,23 @@ def score(results: Mapping[str, Mapping[str, Any]], key: Mapping[str, Any]) -> d
     }
     # Recompute: claims whose fakes were left out of the books.
     unbooked = caught = 0
+    clean_claims_not_in_books = clean_claims = 0
     for t in results:
-        periods = {
-            f["period"]
-            for f in results[t]["recompute"]["findings"]
-            if f["code"] == "declared_input_vat_exceeds_recomputed"
-        }
         for c in results[t]["claims"]:
             truth = tk[t]["claims"][c["claim_id"]]
+            missing = bool(c["lane"]["inputs"].get("recompute", {}).get("lines_not_in_books"))
             if any(f and not f["booked"] for f in truth["fake_types"]):
                 unbooked += 1
-                caught += c["period"] in periods
+                caught += missing
+            elif Decimal(truth["fake_vat"]) == 0:
+                clean_claims += 1
+                clean_claims_not_in_books += missing
     clean_periods = sum(len(results[t]["recompute"]["comparison"]) // 3 for t in clean)
     clean_excess = sum(len([f for f in results[t]["recompute"]["findings"]]) for t in clean)
     out["recompute"] = {
         "claims_with_unbooked_fakes_caught_by_recompute": _rate(caught, unbooked),
         "clean_taxpayer_periods_with_a_recompute_finding": _rate(clean_excess, clean_periods),
+        "valid_claims_with_a_line_not_in_books": _rate(clean_claims_not_in_books, clean_claims),
     }
     # Legal routes.
     routed = route_ok = 0
@@ -677,6 +678,8 @@ def render_results(manifest: Mapping[str, Any], report: Mapping[str, Any]) -> st
         "",
         f"- Claims with fakes left out of the books, caught by declared-vs-recomputed: "
         f"{_pct(m['recompute']['claims_with_unbooked_fakes_caught_by_recompute'])}",
+        f"- Valid claims with an invoice not found in the taxpayer's books: "
+        f"{_pct(m['recompute']['valid_claims_with_a_line_not_in_books'])}",
         f"- Clean taxpayer periods with a recompute finding: "
         f"{_pct(m['recompute']['clean_taxpayer_periods_with_a_recompute_finding'])}",
         f"- Correct findings routed to the expected candidate provision or policy gap: "

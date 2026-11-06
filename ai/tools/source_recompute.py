@@ -343,3 +343,46 @@ def _items(row: Mapping[str, Any], key: str) -> list[Mapping[str, Any]]:
     if not isinstance(value, list) or not all(isinstance(r, Mapping) for r in value):
         raise RefundDataError("invalid_saft", f"{key} must be a list of objects")
     return value
+
+
+def match_lines_to_books(
+    lines: Iterable[Mapping[str, Any]], saft: Mapping[str, Any]
+) -> dict[str, dict[str, Any]]:
+    """Find each claimed invoice line in the taxpayer's supplier ledger.
+
+    A line is in the books when a ledger invoice has the same invoice number and VAT and
+    either the same supplier reference or one a single adjacent-digit swap away (a typing
+    slip in the claim). The booking period may differ from the claim period: an invoice
+    claimed late is still in the books.
+    """
+    index: dict[tuple[str, str], list[Mapping[str, Any]]] = {}
+    for row in _rows(saft, "supplier_invoices"):
+        key = (str(row.get("invoice_number")), str(_amount(row.get("vat"), "ledger.vat")))
+        index.setdefault(key, []).append(row)
+    out: dict[str, dict[str, Any]] = {}
+    for line in lines:
+        key = (str(line["invoice_number"]), str(_amount(line["vat_amount"], "line.vat")))
+        ref = str(line["supplier_ref"])
+        hit = next(
+            (
+                row
+                for row in index.get(key, [])
+                if str(row.get("supplier_ref")) == ref
+                or str(row.get("supplier_ref")) in _swaps(ref)
+            ),
+            None,
+        )
+        out[str(line["line_id"])] = {
+            "in_books": hit is not None,
+            "entry_id": None if hit is None else hit.get("entry_id"),
+            "booked_period": None if hit is None else hit.get("period"),
+        }
+    return out
+
+
+def _swaps(ref: str) -> set[str]:
+    return {
+        ref[:i] + ref[i + 1] + ref[i] + ref[i + 2 :]
+        for i in range(len(ref) - 1)
+        if ref[i] != ref[i + 1]
+    }

@@ -62,6 +62,7 @@ def triage_claim(
     line_match: Mapping[str, Any],
     recompute: Mapping[str, Any] | None,
     rsl_score: Mapping[str, Any] | None,
+    books_match: Mapping[str, Mapping[str, Any]] | None = None,
     taxpayer_flags: Sequence[Mapping[str, Any]] = (),
     group_rating: str | None = None,
     policy: Mapping[str, Any] | None = None,
@@ -77,15 +78,17 @@ def triage_claim(
 
     # Line evidence (TAX-112).
     disputed_lines = []
-    line_vat = ZERO
+    disputed_ids: set[str] = set()
+    line_vat_by_id: dict[str, Decimal] = {}
     authenticity = False
     counts: dict[str, int] = {}
     for line in line_match.get("lines", []):
         status = str(line["status"])
         counts[status] = counts.get(status, 0) + 1
+        vat = parse_money(line["vat"]["amount"], field="line.vat")
+        line_vat_by_id[str(line["line_id"])] = vat
         if status in _DISPUTED:
-            vat = parse_money(line["vat"]["amount"], field="line.vat")
-            line_vat += vat
+            disputed_ids.add(str(line["line_id"]))
             disputed_lines.append(
                 {"line_id": line["line_id"], "vat": line["vat"], "questions": line["questions"]}
             )
@@ -102,19 +105,16 @@ def triage_claim(
         "idms_available": line_match.get("idms_available"),
     }
 
-    # Declared versus recomputed (TAX-113) for this period.
-    recompute_excess = ZERO
+    # Claimed invoices against the taxpayer's own books (TAX-113), line by line.
+    not_in_books = sorted(
+        line_id for line_id, m in (books_match or {}).items() if m.get("in_books") is False
+    )
+    recompute_excess = sum((line_vat_by_id.get(i, ZERO) for i in not_in_books), ZERO)
     zero_share: Decimal | None = None
     if recompute is None:
         inputs["recompute"] = "not available"
         reasons.append("Source records were not supplied, so the return was not recomputed.")
     else:
-        for finding in recompute.get("findings", []):
-            if finding["period"] == period and finding["code"] in {
-                "declared_input_vat_exceeds_recomputed",
-                "declared_refund_exceeds_recomputed",
-            }:
-                recompute_excess = max(recompute_excess, Decimal(finding["amount"]["amount"]))
         sales = recompute.get("sales_by_code", {}).get(period)
         if sales:
             total_sales = sum((Decimal(v) for v in sales.values()), ZERO)
@@ -123,16 +123,27 @@ def triage_claim(
                     Decimal("0.0001")
                 )
         inputs["recompute"] = {
-            "declared_exceeds_recomputed": money(recompute_excess, currency),
+            "claimed_vat_not_in_books": money(recompute_excess, currency),
+            "lines_not_in_books": not_in_books,
             "zero_rated_share": None if zero_share is None else str(zero_share),
             "quality_counts": recompute.get("quality_counts"),
         }
         if recompute_excess > 0:
             authenticity = True
             reasons.append(
-                f"The declared position exceeds the amount recomputed from the taxpayer's own "
-                f"records by M{recompute_excess:,}."
+                f"M{recompute_excess:,} of claimed input VAT is on invoices that are not in the "
+                "taxpayer's own books."
             )
+            for line_id in not_in_books:
+                if line_id not in disputed_ids:
+                    disputed_lines.append(
+                        {
+                            "line_id": line_id,
+                            "vat": money(line_vat_by_id[line_id], currency),
+                            "questions": ["explain_invoice_absent_from_books"],
+                        }
+                    )
+    disputed_ids |= set(not_in_books)
 
     # RSL score (owned by RSL; carried with model identity).
     score: Decimal | None = None
@@ -149,7 +160,7 @@ def triage_claim(
     inputs["group_risk_rating"] = group_rating or "not available"
     inputs["taxpayer_flags"] = [f.get("code") for f in taxpayer_flags]
 
-    disputed = max(line_vat, recompute_excess)
+    disputed = sum((line_vat_by_id.get(i, ZERO) for i in disputed_ids), ZERO)
     disputed = min(disputed, claimed)
     undisputed = claimed - disputed
     material = disputed >= Decimal(pol["materiality"]["absolute"]) or (
@@ -166,7 +177,7 @@ def triage_claim(
         reasons.append(
             f"M{disputed:,} of input VAT is unsupported with an authenticity indicator "
             "(supplier not registered, invoice absent from IDMS for an integrated supplier, "
-            "or declared figures above the taxpayer's own records)."
+            "or invoice absent from the taxpayer's own books)."
         )
     elif disputed > 0 and score is not None and score >= high_at:
         lane = "investigation"
