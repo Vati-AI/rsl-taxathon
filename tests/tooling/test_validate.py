@@ -35,7 +35,7 @@ class ValidationTests(unittest.TestCase):
         self.assertTrue(any("cyclic" in e for e in module.validate(self.root)))
 
     def test_false_completion(self):
-        self.change(status="DONE")
+        self.change(status="DONE", pr=None, evidence=[])
         self.assertTrue(any("DONE needs" in e for e in module.validate(self.root)))
 
     def test_unknown_owner(self):

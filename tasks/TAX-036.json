@@ -2,7 +2,7 @@
   "id": "TAX-036",
   "kind": "task",
   "title": "OpenAleph and FtM tax entity mapping",
-  "owner": "Leseli",
+  "owner": "Keletso",
   "area": "integration",
   "phase": "pilot",
   "status": "DONE",
@@ -84,6 +84,10 @@
     {
       "at": "2026-11-04T11:13:13.030057+00:00",
       "text": "Verified implementation PR #139 merged (84c401d, 2026-11-04T11:10Z); all acceptance criteria and evidence recorded."
+    },
+    {
+      "at": "2026-11-06",
+      "text": "User-directed ownership transfer from Leseli to Keletso for all tasks, including completed tasks and epics. Status, implementation claim and evidence preserved."
     }
   ]
 }

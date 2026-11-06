@@ -2,7 +2,7 @@
   "id": "TAX-040",
   "kind": "task",
   "title": "Auditor case queue and taxpayer profile",
-  "owner": "Leseli",
+  "owner": "Keletso",
   "area": "apps/auditor-web",
   "phase": "pilot",
   "status": "DONE",
@@ -79,6 +79,10 @@
     {
       "at": "2026-11-04T08:04:14.541962+00:00",
       "text": "Verified implementation PR #108 merged (ab08d20, 2026-11-03T19:26Z); all acceptance criteria and evidence recorded."
+    },
+    {
+      "at": "2026-11-06",
+      "text": "User-directed ownership transfer from Leseli to Keletso for all tasks, including completed tasks and epics. Status, implementation claim and evidence preserved."
     }
   ]
 }

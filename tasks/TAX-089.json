@@ -2,7 +2,7 @@
   "id": "TAX-089",
   "kind": "task",
   "title": "Model router with Groq/Gemini providers, local and template fallback",
-  "owner": "Gupta",
+  "owner": "Keletso",
   "area": "ai",
   "phase": "pilot",
   "status": "DONE",
@@ -100,6 +100,10 @@
     {
       "at": "2026-11-05T11:22:18.503831+00:00",
       "text": "Verified merges of #216 (router) and #224 (User-Agent fix + live smoke evidence)"
+    },
+    {
+      "at": "2026-11-06",
+      "text": "User-directed ownership transfer from Gupta to Keletso for all tasks, including completed tasks and epics. Status, implementation claim and evidence preserved."
     }
   ]
 }

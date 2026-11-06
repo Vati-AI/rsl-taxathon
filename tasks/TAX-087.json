@@ -2,7 +2,7 @@
   "id": "TAX-087",
   "kind": "task",
   "title": "Event wiring from Frappe to Jube, Docling, OpenAleph and yente",
-  "owner": "Leseli",
+  "owner": "Keletso",
   "area": "integration",
   "phase": "pilot",
   "status": "DONE",
@@ -84,6 +84,10 @@
     {
       "at": "2026-11-05T13:48:53.320700+00:00",
       "text": "Verified merge of #243 (2026-11-05T13:44:48Z); all 3 acceptance criteria have recorded evidence"
+    },
+    {
+      "at": "2026-11-06",
+      "text": "User-directed ownership transfer from Leseli to Keletso for all tasks, including completed tasks and epics. Status, implementation claim and evidence preserved."
     }
   ]
 }

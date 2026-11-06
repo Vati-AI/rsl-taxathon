@@ -2,7 +2,7 @@
   "id": "TAX-104",
   "kind": "task",
   "title": "Fix auditor defects found by TAX-055",
-  "owner": "Leseli",
+  "owner": "Keletso",
   "area": "apps/auditor-web",
   "phase": "pilot",
   "status": "DONE",
@@ -76,6 +76,10 @@
     {
       "at": "2026-11-05T20:45:11.667285+00:00",
       "text": "Verified merge of #254 (2026-11-05T20:44:34Z); all 3 acceptance criteria have recorded evidence"
+    },
+    {
+      "at": "2026-11-06",
+      "text": "User-directed ownership transfer from Leseli to Keletso for all tasks, including completed tasks and epics. Status, implementation claim and evidence preserved."
     }
   ]
 }

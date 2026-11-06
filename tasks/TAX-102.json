@@ -2,7 +2,7 @@
   "id": "TAX-102",
   "kind": "task",
   "title": "Taxpayer assistant scenarios, expected outcomes and leakage tests",
-  "owner": "Leseli",
+  "owner": "Keletso",
   "area": "data",
   "phase": "pilot",
   "status": "DONE",
@@ -87,6 +87,10 @@
     {
       "at": "2026-11-05T21:30:02.876793+00:00",
       "text": "Verified merge of #257; all 3 acceptance criteria have recorded evidence"
+    },
+    {
+      "at": "2026-11-06",
+      "text": "User-directed ownership transfer from Leseli to Keletso for all tasks, including completed tasks and epics. Status, implementation claim and evidence preserved."
     }
   ],
   "sequence": 20

@@ -2,7 +2,7 @@
   "id": "TAX-072",
   "kind": "task",
   "title": "EOI approval and response evidence lifecycle",
-  "owner": "Leseli",
+  "owner": "Keletso",
   "area": "backend",
   "phase": "expansion",
   "status": "BACKLOG",
@@ -54,6 +54,10 @@
     {
       "at": "2026-11-05T21:31:39.286017+00:00",
       "text": "Reassigned from Keletso to Leseli by agreement (ADR-038 exception)"
+    },
+    {
+      "at": "2026-11-06",
+      "text": "User-directed ownership transfer from Leseli to Keletso for all tasks, including completed tasks and epics. Status, implementation claim and evidence preserved."
     }
   ],
   "sequence": 23

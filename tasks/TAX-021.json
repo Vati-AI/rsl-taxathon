@@ -2,7 +2,7 @@
   "id": "TAX-021",
   "kind": "task",
   "title": "Frappe taxpayer portal shell",
-  "owner": "Kananelo",
+  "owner": "Keletso",
   "area": "apps/taxpayer-web",
   "phase": "foundation",
   "status": "DONE",
@@ -76,6 +76,10 @@
     {
       "at": "2026-11-03T15:54:06.559049+00:00",
       "text": "Verified PR #98 merged at 2026-11-03T15:01:03Z (merge commit 8ad3fda, ancestor of main 52191cd); all four acceptance criteria marked done with four evidence entries. Recorded by kananelo-claude-20261103-2; owner Kananelo unchanged."
+    },
+    {
+      "at": "2026-11-06",
+      "text": "User-directed ownership transfer from Kananelo to Keletso for all tasks, including completed tasks and epics. Status, implementation claim and evidence preserved."
     }
   ]
 }

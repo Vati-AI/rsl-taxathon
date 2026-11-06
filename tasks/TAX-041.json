@@ -2,7 +2,7 @@
   "id": "TAX-041",
   "kind": "task",
   "title": "Evidence viewer and economic relationship view",
-  "owner": "Leseli",
+  "owner": "Keletso",
   "area": "apps/auditor-web",
   "phase": "pilot",
   "status": "DONE",
@@ -79,6 +79,10 @@
     {
       "at": "2026-11-04T23:46:46.602308+00:00",
       "text": "Verified implementation PR #157 merged (0a4399d, 2026-11-04T23:43Z); all acceptance criteria and evidence recorded."
+    },
+    {
+      "at": "2026-11-06",
+      "text": "User-directed ownership transfer from Leseli to Keletso for all tasks, including completed tasks and epics. Status, implementation claim and evidence preserved."
     }
   ]
 }

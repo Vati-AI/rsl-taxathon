@@ -1,7 +1,7 @@
 # ADR-038: Single-developer delivery of the remaining backlog
 
 Status: accepted
-Owner and task: Keletso; applies to every open task except TAX-104
+Owner and task: Keletso; applies to every task (2026-11-06 amendment)
 Date: 2026-11-05
 
 Context and smallest prototype need:
@@ -24,8 +24,10 @@ can run the stack.
 
 Decision:
 
-1. Keletso owns and implements every open task (leaf and epic) except TAX-104, which Leseli is
-   already working on (`task/TAX-104`). Each open leaf task has a `sequence` number. Work in that
+1. As explicitly requested on 2026-11-06, Keletso owns every task (leaf and epic,
+   open and completed), with no exceptions. Existing agent claims are preserved;
+   previous owners remain recorded in task notes and Git history. Each open leaf
+   task has a `sequence` number. Work in that
    order: from `python3 scripts/task.py list --owner Keletso --ready`, take the lowest `sequence`.
    tasks/README.md lists the full order.
 2. A PR does not need review from another person before it is merged or the task is marked DONE.
@@ -72,6 +74,6 @@ implementation PR (#248) but stays IN_PROGRESS: the cold-start rehearsal, memory
 rate-limit observations have not been run.
 
 Consequences and revisit trigger:
-Former owners no longer hold remaining tasks. Their DONE tasks keep their names as history. Revisit
+Former owners no longer hold any tasks. Previous owner names remain in task notes and Git history; all canonical owner fields are Keletso. Revisit
 if more developers join the remaining work, or if hosted CI becomes available again. In that case,
 reinstate CI as a required check before self-merge.

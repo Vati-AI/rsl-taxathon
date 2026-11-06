@@ -2,7 +2,7 @@
   "id": "TAX-056",
   "kind": "task",
   "title": "Agent evaluation and injection regression",
-  "owner": "Leseli",
+  "owner": "Keletso",
   "area": "tests/ai",
   "phase": "pilot",
   "status": "DONE",
@@ -78,6 +78,10 @@
     {
       "at": "2026-11-05T08:42:21.190355+00:00",
       "text": "Verified implementation PR #189 merged (1861504, 2026-11-05T08:37Z); all acceptance criteria and evidence recorded. CI did not run on the merge (org billing block); local suites passed."
+    },
+    {
+      "at": "2026-11-06",
+      "text": "User-directed ownership transfer from Leseli to Keletso for all tasks, including completed tasks and epics. Status, implementation claim and evidence preserved."
     }
   ]
 }

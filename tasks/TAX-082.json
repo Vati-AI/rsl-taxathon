@@ -2,7 +2,7 @@
   "id": "TAX-082",
   "kind": "task",
   "title": "User onboarding and officer usability validation",
-  "owner": "Kananelo",
+  "owner": "Keletso",
   "area": "tests/frontend",
   "phase": "expansion",
   "status": "DONE",
@@ -83,6 +83,10 @@
     {
       "at": "2026-11-05T13:46:02.989018+00:00",
       "text": "Verified PR #245 merged by Hlompho28 on 2026-11-05; all acceptance criteria have recorded evidence. Remediation proposals F1-F7 in docs/evidence/TAX-082/README.md await the team lead."
+    },
+    {
+      "at": "2026-11-06",
+      "text": "User-directed ownership transfer from Kananelo to Keletso for all tasks, including completed tasks and epics. Status, implementation claim and evidence preserved."
     }
   ]
 }

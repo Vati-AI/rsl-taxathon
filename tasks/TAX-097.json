@@ -2,7 +2,7 @@
   "id": "TAX-097",
   "kind": "task",
   "title": "Model-assisted reasoning in the four investigation agents",
-  "owner": "Gupta",
+  "owner": "Keletso",
   "area": "ai",
   "phase": "pilot",
   "status": "DONE",
@@ -81,6 +81,10 @@
     {
       "at": "2026-11-05T13:52:56.789439+00:00",
       "text": "Verified merge of #244 (2026-11-05T13:43:44Z); all 3 acceptance criteria have recorded evidence"
+    },
+    {
+      "at": "2026-11-06",
+      "text": "User-directed ownership transfer from Gupta to Keletso for all tasks, including completed tasks and epics. Status, implementation claim and evidence preserved."
     }
   ]
 }

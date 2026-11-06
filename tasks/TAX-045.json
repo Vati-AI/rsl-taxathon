@@ -2,7 +2,7 @@
   "id": "TAX-045",
   "kind": "task",
   "title": "Evidence request responses and safe tracking",
-  "owner": "Kananelo",
+  "owner": "Keletso",
   "area": "apps/taxpayer-web",
   "phase": "pilot",
   "status": "DONE",
@@ -79,6 +79,10 @@
     {
       "at": "2026-11-05T00:25:18.617948+00:00",
       "text": "Verified implementation PR #160 merged by leselilexus-cmd on 2026-11-04 (23:44 UTC); all four acceptance criteria have recorded evidence; CI on 3e09d60 passed (validate, quality, auditor-browser, frontend-browser, ai-smoke)."
+    },
+    {
+      "at": "2026-11-06",
+      "text": "User-directed ownership transfer from Kananelo to Keletso for all tasks, including completed tasks and epics. Status, implementation claim and evidence preserved."
     }
   ]
 }

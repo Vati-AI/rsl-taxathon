@@ -2,7 +2,7 @@
   "id": "TAX-077",
   "kind": "task",
   "title": "Policy-gap and integrity management views",
-  "owner": "Leseli",
+  "owner": "Keletso",
   "area": "apps/auditor-web",
   "phase": "expansion",
   "status": "DONE",
@@ -80,6 +80,10 @@
     {
       "at": "2026-11-05T13:48:53.320700+00:00",
       "text": "Verified merge of #240 (2026-11-05T13:01:58Z); all 4 acceptance criteria have recorded evidence"
+    },
+    {
+      "at": "2026-11-06",
+      "text": "User-directed ownership transfer from Leseli to Keletso for all tasks, including completed tasks and epics. Status, implementation claim and evidence preserved."
     }
   ]
 }

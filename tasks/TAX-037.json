@@ -2,7 +2,7 @@
   "id": "TAX-037",
   "kind": "task",
   "title": "yente candidate review adapter",
-  "owner": "Leseli",
+  "owner": "Keletso",
   "area": "integration",
   "phase": "pilot",
   "status": "DONE",
@@ -75,6 +75,10 @@
     {
       "at": "2026-11-05T01:32:18.541337+00:00",
       "text": "Verified implementation PR #170 merged (c374320, 2026-11-05T01:29Z); all acceptance criteria and evidence recorded."
+    },
+    {
+      "at": "2026-11-06",
+      "text": "User-directed ownership transfer from Leseli to Keletso for all tasks, including completed tasks and epics. Status, implementation claim and evidence preserved."
     }
   ]
 }

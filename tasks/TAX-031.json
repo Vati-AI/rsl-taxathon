@@ -2,7 +2,7 @@
   "id": "TAX-031",
   "kind": "task",
   "title": "Submission and tax-domain DocTypes",
-  "owner": "Edga",
+  "owner": "Keletso",
   "area": "backend",
   "phase": "pilot",
   "status": "DONE",
@@ -75,6 +75,10 @@
     {
       "at": "2026-11-04T10:07:51.654590+00:00",
       "text": "Verified merge of #126 on 2026-11-04"
+    },
+    {
+      "at": "2026-11-06",
+      "text": "User-directed ownership transfer from Edga to Keletso for all tasks, including completed tasks and epics. Status, implementation claim and evidence preserved."
     }
   ]
 }

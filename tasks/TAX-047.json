@@ -2,7 +2,7 @@
   "id": "TAX-047",
   "kind": "task",
   "title": "Persistent checkpoints and authenticated human resume",
-  "owner": "Gupta",
+  "owner": "Keletso",
   "area": "ai",
   "phase": "pilot",
   "status": "DONE",
@@ -71,6 +71,10 @@
     {
       "at": "2026-11-04T13:02:08.743258+00:00",
       "text": "Verified PR #138 merged by leselilexus-cmd at 2026-11-04T11:06:05Z (merge commit 2e174e2); all three acceptance criteria recorded with evidence; CI ai-smoke/quality/validate/auditor-browser/frontend-browser passed."
+    },
+    {
+      "at": "2026-11-06",
+      "text": "User-directed ownership transfer from Gupta to Keletso for all tasks, including completed tasks and epics. Status, implementation claim and evidence preserved."
     }
   ]
 }

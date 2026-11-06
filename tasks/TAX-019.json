@@ -2,7 +2,7 @@
   "id": "TAX-019",
   "kind": "task",
   "title": "Frappe custom application and site installation",
-  "owner": "Edga",
+  "owner": "Keletso",
   "area": "backend",
   "phase": "foundation",
   "status": "DONE",
@@ -73,6 +73,10 @@
     {
       "at": "2026-11-04T04:41:51.542608+00:00",
       "text": "Verified implementation PR #109 merged (fac8c72, 2026-11-04T03:58Z); all acceptance criteria and evidence recorded."
+    },
+    {
+      "at": "2026-11-06",
+      "text": "User-directed ownership transfer from Edga to Keletso for all tasks, including completed tasks and epics. Status, implementation claim and evidence preserved."
     }
   ]
 }

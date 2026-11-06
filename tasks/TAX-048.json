@@ -2,7 +2,7 @@
   "id": "TAX-048",
   "kind": "task",
   "title": "VAT refund reconciliation and three lanes",
-  "owner": "Gupta",
+  "owner": "Keletso",
   "area": "ai",
   "phase": "pilot",
   "status": "DONE",
@@ -76,6 +76,10 @@
     {
       "at": "2026-11-04T07:49:28.008149+00:00",
       "text": "Verified merge of #110 on 2026-11-04"
+    },
+    {
+      "at": "2026-11-06",
+      "text": "User-directed ownership transfer from Gupta to Keletso for all tasks, including completed tasks and epics. Status, implementation claim and evidence preserved."
     }
   ]
 }

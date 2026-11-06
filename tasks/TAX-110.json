@@ -2,7 +2,7 @@
   "id": "TAX-110",
   "kind": "task",
   "title": "Reliable hosted briefing and evidence reading within free-tier limits",
-  "owner": "Leseli",
+  "owner": "Keletso",
   "area": "ai",
   "phase": "pilot",
   "status": "IN_REVIEW",
@@ -90,6 +90,10 @@
     {
       "at": "2026-11-05T21:59:19.606249+00:00",
       "text": "PR #261 opened. Implementation and offline checks complete; criterion 3's recorded live run (3 x SYN-001..SYN-005) is pending because no Groq/Gemini keys are configured. Run: LANGSMITH_TRACING=false python -m ai.evaluation.agent_eval --live --json docs/evidence/TAX-110/live-eval-<date>.json"
+    },
+    {
+      "at": "2026-11-06",
+      "text": "User-directed ownership transfer from Leseli to Keletso for all tasks, including completed tasks and epics. Status, implementation claim and evidence preserved."
     }
   ],
   "sequence": 3

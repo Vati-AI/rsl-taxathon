@@ -2,7 +2,7 @@
   "id": "TAX-049",
   "kind": "task",
   "title": "Related-party service and persistent-loss playbook",
-  "owner": "Gupta",
+  "owner": "Keletso",
   "area": "ai",
   "phase": "pilot",
   "status": "DONE",
@@ -71,6 +71,10 @@
     {
       "at": "2026-11-04T13:27:07.749750+00:00",
       "text": "Verified PR #147 merged by Hlompho28 at 2026-11-04T13:20:45Z (merge commit f5cecb8); all three acceptance criteria recorded with evidence; CI ai-smoke/quality/validate/auditor-browser/frontend-browser passed."
+    },
+    {
+      "at": "2026-11-06",
+      "text": "User-directed ownership transfer from Gupta to Keletso for all tasks, including completed tasks and epics. Status, implementation claim and evidence preserved."
     }
   ]
 }

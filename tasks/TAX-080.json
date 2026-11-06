@@ -2,7 +2,7 @@
   "id": "TAX-080",
   "kind": "task",
   "title": "Additional tax-domain playbook extension design",
-  "owner": "Gupta",
+  "owner": "Keletso",
   "area": "ai",
   "phase": "future",
   "status": "DONE",
@@ -71,6 +71,10 @@
     {
       "at": "2026-11-05T10:48:32.967538+00:00",
       "text": "Verified merge of #218 at ae086db"
+    },
+    {
+      "at": "2026-11-06",
+      "text": "User-directed ownership transfer from Gupta to Keletso for all tasks, including completed tasks and epics. Status, implementation claim and evidence preserved."
     }
   ]
 }

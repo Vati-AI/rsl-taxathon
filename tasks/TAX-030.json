@@ -2,7 +2,7 @@
   "id": "TAX-030",
   "kind": "task",
   "title": "Canonical IDs and external service mapping",
-  "owner": "Edga",
+  "owner": "Keletso",
   "area": "backend",
   "phase": "foundation",
   "status": "DONE",
@@ -75,6 +75,10 @@
     {
       "at": "2026-11-04T08:19:22.701443+00:00",
       "text": "Verified merge of #116 (full implementation, titled as claim PR) on 2026-11-04"
+    },
+    {
+      "at": "2026-11-06",
+      "text": "User-directed ownership transfer from Edga to Keletso for all tasks, including completed tasks and epics. Status, implementation claim and evidence preserved."
     }
   ]
 }

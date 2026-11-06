@@ -2,7 +2,7 @@
   "id": "TAX-060",
   "kind": "task",
   "title": "Management workload and assurance dashboard",
-  "owner": "Leseli",
+  "owner": "Keletso",
   "area": "apps/auditor-web",
   "phase": "pilot",
   "status": "DONE",
@@ -91,6 +91,10 @@
     {
       "at": "2026-11-05T00:13:06.548433+00:00",
       "text": "Verified implementation PR #158 merged (4f9d6ac, 2026-11-05T00:03Z); all acceptance criteria and evidence recorded."
+    },
+    {
+      "at": "2026-11-06",
+      "text": "User-directed ownership transfer from Leseli to Keletso for all tasks, including completed tasks and epics. Status, implementation claim and evidence preserved."
     }
   ]
 }

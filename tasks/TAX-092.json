@@ -2,7 +2,7 @@
   "id": "TAX-092",
   "kind": "task",
   "title": "Taxpayer portal live submissions list and status",
-  "owner": "Kananelo",
+  "owner": "Keletso",
   "area": "apps/taxpayer-web",
   "phase": "pilot",
   "status": "DONE",
@@ -75,6 +75,10 @@
     {
       "at": "2026-11-05T10:29:17.697690+00:00",
       "text": "Implementation PR #209 merged 2026-11-05T10:27:26Z by Hlompho28. GitHub Actions did not run (org billing block); verification is the local evidence recorded in the PR."
+    },
+    {
+      "at": "2026-11-06",
+      "text": "User-directed ownership transfer from Kananelo to Keletso for all tasks, including completed tasks and epics. Status, implementation claim and evidence preserved."
     }
   ]
 }

@@ -2,7 +2,7 @@
   "id": "TAX-023",
   "kind": "task",
   "title": "Frontend test harness and accessibility baseline",
-  "owner": "Kananelo",
+  "owner": "Keletso",
   "area": "tests/frontend",
   "phase": "foundation",
   "status": "DONE",
@@ -80,6 +80,10 @@
     {
       "at": "2026-11-04T11:04:39.620336+00:00",
       "text": "Verified PR #135 merged at 2026-11-04T10:35:28Z by leselilexus-cmd (merge commit 0398d17, ancestor of main); all four acceptance criteria marked done with four evidence entries; CI on 46f74c0 passed all five jobs. Recorded by kananelo-claude-20261104-tax023-done; owner Kananelo unchanged. Human visual approval of the screenshots is not implied."
+    },
+    {
+      "at": "2026-11-06",
+      "text": "User-directed ownership transfer from Kananelo to Keletso for all tasks, including completed tasks and epics. Status, implementation claim and evidence preserved."
     }
   ]
 }
