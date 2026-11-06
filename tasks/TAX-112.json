@@ -5,16 +5,16 @@
   "owner": "Keletso",
   "area": "ai",
   "phase": "pilot",
-  "status": "BACKLOG",
+  "status": "IN_REVIEW",
   "priority": "P0",
   "depends_on": [
     "TAX-111",
     "TAX-048",
     "TAX-024"
   ],
-  "claimed_by": null,
-  "branch": null,
-  "pr": null,
+  "claimed_by": "claude-code-20261106-vigilant-fermat",
+  "branch": "claude/vigilant-fermat-4x2es6",
+  "pr": "https://github.com/Vati-AI/rsl-taxathon/pull/277",
   "scope": "Deterministic BP4 reconciliation of each claimed input-VAT line against IDMS invoices (supplier TIN, invoice number, date, amount) and the supplier's declared output VAT, with hybrid handling for unintegrated suppliers, plus synthetic scenario SYN-006 (fake or undeclared supplier invoice)",
   "inputs": [
     "PROJECT.md",
@@ -32,19 +32,19 @@
   "acceptance": [
     {
       "text": "Each line is classified matched, supplier_gap, unintegrated_supplier (uses the uploaded invoice from BP1/TAX-043) or unmatched, with the evidence IDs used; matching never joins on names alone",
-      "done": false
+      "done": true
     },
     {
       "text": "Hybrid mode: supplier_gap and unmatched lines become targeted taxpayer questions and advisory findings, never a denial; a configuration flag for hard-rule mode exists but defaults off and is documented as requiring RSL Legal confirmation",
-      "done": false
+      "done": true
     },
     {
       "text": "SYN-006 synthetic data with expected findings and expected non-findings (one invoice absent from IDMS, one supplier that did not declare output VAT, one legitimate pre-Lekuka invoice); focused tests cover all four classifications and decimal totals",
-      "done": false
+      "done": true
     },
     {
       "text": "Record relevant tests and evidence, update task status and open a PR",
-      "done": false
+      "done": true
     }
   ],
   "verification": "SYN-006 synthetic data with expected findings and expected non-findings (one invoice absent from IDMS, one supplier that did not declare output VAT, one legitimate pre-Lekuka invoice); focused tests cover all four classifications and decimal totals",
@@ -54,11 +54,32 @@
     "update-project-task",
     "finish-task"
   ],
-  "evidence": [],
+  "evidence": [
+    {
+      "criterion": 1,
+      "text": "ai/tools/idms_match.py classifies each line matched/supplier_gap/unintegrated_supplier/unmatched with evidence IDs; names never used (test_names_are_never_used_to_match); TIN typing slips resolved by single adjacent swap."
+    },
+    {
+      "criterion": 2,
+      "text": "Hybrid mode default: supplier_gap/unmatched lines are targeted questions, decision None; hard_rule_mode defaults off and only relabels treatment as refusal_candidate_pending_legal (test_hybrid_mode_never_denies_and_hard_rule_only_relabels)."
+    },
+    {
+      "criterion": 3,
+      "text": "data/synthetic/tax112_syn006.json SYN-006 with expected findings and non-findings (invoice absent from IDMS, supplier not declaring, phantom supplier, duplicate, legitimate pre-Lekuka invoice, typo, import); tests/ai/test_assurance_checks.py IdmsMatchTests assert all classifications and decimal totals."
+    },
+    {
+      "criterion": 4,
+      "text": "PR https://github.com/Vati-AI/rsl-taxathon/pull/277. python3 scripts/dev.py check: Workspace checks passed; python3 scripts/quality.py: First-party quality checks passed (ruff, mypy, frontend build); validate.py passed."
+    }
+  ],
   "notes": [
     {
       "at": "2026-11-06",
       "text": "Added 2026-11-06 from the framework scope update (docs/reference/FRAMEWORK.md, ADR-040) as a must-have for the proposal and pilot."
+    },
+    {
+      "at": "2026-11-06",
+      "text": "Claimed by claude-code-20261106-vigilant-fermat; implemented on claude/vigilant-fermat-4x2es6 and submitted for owner merge in https://github.com/Vati-AI/rsl-taxathon/pull/277."
     }
   ],
   "sequence": 5

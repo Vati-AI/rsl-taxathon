@@ -1,0 +1,25 @@
+account_ref,transfer_ref,instruction_date,settlement_date,direction,instructed_amount,instructed_currency,settled_amount,settled_currency,exchange_rate,rate_source,counterparty_name,counterparty_account_ref,counterparty_country,intermediary_bank_ref,narration
+SYN-LS-ACC-241,FX-117215319-00001,2024-11-08,2024-11-10,outgoing,14157.50,GBP,327038.25,LSL,23.100000,Synthetic bank advice,MAFETENG SEFIKA Suppl.,SYN-GB-ACC-241,gb,,Management services 2024-11
+SYN-LS-ACC-241,FX-117215319-00002,2024-12-09,2024-12-11,outgoing,14157.50,GBP,327038.25,LSL,23.100000,Synthetic bank advice,MAFETENG SEFIKA Suppl.,SYN-GB-ACC-241,gb,,Management services 2024-12
+SYN-LS-ACC-241,FX-117215319-00003,2025-02-18,2025-02-20,outgoing,14157.50,GBP,327038.25,LSL,23.100000,Synthetic bank advice,Mafeteng Sefika Suppl.,SYN-GB-ACC-241,gb,,Management services 2025-01
+SYN-LS-ACC-241,FX-117215319-00004,2025-02-08,2025-02-10,outgoing,14157.50,GBP,327038.25,LSL,23.100000,Synthetic bank advice,Mafeteng Sefika Suppl.,SYN-GB-ACC-241,gb,,Management services 2025-02
+SYN-LS-ACC-241,FX-117215319-00005,2025-03-03,2025-03-05,outgoing,14157.50,GBP,327038.25,LSL,23.100000,Synthetic bank advice,Mafeteng Sefika Supplies,SYN-GB-ACC-241,gb,,Management services 2025-03
+SYN-LS-ACC-241,FX-117215319-00006,2025-04-16,2025-04-18,outgoing,14157.50,GBP,327038.25,LSL,23.100000,Synthetic bank advice,MAFETENG SEFIKA Suppl.,SYN-GB-ACC-241,gb,,Management services 2025-04
+SYN-LS-ACC-241,FX-117215319-00007,2025-05-25,2025-05-27,outgoing,14157.50,GBP,327038.25,LSL,23.100000,Synthetic bank advice,MAFETENG SEFIKA Suppl.,SYN-GB-ACC-241,gb,,Management services 2025-05
+SYN-LS-ACC-241,FX-117215319-00008,2025-06-23,2025-06-25,outgoing,14157.50,GBP,327038.25,LSL,23.100000,Synthetic bank advice,MAFETENG SEFIKA Suppl.,SYN-GB-ACC-241,gb,,Management services 2025-06
+SYN-LS-ACC-241,FX-117215319-00009,2025-08-06,2025-08-08,outgoing,14157.50,GBP,327038.25,LSL,23.100000,Synthetic bank advice,Mafeteng Sefika Suppl.,SYN-GB-ACC-241,gb,,Management services 2025-07
+SYN-LS-ACC-241,FX-117215319-00010,2025-09-09,2025-09-11,outgoing,14157.50,GBP,327038.25,LSL,23.100000,Synthetic bank advice,Mafeteng Sefika Suppl.,SYN-GB-ACC-241,gb,,Management services 2025-08
+SYN-LS-ACC-241,FX-117215319-00011,2025-09-19,2025-09-21,outgoing,14157.50,GBP,327038.25,LSL,23.100000,Synthetic bank advice,MAFETENG SEFIKA Suppl.,SYN-GB-ACC-241,gb,,Management services 2025-09
+SYN-LS-ACC-241,FX-117215319-00012,2025-11-14,2025-11-16,outgoing,14157.50,GBP,327038.25,LSL,23.100000,Synthetic bank advice,Mafeteng Sefika Suppl.,SYN-GB-ACC-241,gb,,Management services 2025-10
+SYN-LS-ACC-241,FX-117215319-00013,2025-11-05,2025-11-07,outgoing,14157.50,GBP,327038.25,LSL,23.100000,Synthetic bank advice,Mafeteng Sefika Suppl.,SYN-GB-ACC-241,gb,,Management services 2025-11
+SYN-LS-ACC-241,FX-117215319-00014,2026-01-11,2026-01-13,outgoing,14157.50,GBP,327038.25,LSL,23.100000,Synthetic bank advice,Mafeteng Sefika Suppl.,SYN-GB-ACC-241,gb,,Management services 2025-12
+SYN-LS-ACC-241,FX-117215319-00015,2026-01-25,2026-01-27,outgoing,14157.50,GBP,327038.25,LSL,23.100000,Synthetic bank advice,Mafeteng Sefika Suppl.,SYN-GB-ACC-241,gb,,Management services 2026-01
+SYN-LS-ACC-241,FX-117215319-00016,2026-02-21,2026-02-23,outgoing,14157.50,GBP,327038.25,LSL,23.100000,Synthetic bank advice,Mafeteng Sefika Supplies,SYN-GB-ACC-241,gb,,Management services 2026-02
+SYN-LS-ACC-241,FX-117215319-00017,2026-03-10,2026-03-12,outgoing,14157.50,GBP,327038.25,LSL,23.100000,Synthetic bank advice,MAFETENG SEFIKA Suppl.,SYN-GB-ACC-241,gb,,Management services 2026-03
+SYN-LS-ACC-241,FX-117215319-00018,2026-05-11,2026-05-13,outgoing,14157.50,GBP,327038.25,LSL,23.100000,Synthetic bank advice,Mafeteng Sefika Supplies,SYN-GB-ACC-241,gb,,Management services 2026-04
+SYN-LS-ACC-241,FX-117215319-00019,2026-05-22,2026-05-24,outgoing,14157.50,GBP,327038.25,LSL,23.100000,Synthetic bank advice,Mafeteng Sefika Suppl.,SYN-GB-ACC-241,gb,,Management services 2026-05
+SYN-LS-ACC-241,FX-117215319-00020,2026-07-09,2026-07-11,outgoing,14157.50,GBP,327038.25,LSL,23.100000,Synthetic bank advice,MAFETENG SEFIKA Suppl.,SYN-GB-ACC-241,gb,,Management services 2026-06
+SYN-LS-ACC-241,FX-117215319-00021,2026-08-03,2026-08-05,outgoing,14157.50,GBP,327038.25,LSL,23.100000,Synthetic bank advice,Mafeteng Sefika Supplies,SYN-GB-ACC-241,gb,,Management services 2026-07
+SYN-LS-ACC-241,FX-117215319-00022,2026-08-08,2026-08-10,outgoing,14157.50,GBP,327038.25,LSL,23.100000,Synthetic bank advice,Mafeteng Sefika Suppl.,SYN-GB-ACC-241,gb,,Management services 2026-08
+SYN-LS-ACC-241,FX-117215319-00023,2026-10-03,2026-10-05,outgoing,14157.50,GBP,327038.25,LSL,23.100000,Synthetic bank advice,MAFETENG SEFIKA Suppl.,SYN-GB-ACC-241,gb,,Management services 2026-09
+SYN-LS-ACC-241,FX-117215319-00024,2026-10-17,2026-10-19,outgoing,14157.50,GBP,327038.25,LSL,23.100000,Synthetic bank advice,Mafeteng Sefika Suppl.,SYN-GB-ACC-241,gb,,Management services 2026-10

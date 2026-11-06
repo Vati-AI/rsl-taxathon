@@ -1,0 +1,25 @@
+account_ref,transfer_ref,instruction_date,settlement_date,direction,instructed_amount,instructed_currency,settled_amount,settled_currency,exchange_rate,rate_source,counterparty_name,counterparty_account_ref,counterparty_country,intermediary_bank_ref,narration
+SYN-LS-ACC-018,FX-179104960-00001,2024-11-11,2024-11-13,outgoing,76297.09,ZAR,76297.09,LSL,1.000000,Synthetic bank advice,Butha Moshoe Foods,SYN-ZA-ACC-018,za,,Management services 2024-11
+SYN-LS-ACC-018,FX-179104960-00002,2024-12-15,2024-12-17,outgoing,76297.09,ZAR,76297.09,LSL,1.000000,Synthetic bank advice,BUTHA MOSHOE Foods,SYN-ZA-ACC-018,za,,Management services 2024-12
+SYN-LS-ACC-018,FX-179104960-00003,2025-01-11,2025-01-13,outgoing,76297.09,ZAR,76297.09,LSL,1.000000,Synthetic bank advice,Butha Moshoe Foods,SYN-ZA-ACC-018,za,,Management services 2025-01
+SYN-LS-ACC-018,FX-179104960-00004,2025-03-11,2025-03-13,outgoing,76297.09,ZAR,76297.09,LSL,1.000000,Synthetic bank advice,Butha Moshoe Foods,SYN-ZA-ACC-018,za,,Management services 2025-02
+SYN-LS-ACC-018,FX-179104960-00005,2025-03-11,2025-03-13,outgoing,76297.09,ZAR,76297.09,LSL,1.000000,Synthetic bank advice,BUTHA MOSHOE Foods,SYN-ZA-ACC-018,za,,Management services 2025-03
+SYN-LS-ACC-018,FX-179104960-00006,2025-04-03,2025-04-05,outgoing,76297.09,ZAR,76297.09,LSL,1.000000,Synthetic bank advice,BUTHA MOSHOE Foods,SYN-ZA-ACC-018,za,,Management services 2025-04
+SYN-LS-ACC-018,FX-179104960-00007,2025-05-04,2025-05-06,outgoing,76297.09,ZAR,76297.09,LSL,1.000000,Synthetic bank advice,BUTHA MOSHOE Foods,SYN-ZA-ACC-018,za,,Management services 2025-05
+SYN-LS-ACC-018,FX-179104960-00008,2025-07-25,2025-07-27,outgoing,76297.09,ZAR,76297.09,LSL,1.000000,Synthetic bank advice,Butha Moshoe Foods,SYN-ZA-ACC-018,za,,Management services 2025-06
+SYN-LS-ACC-018,FX-179104960-00009,2025-07-11,2025-07-13,outgoing,76297.09,ZAR,76297.09,LSL,1.000000,Synthetic bank advice,BUTHA MOSHOE Foods,SYN-ZA-ACC-018,za,,Management services 2025-07
+SYN-LS-ACC-018,FX-179104960-00010,2025-08-06,2025-08-08,outgoing,76297.09,ZAR,76297.09,LSL,1.000000,Synthetic bank advice,Butha Moshoe Foods,SYN-ZA-ACC-018,za,,Management services 2025-08
+SYN-LS-ACC-018,FX-179104960-00011,2025-09-08,2025-09-10,outgoing,76297.09,ZAR,76297.09,LSL,1.000000,Synthetic bank advice,BUTHA MOSHOE Foods,SYN-ZA-ACC-018,za,,Management services 2025-09
+SYN-LS-ACC-018,FX-179104960-00012,2025-10-04,2025-10-06,outgoing,76297.09,ZAR,76297.09,LSL,1.000000,Synthetic bank advice,Butha Moshoe Foods,SYN-ZA-ACC-018,za,,Management services 2025-10
+SYN-LS-ACC-018,FX-179104960-00013,2025-12-11,2025-12-13,outgoing,76297.09,ZAR,76297.09,LSL,1.000000,Synthetic bank advice,BUTHA MOSHOE Foods,SYN-ZA-ACC-018,za,,Management services 2025-11
+SYN-LS-ACC-018,FX-179104960-00014,2026-01-05,2026-01-07,outgoing,76297.09,ZAR,76297.09,LSL,1.000000,Synthetic bank advice,Butha Moshoe Foods,SYN-ZA-ACC-018,za,,Management services 2025-12
+SYN-LS-ACC-018,FX-179104960-00015,2026-01-09,2026-01-11,outgoing,76297.09,ZAR,76297.09,LSL,1.000000,Synthetic bank advice,BUTHA MOSHOE Foods,SYN-ZA-ACC-018,za,,Management services 2026-01
+SYN-LS-ACC-018,FX-179104960-00016,2026-03-09,2026-03-11,outgoing,76297.09,ZAR,76297.09,LSL,1.000000,Synthetic bank advice,Butha Moshoe Foods,SYN-ZA-ACC-018,za,,Management services 2026-02
+SYN-LS-ACC-018,FX-179104960-00017,2026-04-14,2026-04-16,outgoing,76297.09,ZAR,76297.09,LSL,1.000000,Synthetic bank advice,Butha Moshoe Foods,SYN-ZA-ACC-018,za,,Management services 2026-03
+SYN-LS-ACC-018,FX-179104960-00018,2026-05-12,2026-05-14,outgoing,76297.09,ZAR,76297.09,LSL,1.000000,Synthetic bank advice,Butha Moshoe Foods,SYN-ZA-ACC-018,za,,Management services 2026-04
+SYN-LS-ACC-018,FX-179104960-00019,2026-06-07,2026-06-09,outgoing,76297.09,ZAR,76297.09,LSL,1.000000,Synthetic bank advice,Butha Moshoe Foods,SYN-ZA-ACC-018,za,,Management services 2026-05
+SYN-LS-ACC-018,FX-179104960-00020,2026-06-18,2026-06-20,outgoing,76297.09,ZAR,76297.09,LSL,1.000000,Synthetic bank advice,BUTHA MOSHOE Foods,SYN-ZA-ACC-018,za,,Management services 2026-06
+SYN-LS-ACC-018,FX-179104960-00021,2026-07-15,2026-07-17,outgoing,76297.09,ZAR,76297.09,LSL,1.000000,Synthetic bank advice,Butha Moshoe Foods,SYN-ZA-ACC-018,za,,Management services 2026-07
+SYN-LS-ACC-018,FX-179104960-00022,2026-08-05,2026-08-07,outgoing,76297.09,ZAR,76297.09,LSL,1.000000,Synthetic bank advice,BUTHA MOSHOE Foods,SYN-ZA-ACC-018,za,,Management services 2026-08
+SYN-LS-ACC-018,FX-179104960-00023,2026-09-06,2026-09-08,outgoing,76297.09,ZAR,76297.09,LSL,1.000000,Synthetic bank advice,Butha Moshoe Foods,SYN-ZA-ACC-018,za,,Management services 2026-09
+SYN-LS-ACC-018,FX-179104960-00024,2026-11-06,2026-11-08,outgoing,76297.09,ZAR,76297.09,LSL,1.000000,Synthetic bank advice,Butha Moshoe Foods,SYN-ZA-ACC-018,za,,Management services 2026-10

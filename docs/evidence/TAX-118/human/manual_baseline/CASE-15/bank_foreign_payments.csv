@@ -1,0 +1,25 @@
+account_ref,transfer_ref,instruction_date,settlement_date,direction,instructed_amount,instructed_currency,settled_amount,settled_currency,exchange_rate,rate_source,counterparty_name,counterparty_account_ref,counterparty_country,intermediary_bank_ref,narration
+SYN-LS-ACC-260,FX-247995324-00001,2024-11-24,2024-11-26,outgoing,12032.50,USD,218991.50,LSL,18.200000,Synthetic bank advice,Tsoelike Sefika Holdings,SYN-MU-ACC-260,mu,,Management services 2024-11
+SYN-LS-ACC-260,FX-247995324-00002,2024-12-12,2024-12-14,outgoing,12032.50,USD,218991.50,LSL,18.200000,Synthetic bank advice,TSOELIKE SEFIKA Hldgs,SYN-MU-ACC-260,mu,,Management services 2024-12
+SYN-LS-ACC-260,FX-247995324-00003,2025-01-12,2025-01-14,outgoing,12032.50,USD,218991.50,LSL,18.200000,Synthetic bank advice,Tsoelike Sefika Holdings,SYN-MU-ACC-260,mu,,Management services 2025-01
+SYN-LS-ACC-260,FX-247995324-00004,2025-02-09,2025-02-11,outgoing,12032.50,USD,218991.50,LSL,18.200000,Synthetic bank advice,TSOELIKE SEFIKA Hldgs,SYN-MU-ACC-260,mu,,Management services 2025-02
+SYN-LS-ACC-260,FX-247995324-00005,2025-04-06,2025-04-08,outgoing,12032.50,USD,218991.50,LSL,18.200000,Synthetic bank advice,Tsoelike Sefika Hldgs,SYN-MU-ACC-260,mu,,Management services 2025-03
+SYN-LS-ACC-260,FX-247995324-00006,2025-04-15,2025-04-17,outgoing,12032.50,USD,218991.50,LSL,18.200000,Synthetic bank advice,TSOELIKE SEFIKA Hldgs,SYN-MU-ACC-260,mu,,Management services 2025-04
+SYN-LS-ACC-260,FX-247995324-00007,2025-05-10,2025-05-12,outgoing,12032.50,USD,218991.50,LSL,18.200000,Synthetic bank advice,Tsoelike Sefika Hldgs,SYN-MU-ACC-260,mu,,Management services 2025-05
+SYN-LS-ACC-260,FX-247995324-00008,2025-07-17,2025-07-19,outgoing,12032.50,USD,218991.50,LSL,18.200000,Synthetic bank advice,TSOELIKE SEFIKA Hldgs,SYN-MU-ACC-260,mu,,Management services 2025-06
+SYN-LS-ACC-260,FX-247995324-00009,2025-07-25,2025-07-27,outgoing,12032.50,USD,218991.50,LSL,18.200000,Synthetic bank advice,Tsoelike Sefika Hldgs,SYN-MU-ACC-260,mu,,Management services 2025-07
+SYN-LS-ACC-260,FX-247995324-00010,2025-09-07,2025-09-09,outgoing,12032.50,USD,218991.50,LSL,18.200000,Synthetic bank advice,Tsoelike Sefika Holdings,SYN-MU-ACC-260,mu,,Management services 2025-08
+SYN-LS-ACC-260,FX-247995324-00011,2025-09-16,2025-09-18,outgoing,12032.50,USD,218991.50,LSL,18.200000,Synthetic bank advice,TSOELIKE SEFIKA Hldgs,SYN-MU-ACC-260,mu,,Management services 2025-09
+SYN-LS-ACC-260,FX-247995324-00012,2025-11-22,2025-11-24,outgoing,12032.50,USD,218991.50,LSL,18.200000,Synthetic bank advice,Tsoelike Sefika Holdings,SYN-MU-ACC-260,mu,,Management services 2025-10
+SYN-LS-ACC-260,FX-247995324-00013,2025-11-08,2025-11-10,outgoing,12032.50,USD,218991.50,LSL,18.200000,Synthetic bank advice,Tsoelike Sefika Holdings,SYN-MU-ACC-260,mu,,Management services 2025-11
+SYN-LS-ACC-260,FX-247995324-00014,2025-12-09,2025-12-11,outgoing,12032.50,USD,218991.50,LSL,18.200000,Synthetic bank advice,Tsoelike Sefika Holdings,SYN-MU-ACC-260,mu,,Management services 2025-12
+SYN-LS-ACC-260,FX-247995324-00015,2026-02-24,2026-02-26,outgoing,12032.50,USD,218991.50,LSL,18.200000,Synthetic bank advice,Tsoelike Sefika Holdings,SYN-MU-ACC-260,mu,,Management services 2026-01
+SYN-LS-ACC-260,FX-247995324-00016,2026-03-19,2026-03-21,outgoing,12032.50,USD,218991.50,LSL,18.200000,Synthetic bank advice,TSOELIKE SEFIKA Hldgs,SYN-MU-ACC-260,mu,,Management services 2026-02
+SYN-LS-ACC-260,FX-247995324-00017,2026-03-19,2026-03-21,outgoing,12032.50,USD,218991.50,LSL,18.200000,Synthetic bank advice,TSOELIKE SEFIKA Hldgs,SYN-MU-ACC-260,mu,,Management services 2026-03
+SYN-LS-ACC-260,FX-247995324-00018,2026-04-05,2026-04-07,outgoing,12032.50,USD,218991.50,LSL,18.200000,Synthetic bank advice,Tsoelike Sefika Holdings,SYN-MU-ACC-260,mu,,Management services 2026-04
+SYN-LS-ACC-260,FX-247995324-00019,2026-06-08,2026-06-10,outgoing,12032.50,USD,218991.50,LSL,18.200000,Synthetic bank advice,Tsoelike Sefika Hldgs,SYN-MU-ACC-260,mu,,Management services 2026-05
+SYN-LS-ACC-260,FX-247995324-00020,2026-06-05,2026-06-07,outgoing,12032.50,USD,218991.50,LSL,18.200000,Synthetic bank advice,Tsoelike Sefika Hldgs,SYN-MU-ACC-260,mu,,Management services 2026-06
+SYN-LS-ACC-260,FX-247995324-00021,2026-07-04,2026-07-06,outgoing,12032.50,USD,218991.50,LSL,18.200000,Synthetic bank advice,Tsoelike Sefika Hldgs,SYN-MU-ACC-260,mu,,Management services 2026-07
+SYN-LS-ACC-260,FX-247995324-00022,2026-08-17,2026-08-19,outgoing,12032.50,USD,218991.50,LSL,18.200000,Synthetic bank advice,Tsoelike Sefika Holdings,SYN-MU-ACC-260,mu,,Management services 2026-08
+SYN-LS-ACC-260,FX-247995324-00023,2026-09-07,2026-09-09,outgoing,12032.50,USD,218991.50,LSL,18.200000,Synthetic bank advice,Tsoelike Sefika Hldgs,SYN-MU-ACC-260,mu,,Management services 2026-09
+SYN-LS-ACC-260,FX-247995324-00024,2026-11-03,2026-11-05,outgoing,12032.50,USD,218991.50,LSL,18.200000,Synthetic bank advice,Tsoelike Sefika Hldgs,SYN-MU-ACC-260,mu,,Management services 2026-10

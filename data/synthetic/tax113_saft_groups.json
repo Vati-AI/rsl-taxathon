@@ -1,0 +1,445 @@
+{
+ "synthetic": true,
+ "notice": "Synthetic TAX-113 fixture: invented TINs, suppliers and amounts at a synthetic 15% VAT rate; not real taxpayers, invoices or Lesotho law.",
+ "vat_rate": "0.15",
+ "groups": [
+  {
+   "group_id": "SYN-GRP-A",
+   "description": "Clean group: one invoice claimed a month late, one DD/MM/YYYY date",
+   "saft": {
+    "header": {
+     "tin": "610000001",
+     "company_name": "SYN Clean Group Ltd",
+     "currency": "LSL",
+     "period_start": "2026-07",
+     "period_end": "2026-09"
+    },
+    "sales_summary": [
+     {
+      "period": "2026-07",
+      "tax_code": "STD",
+      "net": "100000.00",
+      "vat": "15000.00"
+     },
+     {
+      "period": "2026-07",
+      "tax_code": "ZERO",
+      "net": "300000.00",
+      "vat": "0.00"
+     },
+     {
+      "period": "2026-07",
+      "tax_code": "EXEMPT",
+      "net": "10000.00",
+      "vat": "0.00"
+     },
+     {
+      "period": "2026-08",
+      "tax_code": "STD",
+      "net": "100000.00",
+      "vat": "15000.00"
+     },
+     {
+      "period": "2026-08",
+      "tax_code": "ZERO",
+      "net": "300000.00",
+      "vat": "0.00"
+     },
+     {
+      "period": "2026-08",
+      "tax_code": "EXEMPT",
+      "net": "10000.00",
+      "vat": "0.00"
+     },
+     {
+      "period": "2026-09",
+      "tax_code": "STD",
+      "net": "100000.00",
+      "vat": "15000.00"
+     },
+     {
+      "period": "2026-09",
+      "tax_code": "ZERO",
+      "net": "300000.00",
+      "vat": "0.00"
+     },
+     {
+      "period": "2026-09",
+      "tax_code": "EXEMPT",
+      "net": "10000.00",
+      "vat": "0.00"
+     }
+    ],
+    "supplier_invoices": [
+     {
+      "entry_id": "A-1",
+      "period": "2026-07",
+      "supplier_ref": "520000001",
+      "invoice_number": "S1",
+      "invoice_date": "2026-07-04",
+      "net": "200000.00",
+      "vat": "30000.00",
+      "tax_code": "STD",
+      "account": "5000"
+     },
+     {
+      "entry_id": "A-2",
+      "period": "2026-08",
+      "supplier_ref": "520000002",
+      "invoice_number": "S2",
+      "invoice_date": "15/08/2026",
+      "net": "200000.00",
+      "vat": "30000.00",
+      "tax_code": "STD",
+      "account": "5000"
+     },
+     {
+      "entry_id": "A-3",
+      "period": "2026-08",
+      "supplier_ref": "520000003",
+      "invoice_number": "S3",
+      "invoice_date": "2026-08-29",
+      "net": "40000.00",
+      "vat": "6000.00",
+      "tax_code": "STD",
+      "account": "5000"
+     },
+     {
+      "entry_id": "A-4",
+      "period": "2026-09",
+      "supplier_ref": "520000001",
+      "invoice_number": "S4",
+      "invoice_date": "2026-09-03",
+      "net": "200000.00",
+      "vat": "30000.00",
+      "tax_code": "STD",
+      "account": "5000"
+     }
+    ],
+    "journals": [
+     {
+      "journal_id": "JNL-610000001-2026-07",
+      "period": "2026-07",
+      "lines": [
+       {
+        "account": "1400",
+        "debit": "30000.00",
+        "credit": "0.00"
+       },
+       {
+        "account": "2400",
+        "debit": "0.00",
+        "credit": "15000.00"
+       },
+       {
+        "account": "2100",
+        "debit": "15000.00",
+        "credit": "30000.00"
+       }
+      ]
+     },
+     {
+      "journal_id": "JNL-610000001-2026-08",
+      "period": "2026-08",
+      "lines": [
+       {
+        "account": "1400",
+        "debit": "36000.00",
+        "credit": "0.00"
+       },
+       {
+        "account": "2400",
+        "debit": "0.00",
+        "credit": "15000.00"
+       },
+       {
+        "account": "2100",
+        "debit": "15000.00",
+        "credit": "36000.00"
+       }
+      ]
+     },
+     {
+      "journal_id": "JNL-610000001-2026-09",
+      "period": "2026-09",
+      "lines": [
+       {
+        "account": "1400",
+        "debit": "30000.00",
+        "credit": "0.00"
+       },
+       {
+        "account": "2400",
+        "debit": "0.00",
+        "credit": "15000.00"
+       },
+       {
+        "account": "2100",
+        "debit": "15000.00",
+        "credit": "30000.00"
+       }
+      ]
+     }
+    ]
+   },
+   "declared_returns": [
+    {
+     "return_id": "VAT-610000001-2026-07",
+     "tin": "610000001",
+     "period": "2026-07",
+     "output_vat": "15000.00",
+     "input_vat_claimed": "30000.00",
+     "refund_claim": "15000.00"
+    },
+    {
+     "return_id": "VAT-610000001-2026-08",
+     "tin": "610000001",
+     "period": "2026-08",
+     "output_vat": "15000.00",
+     "input_vat_claimed": "30000.00",
+     "refund_claim": "15000.00"
+    },
+    {
+     "return_id": "VAT-610000001-2026-09",
+     "tin": "610000001",
+     "period": "2026-09",
+     "output_vat": "15000.00",
+     "input_vat_claimed": "36000.00",
+     "refund_claim": "21000.00"
+    }
+   ],
+   "expected": {
+    "findings": [],
+    "timing_difference_periods": [
+     "2026-08",
+     "2026-09"
+    ],
+    "standardised_dates": 1,
+    "data_issue_codes": []
+   }
+  },
+  {
+   "group_id": "SYN-GRP-B",
+   "description": "Cooked group: September input VAT declared M24,000 above the books, a duplicate ledger invoice and an unbalanced journal",
+   "saft": {
+    "header": {
+     "tin": "620000002",
+     "company_name": "SYN Cooked Group Ltd",
+     "currency": "LSL",
+     "period_start": "2026-07",
+     "period_end": "2026-09"
+    },
+    "sales_summary": [
+     {
+      "period": "2026-07",
+      "tax_code": "STD",
+      "net": "100000.00",
+      "vat": "15000.00"
+     },
+     {
+      "period": "2026-07",
+      "tax_code": "ZERO",
+      "net": "300000.00",
+      "vat": "0.00"
+     },
+     {
+      "period": "2026-07",
+      "tax_code": "EXEMPT",
+      "net": "10000.00",
+      "vat": "0.00"
+     },
+     {
+      "period": "2026-08",
+      "tax_code": "STD",
+      "net": "100000.00",
+      "vat": "15000.00"
+     },
+     {
+      "period": "2026-08",
+      "tax_code": "ZERO",
+      "net": "300000.00",
+      "vat": "0.00"
+     },
+     {
+      "period": "2026-08",
+      "tax_code": "EXEMPT",
+      "net": "10000.00",
+      "vat": "0.00"
+     },
+     {
+      "period": "2026-09",
+      "tax_code": "STD",
+      "net": "100000.00",
+      "vat": "15000.00"
+     },
+     {
+      "period": "2026-09",
+      "tax_code": "ZERO",
+      "net": "300000.00",
+      "vat": "0.00"
+     },
+     {
+      "period": "2026-09",
+      "tax_code": "EXEMPT",
+      "net": "10000.00",
+      "vat": "0.00"
+     }
+    ],
+    "supplier_invoices": [
+     {
+      "entry_id": "B-1",
+      "period": "2026-07",
+      "supplier_ref": "520000001",
+      "invoice_number": "T1",
+      "invoice_date": "2026-07-04",
+      "net": "200000.00",
+      "vat": "30000.00",
+      "tax_code": "STD",
+      "account": "5000"
+     },
+     {
+      "entry_id": "B-2",
+      "period": "2026-08",
+      "supplier_ref": "520000002",
+      "invoice_number": "T2",
+      "invoice_date": "2026-08-10",
+      "net": "200000.00",
+      "vat": "30000.00",
+      "tax_code": "STD",
+      "account": "5000"
+     },
+     {
+      "entry_id": "B-3",
+      "period": "2026-08",
+      "supplier_ref": "520000002",
+      "invoice_number": "T2",
+      "invoice_date": "2026-08-10",
+      "net": "200000.00",
+      "vat": "30000.00",
+      "tax_code": "STD",
+      "account": "5000"
+     },
+     {
+      "entry_id": "B-4",
+      "period": "2026-09",
+      "supplier_ref": "520000001",
+      "invoice_number": "T4",
+      "invoice_date": "2026-09-03",
+      "net": "200000.00",
+      "vat": "30000.00",
+      "tax_code": "STD",
+      "account": "5000"
+     }
+    ],
+    "journals": [
+     {
+      "journal_id": "JNL-620000002-2026-07",
+      "period": "2026-07",
+      "lines": [
+       {
+        "account": "1400",
+        "debit": "30000.00",
+        "credit": "0.00"
+       },
+       {
+        "account": "2400",
+        "debit": "0.00",
+        "credit": "15000.00"
+       },
+       {
+        "account": "2100",
+        "debit": "15000.00",
+        "credit": "30000.00"
+       }
+      ]
+     },
+     {
+      "journal_id": "JNL-620000002-2026-08",
+      "period": "2026-08",
+      "lines": [
+       {
+        "account": "1400",
+        "debit": "30000.00",
+        "credit": "0.00"
+       },
+       {
+        "account": "2400",
+        "debit": "0.00",
+        "credit": "15000.00"
+       },
+       {
+        "account": "2100",
+        "debit": "15000.00",
+        "credit": "30000.00"
+       }
+      ]
+     },
+     {
+      "journal_id": "JNL-620000002-2026-09",
+      "period": "2026-09",
+      "lines": [
+       {
+        "account": "1400",
+        "debit": "30000.00",
+        "credit": "0.00"
+       },
+       {
+        "account": "2400",
+        "debit": "0.00",
+        "credit": "15000.00"
+       },
+       {
+        "account": "2100",
+        "debit": "15000.00",
+        "credit": "35000.00"
+       }
+      ]
+     }
+    ]
+   },
+   "declared_returns": [
+    {
+     "return_id": "VAT-620000002-2026-07",
+     "tin": "620000002",
+     "period": "2026-07",
+     "output_vat": "15000.00",
+     "input_vat_claimed": "30000.00",
+     "refund_claim": "15000.00"
+    },
+    {
+     "return_id": "VAT-620000002-2026-08",
+     "tin": "620000002",
+     "period": "2026-08",
+     "output_vat": "15000.00",
+     "input_vat_claimed": "30000.00",
+     "refund_claim": "15000.00"
+    },
+    {
+     "return_id": "VAT-620000002-2026-09",
+     "tin": "620000002",
+     "period": "2026-09",
+     "output_vat": "15000.00",
+     "input_vat_claimed": "54000.00",
+     "refund_claim": "39000.00"
+    }
+   ],
+   "expected": {
+    "findings": [
+     {
+      "code": "declared_input_vat_exceeds_recomputed",
+      "period": "2026-09",
+      "amount": "24000.00"
+     }
+    ],
+    "recomputed_input_2026_08": "30000.00",
+    "data_issue_codes": [
+     "duplicate_of",
+     "journal_unbalanced"
+    ],
+    "contradicted_records": [
+     "B-3"
+    ]
+   }
+  }
+ ]
+}

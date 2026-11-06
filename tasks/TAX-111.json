@@ -5,16 +5,16 @@
   "owner": "Keletso",
   "area": "integration",
   "phase": "pilot",
-  "status": "BACKLOG",
+  "status": "IN_REVIEW",
   "priority": "P0",
   "depends_on": [
     "TAX-018",
     "TAX-030",
     "TAX-073"
   ],
-  "claimed_by": null,
-  "branch": null,
-  "pr": null,
+  "claimed_by": "claude-code-20261106-vigilant-fermat",
+  "branch": "claude/vigilant-fermat-4x2es6",
+  "pr": "https://github.com/Vati-AI/rsl-taxathon/pull/277",
   "scope": "Versioned read contracts and explicit fixture adapters for e-Tax declared positions, Lekuka/IDMS invoices (with supplier output-VAT declaration), Online Refunds Application claims, RSL refund-fraud model scores and ASYCUDA World entries, published through a WSO2-shaped gateway boundary",
   "inputs": [
     "PROJECT.md",
@@ -34,19 +34,19 @@
   "acceptance": [
     {
       "text": "One versioned contract per RSL system with decimal-string Maloti amounts, ISO dates, tenant and taxpayer scope and source provenance (system, record ID, retrieved_at, contract version); every shape is marked as an assumption pending RSL specification and no real host, path or field name is invented",
-      "done": false
+      "done": true
     },
     {
       "text": "Fixture adapters read synthetic data only and identify themselves as fixtures in every response; RSL's fraud score is carried as an RSL-owned input with model ID/version and never relabelled as a Vati score; the TAX-073 customs fixture is mapped to the ASYCUDA contract",
-      "done": false
+      "done": true
     },
     {
       "text": "Tests: contract validation rejects missing provenance, float money and cross-tenant reads; an unavailable source is reported as unavailable, never replaced by an invented value; Vati stores references and hashes, not a second invoice store",
-      "done": false
+      "done": true
     },
     {
       "text": "Record relevant tests and evidence, update task status and open a PR",
-      "done": false
+      "done": true
     }
   ],
   "verification": "Tests: contract validation rejects missing provenance, float money and cross-tenant reads; an unavailable source is reported as unavailable, never replaced by an invented value; Vati stores references and hashes, not a second invoice store",
@@ -56,11 +56,32 @@
     "update-project-task",
     "finish-task"
   ],
-  "evidence": [],
+  "evidence": [
+    {
+      "criterion": 1,
+      "text": "integration/rsl_sources/contracts.py: one contract per RSL record kind (e-Tax vat/wht/cit/paye, IDMS invoice and supplier integration, Online Refunds claim, RSL fraud score, ASYCUDA entry, registry entity, Central Bank payment), IDs ending -assumed, decimal-string Maloti, ISO dates, taxpayer scope; fixture_source.py envelopes carry source system, record ID, contract ID, retrieved_at and record SHA-256."
+    },
+    {
+      "criterion": 2,
+      "text": "Every envelope has fixture: true; RSL score contract requires owner RSL with model ID/version and the pipeline reports it as RSL's; asycuda_entries_from_tax073 maps the TAX-073 customs fixture (test_tax073_customs_values_map_to_asycuda_contract)."
+    },
+    {
+      "criterion": 3,
+      "text": "tests/integration/test_rsl_sources.py (8 tests): float money, missing and unexpected fields refused; cross-tenant read refused; unavailable source returns status unavailable with no records; duplicate IDs refused; references kept, not copies."
+    },
+    {
+      "criterion": 4,
+      "text": "PR https://github.com/Vati-AI/rsl-taxathon/pull/277. python3 scripts/dev.py check: Workspace checks passed; python3 scripts/quality.py: First-party quality checks passed (ruff, mypy, frontend build); validate.py passed."
+    }
+  ],
   "notes": [
     {
       "at": "2026-11-06",
       "text": "Added 2026-11-06 from the framework scope update (docs/reference/FRAMEWORK.md, ADR-040) as a must-have for the proposal and pilot."
+    },
+    {
+      "at": "2026-11-06",
+      "text": "Claimed by claude-code-20261106-vigilant-fermat; implemented on claude/vigilant-fermat-4x2es6 and submitted for owner merge in https://github.com/Vati-AI/rsl-taxathon/pull/277."
     }
   ],
   "sequence": 4

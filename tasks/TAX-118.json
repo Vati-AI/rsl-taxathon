@@ -5,7 +5,7 @@
   "owner": "Keletso",
   "area": "tests/ai",
   "phase": "pilot",
-  "status": "BACKLOG",
+  "status": "IN_REVIEW",
   "priority": "P0",
   "depends_on": [
     "TAX-112",
@@ -15,9 +15,9 @@
     "TAX-116",
     "TAX-056"
   ],
-  "claimed_by": null,
-  "branch": null,
-  "pr": null,
+  "claimed_by": "claude-code-20261106-vigilant-fermat",
+  "branch": "claude/vigilant-fermat-4x2es6",
+  "pr": "https://github.com/Vati-AI/rsl-taxathon/pull/277",
   "scope": "Part 7 evidence: about 200 synthetic FMCG taxpayers with planted issues, a simulated manual baseline and a reproducible metrics report for the proposal's test results",
   "inputs": [
     "PROJECT.md",
@@ -36,19 +36,19 @@
   "acceptance": [
     {
       "text": "A seeded, reproducible generator writes about 200 synthetic taxpayers with known planted issues (valid structural refunds, fake invoices, untaxed imported services, disguised employment, related-party loss creation, policy-gap cases) and clean controls; every record carries the synthetic marker",
-      "done": false
+      "done": true
     },
     {
       "text": "A simulated manual baseline (every refund audited, evidence compiled by hand, with documented time assumptions) and a runner that reports detection rate, false-positive rate, fast-lane share of valid refunds, time to an investigation-ready case vs baseline, reconciliation accuracy and share of findings with a valid legal route",
-      "done": false
+      "done": true
     },
     {
       "text": "The report is committed under docs/evidence/TAX-118 with the seed, versions and an explicit limitations section (synthetic behaviour, low Lekuka coverage, no labelled RSL outcomes, limited CMA data, unverified legal routes); no metric is presented as real-world performance",
-      "done": false
+      "done": true
     },
     {
       "text": "Record relevant tests and evidence, update task status and open a PR",
-      "done": false
+      "done": true
     }
   ],
   "verification": "The report is committed under docs/evidence/TAX-118 with the seed, versions and an explicit limitations section (synthetic behaviour, low Lekuka coverage, no labelled RSL outcomes, limited CMA data, unverified legal routes); no metric is presented as real-world performance",
@@ -58,11 +58,36 @@
     "update-project-task",
     "finish-task"
   ],
-  "evidence": [],
+  "evidence": [
+    {
+      "criterion": 1,
+      "text": "ai/evaluation/assurance_population.py, seed 20261106: 300 FMCG taxpayers x 24 months, 6,055 claims, 82% clean, planted fake invoices, untaxed imported services, disguised employment, related-party loss, policy gap and mixed cases, legitimate look-alikes and noise; every record synthetic; same seed reproduces identical hashes."
+    },
+    {
+      "criterion": 2,
+      "text": "Simulated manual baseline time model (documented assumptions) and simple-rule baselines at M100k/M500k/M1m; ai/evaluation/assurance_benchmark.py reports detection, false positives, fast-lane share, time, recompute accuracy and legal-route routing, plus Lekuka 10/50/90% and no-score ablation."
+    },
+    {
+      "criterion": 3,
+      "text": "docs/evidence/TAX-118/{manifest.json, dev_summary.json, results.json, RESULTS.md, errors.csv, human/}: seal, dev, freeze and single test run recorded with hashes and fingerprint; limitations section states synthetic data, same-author generator/rules, low Lekuka coverage, no RSL outcomes, limited CMA data, unverified routes. Test split: 86.1% planted issues found, 8.0% clean flagged, 94.0% lane accuracy."
+    },
+    {
+      "criterion": 4,
+      "text": "PR https://github.com/Vati-AI/rsl-taxathon/pull/277. python3 scripts/dev.py check: Workspace checks passed; python3 scripts/quality.py: First-party quality checks passed (ruff, mypy, frontend build); validate.py passed."
+    }
+  ],
   "notes": [
     {
       "at": "2026-11-06",
       "text": "Added 2026-11-06 from the framework scope update (docs/reference/FRAMEWORK.md, ADR-040) as a must-have for the proposal and pilot."
+    },
+    {
+      "at": "2026-11-06",
+      "text": "Claimed by claude-code-20261106-vigilant-fermat; implemented on claude/vigilant-fermat-4x2es6 and submitted for owner merge in https://github.com/Vati-AI/rsl-taxathon/pull/277."
+    },
+    {
+      "at": "2026-11-06",
+      "text": "Expanded by Keletso's request to 300 taxpayers x 24 months with dev/test split, sealed answer key, frozen rules and two baselines. Human-measured baseline and reviewer scores are tracked in TAX-120; Docling accuracy in TAX-119."
     }
   ],
   "sequence": 28

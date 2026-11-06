@@ -1,0 +1,80 @@
+{
+  "synthetic": true,
+  "task": "TAX-118",
+  "sealed_at": "2026-11-06T11:53:12+00:00",
+  "seed": 20261106,
+  "generator_version": "tax118-population-v1",
+  "generator_sha256": "adc6d6499c46243340508feaa32dd59f3becb6530b9e2b95da491b43d2fcbaf8",
+  "params": {
+    "n_taxpayers": 300,
+    "n_dev": 100,
+    "first_period": "2024-11",
+    "months": 24,
+    "clean_share": "0.82",
+    "issue_counts": {
+      "fake_invoices": 10,
+      "untaxed_imported_services": 10,
+      "disguised_employment": 9,
+      "related_party_loss": 9,
+      "policy_gap": 8,
+      "mixed": 8
+    },
+    "vat_rate": "0.15",
+    "wht_rate": "0.10",
+    "wht_treaty_rate": "0.05",
+    "lekuka_coverage": "0.15",
+    "noise": {
+      "tin_typo_per_line": "0.03",
+      "late_claim_per_invoice": "0.06",
+      "missing_copy_per_unintegrated_line": "0.02",
+      "duplicate_line_per_claim": "0.02",
+      "supplier_gap_per_idms_invoice": "0.01",
+      "dmy_dates_per_taxpayer": "0.20",
+      "treaty_certificate_missing": "0.15"
+    },
+    "materiality_absolute": "50000.00",
+    "materiality_share": "0.25",
+    "structural_min_zero_share": "0.30"
+  },
+  "dataset_sha256": "cb6c792d3712aa7e444d06b5730f044c9240172c56a25be4206db39050f98ad7",
+  "answer_key_sha256": "65da23c193e94012624ed4211085ce0c6765c545717c7fccf4f8a1c16873459e",
+  "taxpayers": 300,
+  "split": {
+    "dev": 100,
+    "test": 200
+  },
+  "issue_instances_total": {
+    "disguised_employment": 13,
+    "fake_invoices": 13,
+    "policy_gap": 10,
+    "related_party_loss": 14,
+    "untaxed_imported_services": 12
+  },
+  "claims_total": 6055,
+  "rules_at_seal": "c4c33531ca6b13298b10ff4ec6fff2917783f06fd7b6e253e41f2fcb6bf4295d",
+  "frozen": {
+    "at": "2026-11-06T11:55:43+00:00",
+    "fingerprint": "56d17eedb745300df91d01b3d7435f73bb0f59f4a647455c20c9ce1458326a07",
+    "files": {
+      "ai/evaluation/assurance_pipeline.py": "612dce558e9136f2b281af097c52b26786c6ae263119c349280a734377577774",
+      "ai/tools/idms_match.py": "b696f3889780d16810128d4edd058dead86e5071fb1c2388f6370f6ee586162a",
+      "ai/tools/source_recompute.py": "d31d231fccca0d03a5d3d9621146083c899f2dbf12c01347496e2c5714c99644",
+      "ai/tools/refund_triage.py": "da244f3de19a024d6e8311674ef824b685e304110ce4f2ca8f5e3f03982f51e9",
+      "ai/tools/refund_triage_policy.json": "540af0510222b363828fa3610fd085cfe88e91743feec4f31523170640185046",
+      "ai/tools/foreign_payments.py": "718a9149dc4b2f7b95d0243c1b69a144142637795acd6b165152ea85c5b383ec",
+      "ai/tools/related_party_signals.py": "8e47f56bf9103ae8208a73fc3fb35ec895efb032e43b32ed08f1c60e5afae1b6",
+      "ai/tools/work_arrangement.py": "f75f03d79f080250203a3d993f5868c7cad42102a4b0b8e6823d3008576eca98",
+      "ai/tools/refund_reconciliation.py": "9e15e0153c17f7cc34bcc1c796af54f2fd66e7b2674999d14fc0d61849aebf46",
+      "ai/workflows/rule_register.py": "b33b856bd5b249fc343c629b099134376b89a375c4894b637bebc50d211ed58b",
+      "ai/workflows/rule_register.candidates.json": "955f1f1c965728d81e3668b0de80fe05db0a05fb5261908c82e04e0dad6f6004",
+      "ai/workflows/policy_gap_register.json": "2e35440a66c3d930a0b93f37f7200905229d18ae1f4358212dfab525f86cbcac",
+      "integration/rsl_sources/contracts.py": "127f9c6c469f4a7939dabdf5306f8470fe0aead6ae405ffd914e1a0746584470",
+      "integration/rsl_sources/fixture_source.py": "53d8ced62a6b6f77981414a98d9c208ef300222aa96dd9f8e6363e598057b9dc"
+    }
+  },
+  "test_run": {
+    "at": "2026-11-06T11:56:12+00:00",
+    "results_sha256": "cdbc55936b159e5cbeda51f02f86d29ae444c5325864ae277f8762706d91bd93"
+  },
+  "disclosure": "The generator, the answer key and the rules were all written by the same AI coding agent. Only the dataset and answer-key hashes were committed before tuning; the rules were tuned on the development split and frozen before the single test run. A small debugging population (seed 777) was used before sealing. A team member can rerun with a private seed for a blind check."
+}

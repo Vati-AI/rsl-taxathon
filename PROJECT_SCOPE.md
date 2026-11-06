@@ -25,8 +25,11 @@ architecture and service authority. It changes how the platform plugs into RSL
   undeclared supplier invoice (TAX-112); SAF-T-style source records with a declared-versus-
   recomputed report (TAX-113); the imported-services three-way match (TAX-115); a named,
   unverified rule register with the arm's-length policy gap (TAX-116).
-- **Evidence the Call requires:** a synthetic population of about 200 taxpayers, a
-  simulated manual baseline and measured results (TAX-118), required before TAX-058/081.
+- **Evidence the Call requires:** a sealed synthetic population (300 taxpayers x 24
+  months), simple-rule baselines and measured results (TAX-118,
+  [results](docs/evidence/TAX-118/RESULTS.md)), required before TAX-058/081. The timed
+  manual baseline and outside-reviewer scores need people (TAX-120); Docling accuracy is
+  optional (TAX-119).
 - **Later, not must-have:** annual large-group risk rating (BP2), Sesotho/English
   taxpayer messages, refund-confidentiality access rules, offline case packs and resumable
   uploads. Operating costs are proposal content, not code. Crypto, serious tax crime and

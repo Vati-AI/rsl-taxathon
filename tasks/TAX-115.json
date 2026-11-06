@@ -5,16 +5,16 @@
   "owner": "Keletso",
   "area": "ai",
   "phase": "pilot",
-  "status": "BACKLOG",
+  "status": "IN_REVIEW",
   "priority": "P0",
   "depends_on": [
     "TAX-050",
     "TAX-079",
     "TAX-113"
   ],
-  "claimed_by": null,
-  "branch": null,
-  "pr": null,
+  "claimed_by": "claude-code-20261106-vigilant-fermat",
+  "branch": "claude/vigilant-fermat-4x2es6",
+  "pr": "https://github.com/Vati-AI/rsl-taxathon/pull/277",
   "scope": "BP5: match A money out (bank statements via TAX-079 payment-channel records), B books (TAX-113 ledger) and C declared VAT/WHT (e-Tax contract) per counterparty, period and service type, within FX and timing tolerances",
   "inputs": [
     "PROJECT.md",
@@ -33,19 +33,19 @@
   "acceptance": [
     {
       "text": "Per counterparty and period the result shows A, B, C, differences and tolerance used, with evidence IDs for each source; legitimate explanations (treaty relief, exempt service, goods not services, timing) are tested and recorded before any flag",
-      "done": false
+      "done": true
     },
     {
       "text": "Flags carry a plain-language reason and route: small gaps to a standard-lane targeted request, material gaps to Special Sectors; the CMA caveat is stated in the output when Central Bank data is absent and company bank statements are treated as primary",
-      "done": false
+      "done": true
     },
     {
       "text": "Synthetic fixture reproduces the framework exception journey (M2.4m management fees to a South African parent, no VAT/WHT declared) plus a matched counterparty and a treaty-relief case; tests cover all three",
-      "done": false
+      "done": true
     },
     {
       "text": "Record relevant tests and evidence, update task status and open a PR",
-      "done": false
+      "done": true
     }
   ],
   "verification": "Synthetic fixture reproduces the framework exception journey (M2.4m management fees to a South African parent, no VAT/WHT declared) plus a matched counterparty and a treaty-relief case; tests cover all three",
@@ -55,11 +55,32 @@
     "update-project-task",
     "finish-task"
   ],
-  "evidence": [],
+  "evidence": [
+    {
+      "criterion": 1,
+      "text": "ai/tools/foreign_payments.py: per counterparty over the review window (or per year) shows money out, booked services/interest, WHT declared/expected, imported-services VAT expected, tolerance and evidence IDs; treaty relief with certificate, exempt service and timing tested first. Bank file parsed by the TAX-079 ForeignPaymentAdapter in the TAX-118 pipeline."
+    },
+    {
+      "criterion": 2,
+      "text": "Flags carry plain-language reasons and route_recommendation (standard_lane_request / special_sectors_review by materiality); CMA caveat in every result and a cma_payment_not_in_central_bank_data note per CMA counterparty."
+    },
+    {
+      "criterion": 3,
+      "text": "data/synthetic/tax115_foreign_payments.json reproduces the M2.4m ZA-parent journey plus a treaty-relief advisor and a correctly declared supplier; ForeignMatchTests assert flags, 'M2.4m' and 'no treaty relief found', explanations, CMA note, account-not-name joins and missing-certificate question."
+    },
+    {
+      "criterion": 4,
+      "text": "PR https://github.com/Vati-AI/rsl-taxathon/pull/277. python3 scripts/dev.py check: Workspace checks passed; python3 scripts/quality.py: First-party quality checks passed (ruff, mypy, frontend build); validate.py passed."
+    }
+  ],
   "notes": [
     {
       "at": "2026-11-06",
       "text": "Added 2026-11-06 from the framework scope update (docs/reference/FRAMEWORK.md, ADR-040) as a must-have for the proposal and pilot."
+    },
+    {
+      "at": "2026-11-06",
+      "text": "Claimed by claude-code-20261106-vigilant-fermat; implemented on claude/vigilant-fermat-4x2es6 and submitted for owner merge in https://github.com/Vati-AI/rsl-taxathon/pull/277."
     }
   ],
   "sequence": 8

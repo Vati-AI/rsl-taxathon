@@ -1,0 +1,25 @@
+account_ref,transfer_ref,instruction_date,settlement_date,direction,instructed_amount,instructed_currency,settled_amount,settled_currency,exchange_rate,rate_source,counterparty_name,counterparty_account_ref,counterparty_country,intermediary_bank_ref,narration
+SYN-LS-ACC-187,FX-418815263-00001,2024-12-05,2024-12-07,outgoing,13667.50,USD,248748.50,LSL,18.200000,Synthetic bank advice,Mohale Letseng Foods,SYN-MU-ACC-187,mu,,Management services 2024-11
+SYN-LS-ACC-187,FX-418815263-00002,2024-12-17,2024-12-19,outgoing,13667.50,USD,248748.50,LSL,18.200000,Synthetic bank advice,MOHALE LETSENG Foods,SYN-MU-ACC-187,mu,,Management services 2024-12
+SYN-LS-ACC-187,FX-418815263-00003,2025-01-07,2025-01-09,outgoing,13667.50,USD,248748.50,LSL,18.200000,Synthetic bank advice,MOHALE LETSENG Foods,SYN-MU-ACC-187,mu,,Management services 2025-01
+SYN-LS-ACC-187,FX-418815263-00004,2025-03-17,2025-03-19,outgoing,13667.50,USD,248748.50,LSL,18.200000,Synthetic bank advice,Mohale Letseng Foods,SYN-MU-ACC-187,mu,,Management services 2025-02
+SYN-LS-ACC-187,FX-418815263-00005,2025-03-07,2025-03-09,outgoing,13667.50,USD,248748.50,LSL,18.200000,Synthetic bank advice,MOHALE LETSENG Foods,SYN-MU-ACC-187,mu,,Management services 2025-03
+SYN-LS-ACC-187,FX-418815263-00006,2025-04-08,2025-04-10,outgoing,13667.50,USD,248748.50,LSL,18.200000,Synthetic bank advice,MOHALE LETSENG Foods,SYN-MU-ACC-187,mu,,Management services 2025-04
+SYN-LS-ACC-187,FX-418815263-00007,2025-05-17,2025-05-19,outgoing,13667.50,USD,248748.50,LSL,18.200000,Synthetic bank advice,Mohale Letseng Foods,SYN-MU-ACC-187,mu,,Management services 2025-05
+SYN-LS-ACC-187,FX-418815263-00008,2025-06-10,2025-06-12,outgoing,13667.50,USD,248748.50,LSL,18.200000,Synthetic bank advice,Mohale Letseng Foods,SYN-MU-ACC-187,mu,,Management services 2025-06
+SYN-LS-ACC-187,FX-418815263-00009,2025-07-25,2025-07-27,outgoing,13667.50,USD,248748.50,LSL,18.200000,Synthetic bank advice,Mohale Letseng Foods,SYN-MU-ACC-187,mu,,Management services 2025-07
+SYN-LS-ACC-187,FX-418815263-00010,2025-08-25,2025-08-27,outgoing,13667.50,USD,248748.50,LSL,18.200000,Synthetic bank advice,MOHALE LETSENG Foods,SYN-MU-ACC-187,mu,,Management services 2025-08
+SYN-LS-ACC-187,FX-418815263-00011,2025-09-07,2025-09-09,outgoing,13667.50,USD,248748.50,LSL,18.200000,Synthetic bank advice,MOHALE LETSENG Foods,SYN-MU-ACC-187,mu,,Management services 2025-09
+SYN-LS-ACC-187,FX-418815263-00012,2025-10-24,2025-10-26,outgoing,13667.50,USD,248748.50,LSL,18.200000,Synthetic bank advice,Mohale Letseng Foods,SYN-MU-ACC-187,mu,,Management services 2025-10
+SYN-LS-ACC-187,FX-418815263-00013,2025-12-09,2025-12-11,outgoing,13667.50,USD,248748.50,LSL,18.200000,Synthetic bank advice,Mohale Letseng Foods,SYN-MU-ACC-187,mu,,Management services 2025-11
+SYN-LS-ACC-187,FX-418815263-00014,2025-12-11,2025-12-13,outgoing,13667.50,USD,248748.50,LSL,18.200000,Synthetic bank advice,Mohale Letseng Foods,SYN-MU-ACC-187,mu,,Management services 2025-12
+SYN-LS-ACC-187,FX-418815263-00015,2026-01-05,2026-01-07,outgoing,13667.50,USD,248748.50,LSL,18.200000,Synthetic bank advice,Mohale Letseng Foods,SYN-MU-ACC-187,mu,,Management services 2026-01
+SYN-LS-ACC-187,FX-418815263-00016,2026-03-07,2026-03-09,outgoing,13667.50,USD,248748.50,LSL,18.200000,Synthetic bank advice,Mohale Letseng Foods,SYN-MU-ACC-187,mu,,Management services 2026-02
+SYN-LS-ACC-187,FX-418815263-00017,2026-03-18,2026-03-20,outgoing,13667.50,USD,248748.50,LSL,18.200000,Synthetic bank advice,Mohale Letseng Foods,SYN-MU-ACC-187,mu,,Management services 2026-03
+SYN-LS-ACC-187,FX-418815263-00018,2026-04-06,2026-04-08,outgoing,13667.50,USD,248748.50,LSL,18.200000,Synthetic bank advice,Mohale Letseng Foods,SYN-MU-ACC-187,mu,,Management services 2026-04
+SYN-LS-ACC-187,FX-418815263-00019,2026-06-07,2026-06-09,outgoing,13667.50,USD,248748.50,LSL,18.200000,Synthetic bank advice,Mohale Letseng Foods,SYN-MU-ACC-187,mu,,Management services 2026-05
+SYN-LS-ACC-187,FX-418815263-00020,2026-07-10,2026-07-12,outgoing,13667.50,USD,248748.50,LSL,18.200000,Synthetic bank advice,Mohale Letseng Foods,SYN-MU-ACC-187,mu,,Management services 2026-06
+SYN-LS-ACC-187,FX-418815263-00021,2026-07-14,2026-07-16,outgoing,13667.50,USD,248748.50,LSL,18.200000,Synthetic bank advice,Mohale Letseng Foods,SYN-MU-ACC-187,mu,,Management services 2026-07
+SYN-LS-ACC-187,FX-418815263-00022,2026-09-11,2026-09-13,outgoing,13667.50,USD,248748.50,LSL,18.200000,Synthetic bank advice,MOHALE LETSENG Foods,SYN-MU-ACC-187,mu,,Management services 2026-08
+SYN-LS-ACC-187,FX-418815263-00023,2026-09-03,2026-09-05,outgoing,13667.50,USD,248748.50,LSL,18.200000,Synthetic bank advice,Mohale Letseng Foods,SYN-MU-ACC-187,mu,,Management services 2026-09
+SYN-LS-ACC-187,FX-418815263-00024,2026-11-08,2026-11-10,outgoing,13667.50,USD,248748.50,LSL,18.200000,Synthetic bank advice,Mohale Letseng Foods,SYN-MU-ACC-187,mu,,Management services 2026-10

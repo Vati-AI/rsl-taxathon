@@ -1,0 +1,25 @@
+account_ref,transfer_ref,instruction_date,settlement_date,direction,instructed_amount,instructed_currency,settled_amount,settled_currency,exchange_rate,rate_source,counterparty_name,counterparty_account_ref,counterparty_country,intermediary_bank_ref,narration
+SYN-LS-ACC-197,FX-118125019-00001,2024-11-03,2024-11-05,outgoing,415067.31,ZAR,415067.31,LSL,1.000000,Synthetic bank advice,Katse Sefika Supplies,SYN-ZA-ACC-197,za,,Management services 2024-11
+SYN-LS-ACC-197,FX-118125019-00002,2024-12-23,2024-12-25,outgoing,415067.31,ZAR,415067.31,LSL,1.000000,Synthetic bank advice,Katse Sefika Supplies,SYN-ZA-ACC-197,za,,Management services 2024-12
+SYN-LS-ACC-197,FX-118125019-00003,2025-01-25,2025-01-27,outgoing,415067.31,ZAR,415067.31,LSL,1.000000,Synthetic bank advice,Katse Sefika Supplies,SYN-ZA-ACC-197,za,,Management services 2025-01
+SYN-LS-ACC-197,FX-118125019-00004,2025-02-16,2025-02-18,outgoing,415067.31,ZAR,415067.31,LSL,1.000000,Synthetic bank advice,Katse Sefika Suppl.,SYN-ZA-ACC-197,za,,Management services 2025-02
+SYN-LS-ACC-197,FX-118125019-00005,2025-04-09,2025-04-11,outgoing,415067.31,ZAR,415067.31,LSL,1.000000,Synthetic bank advice,Katse Sefika Supplies,SYN-ZA-ACC-197,za,,Management services 2025-03
+SYN-LS-ACC-197,FX-118125019-00006,2025-05-21,2025-05-23,outgoing,415067.31,ZAR,415067.31,LSL,1.000000,Synthetic bank advice,Katse Sefika Supplies,SYN-ZA-ACC-197,za,,Management services 2025-04
+SYN-LS-ACC-197,FX-118125019-00007,2025-05-19,2025-05-21,outgoing,415067.31,ZAR,415067.31,LSL,1.000000,Synthetic bank advice,Katse Sefika Supplies,SYN-ZA-ACC-197,za,,Management services 2025-05
+SYN-LS-ACC-197,FX-118125019-00008,2025-06-10,2025-06-12,outgoing,415067.31,ZAR,415067.31,LSL,1.000000,Synthetic bank advice,Katse Sefika Supplies,SYN-ZA-ACC-197,za,,Management services 2025-06
+SYN-LS-ACC-197,FX-118125019-00009,2025-08-18,2025-08-20,outgoing,415067.31,ZAR,415067.31,LSL,1.000000,Synthetic bank advice,KATSE SEFIKA Suppl.,SYN-ZA-ACC-197,za,,Management services 2025-07
+SYN-LS-ACC-197,FX-118125019-00010,2025-09-11,2025-09-13,outgoing,415067.31,ZAR,415067.31,LSL,1.000000,Synthetic bank advice,Katse Sefika Supplies,SYN-ZA-ACC-197,za,,Management services 2025-08
+SYN-LS-ACC-197,FX-118125019-00011,2025-09-11,2025-09-13,outgoing,415067.31,ZAR,415067.31,LSL,1.000000,Synthetic bank advice,Katse Sefika Supplies,SYN-ZA-ACC-197,za,,Management services 2025-09
+SYN-LS-ACC-197,FX-118125019-00012,2025-10-15,2025-10-17,outgoing,415067.31,ZAR,415067.31,LSL,1.000000,Synthetic bank advice,KATSE SEFIKA Suppl.,SYN-ZA-ACC-197,za,,Management services 2025-10
+SYN-LS-ACC-197,FX-118125019-00013,2025-12-18,2025-12-20,outgoing,415067.31,ZAR,415067.31,LSL,1.000000,Synthetic bank advice,Katse Sefika Suppl.,SYN-ZA-ACC-197,za,,Management services 2025-11
+SYN-LS-ACC-197,FX-118125019-00014,2025-12-14,2025-12-16,outgoing,415067.31,ZAR,415067.31,LSL,1.000000,Synthetic bank advice,KATSE SEFIKA Suppl.,SYN-ZA-ACC-197,za,,Management services 2025-12
+SYN-LS-ACC-197,FX-118125019-00015,2026-02-10,2026-02-12,outgoing,415067.31,ZAR,415067.31,LSL,1.000000,Synthetic bank advice,Katse Sefika Supplies,SYN-ZA-ACC-197,za,,Management services 2026-01
+SYN-LS-ACC-197,FX-118125019-00016,2026-03-23,2026-03-25,outgoing,415067.31,ZAR,415067.31,LSL,1.000000,Synthetic bank advice,KATSE SEFIKA Suppl.,SYN-ZA-ACC-197,za,,Management services 2026-02
+SYN-LS-ACC-197,FX-118125019-00017,2026-04-13,2026-04-15,outgoing,415067.31,ZAR,415067.31,LSL,1.000000,Synthetic bank advice,KATSE SEFIKA Suppl.,SYN-ZA-ACC-197,za,,Management services 2026-03
+SYN-LS-ACC-197,FX-118125019-00018,2026-04-10,2026-04-12,outgoing,415067.31,ZAR,415067.31,LSL,1.000000,Synthetic bank advice,Katse Sefika Suppl.,SYN-ZA-ACC-197,za,,Management services 2026-04
+SYN-LS-ACC-197,FX-118125019-00019,2026-05-06,2026-05-08,outgoing,415067.31,ZAR,415067.31,LSL,1.000000,Synthetic bank advice,Katse Sefika Suppl.,SYN-ZA-ACC-197,za,,Management services 2026-05
+SYN-LS-ACC-197,FX-118125019-00020,2026-06-05,2026-06-07,outgoing,415067.31,ZAR,415067.31,LSL,1.000000,Synthetic bank advice,Katse Sefika Supplies,SYN-ZA-ACC-197,za,,Management services 2026-06
+SYN-LS-ACC-197,FX-118125019-00021,2026-07-11,2026-07-13,outgoing,415067.31,ZAR,415067.31,LSL,1.000000,Synthetic bank advice,Katse Sefika Supplies,SYN-ZA-ACC-197,za,,Management services 2026-07
+SYN-LS-ACC-197,FX-118125019-00022,2026-08-13,2026-08-15,outgoing,415067.31,ZAR,415067.31,LSL,1.000000,Synthetic bank advice,Katse Sefika Supplies,SYN-ZA-ACC-197,za,,Management services 2026-08
+SYN-LS-ACC-197,FX-118125019-00023,2026-10-04,2026-10-06,outgoing,415067.31,ZAR,415067.31,LSL,1.000000,Synthetic bank advice,Katse Sefika Suppl.,SYN-ZA-ACC-197,za,,Management services 2026-09
+SYN-LS-ACC-197,FX-118125019-00024,2026-11-10,2026-11-12,outgoing,415067.31,ZAR,415067.31,LSL,1.000000,Synthetic bank advice,Katse Sefika Supplies,SYN-ZA-ACC-197,za,,Management services 2026-10

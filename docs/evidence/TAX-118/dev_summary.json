@@ -1,0 +1,189 @@
+{
+  "run_at": "2026-11-06T11:55:43+00:00",
+  "rules": "56d17eedb745300df91d01b3d7435f73bb0f59f4a647455c20c9ce1458326a07",
+  "taxpayers": 100,
+  "detection_by_issue": {
+    "fake_invoices": {
+      "detected": {
+        "count": 5,
+        "of": 5,
+        "rate": 1.0
+      },
+      "false_positive": {
+        "count": 0,
+        "of": 95,
+        "rate": 0.0
+      }
+    },
+    "untaxed_imported_services": {
+      "detected": {
+        "count": 3,
+        "of": 4,
+        "rate": 0.75
+      },
+      "false_positive": {
+        "count": 2,
+        "of": 96,
+        "rate": 0.0208
+      }
+    },
+    "disguised_employment": {
+      "detected": {
+        "count": 1,
+        "of": 2,
+        "rate": 0.5
+      },
+      "false_positive": {
+        "count": 0,
+        "of": 98,
+        "rate": 0.0
+      }
+    },
+    "related_party_loss": {
+      "detected": {
+        "count": 6,
+        "of": 6,
+        "rate": 1.0
+      },
+      "false_positive": {
+        "count": 2,
+        "of": 94,
+        "rate": 0.0213
+      }
+    },
+    "policy_gap": {
+      "detected": {
+        "count": 2,
+        "of": 2,
+        "rate": 1.0
+      },
+      "false_positive": {
+        "count": 0,
+        "of": 98,
+        "rate": 0.0
+      }
+    }
+  },
+  "detection_overall": {
+    "planted_issue_instances": {
+      "count": 17,
+      "of": 19,
+      "rate": 0.8947
+    },
+    "taxpayers_with_any_issue_flagged": {
+      "count": 16,
+      "of": 17,
+      "rate": 0.9412
+    },
+    "mixed_taxpayers_both_found": {
+      "count": 1,
+      "of": 2,
+      "rate": 0.5
+    }
+  },
+  "false_positive_overall": {
+    "clean_taxpayers_flagged": {
+      "count": 4,
+      "of": 83,
+      "rate": 0.0482
+    }
+  },
+  "lanes": {
+    "accuracy": {
+      "count": 1787,
+      "of": 1870,
+      "rate": 0.9556
+    },
+    "confusion_truth_vs_system": {
+      "fast->fast": 920,
+      "fast->standard": 79,
+      "investigation->fast": 2,
+      "investigation->investigation": 22,
+      "investigation->standard": 2,
+      "standard->standard": 845
+    },
+    "valid_claims_fast": {
+      "count": 920,
+      "of": 1842,
+      "rate": 0.4995
+    },
+    "policy_fast_claims_fast": {
+      "count": 920,
+      "of": 999,
+      "rate": 0.9209
+    },
+    "claims_with_fake_invoices_not_fast": {
+      "count": 26,
+      "of": 28,
+      "rate": 0.9286
+    },
+    "claims_with_fake_invoices_investigation": {
+      "count": 22,
+      "of": 28,
+      "rate": 0.7857
+    }
+  },
+  "refund_amounts": {
+    "valid_refund_total": "290061652.93",
+    "valid_refund_in_undisputed_portion": "276948371.70",
+    "share_of_valid_refund_released_early": 0.9548,
+    "fake_vat_leaked_into_undisputed_portion": "434499.81",
+    "valid_claims_undisputed_within_m1_of_valid_refund": {
+      "count": 1515,
+      "of": 1842,
+      "rate": 0.8225
+    },
+    "valid_claims_undisputed_mean_abs_error": "6942.38"
+  },
+  "amount_at_risk": {
+    "fake_invoices_planted_vat": "4517163.47",
+    "fake_invoices_planted_vat_in_detected_taxpayers": "4517163.47",
+    "fake_invoices_vat_disputed_by_system_for_planted_taxpayers": "4335338.46",
+    "imported_services_planted_gap": "5171168.40",
+    "imported_services_gap_computed_for_planted_taxpayers": "4692382.68"
+  },
+  "recompute": {
+    "claims_with_unbooked_fakes_caught_by_recompute": {
+      "count": 22,
+      "of": 22,
+      "rate": 1.0
+    },
+    "clean_taxpayer_periods_with_a_recompute_finding": {
+      "count": 0,
+      "of": 1992,
+      "rate": 0.0
+    },
+    "valid_claims_with_a_line_not_in_books": {
+      "count": 0,
+      "of": 1842,
+      "rate": 0.0
+    }
+  },
+  "legal_routes": {
+    "correct_candidate_route_or_policy_gap": {
+      "count": 20,
+      "of": 20,
+      "rate": 1.0
+    },
+    "any_finding_eligible_for_assessment": false
+  },
+  "time": {
+    "system_seconds_per_taxpayer_mean": 0.0112,
+    "system_seconds_per_taxpayer_p95": 0.0147,
+    "manual_minutes_per_taxpayer_assumed_mean": 923.7,
+    "manual_model": {
+      "per_claim": 20,
+      "per_claim_line": 3,
+      "per_foreign_counterparty": 15,
+      "cit_review": 30,
+      "per_agreement": 20
+    },
+    "manual_status": "assumption_until_timed_by_a_person"
+  },
+  "error_counts": {
+    "false_positive:related_party_loss": 2,
+    "false_positive:untaxed_imported_services": 2,
+    "miss:disguised_employment": 1,
+    "miss:untaxed_imported_services": 1
+  }
+}

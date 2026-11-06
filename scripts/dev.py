@@ -202,6 +202,9 @@ def check():
         # harness self-check (reference fake passes, every seeded fault fails).
         ["python3", "-m", "unittest", "discover", "-s", "tests/ai", "-p", "test_taxpayer*.py"],
         ["python3", "-m", "ai.evaluation.taxpayer_assistant_eval", "--check"],
+        # TAX-112-118 assurance checks (pure Python) and the benchmark self-check.
+        ["python3", "-m", "unittest", "discover", "-s", "tests/ai", "-p", "test_assurance*.py"],
+        ["python3", "-m", "ai.evaluation.assurance_benchmark", "--check"],
         # TAX-068 institutional knowledge retrieval (pure Python).
         ["python3", "-m", "unittest", "discover", "-s", "tests/ai", "-p", "test_institutional*.py"],
         # TAX-071 EOI draft packages (pure Python; no transmission capability).

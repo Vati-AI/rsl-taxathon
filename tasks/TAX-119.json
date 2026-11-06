@@ -1,0 +1,58 @@
+{
+  "id": "TAX-119",
+  "kind": "task",
+  "title": "Docling extraction accuracy on generated invoice and agreement PDFs",
+  "owner": "Keletso",
+  "area": "tests/ai",
+  "phase": "pilot",
+  "status": "BACKLOG",
+  "priority": "P1",
+  "depends_on": [
+    "TAX-118",
+    "TAX-038"
+  ],
+  "claimed_by": null,
+  "branch": null,
+  "pr": null,
+  "scope": "Optional evidence for the proposal: render synthetic invoice and agreement PDFs from the TAX-118 population (including scans with noise), extract them with the pinned Docling deployment and measure field accuracy against the generator's values",
+  "inputs": [
+    "PROJECT.md",
+    "PROJECT_SCOPE.md",
+    "docs/ARCHITECTURE.md",
+    "docs/DATA_MODEL.md",
+    "docs/ENGINEERING_STANDARD.md",
+    "docs/V1_ACCEPTANCE.md",
+    "docs/reference/FRAMEWORK.md",
+    "docs/decisions/ADR-040-rsl-existing-systems-integration.md",
+    "docs/evidence/TAX-118/RESULTS.md"
+  ],
+  "acceptance": [
+    {
+      "text": "Generate at least 100 synthetic PDFs (clean and degraded) from TAX-118 records with the true field values kept outside the extraction input",
+      "done": false
+    },
+    {
+      "text": "Run the TAX-038 Docling adapter on them and report per-field accuracy (supplier TIN, invoice number, date, net, VAT) with error examples; a Docling outage is reported as not tested, never estimated",
+      "done": false
+    },
+    {
+      "text": "Record relevant tests and evidence, update task status and open a PR",
+      "done": false
+    }
+  ],
+  "verification": "Run the TAX-038 Docling adapter on them and report per-field accuracy (supplier TIN, invoice number, date, net, VAT) with error examples; a Docling outage is reported as not tested, never estimated",
+  "skills": [
+    "start-task",
+    "implement-change",
+    "update-project-task",
+    "finish-task"
+  ],
+  "evidence": [],
+  "notes": [
+    {
+      "at": "2026-11-06",
+      "text": "Added 2026-11-06 as a follow-up to TAX-118 (results that need documents or people)."
+    }
+  ],
+  "sequence": 30
+}

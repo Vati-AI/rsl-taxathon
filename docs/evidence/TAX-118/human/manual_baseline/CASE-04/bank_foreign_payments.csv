@@ -1,0 +1,25 @@
+account_ref,transfer_ref,instruction_date,settlement_date,direction,instructed_amount,instructed_currency,settled_amount,settled_currency,exchange_rate,rate_source,counterparty_name,counterparty_account_ref,counterparty_country,intermediary_bank_ref,narration
+SYN-LS-ACC-152,FX-111861305-00001,2024-11-19,2024-11-21,outgoing,8000.03,GBP,184800.69,LSL,23.100000,Synthetic bank advice,THABA MALUTI Distr.,SYN-GB-ACC-152,gb,,Management services 2024-11
+SYN-LS-ACC-152,FX-111861305-00002,2024-12-13,2024-12-15,outgoing,8000.03,GBP,184800.69,LSL,23.100000,Synthetic bank advice,Thaba Maluti Distr.,SYN-GB-ACC-152,gb,,Management services 2024-12
+SYN-LS-ACC-152,FX-111861305-00003,2025-01-11,2025-01-13,outgoing,8000.03,GBP,184800.69,LSL,23.100000,Synthetic bank advice,Thaba Maluti Distributors,SYN-GB-ACC-152,gb,,Management services 2025-01
+SYN-LS-ACC-152,FX-111861305-00004,2025-02-06,2025-02-08,outgoing,8000.03,GBP,184800.69,LSL,23.100000,Synthetic bank advice,THABA MALUTI Distr.,SYN-GB-ACC-152,gb,,Management services 2025-02
+SYN-LS-ACC-152,FX-111861305-00005,2025-03-09,2025-03-11,outgoing,8000.03,GBP,184800.69,LSL,23.100000,Synthetic bank advice,THABA MALUTI Distr.,SYN-GB-ACC-152,gb,,Management services 2025-03
+SYN-LS-ACC-152,FX-111861305-00006,2025-04-08,2025-04-10,outgoing,8000.03,GBP,184800.69,LSL,23.100000,Synthetic bank advice,Thaba Maluti Distr.,SYN-GB-ACC-152,gb,,Management services 2025-04
+SYN-LS-ACC-152,FX-111861305-00007,2025-05-03,2025-05-05,outgoing,8000.03,GBP,184800.69,LSL,23.100000,Synthetic bank advice,Thaba Maluti Distr.,SYN-GB-ACC-152,gb,,Management services 2025-05
+SYN-LS-ACC-152,FX-111861305-00008,2025-07-17,2025-07-19,outgoing,8000.03,GBP,184800.69,LSL,23.100000,Synthetic bank advice,Thaba Maluti Distributors,SYN-GB-ACC-152,gb,,Management services 2025-06
+SYN-LS-ACC-152,FX-111861305-00009,2025-07-16,2025-07-18,outgoing,8000.03,GBP,184800.69,LSL,23.100000,Synthetic bank advice,THABA MALUTI Distr.,SYN-GB-ACC-152,gb,,Management services 2025-07
+SYN-LS-ACC-152,FX-111861305-00010,2025-08-15,2025-08-17,outgoing,8000.03,GBP,184800.69,LSL,23.100000,Synthetic bank advice,Thaba Maluti Distr.,SYN-GB-ACC-152,gb,,Management services 2025-08
+SYN-LS-ACC-152,FX-111861305-00011,2025-09-20,2025-09-22,outgoing,8000.03,GBP,184800.69,LSL,23.100000,Synthetic bank advice,THABA MALUTI Distr.,SYN-GB-ACC-152,gb,,Management services 2025-09
+SYN-LS-ACC-152,FX-111861305-00012,2025-10-09,2025-10-11,outgoing,8000.03,GBP,184800.69,LSL,23.100000,Synthetic bank advice,Thaba Maluti Distr.,SYN-GB-ACC-152,gb,,Management services 2025-10
+SYN-LS-ACC-152,FX-111861305-00013,2025-11-13,2025-11-15,outgoing,8000.03,GBP,184800.69,LSL,23.100000,Synthetic bank advice,THABA MALUTI Distr.,SYN-GB-ACC-152,gb,,Management services 2025-11
+SYN-LS-ACC-152,FX-111861305-00014,2025-12-16,2025-12-18,outgoing,8000.03,GBP,184800.69,LSL,23.100000,Synthetic bank advice,Thaba Maluti Distr.,SYN-GB-ACC-152,gb,,Management services 2025-12
+SYN-LS-ACC-152,FX-111861305-00015,2026-02-22,2026-02-24,outgoing,8000.03,GBP,184800.69,LSL,23.100000,Synthetic bank advice,Thaba Maluti Distributors,SYN-GB-ACC-152,gb,,Management services 2026-01
+SYN-LS-ACC-152,FX-111861305-00016,2026-02-08,2026-02-10,outgoing,8000.03,GBP,184800.69,LSL,23.100000,Synthetic bank advice,THABA MALUTI Distr.,SYN-GB-ACC-152,gb,,Management services 2026-02
+SYN-LS-ACC-152,FX-111861305-00017,2026-03-19,2026-03-21,outgoing,8000.03,GBP,184800.69,LSL,23.100000,Synthetic bank advice,THABA MALUTI Distr.,SYN-GB-ACC-152,gb,,Management services 2026-03
+SYN-LS-ACC-152,FX-111861305-00018,2026-04-22,2026-04-24,outgoing,8000.03,GBP,184800.69,LSL,23.100000,Synthetic bank advice,Thaba Maluti Distributors,SYN-GB-ACC-152,gb,,Management services 2026-04
+SYN-LS-ACC-152,FX-111861305-00019,2026-05-21,2026-05-23,outgoing,8000.03,GBP,184800.69,LSL,23.100000,Synthetic bank advice,THABA MALUTI Distr.,SYN-GB-ACC-152,gb,,Management services 2026-05
+SYN-LS-ACC-152,FX-111861305-00020,2026-06-08,2026-06-10,outgoing,8000.03,GBP,184800.69,LSL,23.100000,Synthetic bank advice,Thaba Maluti Distr.,SYN-GB-ACC-152,gb,,Management services 2026-06
+SYN-LS-ACC-152,FX-111861305-00021,2026-08-23,2026-08-25,outgoing,8000.03,GBP,184800.69,LSL,23.100000,Synthetic bank advice,THABA MALUTI Distr.,SYN-GB-ACC-152,gb,,Management services 2026-07
+SYN-LS-ACC-152,FX-111861305-00022,2026-09-08,2026-09-10,outgoing,8000.03,GBP,184800.69,LSL,23.100000,Synthetic bank advice,Thaba Maluti Distributors,SYN-GB-ACC-152,gb,,Management services 2026-08
+SYN-LS-ACC-152,FX-111861305-00023,2026-09-16,2026-09-18,outgoing,8000.03,GBP,184800.69,LSL,23.100000,Synthetic bank advice,Thaba Maluti Distr.,SYN-GB-ACC-152,gb,,Management services 2026-09
+SYN-LS-ACC-152,FX-111861305-00024,2026-10-22,2026-10-24,outgoing,8000.03,GBP,184800.69,LSL,23.100000,Synthetic bank advice,Thaba Maluti Distributors,SYN-GB-ACC-152,gb,,Management services 2026-10

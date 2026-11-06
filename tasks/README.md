@@ -36,11 +36,13 @@ TAX-111–118 are the must-have additions from the 2026-11-06 framework scope up
 | 26 | [TAX-101](TAX-101.json) | Taxpayer portal assistant UI |
 | 27 | [TAX-102](TAX-102.json) | Taxpayer assistant scenarios, expected outcomes and leakage tests |
 | 28 | [TAX-118](TAX-118.json) | Synthetic taxpayer population, manual baseline and measured results |
-| 29 | [TAX-058](TAX-058.json) | Five-scenario demo and measured acceptance |
-| 30 | [TAX-099](TAX-099.json) | Taxpayer evidence-response assistant |
-| 31 | [TAX-072](TAX-072.json) | EOI approval and response evidence lifecycle |
-| 32 | [TAX-076](TAX-076.json) | Controlled serious-case referral package |
-| 33 | [TAX-081](TAX-081.json) | Pilot operational acceptance and performance baseline |
+| 29 | [TAX-120](TAX-120.json) | Human manual baseline and outside-reviewer scores for TAX-118 |
+| 30 | [TAX-119](TAX-119.json) | Docling extraction accuracy on generated invoice and agreement PDFs |
+| 31 | [TAX-058](TAX-058.json) | Five-scenario demo and measured acceptance |
+| 32 | [TAX-099](TAX-099.json) | Taxpayer evidence-response assistant |
+| 33 | [TAX-072](TAX-072.json) | EOI approval and response evidence lifecycle |
+| 34 | [TAX-076](TAX-076.json) | Controlled serious-case referral package |
+| 35 | [TAX-081](TAX-081.json) | Pilot operational acceptance and performance baseline |
 
 Human owner = accountability. AI agent = implementer recorded in `claimed_by`. TAX-001–016 are planning epics; claim leaf tasks TAX-018 onward. TAX-017 tracks workspace setup. Run `python3 scripts/task.py list --owner NAME --ready` to find eligible work. Future phases are planned, not required for the four-day demo.
 
@@ -147,3 +149,5 @@ Human owner = accountability. AI agent = implementer recorded in `claimed_by`. T
 | [TAX-116](TAX-116.json) | Keletso | pilot | Named rule register (unverified) and AfriSam policy-gap entry | TAX-052, TAX-077 |
 | [TAX-117](TAX-117.json) | Keletso | pilot | Vati API behind WSO2 API Manager and sign-in through WSO2 Identity Server | TAX-090, TAX-091 |
 | [TAX-118](TAX-118.json) | Keletso | pilot | Synthetic taxpayer population, manual baseline and measured results | TAX-112, TAX-113, TAX-114, TAX-115, TAX-116, TAX-056 |
+| [TAX-119](TAX-119.json) | Keletso | pilot | Docling extraction accuracy on generated invoice and agreement PDFs | TAX-118, TAX-038 |
+| [TAX-120](TAX-120.json) | Keletso | pilot | Human manual baseline and outside-reviewer scores for TAX-118 | TAX-118 |

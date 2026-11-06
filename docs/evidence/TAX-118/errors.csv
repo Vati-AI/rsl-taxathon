@@ -1,0 +1,20 @@
+tin,type,issue,reason
+132004930,false_positive,related_party_loss,Genuine losses with rising related-party fees but no explanation document supplied: the trigger fires and a human review is the intended outcome.
+322274375,false_positive,untaxed_imported_services,"Withholding was declared under a different payee reference, so it did not join to the counterparty; an officer would resolve it with one question."
+428557544,miss,untaxed_imported_services,"Foreign fees were booked as general operating expenses, so the books do not show them as services and the three-way match did not test them."
+453583181,miss,disguised_employment,"No permit record for the individual, so presence could not be compared with the consultancy terms; no conflicting fact, no referral."
+511480115,false_positive,untaxed_imported_services,"Withholding was declared under a different payee reference, so it did not join to the counterparty; an officer would resolve it with one question."
+534446120,false_positive,related_party_loss,Genuine losses with rising related-party fees but no explanation document supplied: the trigger fires and a human review is the intended outcome.
+561282912,false_positive,related_party_loss,Genuine losses with rising related-party fees but no explanation document supplied: the trigger fires and a human review is the intended outcome.
+625110657,false_positive,untaxed_imported_services,"Withholding was declared under a different payee reference, so it did not join to the counterparty; an officer would resolve it with one question."
+626977948,false_positive,untaxed_imported_services,"Withholding was declared under a different payee reference, so it did not join to the counterparty; an officer would resolve it with one question."
+752157939,false_positive,related_party_loss,Genuine losses with rising related-party fees but no explanation document supplied: the trigger fires and a human review is the intended outcome.
+767369827,miss,untaxed_imported_services,"Foreign fees were booked as general operating expenses, so the books do not show them as services and the three-way match did not test them."
+791702552,miss,untaxed_imported_services,"Foreign fees were booked as general operating expenses, so the books do not show them as services and the three-way match did not test them."
+854098194,miss,disguised_employment,"No permit record for the individual, so presence could not be compared with the consultancy terms; no conflicting fact, no referral."
+867074488,false_positive,related_party_loss,Genuine losses with rising related-party fees but no explanation document supplied: the trigger fires and a human review is the intended outcome.
+896980558,false_positive,disguised_employment,"A genuine consultant stayed 183 days or more, so permit presence conflicts with the fixed-term contract and the case is referred to a specialist."
+922037384,false_positive,untaxed_imported_services,"Withholding was declared under a different payee reference, so it did not join to the counterparty; an officer would resolve it with one question."
+952147169,false_positive,related_party_loss,Genuine losses with rising related-party fees but no explanation document supplied: the trigger fires and a human review is the intended outcome.
+978709748,false_positive,disguised_employment,"A genuine consultant stayed 183 days or more, so permit presence conflicts with the fixed-term contract and the case is referred to a specialist."
+999950701,miss,untaxed_imported_services,"Foreign fees were booked as general operating expenses, so the books do not show them as services and the three-way match did not test them."

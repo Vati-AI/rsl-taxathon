@@ -1,0 +1,629 @@
+{
+ "synthetic": true,
+ "notice": "Synthetic TAX-115 fixture: invented TINs, suppliers and amounts at a synthetic 15% VAT rate; not real taxpayers, invoices or Lesotho law.",
+ "scenario": "Framework exception journey: M2.4m management fees to a South African parent with no VAT or WHT declared, beside a treaty-relief advisor and a correctly declared IT supplier",
+ "tin": "710000001",
+ "rates": {
+  "vat": "0.15",
+  "wht": "0.10",
+  "wht_treaty": "0.05"
+ },
+ "materiality": "50000.00",
+ "suppliers": [
+  {
+   "supplier_ref": "F-ZA-PARENT",
+   "country": "za",
+   "resident": false,
+   "bank_account_ref": "SYN-ZA-ACC-1"
+  },
+  {
+   "supplier_ref": "F-MU-ADVISORY",
+   "country": "mu",
+   "resident": false,
+   "bank_account_ref": "SYN-MU-ACC-2"
+  },
+  {
+   "supplier_ref": "F-GB-IT",
+   "country": "gb",
+   "resident": false,
+   "bank_account_ref": "SYN-GB-ACC-3"
+  }
+ ],
+ "supplier_invoices": [
+  {
+   "entry_id": "L-P-0",
+   "period": "2025-10",
+   "supplier_ref": "F-ZA-PARENT",
+   "net": "200000.00",
+   "category": "management_fees"
+  },
+  {
+   "entry_id": "L-P-1",
+   "period": "2025-11",
+   "supplier_ref": "F-ZA-PARENT",
+   "net": "200000.00",
+   "category": "management_fees"
+  },
+  {
+   "entry_id": "L-P-2",
+   "period": "2025-12",
+   "supplier_ref": "F-ZA-PARENT",
+   "net": "200000.00",
+   "category": "management_fees"
+  },
+  {
+   "entry_id": "L-P-3",
+   "period": "2026-01",
+   "supplier_ref": "F-ZA-PARENT",
+   "net": "200000.00",
+   "category": "management_fees"
+  },
+  {
+   "entry_id": "L-P-4",
+   "period": "2026-02",
+   "supplier_ref": "F-ZA-PARENT",
+   "net": "200000.00",
+   "category": "management_fees"
+  },
+  {
+   "entry_id": "L-P-5",
+   "period": "2026-03",
+   "supplier_ref": "F-ZA-PARENT",
+   "net": "200000.00",
+   "category": "management_fees"
+  },
+  {
+   "entry_id": "L-P-6",
+   "period": "2026-04",
+   "supplier_ref": "F-ZA-PARENT",
+   "net": "200000.00",
+   "category": "management_fees"
+  },
+  {
+   "entry_id": "L-P-7",
+   "period": "2026-05",
+   "supplier_ref": "F-ZA-PARENT",
+   "net": "200000.00",
+   "category": "management_fees"
+  },
+  {
+   "entry_id": "L-P-8",
+   "period": "2026-06",
+   "supplier_ref": "F-ZA-PARENT",
+   "net": "200000.00",
+   "category": "management_fees"
+  },
+  {
+   "entry_id": "L-P-9",
+   "period": "2026-07",
+   "supplier_ref": "F-ZA-PARENT",
+   "net": "200000.00",
+   "category": "management_fees"
+  },
+  {
+   "entry_id": "L-P-10",
+   "period": "2026-08",
+   "supplier_ref": "F-ZA-PARENT",
+   "net": "200000.00",
+   "category": "management_fees"
+  },
+  {
+   "entry_id": "L-P-11",
+   "period": "2026-09",
+   "supplier_ref": "F-ZA-PARENT",
+   "net": "200000.00",
+   "category": "management_fees"
+  },
+  {
+   "entry_id": "L-M-0",
+   "period": "2025-10",
+   "supplier_ref": "F-MU-ADVISORY",
+   "net": "100000.00",
+   "category": "consultancy_fees"
+  },
+  {
+   "entry_id": "L-M-1",
+   "period": "2025-11",
+   "supplier_ref": "F-MU-ADVISORY",
+   "net": "100000.00",
+   "category": "consultancy_fees"
+  },
+  {
+   "entry_id": "L-M-2",
+   "period": "2025-12",
+   "supplier_ref": "F-MU-ADVISORY",
+   "net": "100000.00",
+   "category": "consultancy_fees"
+  },
+  {
+   "entry_id": "L-M-3",
+   "period": "2026-01",
+   "supplier_ref": "F-MU-ADVISORY",
+   "net": "100000.00",
+   "category": "consultancy_fees"
+  },
+  {
+   "entry_id": "L-G-0",
+   "period": "2025-10",
+   "supplier_ref": "F-GB-IT",
+   "net": "50000.00",
+   "category": "consultancy_fees"
+  },
+  {
+   "entry_id": "L-G-1",
+   "period": "2025-11",
+   "supplier_ref": "F-GB-IT",
+   "net": "50000.00",
+   "category": "consultancy_fees"
+  },
+  {
+   "entry_id": "L-G-2",
+   "period": "2025-12",
+   "supplier_ref": "F-GB-IT",
+   "net": "50000.00",
+   "category": "consultancy_fees"
+  },
+  {
+   "entry_id": "L-G-3",
+   "period": "2026-01",
+   "supplier_ref": "F-GB-IT",
+   "net": "50000.00",
+   "category": "consultancy_fees"
+  },
+  {
+   "entry_id": "L-G-4",
+   "period": "2026-02",
+   "supplier_ref": "F-GB-IT",
+   "net": "50000.00",
+   "category": "consultancy_fees"
+  },
+  {
+   "entry_id": "L-G-5",
+   "period": "2026-03",
+   "supplier_ref": "F-GB-IT",
+   "net": "50000.00",
+   "category": "consultancy_fees"
+  }
+ ],
+ "bank_payments": [
+  {
+   "provider_reference": "FX-P-0",
+   "date": "2025-10-28",
+   "direction": "outflow",
+   "settled_amount": "200000.00",
+   "counterparty_account_ref": "SYN-ZA-ACC-1",
+   "counterparty_country": "za"
+  },
+  {
+   "provider_reference": "FX-P-1",
+   "date": "2025-11-28",
+   "direction": "outflow",
+   "settled_amount": "200000.00",
+   "counterparty_account_ref": "SYN-ZA-ACC-1",
+   "counterparty_country": "za"
+  },
+  {
+   "provider_reference": "FX-P-2",
+   "date": "2025-12-28",
+   "direction": "outflow",
+   "settled_amount": "200000.00",
+   "counterparty_account_ref": "SYN-ZA-ACC-1",
+   "counterparty_country": "za"
+  },
+  {
+   "provider_reference": "FX-P-3",
+   "date": "2026-01-28",
+   "direction": "outflow",
+   "settled_amount": "199998.75",
+   "counterparty_account_ref": "SYN-ZA-ACC-1",
+   "counterparty_country": "za"
+  },
+  {
+   "provider_reference": "FX-P-4",
+   "date": "2026-02-28",
+   "direction": "outflow",
+   "settled_amount": "200000.00",
+   "counterparty_account_ref": "SYN-ZA-ACC-1",
+   "counterparty_country": "za"
+  },
+  {
+   "provider_reference": "FX-P-5",
+   "date": "2026-03-28",
+   "direction": "outflow",
+   "settled_amount": "200000.00",
+   "counterparty_account_ref": "SYN-ZA-ACC-1",
+   "counterparty_country": "za"
+  },
+  {
+   "provider_reference": "FX-P-6",
+   "date": "2026-04-28",
+   "direction": "outflow",
+   "settled_amount": "200000.00",
+   "counterparty_account_ref": "SYN-ZA-ACC-1",
+   "counterparty_country": "za"
+  },
+  {
+   "provider_reference": "FX-P-7",
+   "date": "2026-05-28",
+   "direction": "outflow",
+   "settled_amount": "200000.00",
+   "counterparty_account_ref": "SYN-ZA-ACC-1",
+   "counterparty_country": "za"
+  },
+  {
+   "provider_reference": "FX-P-8",
+   "date": "2026-06-28",
+   "direction": "outflow",
+   "settled_amount": "200000.00",
+   "counterparty_account_ref": "SYN-ZA-ACC-1",
+   "counterparty_country": "za"
+  },
+  {
+   "provider_reference": "FX-P-9",
+   "date": "2026-07-28",
+   "direction": "outflow",
+   "settled_amount": "200000.00",
+   "counterparty_account_ref": "SYN-ZA-ACC-1",
+   "counterparty_country": "za"
+  },
+  {
+   "provider_reference": "FX-P-10",
+   "date": "2026-08-28",
+   "direction": "outflow",
+   "settled_amount": "200000.00",
+   "counterparty_account_ref": "SYN-ZA-ACC-1",
+   "counterparty_country": "za"
+  },
+  {
+   "provider_reference": "FX-P-11",
+   "date": "2026-09-28",
+   "direction": "outflow",
+   "settled_amount": "200000.00",
+   "counterparty_account_ref": "SYN-ZA-ACC-1",
+   "counterparty_country": "za"
+  },
+  {
+   "provider_reference": "FX-M-0",
+   "date": "2025-10-20",
+   "direction": "outflow",
+   "settled_amount": "100000.00",
+   "counterparty_account_ref": "SYN-MU-ACC-2",
+   "counterparty_country": "mu"
+  },
+  {
+   "provider_reference": "FX-M-1",
+   "date": "2025-11-20",
+   "direction": "outflow",
+   "settled_amount": "100000.00",
+   "counterparty_account_ref": "SYN-MU-ACC-2",
+   "counterparty_country": "mu"
+  },
+  {
+   "provider_reference": "FX-M-2",
+   "date": "2025-12-20",
+   "direction": "outflow",
+   "settled_amount": "100000.00",
+   "counterparty_account_ref": "SYN-MU-ACC-2",
+   "counterparty_country": "mu"
+  },
+  {
+   "provider_reference": "FX-M-3",
+   "date": "2026-01-20",
+   "direction": "outflow",
+   "settled_amount": "100000.00",
+   "counterparty_account_ref": "SYN-MU-ACC-2",
+   "counterparty_country": "mu"
+  },
+  {
+   "provider_reference": "FX-G-0",
+   "date": "2025-10-15",
+   "direction": "outflow",
+   "settled_amount": "50000.00",
+   "counterparty_account_ref": "SYN-GB-ACC-3",
+   "counterparty_country": "gb"
+  },
+  {
+   "provider_reference": "FX-G-1",
+   "date": "2025-11-15",
+   "direction": "outflow",
+   "settled_amount": "50000.00",
+   "counterparty_account_ref": "SYN-GB-ACC-3",
+   "counterparty_country": "gb"
+  },
+  {
+   "provider_reference": "FX-G-2",
+   "date": "2025-12-15",
+   "direction": "outflow",
+   "settled_amount": "50000.00",
+   "counterparty_account_ref": "SYN-GB-ACC-3",
+   "counterparty_country": "gb"
+  },
+  {
+   "provider_reference": "FX-G-3",
+   "date": "2026-01-15",
+   "direction": "outflow",
+   "settled_amount": "50000.00",
+   "counterparty_account_ref": "SYN-GB-ACC-3",
+   "counterparty_country": "gb"
+  },
+  {
+   "provider_reference": "FX-G-4",
+   "date": "2026-02-15",
+   "direction": "outflow",
+   "settled_amount": "50000.00",
+   "counterparty_account_ref": "SYN-GB-ACC-3",
+   "counterparty_country": "gb"
+  },
+  {
+   "provider_reference": "FX-G-5",
+   "date": "2026-03-15",
+   "direction": "outflow",
+   "settled_amount": "50000.00",
+   "counterparty_account_ref": "SYN-GB-ACC-3",
+   "counterparty_country": "gb"
+  }
+ ],
+ "wht_lines": [
+  {
+   "line_id": "W-M-0",
+   "payee_ref": "F-MU-ADVISORY",
+   "period": "2025-10",
+   "payment_type": "service_fee",
+   "gross_amount": "100000.00",
+   "wht_amount": "5000.00",
+   "treaty_relief_claimed": true
+  },
+  {
+   "line_id": "W-M-1",
+   "payee_ref": "F-MU-ADVISORY",
+   "period": "2025-11",
+   "payment_type": "service_fee",
+   "gross_amount": "100000.00",
+   "wht_amount": "5000.00",
+   "treaty_relief_claimed": true
+  },
+  {
+   "line_id": "W-M-2",
+   "payee_ref": "F-MU-ADVISORY",
+   "period": "2025-12",
+   "payment_type": "service_fee",
+   "gross_amount": "100000.00",
+   "wht_amount": "5000.00",
+   "treaty_relief_claimed": true
+  },
+  {
+   "line_id": "W-M-3",
+   "payee_ref": "F-MU-ADVISORY",
+   "period": "2026-01",
+   "payment_type": "service_fee",
+   "gross_amount": "100000.00",
+   "wht_amount": "5000.00",
+   "treaty_relief_claimed": true
+  },
+  {
+   "line_id": "W-G-0",
+   "payee_ref": "F-GB-IT",
+   "period": "2025-10",
+   "payment_type": "service_fee",
+   "gross_amount": "50000.00",
+   "wht_amount": "5000.00",
+   "treaty_relief_claimed": false
+  },
+  {
+   "line_id": "W-G-1",
+   "payee_ref": "F-GB-IT",
+   "period": "2025-11",
+   "payment_type": "service_fee",
+   "gross_amount": "50000.00",
+   "wht_amount": "5000.00",
+   "treaty_relief_claimed": false
+  },
+  {
+   "line_id": "W-G-2",
+   "payee_ref": "F-GB-IT",
+   "period": "2025-12",
+   "payment_type": "service_fee",
+   "gross_amount": "50000.00",
+   "wht_amount": "5000.00",
+   "treaty_relief_claimed": false
+  },
+  {
+   "line_id": "W-G-3",
+   "payee_ref": "F-GB-IT",
+   "period": "2026-01",
+   "payment_type": "service_fee",
+   "gross_amount": "50000.00",
+   "wht_amount": "5000.00",
+   "treaty_relief_claimed": false
+  },
+  {
+   "line_id": "W-G-4",
+   "payee_ref": "F-GB-IT",
+   "period": "2026-02",
+   "payment_type": "service_fee",
+   "gross_amount": "50000.00",
+   "wht_amount": "5000.00",
+   "treaty_relief_claimed": false
+  },
+  {
+   "line_id": "W-G-5",
+   "payee_ref": "F-GB-IT",
+   "period": "2026-03",
+   "payment_type": "service_fee",
+   "gross_amount": "50000.00",
+   "wht_amount": "5000.00",
+   "treaty_relief_claimed": false
+  }
+ ],
+ "vat_returns": [
+  {
+   "period": "2025-10",
+   "imported_services_vat_declared": "22500.00"
+  },
+  {
+   "period": "2025-11",
+   "imported_services_vat_declared": "22500.00"
+  },
+  {
+   "period": "2025-12",
+   "imported_services_vat_declared": "22500.00"
+  },
+  {
+   "period": "2026-01",
+   "imported_services_vat_declared": "22500.00"
+  },
+  {
+   "period": "2026-02",
+   "imported_services_vat_declared": "7500.00"
+  },
+  {
+   "period": "2026-03",
+   "imported_services_vat_declared": "7500.00"
+  },
+  {
+   "period": "2026-04",
+   "imported_services_vat_declared": "0.00"
+  },
+  {
+   "period": "2026-05",
+   "imported_services_vat_declared": "0.00"
+  },
+  {
+   "period": "2026-06",
+   "imported_services_vat_declared": "0.00"
+  },
+  {
+   "period": "2026-07",
+   "imported_services_vat_declared": "0.00"
+  },
+  {
+   "period": "2026-08",
+   "imported_services_vat_declared": "0.00"
+  },
+  {
+   "period": "2026-09",
+   "imported_services_vat_declared": "0.00"
+  }
+ ],
+ "residence_certificates": [
+  "F-MU-ADVISORY"
+ ],
+ "central_bank_payments": [
+  {
+   "report_id": "CB-M-0",
+   "resident_tin": "710000001",
+   "value_date": "2025-10-20",
+   "direction": "outgoing",
+   "amount": "100000.00",
+   "currency": "LSL",
+   "counterparty_country": "mu"
+  },
+  {
+   "report_id": "CB-M-1",
+   "resident_tin": "710000001",
+   "value_date": "2025-11-20",
+   "direction": "outgoing",
+   "amount": "100000.00",
+   "currency": "LSL",
+   "counterparty_country": "mu"
+  },
+  {
+   "report_id": "CB-M-2",
+   "resident_tin": "710000001",
+   "value_date": "2025-12-20",
+   "direction": "outgoing",
+   "amount": "100000.00",
+   "currency": "LSL",
+   "counterparty_country": "mu"
+  },
+  {
+   "report_id": "CB-M-3",
+   "resident_tin": "710000001",
+   "value_date": "2026-01-20",
+   "direction": "outgoing",
+   "amount": "100000.00",
+   "currency": "LSL",
+   "counterparty_country": "mu"
+  },
+  {
+   "report_id": "CB-G-0",
+   "resident_tin": "710000001",
+   "value_date": "2025-10-15",
+   "direction": "outgoing",
+   "amount": "50000.00",
+   "currency": "LSL",
+   "counterparty_country": "gb"
+  },
+  {
+   "report_id": "CB-G-1",
+   "resident_tin": "710000001",
+   "value_date": "2025-11-15",
+   "direction": "outgoing",
+   "amount": "50000.00",
+   "currency": "LSL",
+   "counterparty_country": "gb"
+  },
+  {
+   "report_id": "CB-G-2",
+   "resident_tin": "710000001",
+   "value_date": "2025-12-15",
+   "direction": "outgoing",
+   "amount": "50000.00",
+   "currency": "LSL",
+   "counterparty_country": "gb"
+  },
+  {
+   "report_id": "CB-G-3",
+   "resident_tin": "710000001",
+   "value_date": "2026-01-15",
+   "direction": "outgoing",
+   "amount": "50000.00",
+   "currency": "LSL",
+   "counterparty_country": "gb"
+  },
+  {
+   "report_id": "CB-G-4",
+   "resident_tin": "710000001",
+   "value_date": "2026-02-15",
+   "direction": "outgoing",
+   "amount": "50000.00",
+   "currency": "LSL",
+   "counterparty_country": "gb"
+  },
+  {
+   "report_id": "CB-G-5",
+   "resident_tin": "710000001",
+   "value_date": "2026-03-15",
+   "direction": "outgoing",
+   "amount": "50000.00",
+   "currency": "LSL",
+   "counterparty_country": "gb"
+  }
+ ],
+ "expected": {
+  "flags": [
+   {
+    "code": "wht_declared_below_expected",
+    "counterparty": "F-ZA-PARENT",
+    "amount": "240000.00"
+   },
+   {
+    "code": "imported_services_vat_declared_below_expected",
+    "amount": "360000.00"
+   }
+  ],
+  "route": "special_sectors_review",
+  "explanations": {
+   "F-MU-ADVISORY": [
+    "treaty_relief_with_residence_certificate"
+   ]
+  },
+  "cma_note_for": [
+   "F-ZA-PARENT"
+  ],
+  "no_flag_for": [
+   "F-MU-ADVISORY",
+   "F-GB-IT"
+  ]
+ }
+}

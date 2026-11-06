@@ -5,16 +5,16 @@
   "owner": "Keletso",
   "area": "ai",
   "phase": "pilot",
-  "status": "BACKLOG",
+  "status": "IN_REVIEW",
   "priority": "P0",
   "depends_on": [
     "TAX-111",
     "TAX-032",
     "TAX-024"
   ],
-  "claimed_by": null,
-  "branch": null,
-  "pr": null,
+  "claimed_by": "claude-code-20261106-vigilant-fermat",
+  "branch": "claude/vigilant-fermat-4x2es6",
+  "pr": "https://github.com/Vati-AI/rsl-taxathon/pull/277",
   "scope": "BP1: accept a SAF-T-style export (general ledger journals, supplier and customer ledgers, payments) for large groups, standardise it, flag data problems without fixing them, recompute VAT and key income-tax lines and produce a line-by-line declared-versus-recomputed difference report with a record quality score",
   "inputs": [
     "PROJECT.md",
@@ -33,19 +33,19 @@
   "acceptance": [
     {
       "text": "A documented SAF-T-style intake schema (subset sufficient for VAT and key CIT lines) with the original file preserved via TAX-032 hashing; standardisation to Maloti, ISO dates and standard account categories; arithmetic, duplicate and TIN checks flag issues and never silently correct them",
-      "done": false
+      "done": true
     },
     {
       "text": "Deterministic recompute of output VAT, input VAT and selected income-tax lines from the source records; the difference report lists declared, recomputed and difference per line with source record IDs; each record gets complete/verified/unverified/contradicted quality and low quality alone never produces an action",
-      "done": false
+      "done": true
     },
     {
       "text": "Synthetic SAF-T fixtures for at least two groups, one clean and one with planted 'cooked' figures that the recompute detects; tests cover balanced/unbalanced journals, duplicates, decimal exactness and the expected differences; wording says RSL independently validates and the taxpayer remains responsible",
-      "done": false
+      "done": true
     },
     {
       "text": "Record relevant tests and evidence, update task status and open a PR",
-      "done": false
+      "done": true
     }
   ],
   "verification": "Synthetic SAF-T fixtures for at least two groups, one clean and one with planted 'cooked' figures that the recompute detects; tests cover balanced/unbalanced journals, duplicates, decimal exactness and the expected differences; wording says RSL independently validates and the taxpayer remains responsible",
@@ -55,11 +55,32 @@
     "update-project-task",
     "finish-task"
   ],
-  "evidence": [],
+  "evidence": [
+    {
+      "criterion": 1,
+      "text": "ai/tools/source_recompute.py: documented SAF-T-style subset (header, sales_summary, supplier_invoices, journals); DD/MM/YYYY standardised and counted; balanced journals, duplicates, supplier reference format, VAT arithmetic and sub-ledger/GL tie flagged, never corrected. Original-file hashing stays with TAX-032 evidence storage (not re-implemented here)."
+    },
+    {
+      "criterion": 2,
+      "text": "Deterministic recompute of output/input VAT and refund per period; line-by-line comparison with return IDs; persistent-excess logic separates timing from real excess; record quality complete/verified/unverified/contradicted; match_lines_to_books finds each claimed invoice in the books. Low quality alone produces no action."
+    },
+    {
+      "criterion": 3,
+      "text": "data/synthetic/tax113_saft_groups.json: clean group (late-claimed invoice, DD/MM date) and cooked group (M24,000 over-declared, duplicate, unbalanced journal); RecomputeTests cover both, decimal exactness, float refusal and the responsibility wording."
+    },
+    {
+      "criterion": 4,
+      "text": "PR https://github.com/Vati-AI/rsl-taxathon/pull/277. python3 scripts/dev.py check: Workspace checks passed; python3 scripts/quality.py: First-party quality checks passed (ruff, mypy, frontend build); validate.py passed."
+    }
+  ],
   "notes": [
     {
       "at": "2026-11-06",
       "text": "Added 2026-11-06 from the framework scope update (docs/reference/FRAMEWORK.md, ADR-040) as a must-have for the proposal and pilot."
+    },
+    {
+      "at": "2026-11-06",
+      "text": "Claimed by claude-code-20261106-vigilant-fermat; implemented on claude/vigilant-fermat-4x2es6 and submitted for owner merge in https://github.com/Vati-AI/rsl-taxathon/pull/277."
     }
   ],
   "sequence": 6

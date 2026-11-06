@@ -1,0 +1,87 @@
+{
+  "register_version": "tax116-candidates-2026.11.0",
+  "status": "candidate_unverified",
+  "notice": "Candidate legal anchors named in the user-supplied framework (docs/reference/FRAMEWORK.md). None has been verified by RSL Legal. Instrument names come from the framework; no section numbers, dates or reviewers are added here except section 113, which the framework names. Every entry must be checked by RSL Legal or a Lesotho tax lawyer before any product use.",
+  "entries": [
+    {
+      "rule_id": "CAND-RP-ALLOCATION",
+      "topic": "Related-party allocation of existing income, deductions and credits",
+      "instrument": "Income Tax Act 1993, section 113, as limited by the AfriSam judgment",
+      "test": "Allocation of existing gross income, deductions or credits between associates; not imputation of notional amounts under an arm's-length standard",
+      "finding_codes": ["related_party_fees_with_persistent_losses"],
+      "verification_status": "unverified"
+    },
+    {
+      "rule_id": "CAND-DEDUCTION-TEST",
+      "topic": "Deductibility of related-party charges",
+      "instrument": "Income Tax Act 1993 deduction provisions",
+      "test": "Was the expense incurred in producing income, and was the service delivered and of benefit to the Lesotho entity",
+      "finding_codes": ["related_party_fees_with_persistent_losses"],
+      "verification_status": "unverified"
+    },
+    {
+      "rule_id": "CAND-INPUT-VAT-EVIDENCE",
+      "topic": "Input VAT evidence",
+      "instrument": "VAT Act 2001; VAT (E-Invoicing) Regulations 2026",
+      "test": "Input tax supported by a valid tax invoice or customs entry; role of the cleared e-invoice during rollout",
+      "finding_codes": ["input_vat_unsupported", "declared_input_vat_exceeds_recomputed"],
+      "verification_status": "unverified"
+    },
+    {
+      "rule_id": "CAND-IMPORTED-SERVICES-VAT",
+      "topic": "VAT on imported services",
+      "instrument": "VAT Act 2001 imported-services provisions (reverse charge implementation unconfirmed)",
+      "test": "Whether VAT is due on services supplied by non-residents and how it is accounted for",
+      "finding_codes": ["imported_services_vat_declared_below_expected"],
+      "verification_status": "unverified"
+    },
+    {
+      "rule_id": "CAND-WHT-FOREIGN",
+      "topic": "Withholding tax on payments to non-residents",
+      "instrument": "Income Tax Act 1993 withholding provisions; applicable treaty rates",
+      "test": "Withholding on management fees, service fees and interest paid to non-residents, net of treaty relief supported by residence evidence",
+      "finding_codes": ["wht_declared_below_expected"],
+      "verification_status": "unverified"
+    },
+    {
+      "rule_id": "CAND-THIN-CAP",
+      "topic": "Thin capitalisation",
+      "instrument": "Debt-to-equity provision (reported 3:1 limit; scope, including whether it is limited to mining, to confirm)",
+      "test": "Interest deductions on related-party debt above the permitted ratio",
+      "finding_codes": ["related_party_debt_above_reported_ratio"],
+      "verification_status": "unverified"
+    },
+    {
+      "rule_id": "CAND-EMPLOYMENT",
+      "topic": "Employment income and PAYE for foreign staff",
+      "instrument": "Income Tax Act 1993 PAYE provisions; WHT on service fees; dependent-services treaty articles",
+      "test": "Whether payments described as consultancy fees are employment income of individuals working in Lesotho",
+      "finding_codes": ["work_arrangement_referred_to_specialist"],
+      "verification_status": "unverified"
+    },
+    {
+      "rule_id": "CAND-RECORDS",
+      "topic": "Record production",
+      "instrument": "Record-keeping and information-production powers in the Income Tax Act 1993 and VAT Act 2001",
+      "test": "Power to require the taxpayer's books and source evidence in a standard structure",
+      "finding_codes": [],
+      "verification_status": "unverified"
+    },
+    {
+      "rule_id": "CAND-REFUNDS",
+      "topic": "Refund handling",
+      "instrument": "VAT Act 2001 refund provisions",
+      "test": "Refund timelines, interest on late refunds and partial payment of the undisputed amount",
+      "finding_codes": [],
+      "verification_status": "unverified"
+    },
+    {
+      "rule_id": "CAND-DATA-USE",
+      "topic": "Data use and confidentiality",
+      "instrument": "Data Protection Act; RSL confidentiality provisions",
+      "test": "Lawful use of taxpayer and third-party data; restriction of refund identities to authorised roles",
+      "finding_codes": [],
+      "verification_status": "unverified"
+    }
+  ]
+}

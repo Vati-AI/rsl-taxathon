@@ -1,0 +1,49 @@
+account_ref,transfer_ref,instruction_date,settlement_date,direction,instructed_amount,instructed_currency,settled_amount,settled_currency,exchange_rate,rate_source,counterparty_name,counterparty_account_ref,counterparty_country,intermediary_bank_ref,narration
+SYN-LS-ACC-150,FX-327943890-00001,2024-12-17,2024-12-19,outgoing,360624.63,ZAR,360624.63,LSL,1.000000,Synthetic bank advice,THABA QACHA Distr.,SYN-ZA-ACC-150,za,,Management services 2024-11
+SYN-LS-ACC-150,FX-327943890-00002,2024-12-14,2024-12-16,outgoing,360624.63,ZAR,360624.63,LSL,1.000000,Synthetic bank advice,THABA QACHA Distr.,SYN-ZA-ACC-150,za,,Management services 2024-12
+SYN-LS-ACC-150,FX-327943890-00003,2025-01-03,2025-01-05,outgoing,360624.63,ZAR,360624.63,LSL,1.000000,Synthetic bank advice,Thaba Qacha Distr.,SYN-ZA-ACC-150,za,,Management services 2025-01
+SYN-LS-ACC-150,FX-327943890-00004,2025-02-22,2025-02-24,outgoing,360624.63,ZAR,360624.63,LSL,1.000000,Synthetic bank advice,Thaba Qacha Distr.,SYN-ZA-ACC-150,za,,Management services 2025-02
+SYN-LS-ACC-150,FX-327943890-00005,2025-03-06,2025-03-08,outgoing,360624.63,ZAR,360624.63,LSL,1.000000,Synthetic bank advice,Thaba Qacha Distributors,SYN-ZA-ACC-150,za,,Management services 2025-03
+SYN-LS-ACC-150,FX-327943890-00006,2025-05-20,2025-05-22,outgoing,360624.63,ZAR,360624.63,LSL,1.000000,Synthetic bank advice,THABA QACHA Distr.,SYN-ZA-ACC-150,za,,Management services 2025-04
+SYN-LS-ACC-150,FX-327943890-00007,2025-05-07,2025-05-09,outgoing,360624.63,ZAR,360624.63,LSL,1.000000,Synthetic bank advice,Thaba Qacha Distributors,SYN-ZA-ACC-150,za,,Management services 2025-05
+SYN-LS-ACC-150,FX-327943890-00008,2025-06-11,2025-06-13,outgoing,360624.63,ZAR,360624.63,LSL,1.000000,Synthetic bank advice,Thaba Qacha Distributors,SYN-ZA-ACC-150,za,,Management services 2025-06
+SYN-LS-ACC-150,FX-327943890-00009,2025-07-25,2025-07-27,outgoing,360624.63,ZAR,360624.63,LSL,1.000000,Synthetic bank advice,THABA QACHA Distr.,SYN-ZA-ACC-150,za,,Management services 2025-07
+SYN-LS-ACC-150,FX-327943890-00010,2025-08-23,2025-08-25,outgoing,360624.63,ZAR,360624.63,LSL,1.000000,Synthetic bank advice,Thaba Qacha Distr.,SYN-ZA-ACC-150,za,,Management services 2025-08
+SYN-LS-ACC-150,FX-327943890-00011,2025-09-23,2025-09-25,outgoing,360624.63,ZAR,360624.63,LSL,1.000000,Synthetic bank advice,Thaba Qacha Distr.,SYN-ZA-ACC-150,za,,Management services 2025-09
+SYN-LS-ACC-150,FX-327943890-00012,2025-10-10,2025-10-12,outgoing,360624.63,ZAR,360624.63,LSL,1.000000,Synthetic bank advice,Thaba Qacha Distr.,SYN-ZA-ACC-150,za,,Management services 2025-10
+SYN-LS-ACC-150,FX-327943890-00013,2025-12-03,2025-12-05,outgoing,360624.63,ZAR,360624.63,LSL,1.000000,Synthetic bank advice,Thaba Qacha Distributors,SYN-ZA-ACC-150,za,,Management services 2025-11
+SYN-LS-ACC-150,FX-327943890-00014,2025-12-19,2025-12-21,outgoing,360624.63,ZAR,360624.63,LSL,1.000000,Synthetic bank advice,THABA QACHA Distr.,SYN-ZA-ACC-150,za,,Management services 2025-12
+SYN-LS-ACC-150,FX-327943890-00015,2026-02-19,2026-02-21,outgoing,360624.63,ZAR,360624.63,LSL,1.000000,Synthetic bank advice,Thaba Qacha Distr.,SYN-ZA-ACC-150,za,,Management services 2026-01
+SYN-LS-ACC-150,FX-327943890-00016,2026-02-19,2026-02-21,outgoing,360624.63,ZAR,360624.63,LSL,1.000000,Synthetic bank advice,Thaba Qacha Distributors,SYN-ZA-ACC-150,za,,Management services 2026-02
+SYN-LS-ACC-150,FX-327943890-00017,2026-03-07,2026-03-09,outgoing,360624.63,ZAR,360624.63,LSL,1.000000,Synthetic bank advice,Thaba Qacha Distr.,SYN-ZA-ACC-150,za,,Management services 2026-03
+SYN-LS-ACC-150,FX-327943890-00018,2026-04-13,2026-04-15,outgoing,360624.63,ZAR,360624.63,LSL,1.000000,Synthetic bank advice,THABA QACHA Distr.,SYN-ZA-ACC-150,za,,Management services 2026-04
+SYN-LS-ACC-150,FX-327943890-00019,2026-05-17,2026-05-19,outgoing,360624.63,ZAR,360624.63,LSL,1.000000,Synthetic bank advice,Thaba Qacha Distributors,SYN-ZA-ACC-150,za,,Management services 2026-05
+SYN-LS-ACC-150,FX-327943890-00020,2026-06-18,2026-06-20,outgoing,360624.63,ZAR,360624.63,LSL,1.000000,Synthetic bank advice,Thaba Qacha Distributors,SYN-ZA-ACC-150,za,,Management services 2026-06
+SYN-LS-ACC-150,FX-327943890-00021,2026-07-21,2026-07-23,outgoing,360624.63,ZAR,360624.63,LSL,1.000000,Synthetic bank advice,THABA QACHA Distr.,SYN-ZA-ACC-150,za,,Management services 2026-07
+SYN-LS-ACC-150,FX-327943890-00022,2026-09-03,2026-09-05,outgoing,360624.63,ZAR,360624.63,LSL,1.000000,Synthetic bank advice,Thaba Qacha Distributors,SYN-ZA-ACC-150,za,,Management services 2026-08
+SYN-LS-ACC-150,FX-327943890-00023,2026-09-20,2026-09-22,outgoing,360624.63,ZAR,360624.63,LSL,1.000000,Synthetic bank advice,Thaba Qacha Distr.,SYN-ZA-ACC-150,za,,Management services 2026-09
+SYN-LS-ACC-150,FX-327943890-00024,2026-10-08,2026-10-10,outgoing,360624.63,ZAR,360624.63,LSL,1.000000,Synthetic bank advice,Thaba Qacha Distributors,SYN-ZA-ACC-150,za,,Management services 2026-10
+SYN-LS-ACC-150,FX-327943890-00025,2024-11-16,2024-11-18,outgoing,42788.81,ZAR,42788.81,LSL,1.000000,Synthetic bank advice,Consulting,SYN-ZA-ACC-150,za,,Consulting 2024-11
+SYN-LS-ACC-150,FX-327943890-00026,2024-12-06,2024-12-08,outgoing,42788.81,ZAR,42788.81,LSL,1.000000,Synthetic bank advice,Consulting,SYN-ZA-ACC-150,za,,Consulting 2024-12
+SYN-LS-ACC-150,FX-327943890-00027,2025-01-14,2025-01-16,outgoing,42788.81,ZAR,42788.81,LSL,1.000000,Synthetic bank advice,Consulting,SYN-ZA-ACC-150,za,,Consulting 2025-01
+SYN-LS-ACC-150,FX-327943890-00028,2025-02-04,2025-02-06,outgoing,42788.81,ZAR,42788.81,LSL,1.000000,Synthetic bank advice,Consulting,SYN-ZA-ACC-150,za,,Consulting 2025-02
+SYN-LS-ACC-150,FX-327943890-00029,2025-03-19,2025-03-21,outgoing,42788.81,ZAR,42788.81,LSL,1.000000,Synthetic bank advice,Consulting,SYN-ZA-ACC-150,za,,Consulting 2025-03
+SYN-LS-ACC-150,FX-327943890-00030,2025-05-20,2025-05-22,outgoing,42788.81,ZAR,42788.81,LSL,1.000000,Synthetic bank advice,Consulting,SYN-ZA-ACC-150,za,,Consulting 2025-04
+SYN-LS-ACC-150,FX-327943890-00031,2025-05-06,2025-05-08,outgoing,42788.81,ZAR,42788.81,LSL,1.000000,Synthetic bank advice,Consulting,SYN-ZA-ACC-150,za,,Consulting 2025-05
+SYN-LS-ACC-150,FX-327943890-00032,2025-06-22,2025-06-24,outgoing,42788.81,ZAR,42788.81,LSL,1.000000,Synthetic bank advice,Consulting,SYN-ZA-ACC-150,za,,Consulting 2025-06
+SYN-LS-ACC-150,FX-327943890-00033,2025-07-20,2025-07-22,outgoing,42788.81,ZAR,42788.81,LSL,1.000000,Synthetic bank advice,Consulting,SYN-ZA-ACC-150,za,,Consulting 2025-07
+SYN-LS-ACC-150,FX-327943890-00034,2025-08-08,2025-08-10,outgoing,42788.81,ZAR,42788.81,LSL,1.000000,Synthetic bank advice,Consulting,SYN-ZA-ACC-150,za,,Consulting 2025-08
+SYN-LS-ACC-150,FX-327943890-00035,2025-10-18,2025-10-20,outgoing,42788.81,ZAR,42788.81,LSL,1.000000,Synthetic bank advice,Consulting,SYN-ZA-ACC-150,za,,Consulting 2025-09
+SYN-LS-ACC-150,FX-327943890-00036,2025-10-04,2025-10-06,outgoing,42788.81,ZAR,42788.81,LSL,1.000000,Synthetic bank advice,Consulting,SYN-ZA-ACC-150,za,,Consulting 2025-10
+SYN-LS-ACC-150,FX-327943890-00037,2025-11-19,2025-11-21,outgoing,42788.81,ZAR,42788.81,LSL,1.000000,Synthetic bank advice,Consulting,SYN-ZA-ACC-150,za,,Consulting 2025-11
+SYN-LS-ACC-150,FX-327943890-00038,2025-12-07,2025-12-09,outgoing,42788.81,ZAR,42788.81,LSL,1.000000,Synthetic bank advice,Consulting,SYN-ZA-ACC-150,za,,Consulting 2025-12
+SYN-LS-ACC-150,FX-327943890-00039,2026-01-11,2026-01-13,outgoing,42788.81,ZAR,42788.81,LSL,1.000000,Synthetic bank advice,Consulting,SYN-ZA-ACC-150,za,,Consulting 2026-01
+SYN-LS-ACC-150,FX-327943890-00040,2026-02-08,2026-02-10,outgoing,42788.81,ZAR,42788.81,LSL,1.000000,Synthetic bank advice,Consulting,SYN-ZA-ACC-150,za,,Consulting 2026-02
+SYN-LS-ACC-150,FX-327943890-00041,2026-03-12,2026-03-14,outgoing,42788.81,ZAR,42788.81,LSL,1.000000,Synthetic bank advice,Consulting,SYN-ZA-ACC-150,za,,Consulting 2026-03
+SYN-LS-ACC-150,FX-327943890-00042,2026-05-03,2026-05-05,outgoing,42788.81,ZAR,42788.81,LSL,1.000000,Synthetic bank advice,Consulting,SYN-ZA-ACC-150,za,,Consulting 2026-04
+SYN-LS-ACC-150,FX-327943890-00043,2026-05-13,2026-05-15,outgoing,42788.81,ZAR,42788.81,LSL,1.000000,Synthetic bank advice,Consulting,SYN-ZA-ACC-150,za,,Consulting 2026-05
+SYN-LS-ACC-150,FX-327943890-00044,2026-06-08,2026-06-10,outgoing,42788.81,ZAR,42788.81,LSL,1.000000,Synthetic bank advice,Consulting,SYN-ZA-ACC-150,za,,Consulting 2026-06
+SYN-LS-ACC-150,FX-327943890-00045,2026-08-18,2026-08-20,outgoing,42788.81,ZAR,42788.81,LSL,1.000000,Synthetic bank advice,Consulting,SYN-ZA-ACC-150,za,,Consulting 2026-07
+SYN-LS-ACC-150,FX-327943890-00046,2026-08-25,2026-08-27,outgoing,42788.81,ZAR,42788.81,LSL,1.000000,Synthetic bank advice,Consulting,SYN-ZA-ACC-150,za,,Consulting 2026-08
+SYN-LS-ACC-150,FX-327943890-00047,2026-09-23,2026-09-25,outgoing,42788.81,ZAR,42788.81,LSL,1.000000,Synthetic bank advice,Consulting,SYN-ZA-ACC-150,za,,Consulting 2026-09
+SYN-LS-ACC-150,FX-327943890-00048,2026-10-13,2026-10-15,outgoing,42788.81,ZAR,42788.81,LSL,1.000000,Synthetic bank advice,Consulting,SYN-ZA-ACC-150,za,,Consulting 2026-10
