@@ -56,6 +56,9 @@ def rows(*specs):
     return invoices.parse_schedule(out, period_end=datetime.date(2026, 9, 30), today=TODAY)
 
 
+AI_ADAPTERS = {"portal/presubmission.py", "assurance/checks.py"}
+
+
 class BoundaryTests(unittest.TestCase):
     @unittest.skipUnless(SHARED_FILE.is_file(), "shared module source not available here")
     def test_shared_module_imports_only_the_standard_library(self):
@@ -75,7 +78,8 @@ class BoundaryTests(unittest.TestCase):
                 continue
             text = path.read_text(encoding="utf-8")
             uses_ai = "import ai" in text or "from ai" in text or '"ai.' in text
-            if uses_ai and path.name != "presubmission.py":
+            # TAX-121 (ADR-042): the assurance step has its own one-module adapter.
+            if uses_ai and str(path.relative_to(APP)) not in AI_ADAPTERS:
                 offenders.append(str(path.relative_to(APP)))
         self.assertEqual(offenders, [])
         self.assertEqual(presubmission.SHARED_MODULE, "ai.tools.refund_reconciliation")

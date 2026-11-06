@@ -1,0 +1,230 @@
+{
+ "actions": [],
+ "autoname": "field:run_id",
+ "creation": "2026-11-06 16:00:00.000000",
+ "description": "One run of the TAX-121 assurance checks for one case (ADR-042): status, per-check status, which services were live, recorded or unavailable, counts and timings. A run that could not read what it needs is not_run, never clean. Written only by vati_tax.assurance.",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "run_id",
+  "tenant_id",
+  "case_id",
+  "submission_id",
+  "claim_ref",
+  "status",
+  "reason",
+  "details_section",
+  "services_json",
+  "checks_json",
+  "summary_json",
+  "finding_ids",
+  "lane_proposal_id",
+  "producer_version",
+  "input_digest",
+  "trace_section",
+  "event_id",
+  "correlation_id",
+  "started_at",
+  "seconds",
+  "run_key"
+ ],
+ "fields": [
+  {
+   "fieldname": "run_id",
+   "fieldtype": "Data",
+   "label": "Run ID",
+   "set_only_once": 1,
+   "reqd": 1,
+   "unique": 1,
+   "length": 36
+  },
+  {
+   "fieldname": "tenant_id",
+   "fieldtype": "Data",
+   "label": "Tenant ID",
+   "set_only_once": 1,
+   "reqd": 1,
+   "search_index": 1,
+   "in_standard_filter": 1,
+   "length": 36
+  },
+  {
+   "fieldname": "case_id",
+   "fieldtype": "Data",
+   "label": "Case ID",
+   "set_only_once": 1,
+   "reqd": 1,
+   "search_index": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "length": 36
+  },
+  {
+   "fieldname": "submission_id",
+   "fieldtype": "Data",
+   "label": "Submission",
+   "set_only_once": 1,
+   "reqd": 1,
+   "length": 36
+  },
+  {
+   "fieldname": "claim_ref",
+   "fieldtype": "Data",
+   "label": "Online Refunds Application Claim",
+   "set_only_once": 1,
+   "length": 128
+  },
+  {
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "label": "Status",
+   "set_only_once": 1,
+   "options": "completed\ndegraded\nnot_run\nsuperseded",
+   "reqd": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1
+  },
+  {
+   "fieldname": "reason",
+   "fieldtype": "Data",
+   "label": "Reason Code",
+   "set_only_once": 1,
+   "length": 64,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "details_section",
+   "fieldtype": "Section Break",
+   "label": "What Ran"
+  },
+  {
+   "fieldname": "services_json",
+   "fieldtype": "Long Text",
+   "label": "Services (live, recorded, unavailable) JSON",
+   "set_only_once": 1,
+   "reqd": 1
+  },
+  {
+   "fieldname": "checks_json",
+   "fieldtype": "Long Text",
+   "label": "Checks (ran, degraded, not_run) JSON",
+   "set_only_once": 1,
+   "reqd": 1
+  },
+  {
+   "fieldname": "summary_json",
+   "fieldtype": "Long Text",
+   "label": "Summary (counts and totals) JSON",
+   "set_only_once": 1
+  },
+  {
+   "fieldname": "finding_ids",
+   "fieldtype": "Long Text",
+   "label": "Findings Recorded (JSON)",
+   "set_only_once": 1
+  },
+  {
+   "fieldname": "lane_proposal_id",
+   "fieldtype": "Data",
+   "label": "Lane Proposal",
+   "set_only_once": 1,
+   "length": 36
+  },
+  {
+   "fieldname": "producer_version",
+   "fieldtype": "Data",
+   "label": "Producer Version",
+   "set_only_once": 1,
+   "length": 128
+  },
+  {
+   "fieldname": "input_digest",
+   "fieldtype": "Data",
+   "label": "Input Digest",
+   "set_only_once": 1,
+   "length": 80
+  },
+  {
+   "fieldname": "trace_section",
+   "fieldtype": "Section Break",
+   "label": "Trace"
+  },
+  {
+   "fieldname": "event_id",
+   "fieldtype": "Data",
+   "label": "Outbox Event",
+   "set_only_once": 1,
+   "reqd": 1,
+   "length": 36
+  },
+  {
+   "fieldname": "correlation_id",
+   "fieldtype": "Data",
+   "label": "Correlation ID",
+   "set_only_once": 1,
+   "length": 36
+  },
+  {
+   "fieldname": "started_at",
+   "fieldtype": "Datetime",
+   "label": "Started At (UTC)",
+   "set_only_once": 1,
+   "reqd": 1
+  },
+  {
+   "fieldname": "seconds",
+   "fieldtype": "Float",
+   "label": "Seconds",
+   "set_only_once": 1,
+   "precision": "4"
+  },
+  {
+   "fieldname": "run_key",
+   "fieldtype": "Data",
+   "label": "Run Key",
+   "set_only_once": 1,
+   "reqd": 1,
+   "unique": 1,
+   "hidden": 1,
+   "length": 64
+  }
+ ],
+ "in_create": 1,
+ "index_web_pages_for_search": 0,
+ "links": [],
+ "modified": "2026-11-06 16:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Vati Tax",
+ "name": "Vati Assurance Run",
+ "naming_rule": "By fieldname",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "export": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager"
+  },
+  {
+   "read": 1,
+   "role": "Vati Auditor"
+  },
+  {
+   "read": 1,
+   "role": "Vati Specialist"
+  },
+  {
+   "read": 1,
+   "role": "Vati Supervisor"
+  },
+  {
+   "read": 1,
+   "role": "Vati Service"
+  }
+ ],
+ "search_fields": "case_id,status,reason",
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "status"
+}

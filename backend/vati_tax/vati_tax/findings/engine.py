@@ -10,8 +10,8 @@ enforces the same unique keys.
   something different about the same subject (same rule, or same playbook result
   item) appends the next *revision*, which supersedes the previous one. Every
   revision stays readable.
-- Rule (``jube_rule``) and agent (``langgraph_run``) findings are recorded by a
-  service identity or staff (``draft.record``: agent output for human review);
+- Rule (``jube_rule``), check (``vati_check``) and agent (``langgraph_run``) findings
+  are recorded by a service identity or staff (``draft.record``: output for human review);
   officer findings need ``finding.review``. Reading needs ``case.read``, which
   taxpayers never have; a case in another tenant is ``not_found``.
 - Officer feedback (``finding.review``) is append-only. A newer feedback by the same
@@ -95,6 +95,9 @@ class FindingRecord:
     correlation_id: str
     registration_key: str
     request_digest: str
+    # TAX-121 (vati_check findings): RSL source records cited and the TAX-116 route.
+    source_refs: tuple[dict[str, Any], ...] = ()
+    candidate_route: dict[str, Any] | None = None
 
 
 @dataclass(frozen=True)
@@ -300,6 +303,8 @@ def record_finding(
         correlation_id=ctx.correlation_id,
         registration_key=key,
         request_digest=request_digest,
+        source_refs=finding.source_refs,
+        candidate_route=finding.candidate_route,
     )
     try:
         with repo.atomic():
@@ -592,6 +597,8 @@ FINDING_CONTRACT_KEYS = (
     "created_at",
     "analysis_provenance",
     "feedback_summary",
+    "source_refs",
+    "candidate_route",
 )
 SNAPSHOT_KEYS = ("kind", "category", "producer", "producer_version", "analysis_provenance")
 
@@ -629,7 +636,10 @@ def finding_view(
         "created_at": rules.iso(record.created_at),
         "analysis_provenance": record.analysis_provenance,
         "feedback_summary": feedback_summary,
+        "source_refs": [dict(r) for r in record.source_refs],
+        "candidate_route": dict(record.candidate_route) if record.candidate_route else None,
         "code": record.code,
+        "subject": record.subject,
         "recorded_by": {"user": record.recorded_by, "role": record.recorder_role},
         "revision": record.revision,
         "supersedes_finding_id": record.supersedes_finding_id,

@@ -194,7 +194,9 @@ def on_submission_update(doc: Any, method: str | None = None) -> None:
         type=rules.EVENT_REGISTERED,
         payload=payload,
         idempotency_key=key,
-        correlation_id=str(uuid.uuid4()),
+        # TAX-121: the assurance step enqueued just before for this send set it, so one
+        # correlation ID traces the claim through both steps.
+        correlation_id=doc.flags.get("vati_correlation_id") or str(uuid.uuid4()),
         source_service=rules.SOURCE_SUBMISSION,
     )
     log(

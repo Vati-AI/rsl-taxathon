@@ -1,0 +1,298 @@
+{
+ "actions": [],
+ "autoname": "field:proposal_id",
+ "creation": "2026-11-06 16:00:00.000000",
+ "description": "Proposed TAX-114 refund lane for one Online Refunds Application claim, from the TAX-121 assurance checks (ADR-042). Advisory: an officer reviews every lane; nothing here decides, pays or denies a refund. Append-only: changed inputs add a revision that supersedes the previous one. Written only by vati_tax.assurance.",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "proposal_id",
+  "tenant_id",
+  "case_id",
+  "claim_ref",
+  "period",
+  "revision",
+  "supersedes_proposal_id",
+  "column_break_lane",
+  "lane",
+  "decision_due",
+  "decision_target_working_days",
+  "amounts_section",
+  "claimed_amount",
+  "undisputed_amount",
+  "disputed_amount",
+  "currency",
+  "authenticity_indicator",
+  "body_json",
+  "producer_section",
+  "producer",
+  "producer_version",
+  "input_digest",
+  "run_key",
+  "created_at",
+  "correlation_id",
+  "proposal_key",
+  "revision_key",
+  "request_digest"
+ ],
+ "fields": [
+  {
+   "fieldname": "proposal_id",
+   "fieldtype": "Data",
+   "label": "Proposal ID",
+   "set_only_once": 1,
+   "reqd": 1,
+   "unique": 1,
+   "length": 36
+  },
+  {
+   "fieldname": "tenant_id",
+   "fieldtype": "Data",
+   "label": "Tenant ID",
+   "set_only_once": 1,
+   "reqd": 1,
+   "search_index": 1,
+   "in_standard_filter": 1,
+   "length": 36
+  },
+  {
+   "fieldname": "case_id",
+   "fieldtype": "Data",
+   "label": "Case ID",
+   "set_only_once": 1,
+   "reqd": 1,
+   "search_index": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "length": 36
+  },
+  {
+   "fieldname": "claim_ref",
+   "fieldtype": "Data",
+   "label": "Online Refunds Application Claim",
+   "set_only_once": 1,
+   "reqd": 1,
+   "search_index": 1,
+   "in_list_view": 1,
+   "length": 128
+  },
+  {
+   "fieldname": "period",
+   "fieldtype": "Data",
+   "label": "Period",
+   "set_only_once": 1,
+   "length": 7
+  },
+  {
+   "fieldname": "revision",
+   "fieldtype": "Int",
+   "label": "Revision",
+   "set_only_once": 1,
+   "reqd": 1
+  },
+  {
+   "fieldname": "supersedes_proposal_id",
+   "fieldtype": "Data",
+   "label": "Supersedes Proposal",
+   "set_only_once": 1,
+   "length": 36
+  },
+  {
+   "fieldname": "column_break_lane",
+   "fieldtype": "Column Break",
+   "label": ""
+  },
+  {
+   "fieldname": "lane",
+   "fieldtype": "Select",
+   "label": "Proposed Lane (officer reviews)",
+   "set_only_once": 1,
+   "options": "fast\nstandard\ninvestigation",
+   "reqd": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1
+  },
+  {
+   "fieldname": "decision_due",
+   "fieldtype": "Date",
+   "label": "Proposed Decision Due (verify against the VAT Act)",
+   "set_only_once": 1
+  },
+  {
+   "fieldname": "decision_target_working_days",
+   "fieldtype": "Int",
+   "label": "Proposed Decision Target (working days)",
+   "set_only_once": 1
+  },
+  {
+   "fieldname": "amounts_section",
+   "fieldtype": "Section Break",
+   "label": "Advisory Amounts"
+  },
+  {
+   "fieldname": "claimed_amount",
+   "fieldtype": "Data",
+   "label": "Claimed Amount (decimal string)",
+   "set_only_once": 1,
+   "reqd": 1,
+   "length": 32
+  },
+  {
+   "fieldname": "undisputed_amount",
+   "fieldtype": "Data",
+   "label": "Undisputed Amount (advisory recommendation)",
+   "set_only_once": 1,
+   "reqd": 1,
+   "length": 32,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "disputed_amount",
+   "fieldtype": "Data",
+   "label": "Disputed Amount (decimal string)",
+   "set_only_once": 1,
+   "reqd": 1,
+   "length": 32
+  },
+  {
+   "fieldname": "currency",
+   "fieldtype": "Data",
+   "label": "Currency",
+   "set_only_once": 1,
+   "reqd": 1,
+   "length": 3
+  },
+  {
+   "fieldname": "authenticity_indicator",
+   "fieldtype": "Check",
+   "label": "Authenticity Indicator on a Line",
+   "set_only_once": 1,
+   "default": "0"
+  },
+  {
+   "fieldname": "body_json",
+   "fieldtype": "Long Text",
+   "label": "Lane Proposal (reasons, service target, inputs, line matches JSON)",
+   "set_only_once": 1,
+   "reqd": 1
+  },
+  {
+   "fieldname": "producer_section",
+   "fieldtype": "Section Break",
+   "label": "Producer"
+  },
+  {
+   "fieldname": "producer",
+   "fieldtype": "Data",
+   "label": "Producer",
+   "set_only_once": 1,
+   "reqd": 1,
+   "length": 20
+  },
+  {
+   "fieldname": "producer_version",
+   "fieldtype": "Data",
+   "label": "Producer Version",
+   "set_only_once": 1,
+   "reqd": 1,
+   "length": 128
+  },
+  {
+   "fieldname": "input_digest",
+   "fieldtype": "Data",
+   "label": "Input Digest",
+   "set_only_once": 1,
+   "reqd": 1,
+   "length": 80
+  },
+  {
+   "fieldname": "run_key",
+   "fieldtype": "Data",
+   "label": "Assurance Run Key",
+   "set_only_once": 1,
+   "length": 64,
+   "hidden": 1
+  },
+  {
+   "fieldname": "created_at",
+   "fieldtype": "Datetime",
+   "label": "Created At (UTC)",
+   "set_only_once": 1,
+   "reqd": 1
+  },
+  {
+   "fieldname": "correlation_id",
+   "fieldtype": "Data",
+   "label": "Correlation ID",
+   "set_only_once": 1,
+   "length": 36
+  },
+  {
+   "fieldname": "proposal_key",
+   "fieldtype": "Data",
+   "label": "Proposal Key",
+   "set_only_once": 1,
+   "reqd": 1,
+   "unique": 1,
+   "hidden": 1,
+   "length": 64
+  },
+  {
+   "fieldname": "revision_key",
+   "fieldtype": "Data",
+   "label": "Revision Key",
+   "set_only_once": 1,
+   "reqd": 1,
+   "unique": 1,
+   "hidden": 1,
+   "length": 64
+  },
+  {
+   "fieldname": "request_digest",
+   "fieldtype": "Data",
+   "label": "Request Digest",
+   "set_only_once": 1,
+   "reqd": 1,
+   "hidden": 1,
+   "length": 64
+  }
+ ],
+ "in_create": 1,
+ "index_web_pages_for_search": 0,
+ "links": [],
+ "modified": "2026-11-06 16:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Vati Tax",
+ "name": "Vati Lane Proposal",
+ "naming_rule": "By fieldname",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "export": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager"
+  },
+  {
+   "read": 1,
+   "role": "Vati Auditor"
+  },
+  {
+   "read": 1,
+   "role": "Vati Specialist"
+  },
+  {
+   "read": 1,
+   "role": "Vati Supervisor"
+  },
+  {
+   "read": 1,
+   "role": "Vati Service"
+  }
+ ],
+ "search_fields": "claim_ref,case_id,lane",
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "claim_ref"
+}
