@@ -1,0 +1,3 @@
+counterparty_ref,document_id,kind,person_ref,related_party,stated_terms
+F-ZA-FIRM-105185994-0,AGR-105185994-00001,consultancy,PER-105185994-0,False,"{""duration_and_continuity"": ""fixed_term_project"", ""payment_basis"": ""per_deliverable"", ""exclusivity"": ""non_exclusive""}"
+F-ZA-FIRM-105185994-1,AGR-105185994-00006,consultancy,PER-105185994-1,False,"{""duration_and_continuity"": ""fixed_term_project"", ""payment_basis"": ""per_deliverable"", ""exclusivity"": ""non_exclusive""}"

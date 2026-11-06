@@ -1,0 +1,725 @@
+{
+  "synthetic": true,
+  "task": "TAX-118",
+  "run_at": "2026-11-06T11:56:12+00:00",
+  "seed": 20261106,
+  "rules_fingerprint": "56d17eedb745300df91d01b3d7435f73bb0f59f4a647455c20c9ce1458326a07",
+  "dataset_sha256": "cb6c792d3712aa7e444d06b5730f044c9240172c56a25be4206db39050f98ad7",
+  "regenerated_from_seed_matches_seal": true,
+  "main": {
+    "taxpayers": 200,
+    "detection_by_issue": {
+      "fake_invoices": {
+        "detected": {
+          "count": 8,
+          "of": 8,
+          "rate": 1.0
+        },
+        "false_positive": {
+          "count": 0,
+          "of": 192,
+          "rate": 0.0
+        }
+      },
+      "untaxed_imported_services": {
+        "detected": {
+          "count": 4,
+          "of": 8,
+          "rate": 0.5
+        },
+        "false_positive": {
+          "count": 5,
+          "of": 192,
+          "rate": 0.026
+        }
+      },
+      "disguised_employment": {
+        "detected": {
+          "count": 9,
+          "of": 11,
+          "rate": 0.8182
+        },
+        "false_positive": {
+          "count": 2,
+          "of": 189,
+          "rate": 0.0106
+        }
+      },
+      "related_party_loss": {
+        "detected": {
+          "count": 8,
+          "of": 8,
+          "rate": 1.0
+        },
+        "false_positive": {
+          "count": 6,
+          "of": 192,
+          "rate": 0.0312
+        }
+      },
+      "policy_gap": {
+        "detected": {
+          "count": 8,
+          "of": 8,
+          "rate": 1.0
+        },
+        "false_positive": {
+          "count": 0,
+          "of": 192,
+          "rate": 0.0
+        }
+      }
+    },
+    "detection_overall": {
+      "planted_issue_instances": {
+        "count": 37,
+        "of": 43,
+        "rate": 0.8605
+      },
+      "taxpayers_with_any_issue_flagged": {
+        "count": 32,
+        "of": 37,
+        "rate": 0.8649
+      },
+      "mixed_taxpayers_both_found": {
+        "count": 5,
+        "of": 6,
+        "rate": 0.8333
+      }
+    },
+    "false_positive_overall": {
+      "clean_taxpayers_flagged": {
+        "count": 13,
+        "of": 163,
+        "rate": 0.0798
+      }
+    },
+    "lanes": {
+      "accuracy": {
+        "count": 3935,
+        "of": 4185,
+        "rate": 0.9403
+      },
+      "confusion_truth_vs_system": {
+        "fast->fast": 2517,
+        "fast->standard": 165,
+        "investigation->fast": 2,
+        "investigation->investigation": 36,
+        "investigation->standard": 9,
+        "standard->fast": 73,
+        "standard->investigation": 1,
+        "standard->standard": 1382
+      },
+      "valid_claims_fast": {
+        "count": 2590,
+        "of": 4135,
+        "rate": 0.6264
+      },
+      "policy_fast_claims_fast": {
+        "count": 2517,
+        "of": 2682,
+        "rate": 0.9385
+      },
+      "claims_with_fake_invoices_not_fast": {
+        "count": 48,
+        "of": 50,
+        "rate": 0.96
+      },
+      "claims_with_fake_invoices_investigation": {
+        "count": 37,
+        "of": 50,
+        "rate": 0.74
+      }
+    },
+    "refund_amounts": {
+      "valid_refund_total": "799688540.97",
+      "valid_refund_in_undisputed_portion": "769155709.08",
+      "share_of_valid_refund_released_early": 0.9618,
+      "fake_vat_leaked_into_undisputed_portion": "2040229.05",
+      "valid_claims_undisputed_within_m1_of_valid_refund": {
+        "count": 3459,
+        "of": 4135,
+        "rate": 0.8365
+      },
+      "valid_claims_undisputed_mean_abs_error": "7216.39"
+    },
+    "amount_at_risk": {
+      "fake_invoices_planted_vat": "8785565.81",
+      "fake_invoices_planted_vat_in_detected_taxpayers": "8785565.81",
+      "fake_invoices_vat_disputed_by_system_for_planted_taxpayers": "7420245.20",
+      "imported_services_planted_gap": "10546233.24",
+      "imported_services_gap_computed_for_planted_taxpayers": "4351499.10"
+    },
+    "recompute": {
+      "claims_with_unbooked_fakes_caught_by_recompute": {
+        "count": 37,
+        "of": 37,
+        "rate": 1.0
+      },
+      "clean_taxpayer_periods_with_a_recompute_finding": {
+        "count": 0,
+        "of": 3912,
+        "rate": 0.0
+      },
+      "valid_claims_with_a_line_not_in_books": {
+        "count": 0,
+        "of": 4135,
+        "rate": 0.0
+      }
+    },
+    "legal_routes": {
+      "correct_candidate_route_or_policy_gap": {
+        "count": 41,
+        "of": 41,
+        "rate": 1.0
+      },
+      "any_finding_eligible_for_assessment": false
+    },
+    "time": {
+      "system_seconds_per_taxpayer_mean": 0.0118,
+      "system_seconds_per_taxpayer_p95": 0.0141,
+      "manual_minutes_per_taxpayer_assumed_mean": 1026.1,
+      "manual_model": {
+        "per_claim": 20,
+        "per_claim_line": 3,
+        "per_foreign_counterparty": 15,
+        "cit_review": 30,
+        "per_agreement": 20
+      },
+      "manual_status": "assumption_until_timed_by_a_person"
+    }
+  },
+  "errors": [
+    {
+      "tin": "132004930",
+      "type": "false_positive",
+      "issue": "related_party_loss",
+      "reason": "Genuine losses with rising related-party fees but no explanation document supplied: the trigger fires and a human review is the intended outcome."
+    },
+    {
+      "tin": "322274375",
+      "type": "false_positive",
+      "issue": "untaxed_imported_services",
+      "reason": "Withholding was declared under a different payee reference, so it did not join to the counterparty; an officer would resolve it with one question."
+    },
+    {
+      "tin": "428557544",
+      "type": "miss",
+      "issue": "untaxed_imported_services",
+      "reason": "Foreign fees were booked as general operating expenses, so the books do not show them as services and the three-way match did not test them."
+    },
+    {
+      "tin": "453583181",
+      "type": "miss",
+      "issue": "disguised_employment",
+      "reason": "No permit record for the individual, so presence could not be compared with the consultancy terms; no conflicting fact, no referral."
+    },
+    {
+      "tin": "511480115",
+      "type": "false_positive",
+      "issue": "untaxed_imported_services",
+      "reason": "Withholding was declared under a different payee reference, so it did not join to the counterparty; an officer would resolve it with one question."
+    },
+    {
+      "tin": "534446120",
+      "type": "false_positive",
+      "issue": "related_party_loss",
+      "reason": "Genuine losses with rising related-party fees but no explanation document supplied: the trigger fires and a human review is the intended outcome."
+    },
+    {
+      "tin": "561282912",
+      "type": "false_positive",
+      "issue": "related_party_loss",
+      "reason": "Genuine losses with rising related-party fees but no explanation document supplied: the trigger fires and a human review is the intended outcome."
+    },
+    {
+      "tin": "625110657",
+      "type": "false_positive",
+      "issue": "untaxed_imported_services",
+      "reason": "Withholding was declared under a different payee reference, so it did not join to the counterparty; an officer would resolve it with one question."
+    },
+    {
+      "tin": "626977948",
+      "type": "false_positive",
+      "issue": "untaxed_imported_services",
+      "reason": "Withholding was declared under a different payee reference, so it did not join to the counterparty; an officer would resolve it with one question."
+    },
+    {
+      "tin": "752157939",
+      "type": "false_positive",
+      "issue": "related_party_loss",
+      "reason": "Genuine losses with rising related-party fees but no explanation document supplied: the trigger fires and a human review is the intended outcome."
+    },
+    {
+      "tin": "767369827",
+      "type": "miss",
+      "issue": "untaxed_imported_services",
+      "reason": "Foreign fees were booked as general operating expenses, so the books do not show them as services and the three-way match did not test them."
+    },
+    {
+      "tin": "791702552",
+      "type": "miss",
+      "issue": "untaxed_imported_services",
+      "reason": "Foreign fees were booked as general operating expenses, so the books do not show them as services and the three-way match did not test them."
+    },
+    {
+      "tin": "854098194",
+      "type": "miss",
+      "issue": "disguised_employment",
+      "reason": "No permit record for the individual, so presence could not be compared with the consultancy terms; no conflicting fact, no referral."
+    },
+    {
+      "tin": "867074488",
+      "type": "false_positive",
+      "issue": "related_party_loss",
+      "reason": "Genuine losses with rising related-party fees but no explanation document supplied: the trigger fires and a human review is the intended outcome."
+    },
+    {
+      "tin": "896980558",
+      "type": "false_positive",
+      "issue": "disguised_employment",
+      "reason": "A genuine consultant stayed 183 days or more, so permit presence conflicts with the fixed-term contract and the case is referred to a specialist."
+    },
+    {
+      "tin": "922037384",
+      "type": "false_positive",
+      "issue": "untaxed_imported_services",
+      "reason": "Withholding was declared under a different payee reference, so it did not join to the counterparty; an officer would resolve it with one question."
+    },
+    {
+      "tin": "952147169",
+      "type": "false_positive",
+      "issue": "related_party_loss",
+      "reason": "Genuine losses with rising related-party fees but no explanation document supplied: the trigger fires and a human review is the intended outcome."
+    },
+    {
+      "tin": "978709748",
+      "type": "false_positive",
+      "issue": "disguised_employment",
+      "reason": "A genuine consultant stayed 183 days or more, so permit presence conflicts with the fixed-term contract and the case is referred to a specialist."
+    },
+    {
+      "tin": "999950701",
+      "type": "miss",
+      "issue": "untaxed_imported_services",
+      "reason": "Foreign fees were booked as general operating expenses, so the books do not show them as services and the three-way match did not test them."
+    }
+  ],
+  "ablation_without_rsl_score": {
+    "taxpayers": 200,
+    "detection_by_issue": {
+      "fake_invoices": {
+        "detected": {
+          "count": 8,
+          "of": 8,
+          "rate": 1.0
+        },
+        "false_positive": {
+          "count": 0,
+          "of": 192,
+          "rate": 0.0
+        }
+      },
+      "untaxed_imported_services": {
+        "detected": {
+          "count": 4,
+          "of": 8,
+          "rate": 0.5
+        },
+        "false_positive": {
+          "count": 5,
+          "of": 192,
+          "rate": 0.026
+        }
+      },
+      "disguised_employment": {
+        "detected": {
+          "count": 9,
+          "of": 11,
+          "rate": 0.8182
+        },
+        "false_positive": {
+          "count": 2,
+          "of": 189,
+          "rate": 0.0106
+        }
+      },
+      "related_party_loss": {
+        "detected": {
+          "count": 8,
+          "of": 8,
+          "rate": 1.0
+        },
+        "false_positive": {
+          "count": 6,
+          "of": 192,
+          "rate": 0.0312
+        }
+      },
+      "policy_gap": {
+        "detected": {
+          "count": 8,
+          "of": 8,
+          "rate": 1.0
+        },
+        "false_positive": {
+          "count": 0,
+          "of": 192,
+          "rate": 0.0
+        }
+      }
+    },
+    "detection_overall": {
+      "planted_issue_instances": {
+        "count": 37,
+        "of": 43,
+        "rate": 0.8605
+      },
+      "taxpayers_with_any_issue_flagged": {
+        "count": 32,
+        "of": 37,
+        "rate": 0.8649
+      },
+      "mixed_taxpayers_both_found": {
+        "count": 5,
+        "of": 6,
+        "rate": 0.8333
+      }
+    },
+    "false_positive_overall": {
+      "clean_taxpayers_flagged": {
+        "count": 13,
+        "of": 163,
+        "rate": 0.0798
+      }
+    },
+    "lanes": {
+      "accuracy": {
+        "count": 3977,
+        "of": 4185,
+        "rate": 0.9503
+      },
+      "confusion_truth_vs_system": {
+        "fast->fast": 2560,
+        "fast->standard": 122,
+        "investigation->fast": 10,
+        "investigation->investigation": 36,
+        "investigation->standard": 1,
+        "standard->fast": 75,
+        "standard->standard": 1381
+      },
+      "valid_claims_fast": {
+        "count": 2635,
+        "of": 4135,
+        "rate": 0.6372
+      },
+      "policy_fast_claims_fast": {
+        "count": 2560,
+        "of": 2682,
+        "rate": 0.9545
+      },
+      "claims_with_fake_invoices_not_fast": {
+        "count": 40,
+        "of": 50,
+        "rate": 0.8
+      },
+      "claims_with_fake_invoices_investigation": {
+        "count": 36,
+        "of": 50,
+        "rate": 0.72
+      }
+    },
+    "refund_amounts": {
+      "valid_refund_total": "799688540.97",
+      "valid_refund_in_undisputed_portion": "769155709.08",
+      "share_of_valid_refund_released_early": 0.9618,
+      "fake_vat_leaked_into_undisputed_portion": "2040229.05",
+      "valid_claims_undisputed_within_m1_of_valid_refund": {
+        "count": 3459,
+        "of": 4135,
+        "rate": 0.8365
+      },
+      "valid_claims_undisputed_mean_abs_error": "7216.39"
+    },
+    "amount_at_risk": {
+      "fake_invoices_planted_vat": "8785565.81",
+      "fake_invoices_planted_vat_in_detected_taxpayers": "8785565.81",
+      "fake_invoices_vat_disputed_by_system_for_planted_taxpayers": "7420245.20",
+      "imported_services_planted_gap": "10546233.24",
+      "imported_services_gap_computed_for_planted_taxpayers": "4351499.10"
+    },
+    "recompute": {
+      "claims_with_unbooked_fakes_caught_by_recompute": {
+        "count": 37,
+        "of": 37,
+        "rate": 1.0
+      },
+      "clean_taxpayer_periods_with_a_recompute_finding": {
+        "count": 0,
+        "of": 3912,
+        "rate": 0.0
+      },
+      "valid_claims_with_a_line_not_in_books": {
+        "count": 0,
+        "of": 4135,
+        "rate": 0.0
+      }
+    },
+    "legal_routes": {
+      "correct_candidate_route_or_policy_gap": {
+        "count": 41,
+        "of": 41,
+        "rate": 1.0
+      },
+      "any_finding_eligible_for_assessment": false
+    },
+    "time": {
+      "system_seconds_per_taxpayer_mean": 0.0124,
+      "system_seconds_per_taxpayer_p95": 0.013,
+      "manual_minutes_per_taxpayer_assumed_mean": 1026.1,
+      "manual_model": {
+        "per_claim": 20,
+        "per_claim_line": 3,
+        "per_foreign_counterparty": 15,
+        "cit_review": 30,
+        "per_agreement": 20
+      },
+      "manual_status": "assumption_until_timed_by_a_person"
+    }
+  },
+  "lekuka_coverage_degradation": {
+    "0.10": {
+      "fake_invoices_detected": {
+        "count": 7,
+        "of": 8,
+        "rate": 0.875
+      },
+      "clean_taxpayers_flagged": {
+        "count": 13,
+        "of": 163,
+        "rate": 0.0798
+      },
+      "lane_accuracy": {
+        "count": 3933,
+        "of": 4185,
+        "rate": 0.9398
+      },
+      "valid_claims_fast": {
+        "count": 2591,
+        "of": 4135,
+        "rate": 0.6266
+      },
+      "claims_with_fake_invoices_not_fast": {
+        "count": 48,
+        "of": 50,
+        "rate": 0.96
+      }
+    },
+    "0.50": {
+      "fake_invoices_detected": {
+        "count": 8,
+        "of": 8,
+        "rate": 1.0
+      },
+      "clean_taxpayers_flagged": {
+        "count": 13,
+        "of": 163,
+        "rate": 0.0798
+      },
+      "lane_accuracy": {
+        "count": 3935,
+        "of": 4185,
+        "rate": 0.9403
+      },
+      "valid_claims_fast": {
+        "count": 2666,
+        "of": 4135,
+        "rate": 0.6447
+      },
+      "claims_with_fake_invoices_not_fast": {
+        "count": 50,
+        "of": 50,
+        "rate": 1.0
+      }
+    },
+    "0.90": {
+      "fake_invoices_detected": {
+        "count": 8,
+        "of": 8,
+        "rate": 1.0
+      },
+      "clean_taxpayers_flagged": {
+        "count": 13,
+        "of": 163,
+        "rate": 0.0798
+      },
+      "lane_accuracy": {
+        "count": 3925,
+        "of": 4185,
+        "rate": 0.9379
+      },
+      "valid_claims_fast": {
+        "count": 2743,
+        "of": 4135,
+        "rate": 0.6634
+      },
+      "claims_with_fake_invoices_not_fast": {
+        "count": 50,
+        "of": 50,
+        "rate": 1.0
+      }
+    }
+  },
+  "simple_rule_baselines": [
+    {
+      "threshold": "100000.00",
+      "taxpayers_with_any_issue_flagged": {
+        "count": 34,
+        "of": 37,
+        "rate": 0.9189
+      },
+      "by_issue": {
+        "fake_invoices": {
+          "count": 8,
+          "of": 8,
+          "rate": 1.0
+        },
+        "untaxed_imported_services": {
+          "count": 7,
+          "of": 8,
+          "rate": 0.875
+        },
+        "disguised_employment": {
+          "count": 9,
+          "of": 11,
+          "rate": 0.8182
+        },
+        "related_party_loss": {
+          "count": 8,
+          "of": 8,
+          "rate": 1.0
+        },
+        "policy_gap": {
+          "count": 8,
+          "of": 8,
+          "rate": 1.0
+        }
+      },
+      "clean_taxpayers_flagged": {
+        "count": 133,
+        "of": 163,
+        "rate": 0.816
+      },
+      "valid_claims_paid_without_audit": {
+        "count": 1284,
+        "of": 4135,
+        "rate": 0.3105
+      },
+      "claims_with_fake_invoices_held": {
+        "count": 49,
+        "of": 50,
+        "rate": 0.98
+      }
+    },
+    {
+      "threshold": "500000.00",
+      "taxpayers_with_any_issue_flagged": {
+        "count": 9,
+        "of": 37,
+        "rate": 0.2432
+      },
+      "by_issue": {
+        "fake_invoices": {
+          "count": 5,
+          "of": 8,
+          "rate": 0.625
+        },
+        "untaxed_imported_services": {
+          "count": 1,
+          "of": 8,
+          "rate": 0.125
+        },
+        "disguised_employment": {
+          "count": 1,
+          "of": 11,
+          "rate": 0.0909
+        },
+        "related_party_loss": {
+          "count": 1,
+          "of": 8,
+          "rate": 0.125
+        },
+        "policy_gap": {
+          "count": 3,
+          "of": 8,
+          "rate": 0.375
+        }
+      },
+      "clean_taxpayers_flagged": {
+        "count": 15,
+        "of": 163,
+        "rate": 0.092
+      },
+      "valid_claims_paid_without_audit": {
+        "count": 4022,
+        "of": 4135,
+        "rate": 0.9727
+      },
+      "claims_with_fake_invoices_held": {
+        "count": 13,
+        "of": 50,
+        "rate": 0.26
+      }
+    },
+    {
+      "threshold": "1000000.00",
+      "taxpayers_with_any_issue_flagged": {
+        "count": 0,
+        "of": 37,
+        "rate": 0.0
+      },
+      "by_issue": {
+        "fake_invoices": {
+          "count": 0,
+          "of": 8,
+          "rate": 0.0
+        },
+        "untaxed_imported_services": {
+          "count": 0,
+          "of": 8,
+          "rate": 0.0
+        },
+        "disguised_employment": {
+          "count": 0,
+          "of": 11,
+          "rate": 0.0
+        },
+        "related_party_loss": {
+          "count": 0,
+          "of": 8,
+          "rate": 0.0
+        },
+        "policy_gap": {
+          "count": 0,
+          "of": 8,
+          "rate": 0.0
+        }
+      },
+      "clean_taxpayers_flagged": {
+        "count": 1,
+        "of": 163,
+        "rate": 0.0061
+      },
+      "valid_claims_paid_without_audit": {
+        "count": 4128,
+        "of": 4135,
+        "rate": 0.9983
+      },
+      "claims_with_fake_invoices_held": {
+        "count": 0,
+        "of": 50,
+        "rate": 0.0
+      }
+    }
+  ]
+}

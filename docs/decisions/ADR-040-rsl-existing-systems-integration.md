@@ -46,7 +46,10 @@ research, 2026-11-06) and are unverified. TAX-117 must pin a WSO2 Identity Serve
 Manager version from official WSO2 documentation and record it here.
 
 Verification performed (or named implementation task):
-None in this ADR. TAX-111 (contracts and fixtures), TAX-117 (WSO2 smoke test).
+TAX-111 implemented the contracts and fixture adapter (`integration/rsl_sources`, tests in
+`tests/integration/test_rsl_sources.py`), and TAX-118 exercised them on a sealed synthetic
+population. No live RSL system or WSO2 instance has been tested; TAX-117 (WSO2 smoke test)
+is still open.
 
 Consequences and revisit trigger:
 Taxpayer and officer journeys start from RSL systems in the demo narrative. Revisit when

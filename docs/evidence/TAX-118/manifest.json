@@ -72,6 +72,9 @@
       "integration/rsl_sources/fixture_source.py": "53d8ced62a6b6f77981414a98d9c208ef300222aa96dd9f8e6363e598057b9dc"
     }
   },
-  "test_run": null,
+  "test_run": {
+    "at": "2026-11-06T11:56:12+00:00",
+    "results_sha256": "cdbc55936b159e5cbeda51f02f86d29ae444c5325864ae277f8762706d91bd93"
+  },
   "disclosure": "The generator, the answer key and the rules were all written by the same AI coding agent. Only the dataset and answer-key hashes were committed before tuning; the rules were tuned on the development split and frozen before the single test run. A small debugging population (seed 777) was used before sealing. A team member can rerun with a private seed for a blind check."
 }

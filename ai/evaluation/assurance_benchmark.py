@@ -868,6 +868,10 @@ Ask an accountant to work each case in a spreadsheet as RSL would today, and fil
 `timing_sheet.csv`: start and end time, issues found, the lane they would give each claim,
 and the amount they would question. Do not show them the system output first.
 
+Each case covers 24 months. If time is short, work the three most recent refund claims
+plus the foreign payments and withholding lines, and write in `notes` exactly what was
+covered, so the comparison with the system is like for like.
+
 ## Outside reviewer (`reviewer_packs/`)
 
 Twenty system case packs for the same taxpayers. Ask an outside accountant or tax
