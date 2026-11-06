@@ -5,7 +5,7 @@
   "owner": "Keletso",
   "area": "tests/ai",
   "phase": "pilot",
-  "status": "IN_REVIEW",
+  "status": "DONE",
   "priority": "P0",
   "depends_on": [
     "TAX-112",
@@ -88,6 +88,10 @@
     {
       "at": "2026-11-06",
       "text": "Expanded by Keletso's request to 300 taxpayers x 24 months with dev/test split, sealed answer key, frozen rules and two baselines. Human-measured baseline and reviewer scores are tracked in TAX-120; Docling accuracy in TAX-119."
+    },
+    {
+      "at": "2026-11-06",
+      "text": "Verified PR #277 merged at 2026-11-06T12:03:48Z by Kellybrackets; all acceptance criteria satisfied with evidence. Recorded DONE (ADR-038)."
     }
   ],
   "sequence": 28
