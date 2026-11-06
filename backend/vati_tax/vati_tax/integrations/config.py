@@ -37,6 +37,9 @@ from typing import Any
 from vati_tax.ids.canonical import MappingError
 
 SERVICES_KEY = "vati_services"
+# TAX-121 (ADR-042): its own key, so ``frappe_dev.py init`` (which rewrites
+# ``vati_services``) leaves a site's recorded RSL source fixture in place.
+RSL_SOURCES_KEY = "vati_rsl_sources"
 # Site-config keys the existing Frappe bindings read (decisions/store.py, bridge/store.py).
 SITE_FACTORIES = {
     "vati_case_lifecycle": "vati_tax.integrations.factories.case_lifecycle",
@@ -48,6 +51,7 @@ _LABELS = {
     "docling": "Docling extraction",
     "openaleph": "OpenAleph",
     "yente": "yente matching",
+    "rsl_sources": "RSL source fixture",
 }
 # Same field as decisions/store.py used for jube_not_configured before TAX-085.
 _FIELDS = {"jube": "case_id", "jube_risk": "case_id"}
@@ -272,3 +276,86 @@ def yente_matcher(conf: Mapping[str, Any], *, transport: Any = None) -> YenteMat
         )
 
     return YenteMatcher(cr, _guarded(send, unavailable), _text(values, "dataset", "yente"))
+
+
+# --------------------------------------------------------------------------- RSL sources
+
+RSL_FIXTURE_FORMAT = "vati.rsl_sources_fixture.v1"
+_RSL_CACHE: dict[tuple[str, int, int], RslSourceFixture] = {}
+
+
+class RslSourceFixture:
+    """TAX-111 ``FixtureRslSources`` loaded from a recorded synthetic file (ADR-040).
+
+    There is no live RSL integration: every envelope says ``fixture: true``. ``mode`` is
+    therefore ``recorded``. ``params`` holds the stated assumptions the checks need
+    (synthetic rates, materiality), ``sha256`` the file the records came from.
+    """
+
+    mode = "recorded"
+
+    def __init__(self, sources: Any, params: Mapping[str, Any], sha256: str, adapter: ModuleType):
+        self.sources = sources
+        self.params = params
+        self.sha256 = sha256
+        self.adapter_id = adapter.FIXTURE_ADAPTER_ID
+        self.adapter_version = adapter.FIXTURE_ADAPTER_VERSION
+
+
+def rsl_sources(conf: Mapping[str, Any], *, vati_tenant_id: str) -> RslSourceFixture:
+    """The site's RSL source fixture for ``vati_tenant_id`` (site key ``vati_rsl_sources``).
+
+    ``{"fixture_path": "/abs/file.json", "vati_tenant_id": "<uuid>", "unavailable": [...]}``.
+    A missing or unreadable file, a file that is not a synthetic fixture, or another
+    tenant's fixture is ``ServiceNotConfigured`` (``upstream_unavailable``): the checks then
+    record ``not_run``, never a result built from nothing.
+    """
+    import hashlib
+    import json
+    import os
+
+    values = conf.get(RSL_SOURCES_KEY)
+    if not isinstance(values, Mapping) or not values:
+        raise ServiceNotConfigured("rsl_sources")
+    if values.get("vati_tenant_id") != vati_tenant_id:
+        raise ServiceNotConfigured("rsl_sources", "rsl_sources_tenant_mismatch")
+    path = _text(values, "fixture_path", "rsl_sources")
+    unavailable = values.get("unavailable") or []
+    if not isinstance(unavailable, list) or not all(isinstance(u, str) for u in unavailable):
+        raise ServiceNotConfigured("rsl_sources")
+    adapter = adapter_module("integration.rsl_sources.fixture_source", "rsl_sources")
+    try:
+        stat = os.stat(path)
+    except OSError:
+        raise ServiceNotConfigured("rsl_sources", "rsl_sources_file_missing") from None
+    cache_key = (path, stat.st_mtime_ns, stat.st_size)
+    loaded = _RSL_CACHE.get(cache_key)
+    if loaded is None:
+        try:
+            with open(path, "rb") as handle:
+                raw = handle.read()
+            doc = json.loads(raw)
+        except (OSError, ValueError):
+            raise ServiceNotConfigured("rsl_sources", "rsl_sources_file_unreadable") from None
+        if (
+            not isinstance(doc, Mapping)
+            or doc.get("format") != RSL_FIXTURE_FORMAT
+            or doc.get("fixture") is not True
+            or doc.get("synthetic") is not True
+        ):
+            raise ServiceNotConfigured("rsl_sources", "rsl_sources_not_a_fixture")
+        try:
+            records = {tuple(key.split(".", 1)): rows for key, rows in doc["records"].items()}
+            sources = adapter.FixtureRslSources(
+                str(doc["tenant_id"]), records, retrieved_at=str(doc["retrieved_at"])
+            )
+            params = {"tenant_id": str(doc["tenant_id"]),
+                      "rates_assumed": dict(doc["rates_assumed"]),
+                      "materiality": dict(doc["materiality"])}  # fmt: skip
+        except (KeyError, TypeError, ValueError, AttributeError):
+            raise ServiceNotConfigured("rsl_sources", "rsl_sources_not_a_fixture") from None
+        loaded = RslSourceFixture(sources, params, hashlib.sha256(raw).hexdigest(), adapter)
+        _RSL_CACHE.clear()
+        _RSL_CACHE[cache_key] = loaded
+    loaded.sources.unavailable = frozenset(unavailable)
+    return loaded

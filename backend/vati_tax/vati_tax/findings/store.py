@@ -98,7 +98,7 @@ class FrappeRepository:
         "ruleset_version", "input_digest", "playbook_id", "playbook_version",
         "playbook_content_digest", "registry_version", "run_id", "analysis_provenance",
         "recorded_by", "recorder_role", "created_at", "correlation_id", "registration_key",
-        "request_digest",
+        "request_digest", "source_refs", "candidate_route",
     )  # fmt: skip
 
     @staticmethod
@@ -146,6 +146,8 @@ class FrappeRepository:
             correlation_id=row.correlation_id,
             registration_key=row.registration_key,
             request_digest=row.request_digest,
+            source_refs=tuple(_json(row.source_refs) or ()),
+            candidate_route=_json(row.candidate_route),
         )
 
     def _findings(self, filters: dict[str, Any], **kwargs: Any) -> list[FindingRecord]:
@@ -213,6 +215,16 @@ class FrappeRepository:
                 "correlation_id": record.correlation_id,
                 "registration_key": record.registration_key,
                 "request_digest": record.request_digest,
+                "source_refs": (
+                    json.dumps(list(record.source_refs), sort_keys=True)
+                    if record.source_refs
+                    else None
+                ),
+                "candidate_route": (
+                    json.dumps(record.candidate_route, sort_keys=True)
+                    if record.candidate_route
+                    else None
+                ),
             }
         )
         try:

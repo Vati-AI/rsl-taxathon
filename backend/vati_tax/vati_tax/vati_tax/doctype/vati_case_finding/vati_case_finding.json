@@ -2,7 +2,7 @@
  "actions": [],
  "autoname": "field:finding_id",
  "creation": "2026-11-06 10:00:00.000000",
- "description": "One case finding from a TAX-035 Jube rule, a LangGraph playbook run or an officer (TAX-086). Append-only: a changed result is a new revision that supersedes the previous one. Advisory: it decides nothing, labels nobody and its legal route stays unverified. Written only by vati_tax.findings.",
+ "description": "One case finding from a TAX-035 Jube rule, a Vati assurance check (TAX-121), a LangGraph playbook run or an officer (TAX-086). Append-only: a changed result is a new revision that supersedes the previous one. Advisory: it decides nothing, labels nobody and its legal route stays unverified. Written only by vati_tax.findings.",
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
@@ -38,6 +38,8 @@
   "registry_version",
   "run_id",
   "analysis_provenance",
+  "source_refs",
+  "candidate_route",
   "trace_section",
   "recorded_by",
   "recorder_role",
@@ -190,7 +192,7 @@
    "fieldtype": "Select",
    "label": "Producer",
    "set_only_once": 1,
-   "options": "jube_rule\nlanggraph_run\nofficer",
+   "options": "jube_rule\nlanggraph_run\nofficer\nvati_check",
    "reqd": 1,
    "in_list_view": 1,
    "in_standard_filter": 1
@@ -292,6 +294,18 @@
    "set_only_once": 1
   },
   {
+   "fieldname": "source_refs",
+   "fieldtype": "Long Text",
+   "label": "RSL Source References (RslSourceRef JSON)",
+   "set_only_once": 1
+  },
+  {
+   "fieldname": "candidate_route",
+   "fieldtype": "Long Text",
+   "label": "Candidate Route (TAX-116, unverified)",
+   "set_only_once": 1
+  },
+  {
    "fieldname": "trace_section",
    "fieldtype": "Section Break",
    "label": "Trace"
@@ -369,7 +383,7 @@
  "in_create": 1,
  "index_web_pages_for_search": 0,
  "links": [],
- "modified": "2026-11-06 10:00:00.000000",
+ "modified": "2026-11-06 16:00:00.000000",
  "modified_by": "Administrator",
  "module": "Vati Tax",
  "name": "Vati Case Finding",

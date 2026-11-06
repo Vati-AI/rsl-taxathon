@@ -1426,7 +1426,7 @@
           "alternative_explanations": { "type": "array", "items": { "type": "string", "minLength": 1, "maxLength": 1000 } },
           "legal_route": { "$ref": "#/components/schemas/LegalRoute" },
           "proposed_action": { "$ref": "#/components/schemas/ProposedAction" },
-          "producer": { "type": "string", "enum": ["jube_rule", "langgraph_run", "officer"] },
+          "producer": { "type": "string", "enum": ["jube_rule", "langgraph_run", "officer", "vati_check"], "description": "vati_check (TAX-121, ADR-042): a deterministic Vati assurance check run by the platform pipeline; it names its check like a rule." },
           "producer_version": { "type": "string", "minLength": 1, "maxLength": 128 },
           "created_at": { "$ref": "#/components/schemas/Timestamp" },
           "analysis_provenance": {
@@ -1436,7 +1436,55 @@
           "feedback_summary": {
             "anyOf": [{ "$ref": "#/components/schemas/FindingFeedbackSummary" }, { "type": "null" }],
             "description": "TAX-096. Officer feedback so far; null for officer findings. Optional for backward compatibility."
+          },
+          "source_refs": {
+            "type": "array",
+            "maxItems": 500,
+            "items": { "$ref": "#/components/schemas/RslSourceRef" },
+            "description": "TAX-121. RSL source records the check read (ADR-040 references, never copies). Optional for backward compatibility."
+          },
+          "candidate_route": {
+            "anyOf": [{ "$ref": "#/components/schemas/CandidateRoute" }, { "type": "null" }],
+            "description": "TAX-121. The TAX-116 candidate legal anchors or policy gaps the finding code routes to; unverified and never eligible for assessment. legal_route stays unverified (no_verified_route for a policy gap) with no citation. Optional for backward compatibility."
           }
+        }
+      },
+      "RslSourceRef": {
+        "type": "object",
+        "description": "Reference to one record read from an RSL source system through its TAX-111 contract (fixture until RSL supplies a specification).",
+        "additionalProperties": false,
+        "required": ["source_system", "record_id", "contract_id", "record_sha256", "locator"],
+        "properties": {
+          "source_system": { "type": "string", "pattern": "^[a-z][a-z0-9_]*$", "maxLength": 64 },
+          "record_id": { "type": "string", "minLength": 1, "maxLength": 128 },
+          "contract_id": { "type": "string", "minLength": 1, "maxLength": 128 },
+          "record_sha256": { "$ref": "#/components/schemas/Sha256" },
+          "locator": { "type": ["string", "null"], "minLength": 1, "maxLength": 255 }
+        }
+      },
+      "CandidateRoute": {
+        "type": "object",
+        "description": "TAX-116 rule-register routing of a finding code. Every candidate is unverified until RSL Legal reviews it.",
+        "additionalProperties": false,
+        "required": ["route_status", "candidates", "policy_gaps", "register_version", "eligible_for_assessment"],
+        "properties": {
+          "route_status": { "type": "string", "enum": ["candidate_unverified", "policy_gap", "no_candidate"] },
+          "candidates": {
+            "type": "array",
+            "maxItems": 20,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["rule_id", "instrument"],
+              "properties": {
+                "rule_id": { "type": "string", "minLength": 1, "maxLength": 128 },
+                "instrument": { "type": "string", "minLength": 1, "maxLength": 512 }
+              }
+            }
+          },
+          "policy_gaps": { "type": "array", "maxItems": 20, "items": { "type": "string", "minLength": 1, "maxLength": 128 } },
+          "register_version": { "type": "string", "minLength": 1, "maxLength": 128 },
+          "eligible_for_assessment": { "const": false }
         }
       },
       "FindingList": {
@@ -2251,7 +2299,7 @@
             "type": "string",
             "enum": ["refund_reconciliation", "related_party", "worker_classification", "imported_services", "policy_gap", "other"]
           },
-          "producer": { "type": "string", "enum": ["jube_rule", "langgraph_run"] },
+          "producer": { "type": "string", "enum": ["jube_rule", "langgraph_run", "vati_check"] },
           "producer_version": { "type": "string", "minLength": 1, "maxLength": 128 },
           "analysis_provenance": { "anyOf": [{ "$ref": "#/components/schemas/AnalysisProvenance" }, { "type": "null" }] }
         }
@@ -3266,7 +3314,7 @@
           "correlation_id": { "$ref": "#/components/schemas/Uuid" },
           "type": {
             "type": "string",
-            "enum": ["case.registered", "case.status_projected", "evidence.received", "extraction.completed", "extraction.failed", "investigation.requested", "finding.recorded", "evidence_request.recorded"]
+            "enum": ["case.registered", "case.status_projected", "evidence.received", "extraction.completed", "extraction.failed", "investigation.requested", "finding.recorded", "evidence_request.recorded", "assurance.requested"]
           },
           "occurred_at": { "$ref": "#/components/schemas/Timestamp" },
           "idempotency_key": { "type": "string", "minLength": 16, "maxLength": 255, "pattern": "^[A-Za-z0-9:._-]+$" },

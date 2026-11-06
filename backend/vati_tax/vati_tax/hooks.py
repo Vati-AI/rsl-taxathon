@@ -20,10 +20,12 @@ doc_events = {
     "DocShare": {"validate": "vati_tax.identity.permissions.validate_share"},
     # TAX-032: an evidence file stays private and in place.
     "File": {"before_validate": "vati_tax.evidence.store.guard_evidence_file"},
-    # TAX-039: a taxpayer's send registers the case and enqueues case.registered.
-    # TAX-087: then the claim's evidence is linked to the case (runs second, in order).
+    # TAX-121 (ADR-042): a sent refund claim first enqueues assurance.requested, so the
+    # assurance checks never wait for Jube. TAX-039: the send registers the case and
+    # enqueues case.registered. TAX-087: then the claim's evidence is linked to the case.
     "Vati Submission": {
         "on_update": [
+            "vati_tax.assurance.store.on_submission_sent",
             "vati_tax.bridge.store.on_submission_update",
             "vati_tax.pipeline.store.on_submission_sent",
         ]
@@ -47,6 +49,8 @@ vati_outbox_handlers = {
     "evidence.received": "vati_tax.pipeline.store.handle_evidence_received",
     "extraction.completed": "vati_tax.pipeline.store.handle_extraction_settled",
     "extraction.failed": "vati_tax.pipeline.store.handle_extraction_settled",
+    # TAX-121 (ADR-042): TAX-112-116 checks over the RSL source fixture and Frappe records.
+    "assurance.requested": "vati_tax.assurance.store.handle_assurance_requested",
 }
 
 # TAX-021: the Vue taxpayer portal owns client routes under /taxpayer; every
