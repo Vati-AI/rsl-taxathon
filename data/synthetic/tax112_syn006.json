@@ -1,0 +1,215 @@
+{
+ "synthetic": true,
+ "case_id": "SYN-006",
+ "notice": "Synthetic TAX-112 fixture: invented TINs, suppliers and amounts at a synthetic 15% VAT rate; not real taxpayers, invoices or Lesotho law.",
+ "scenario": "Fake or undeclared supplier invoices in a refund claim, alongside legitimate pre-Lekuka and import lines",
+ "taxpayer_tin": "510000006",
+ "registered_tins": [
+  "510000006",
+  "520000001",
+  "520000002",
+  "520000003",
+  "520000004"
+ ],
+ "integrated_tins": [
+  "520000001",
+  "520000002",
+  "520000003"
+ ],
+ "idms_invoices": [
+  {
+   "idms_id": "IDMS-SYN-006-1",
+   "invoice_number": "INV-A1",
+   "supplier_tin": "520000001",
+   "buyer_tin": "510000006",
+   "issue_date": "2026-09-05",
+   "net_amount": "100000.00",
+   "vat_amount": "15000.00",
+   "supplier_output_declared": true
+  },
+  {
+   "idms_id": "IDMS-SYN-006-2",
+   "invoice_number": "INV-C1",
+   "supplier_tin": "520000003",
+   "buyer_tin": "510000006",
+   "issue_date": "2026-09-15",
+   "net_amount": "40000.00",
+   "vat_amount": "6000.00",
+   "supplier_output_declared": false
+  },
+  {
+   "idms_id": "IDMS-SYN-006-3",
+   "invoice_number": "INV-B7",
+   "supplier_tin": "520000002",
+   "buyer_tin": "510000006",
+   "issue_date": "2026-09-08",
+   "net_amount": "20000.00",
+   "vat_amount": "3000.00",
+   "supplier_output_declared": true
+  }
+ ],
+ "asycuda_entries": [
+  {
+   "entry_id": "ASY-SYN-006-1",
+   "importer_tin": "510000006",
+   "registered_on": "2026-09-12",
+   "origin_country": "za",
+   "customs_value": "200000.00",
+   "import_vat": "30000.00",
+   "currency": "LSL"
+  }
+ ],
+ "documents": {
+  "DOC-SYN-006-4": {
+   "supplier_tin": "520000004",
+   "invoice_number": "INV-D1",
+   "net_amount": "50000.00",
+   "vat_amount": "7500.00"
+  },
+  "DOC-SYN-006-5": {
+   "supplier_tin": "539999999",
+   "invoice_number": "INV-X1",
+   "net_amount": "80000.00",
+   "vat_amount": "12000.00"
+  }
+ },
+ "claim": {
+  "claim_id": "ORA-SYN-006",
+  "tin": "510000006",
+  "period": "2026-09",
+  "return_id": "VAT-SYN-006",
+  "claimed_amount": "50000.00",
+  "submitted_on": "2026-10-22",
+  "lines": [
+   {
+    "line_id": "L01",
+    "kind": "domestic",
+    "supplier_ref": "520000001",
+    "invoice_number": "INV-A1",
+    "invoice_date": "2026-09-05",
+    "net_amount": "100000.00",
+    "vat_amount": "15000.00"
+   },
+   {
+    "line_id": "L02",
+    "kind": "domestic",
+    "supplier_ref": "520000002",
+    "invoice_number": "INV-B9",
+    "invoice_date": "2026-09-10",
+    "net_amount": "60000.00",
+    "vat_amount": "9000.00"
+   },
+   {
+    "line_id": "L03",
+    "kind": "domestic",
+    "supplier_ref": "520000003",
+    "invoice_number": "INV-C1",
+    "invoice_date": "2026-09-15",
+    "net_amount": "40000.00",
+    "vat_amount": "6000.00"
+   },
+   {
+    "line_id": "L04",
+    "kind": "domestic",
+    "supplier_ref": "520000004",
+    "invoice_number": "INV-D1",
+    "invoice_date": "2026-09-18",
+    "net_amount": "50000.00",
+    "vat_amount": "7500.00"
+   },
+   {
+    "line_id": "L05",
+    "kind": "domestic",
+    "supplier_ref": "539999999",
+    "invoice_number": "INV-X1",
+    "invoice_date": "2026-09-20",
+    "net_amount": "80000.00",
+    "vat_amount": "12000.00"
+   },
+   {
+    "line_id": "L06",
+    "kind": "domestic",
+    "supplier_ref": "250000002",
+    "invoice_number": "INV-B7",
+    "invoice_date": "2026-09-08",
+    "net_amount": "20000.00",
+    "vat_amount": "3000.00"
+   },
+   {
+    "line_id": "L07",
+    "kind": "import",
+    "supplier_ref": "F-ZA-GOODS",
+    "invoice_number": "ASY-SYN-006-1",
+    "invoice_date": "2026-09-12",
+    "net_amount": "200000.00",
+    "vat_amount": "30000.00"
+   },
+   {
+    "line_id": "L08",
+    "kind": "domestic",
+    "supplier_ref": "520000001",
+    "invoice_number": "INV-A1",
+    "invoice_date": "2026-09-05",
+    "net_amount": "100000.00",
+    "vat_amount": "15000.00"
+   }
+  ],
+  "uploaded_documents": [
+   {
+    "document_id": "DOC-SYN-006-4",
+    "line_id": "L04",
+    "kind": "invoice_copy"
+   },
+   {
+    "document_id": "DOC-SYN-006-5",
+    "line_id": "L05",
+    "kind": "invoice_copy"
+   }
+  ]
+ },
+ "expected_classification": {
+  "L01": "matched",
+  "L02": "unmatched",
+  "L03": "supplier_gap",
+  "L04": "unintegrated_supplier",
+  "L05": "unmatched",
+  "L06": "matched",
+  "L07": "matched",
+  "L08": "unmatched"
+ },
+ "expected_findings": [
+  {
+   "code": "provide_invoice_absent_from_idms",
+   "line_id": "L02",
+   "note": "Integrated supplier, invoice absent from IDMS."
+  },
+  {
+   "code": "confirm_supply_with_supplier",
+   "line_id": "L03",
+   "note": "Invoice in IDMS but the supplier did not declare output VAT."
+  },
+  {
+   "code": "supplier_not_registered",
+   "line_id": "L05",
+   "note": "Supplier TIN not registered and not a typing slip of a registered TIN."
+  },
+  {
+   "code": "confirm_line_is_not_a_duplicate",
+   "line_id": "L08",
+   "note": "Same supplier, invoice number and VAT as L01."
+  }
+ ],
+ "expected_non_findings": [
+  "denial",
+  "refund_decision",
+  "name_based_match",
+  "finding_on_pre_lekuka_invoice_L04",
+  "finding_on_typo_line_L06"
+ ],
+ "expected_vat_by_status": {
+  "matched": "48000.00",
+  "supplier_gap": "6000.00",
+  "unintegrated_supplier": "7500.00",
+  "unmatched": "36000.00"
+ }
+}

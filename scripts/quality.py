@@ -20,6 +20,7 @@ SOURCES = [
     "integration/openaleph",
     "integration/docling",
     "integration/yente",
+    "integration/rsl_sources",
     "tests/integration",
 ]
 

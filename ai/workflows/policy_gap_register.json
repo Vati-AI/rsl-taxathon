@@ -1,0 +1,16 @@
+{
+  "register_version": "tax116-policy-gaps-2026.11.0",
+  "status": "candidate_unverified",
+  "notice": "Policy-gap register seed from the user-supplied framework. A gap records real revenue exposure with no legal route; it is evidence for law-reform discussion, never a finding against a taxpayer.",
+  "gaps": [
+    {
+      "gap_id": "GAP-ARMS-LENGTH",
+      "title": "No codified arm's-length standard",
+      "description": "The framework reports that the High Court (AfriSam) held section 113 does not let RSL impute notional amounts, such as interest on an interest-free related-party loan, by applying an arm's-length standard the section does not contain, and identified the absence of a codified standard as a gap in Lesotho's law.",
+      "finding_codes": ["related_party_interest_free_loan"],
+      "linked_process": "BP6 related-party and profit-shifting review",
+      "owner": "Deputy Commissioner, Special Sectors; Ministry (policy)",
+      "verification_status": "unverified"
+    }
+  ]
+}
