@@ -1,0 +1,65 @@
+{
+  "id": "TAX-117",
+  "kind": "task",
+  "title": "Vati API behind WSO2 API Manager and sign-in through WSO2 Identity Server",
+  "owner": "Keletso",
+  "area": "integration",
+  "phase": "pilot",
+  "status": "BACKLOG",
+  "priority": "P0",
+  "depends_on": [
+    "TAX-090",
+    "TAX-091"
+  ],
+  "claimed_by": null,
+  "branch": null,
+  "pr": null,
+  "scope": "Local smoke test of the ADR-040 plug-in path: WSO2 Identity Server as OIDC provider for Frappe staff and taxpayer login mapped to existing roles and tenant membership, and the Vati /api/v1 service published through WSO2 API Manager",
+  "inputs": [
+    "PROJECT.md",
+    "PROJECT_SCOPE.md",
+    "docs/ARCHITECTURE.md",
+    "docs/DATA_MODEL.md",
+    "docs/ENGINEERING_STANDARD.md",
+    "docs/V1_ACCEPTANCE.md",
+    "docs/reference/FRAMEWORK.md",
+    "docs/decisions/ADR-040-rsl-existing-systems-integration.md",
+    "docs/SERVICE_SETUP.md",
+    "docs/PERMISSIONS.md",
+    "docs/decisions/ADR-034-native-ui-integration.md",
+    "integration/upstreams.lock.json"
+  ],
+  "acceptance": [
+    {
+      "text": "Pin WSO2 Identity Server and API Manager versions from official WSO2 documentation and record them in ADR-040 and the upstream lock; configuration lives in the repo with secrets only in ignored files",
+      "done": false
+    },
+    {
+      "text": "An OIDC login through WSO2 IS reaches Frappe as an existing user with unchanged roles and tenant permissions; an unknown subject gets no access; the Frappe local login path still works as the fallback",
+      "done": false
+    },
+    {
+      "text": "A /api/v1 call through WSO2 API Manager reaches the Vati service with the user's identity and is refused without it; a recorded smoke test is attached, or, if resources prevent it, the limitation is recorded as a reduced demonstration without claiming integration",
+      "done": false
+    },
+    {
+      "text": "Record relevant tests and evidence, update task status and open a PR",
+      "done": false
+    }
+  ],
+  "verification": "A /api/v1 call through WSO2 API Manager reaches the Vati service with the user's identity and is refused without it; a recorded smoke test is attached, or, if resources prevent it, the limitation is recorded as a reduced demonstration without claiming integration",
+  "skills": [
+    "start-task",
+    "implement-change",
+    "update-project-task",
+    "finish-task"
+  ],
+  "evidence": [],
+  "notes": [
+    {
+      "at": "2026-11-06",
+      "text": "Added 2026-11-06 from the framework scope update (docs/reference/FRAMEWORK.md, ADR-040) as a must-have for the proposal and pilot."
+    }
+  ],
+  "sequence": 14
+}

@@ -1,0 +1,66 @@
+{
+  "id": "TAX-114",
+  "kind": "task",
+  "title": "Refund lane service targets, undisputed-portion release and RSL inputs",
+  "owner": "Keletso",
+  "area": "ai",
+  "phase": "pilot",
+  "status": "BACKLOG",
+  "priority": "P0",
+  "depends_on": [
+    "TAX-048",
+    "TAX-111",
+    "TAX-112",
+    "TAX-113"
+  ],
+  "claimed_by": null,
+  "branch": null,
+  "pr": null,
+  "scope": "Extend the TAX-048 lanes with configurable proposed decision-time targets per lane, the calculated undisputed portion, structural-explanation tests first, and new inputs: RSL fraud-model score, BP4 match results, BP1 data quality and an optional group risk rating",
+  "inputs": [
+    "PROJECT.md",
+    "PROJECT_SCOPE.md",
+    "docs/ARCHITECTURE.md",
+    "docs/DATA_MODEL.md",
+    "docs/ENGINEERING_STANDARD.md",
+    "docs/V1_ACCEPTANCE.md",
+    "docs/reference/FRAMEWORK.md",
+    "docs/decisions/ADR-040-rsl-existing-systems-integration.md",
+    "ai/tools/refund_reconciliation.py",
+    "ai/workflows/refund_lanes.py",
+    "docs/decisions/ADR-023-presubmission-reconciliation.md"
+  ],
+  "acceptance": [
+    {
+      "text": "Lane targets (fast 10, standard 30 working days; investigation case plan 5, target 90) live in versioned configuration marked 'proposed, verify against VAT Act' and each lane proposal carries its target and due date",
+      "done": false
+    },
+    {
+      "text": "The undisputed portion is computed deterministically as the reconciled amount and shown as a recommendation for the refund auditor; the system never releases or denies payment; disputed items are listed for the targeted request",
+      "done": false
+    },
+    {
+      "text": "The lane reason cites each input used (RSL score with model version, IDMS match share, data quality, group rating or 'not available'); a missing input never silently counts as clean; tests cover each lane, partial release and missing-input cases",
+      "done": false
+    },
+    {
+      "text": "Record relevant tests and evidence, update task status and open a PR",
+      "done": false
+    }
+  ],
+  "verification": "The lane reason cites each input used (RSL score with model version, IDMS match share, data quality, group rating or 'not available'); a missing input never silently counts as clean; tests cover each lane, partial release and missing-input cases",
+  "skills": [
+    "start-task",
+    "implement-change",
+    "update-project-task",
+    "finish-task"
+  ],
+  "evidence": [],
+  "notes": [
+    {
+      "at": "2026-11-06",
+      "text": "Added 2026-11-06 from the framework scope update (docs/reference/FRAMEWORK.md, ADR-040) as a must-have for the proposal and pilot."
+    }
+  ],
+  "sequence": 7
+}

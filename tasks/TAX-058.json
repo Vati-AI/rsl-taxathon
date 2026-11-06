@@ -20,7 +20,8 @@
     "TAX-097",
     "TAX-103",
     "TAX-101",
-    "TAX-102"
+    "TAX-102",
+    "TAX-118"
   ],
   "claimed_by": null,
   "branch": null,
@@ -75,7 +76,11 @@
       "at": "2026-11-05T10:39:50.241416+00:00",
       "text": "Keletso decision 2026-11-05: the taxpayer assistant (TAX-101) is an optional demo segment, shown if ready, so it cannot block the officer pipeline demo. The live-app regression re-run (TAX-103) is required."
     },
-    "TAX-105 scope clarification: Full native-tool acceptance follows UI_INTEGRATION_SCOPE.md and TAX-103; reduced laptop demos are disclosed."
+    "TAX-105 scope clarification: Full native-tool acceptance follows UI_INTEGRATION_SCOPE.md and TAX-103; reduced laptop demos are disclosed.",
+    {
+      "at": "2026-11-06",
+      "text": "Now depends on TAX-118: the framework update requires measured test results against a baseline (Part 7) before measured acceptance."
+    }
   ],
-  "sequence": 21
+  "sequence": 29
 }

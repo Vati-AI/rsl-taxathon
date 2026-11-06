@@ -1,0 +1,66 @@
+{
+  "id": "TAX-113",
+  "kind": "task",
+  "title": "SAF-T-style source-record intake and recompute engine",
+  "owner": "Keletso",
+  "area": "ai",
+  "phase": "pilot",
+  "status": "BACKLOG",
+  "priority": "P0",
+  "depends_on": [
+    "TAX-111",
+    "TAX-032",
+    "TAX-024"
+  ],
+  "claimed_by": null,
+  "branch": null,
+  "pr": null,
+  "scope": "BP1: accept a SAF-T-style export (general ledger journals, supplier and customer ledgers, payments) for large groups, standardise it, flag data problems without fixing them, recompute VAT and key income-tax lines and produce a line-by-line declared-versus-recomputed difference report with a record quality score",
+  "inputs": [
+    "PROJECT.md",
+    "PROJECT_SCOPE.md",
+    "docs/ARCHITECTURE.md",
+    "docs/DATA_MODEL.md",
+    "docs/ENGINEERING_STANDARD.md",
+    "docs/V1_ACCEPTANCE.md",
+    "docs/reference/FRAMEWORK.md",
+    "docs/decisions/ADR-040-rsl-existing-systems-integration.md",
+    "ai/tools",
+    "backend",
+    "docs/decisions/ADR-011-evidence-storage-provenance.md",
+    "data/synthetic"
+  ],
+  "acceptance": [
+    {
+      "text": "A documented SAF-T-style intake schema (subset sufficient for VAT and key CIT lines) with the original file preserved via TAX-032 hashing; standardisation to Maloti, ISO dates and standard account categories; arithmetic, duplicate and TIN checks flag issues and never silently correct them",
+      "done": false
+    },
+    {
+      "text": "Deterministic recompute of output VAT, input VAT and selected income-tax lines from the source records; the difference report lists declared, recomputed and difference per line with source record IDs; each record gets complete/verified/unverified/contradicted quality and low quality alone never produces an action",
+      "done": false
+    },
+    {
+      "text": "Synthetic SAF-T fixtures for at least two groups, one clean and one with planted 'cooked' figures that the recompute detects; tests cover balanced/unbalanced journals, duplicates, decimal exactness and the expected differences; wording says RSL independently validates and the taxpayer remains responsible",
+      "done": false
+    },
+    {
+      "text": "Record relevant tests and evidence, update task status and open a PR",
+      "done": false
+    }
+  ],
+  "verification": "Synthetic SAF-T fixtures for at least two groups, one clean and one with planted 'cooked' figures that the recompute detects; tests cover balanced/unbalanced journals, duplicates, decimal exactness and the expected differences; wording says RSL independently validates and the taxpayer remains responsible",
+  "skills": [
+    "start-task",
+    "implement-change",
+    "update-project-task",
+    "finish-task"
+  ],
+  "evidence": [],
+  "notes": [
+    {
+      "at": "2026-11-06",
+      "text": "Added 2026-11-06 from the framework scope update (docs/reference/FRAMEWORK.md, ADR-040) as a must-have for the proposal and pilot."
+    }
+  ],
+  "sequence": 6
+}

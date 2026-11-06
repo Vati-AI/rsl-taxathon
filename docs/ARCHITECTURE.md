@@ -14,6 +14,29 @@ flowchart LR
   V --> X[Approved RSL sources or explicit fixtures]
 ```
 
+## Plugging into RSL's existing systems (ADR-040)
+
+```mermaid
+flowchart LR
+  subgraph RSL[Existing RSL systems: sources of record]
+    E[e-Tax declared positions]
+    I[Lekuka / IDMS invoice warehouse]
+    R[Online Refunds Application]
+    S[RSL refund-fraud model score]
+    C[ASYCUDA World customs]
+  end
+  W[WSO2 API Manager and Identity Server]
+  RSL --> W --> V[Vati Integration API]
+  U[Officers and taxpayers] -->|OIDC sign-in| W
+  V --> J[Jube case engine: RSL score as input]
+  V --> F[Frappe evidence layer reached from e-Tax]
+```
+
+Vati reads data RSL already holds through one versioned contract per system (TAX-111) and
+never keeps a competing copy. Until RSL supplies specifications, the contracts are assumptions
+and only explicit fixtures implement them. Frappe keeps roles, tenant permissions and approval
+authority; WSO2 Identity Server becomes the sign-in provider once TAX-117 records a smoke test.
+
 ## One authority per responsibility
 
 | Responsibility | Authority | Other components |

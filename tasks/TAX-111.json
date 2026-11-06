@@ -1,0 +1,67 @@
+{
+  "id": "TAX-111",
+  "kind": "task",
+  "title": "RSL source-system contracts and fixture adapters",
+  "owner": "Keletso",
+  "area": "integration",
+  "phase": "pilot",
+  "status": "BACKLOG",
+  "priority": "P0",
+  "depends_on": [
+    "TAX-018",
+    "TAX-030",
+    "TAX-073"
+  ],
+  "claimed_by": null,
+  "branch": null,
+  "pr": null,
+  "scope": "Versioned read contracts and explicit fixture adapters for e-Tax declared positions, Lekuka/IDMS invoices (with supplier output-VAT declaration), Online Refunds Application claims, RSL refund-fraud model scores and ASYCUDA World entries, published through a WSO2-shaped gateway boundary",
+  "inputs": [
+    "PROJECT.md",
+    "PROJECT_SCOPE.md",
+    "docs/ARCHITECTURE.md",
+    "docs/DATA_MODEL.md",
+    "docs/ENGINEERING_STANDARD.md",
+    "docs/V1_ACCEPTANCE.md",
+    "docs/reference/FRAMEWORK.md",
+    "docs/decisions/ADR-040-rsl-existing-systems-integration.md",
+    "docs/API_CONTRACTS.md",
+    "docs/API_STANDARD.md",
+    "docs/INTEGRATIONS.md",
+    "data/synthetic/tax073_customs_records.json",
+    "integration"
+  ],
+  "acceptance": [
+    {
+      "text": "One versioned contract per RSL system with decimal-string Maloti amounts, ISO dates, tenant and taxpayer scope and source provenance (system, record ID, retrieved_at, contract version); every shape is marked as an assumption pending RSL specification and no real host, path or field name is invented",
+      "done": false
+    },
+    {
+      "text": "Fixture adapters read synthetic data only and identify themselves as fixtures in every response; RSL's fraud score is carried as an RSL-owned input with model ID/version and never relabelled as a Vati score; the TAX-073 customs fixture is mapped to the ASYCUDA contract",
+      "done": false
+    },
+    {
+      "text": "Tests: contract validation rejects missing provenance, float money and cross-tenant reads; an unavailable source is reported as unavailable, never replaced by an invented value; Vati stores references and hashes, not a second invoice store",
+      "done": false
+    },
+    {
+      "text": "Record relevant tests and evidence, update task status and open a PR",
+      "done": false
+    }
+  ],
+  "verification": "Tests: contract validation rejects missing provenance, float money and cross-tenant reads; an unavailable source is reported as unavailable, never replaced by an invented value; Vati stores references and hashes, not a second invoice store",
+  "skills": [
+    "start-task",
+    "implement-change",
+    "update-project-task",
+    "finish-task"
+  ],
+  "evidence": [],
+  "notes": [
+    {
+      "at": "2026-11-06",
+      "text": "Added 2026-11-06 from the framework scope update (docs/reference/FRAMEWORK.md, ADR-040) as a must-have for the proposal and pilot."
+    }
+  ],
+  "sequence": 4
+}
