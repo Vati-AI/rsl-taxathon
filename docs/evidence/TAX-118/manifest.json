@@ -1,0 +1,58 @@
+{
+  "synthetic": true,
+  "task": "TAX-118",
+  "sealed_at": "2026-11-06T11:53:12+00:00",
+  "seed": 20261106,
+  "generator_version": "tax118-population-v1",
+  "generator_sha256": "adc6d6499c46243340508feaa32dd59f3becb6530b9e2b95da491b43d2fcbaf8",
+  "params": {
+    "n_taxpayers": 300,
+    "n_dev": 100,
+    "first_period": "2024-11",
+    "months": 24,
+    "clean_share": "0.82",
+    "issue_counts": {
+      "fake_invoices": 10,
+      "untaxed_imported_services": 10,
+      "disguised_employment": 9,
+      "related_party_loss": 9,
+      "policy_gap": 8,
+      "mixed": 8
+    },
+    "vat_rate": "0.15",
+    "wht_rate": "0.10",
+    "wht_treaty_rate": "0.05",
+    "lekuka_coverage": "0.15",
+    "noise": {
+      "tin_typo_per_line": "0.03",
+      "late_claim_per_invoice": "0.06",
+      "missing_copy_per_unintegrated_line": "0.02",
+      "duplicate_line_per_claim": "0.02",
+      "supplier_gap_per_idms_invoice": "0.01",
+      "dmy_dates_per_taxpayer": "0.20",
+      "treaty_certificate_missing": "0.15"
+    },
+    "materiality_absolute": "50000.00",
+    "materiality_share": "0.25",
+    "structural_min_zero_share": "0.30"
+  },
+  "dataset_sha256": "cb6c792d3712aa7e444d06b5730f044c9240172c56a25be4206db39050f98ad7",
+  "answer_key_sha256": "65da23c193e94012624ed4211085ce0c6765c545717c7fccf4f8a1c16873459e",
+  "taxpayers": 300,
+  "split": {
+    "dev": 100,
+    "test": 200
+  },
+  "issue_instances_total": {
+    "disguised_employment": 13,
+    "fake_invoices": 13,
+    "policy_gap": 10,
+    "related_party_loss": 14,
+    "untaxed_imported_services": 12
+  },
+  "claims_total": 6055,
+  "rules_at_seal": "c4c33531ca6b13298b10ff4ec6fff2917783f06fd7b6e253e41f2fcb6bf4295d",
+  "frozen": null,
+  "test_run": null,
+  "disclosure": "The generator, the answer key and the rules were all written by the same AI coding agent. Only the dataset and answer-key hashes were committed before tuning; the rules were tuned on the development split and frozen before the single test run. A small debugging population (seed 777) was used before sealing. A team member can rerun with a private seed for a blind check."
+}
