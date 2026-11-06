@@ -46,6 +46,28 @@ class StackIsolationTests(unittest.TestCase):
                 with mock.patch.dict(os.environ, {}, clear=False):
                     frappe_dev.configure(project, http, socketio)
 
+    def test_extra_ca_bundle_is_mounted_and_trusted_without_disabling_verification(self):
+        import tempfile
+
+        with tempfile.TemporaryDirectory() as tmp:
+            bundle = Path(tmp) / "ca.pem"
+            bundle.write_text("-----BEGIN CERTIFICATE-----\n")
+            override = frappe_dev.extra_ca_override(str(bundle), local_dir=Path(tmp) / "local")
+            text = override.read_text()
+            self.assertIn(f"{bundle.resolve()}:{frappe_dev.CA_IN_CONTAINER}:ro", text)
+            for name in frappe_dev.CA_VARIABLES:
+                self.assertIn(f"{name}: {frappe_dev.CA_IN_CONTAINER}", text)
+            self.assertNotIn("verify", text.lower().replace("vati-extra-ca", ""))
+            with mock.patch.dict(os.environ, {"VATI_EXTRA_CA_BUNDLE": str(bundle)}):
+                with mock.patch.object(frappe_dev, "ROOT", Path(tmp)):
+                    cmd = frappe_dev.configure(frappe_dev.DEFAULT_PROJECT, 58000, 59000)
+            self.assertEqual(
+                cmd[-2:], ["-f", str(Path(tmp) / ".local/frappe-extra-ca.override.yml")]
+            )
+        self.assertIsNone(frappe_dev.extra_ca_override(None))
+        with self.assertRaises(SystemExit):
+            frappe_dev.extra_ca_override("/nonexistent/ca.pem")
+
     def test_ports_stay_on_loopback(self):
         for line in COMPOSE.splitlines():
             if line.strip().startswith("ports:"):
