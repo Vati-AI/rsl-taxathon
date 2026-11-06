@@ -1,0 +1,69 @@
+{
+  "id": "TAX-118",
+  "kind": "task",
+  "title": "Synthetic taxpayer population, manual baseline and measured results",
+  "owner": "Keletso",
+  "area": "tests/ai",
+  "phase": "pilot",
+  "status": "BACKLOG",
+  "priority": "P0",
+  "depends_on": [
+    "TAX-112",
+    "TAX-113",
+    "TAX-114",
+    "TAX-115",
+    "TAX-116",
+    "TAX-056"
+  ],
+  "claimed_by": null,
+  "branch": null,
+  "pr": null,
+  "scope": "Part 7 evidence: about 200 synthetic FMCG taxpayers with planted issues, a simulated manual baseline and a reproducible metrics report for the proposal's test results",
+  "inputs": [
+    "PROJECT.md",
+    "PROJECT_SCOPE.md",
+    "docs/ARCHITECTURE.md",
+    "docs/DATA_MODEL.md",
+    "docs/ENGINEERING_STANDARD.md",
+    "docs/V1_ACCEPTANCE.md",
+    "docs/reference/FRAMEWORK.md",
+    "docs/decisions/ADR-040-rsl-existing-systems-integration.md",
+    "docs/AI_STANDARD.md",
+    "ai/evaluation/agent_eval.py",
+    "data/synthetic",
+    "tests/ai"
+  ],
+  "acceptance": [
+    {
+      "text": "A seeded, reproducible generator writes about 200 synthetic taxpayers with known planted issues (valid structural refunds, fake invoices, untaxed imported services, disguised employment, related-party loss creation, policy-gap cases) and clean controls; every record carries the synthetic marker",
+      "done": false
+    },
+    {
+      "text": "A simulated manual baseline (every refund audited, evidence compiled by hand, with documented time assumptions) and a runner that reports detection rate, false-positive rate, fast-lane share of valid refunds, time to an investigation-ready case vs baseline, reconciliation accuracy and share of findings with a valid legal route",
+      "done": false
+    },
+    {
+      "text": "The report is committed under docs/evidence/TAX-118 with the seed, versions and an explicit limitations section (synthetic behaviour, low Lekuka coverage, no labelled RSL outcomes, limited CMA data, unverified legal routes); no metric is presented as real-world performance",
+      "done": false
+    },
+    {
+      "text": "Record relevant tests and evidence, update task status and open a PR",
+      "done": false
+    }
+  ],
+  "verification": "The report is committed under docs/evidence/TAX-118 with the seed, versions and an explicit limitations section (synthetic behaviour, low Lekuka coverage, no labelled RSL outcomes, limited CMA data, unverified legal routes); no metric is presented as real-world performance",
+  "skills": [
+    "start-task",
+    "implement-change",
+    "update-project-task",
+    "finish-task"
+  ],
+  "evidence": [],
+  "notes": [
+    {
+      "at": "2026-11-06",
+      "text": "Added 2026-11-06 from the framework scope update (docs/reference/FRAMEWORK.md, ADR-040) as a must-have for the proposal and pilot."
+    }
+  ],
+  "sequence": 28
+}

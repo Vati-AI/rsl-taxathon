@@ -1,0 +1,66 @@
+{
+  "id": "TAX-115",
+  "kind": "task",
+  "title": "Imported-services three-way match with CMA caveat",
+  "owner": "Keletso",
+  "area": "ai",
+  "phase": "pilot",
+  "status": "BACKLOG",
+  "priority": "P0",
+  "depends_on": [
+    "TAX-050",
+    "TAX-079",
+    "TAX-113"
+  ],
+  "claimed_by": null,
+  "branch": null,
+  "pr": null,
+  "scope": "BP5: match A money out (bank statements via TAX-079 payment-channel records), B books (TAX-113 ledger) and C declared VAT/WHT (e-Tax contract) per counterparty, period and service type, within FX and timing tolerances",
+  "inputs": [
+    "PROJECT.md",
+    "PROJECT_SCOPE.md",
+    "docs/ARCHITECTURE.md",
+    "docs/DATA_MODEL.md",
+    "docs/ENGINEERING_STANDARD.md",
+    "docs/V1_ACCEPTANCE.md",
+    "docs/reference/FRAMEWORK.md",
+    "docs/decisions/ADR-040-rsl-existing-systems-integration.md",
+    "ai/tools/imported_services.py",
+    "ai/workflows/imported_services_playbook.py",
+    "integration/payment_channels",
+    "data/synthetic/tax079_payment_channels"
+  ],
+  "acceptance": [
+    {
+      "text": "Per counterparty and period the result shows A, B, C, differences and tolerance used, with evidence IDs for each source; legitimate explanations (treaty relief, exempt service, goods not services, timing) are tested and recorded before any flag",
+      "done": false
+    },
+    {
+      "text": "Flags carry a plain-language reason and route: small gaps to a standard-lane targeted request, material gaps to Special Sectors; the CMA caveat is stated in the output when Central Bank data is absent and company bank statements are treated as primary",
+      "done": false
+    },
+    {
+      "text": "Synthetic fixture reproduces the framework exception journey (M2.4m management fees to a South African parent, no VAT/WHT declared) plus a matched counterparty and a treaty-relief case; tests cover all three",
+      "done": false
+    },
+    {
+      "text": "Record relevant tests and evidence, update task status and open a PR",
+      "done": false
+    }
+  ],
+  "verification": "Synthetic fixture reproduces the framework exception journey (M2.4m management fees to a South African parent, no VAT/WHT declared) plus a matched counterparty and a treaty-relief case; tests cover all three",
+  "skills": [
+    "start-task",
+    "implement-change",
+    "update-project-task",
+    "finish-task"
+  ],
+  "evidence": [],
+  "notes": [
+    {
+      "at": "2026-11-06",
+      "text": "Added 2026-11-06 from the framework scope update (docs/reference/FRAMEWORK.md, ADR-040) as a must-have for the proposal and pilot."
+    }
+  ],
+  "sequence": 8
+}

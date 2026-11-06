@@ -1,0 +1,64 @@
+{
+  "id": "TAX-116",
+  "kind": "task",
+  "title": "Named rule register (unverified) and AfriSam policy-gap entry",
+  "owner": "Keletso",
+  "area": "ai",
+  "phase": "pilot",
+  "status": "BACKLOG",
+  "priority": "P0",
+  "depends_on": [
+    "TAX-052",
+    "TAX-077"
+  ],
+  "claimed_by": null,
+  "branch": null,
+  "pr": null,
+  "scope": "Extend the legal-route registry with named candidate entries from the framework rule library, all unverified pending RSL Legal, and seed the policy-gap register with the absence of a codified arm's-length standard",
+  "inputs": [
+    "PROJECT.md",
+    "PROJECT_SCOPE.md",
+    "docs/ARCHITECTURE.md",
+    "docs/DATA_MODEL.md",
+    "docs/ENGINEERING_STANDARD.md",
+    "docs/V1_ACCEPTANCE.md",
+    "docs/reference/FRAMEWORK.md",
+    "docs/decisions/ADR-040-rsl-existing-systems-integration.md",
+    "ai/workflows/legal_routes.py",
+    "ai/workflows/legal_route_registry.synthetic.json",
+    "ai/workflows/policy_gap_gate.py"
+  ],
+  "acceptance": [
+    {
+      "text": "Candidate entries for related-party allocation (Income Tax Act 1993 s.113 as limited by AfriSam), input VAT evidence (VAT Act 2001; VAT (E-Invoicing) Regulations 2026), imported services, WHT and treaty rates, thin capitalisation, record production, refund handling and data use; each is verification_status unverified with no invented section numbers, dates or reviewers",
+      "done": false
+    },
+    {
+      "text": "Unverified entries are visible to officers as candidate routes but the gate still blocks assessment-type progression until a reviewer verifies them; findings map to these entries by finding code",
+      "done": false
+    },
+    {
+      "text": "Policy-gap register seeded with the arm's-length gap linked to the BP6 related-party scenario; tests show unverified routes never pass the gate and the policy-gap entry is produced",
+      "done": false
+    },
+    {
+      "text": "Record relevant tests and evidence, update task status and open a PR",
+      "done": false
+    }
+  ],
+  "verification": "Policy-gap register seeded with the arm's-length gap linked to the BP6 related-party scenario; tests show unverified routes never pass the gate and the policy-gap entry is produced",
+  "skills": [
+    "start-task",
+    "implement-change",
+    "update-project-task",
+    "finish-task"
+  ],
+  "evidence": [],
+  "notes": [
+    {
+      "at": "2026-11-06",
+      "text": "Added 2026-11-06 from the framework scope update (docs/reference/FRAMEWORK.md, ADR-040) as a must-have for the proposal and pilot."
+    }
+  ],
+  "sequence": 9
+}

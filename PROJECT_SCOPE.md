@@ -1,6 +1,6 @@
 # Scope and release phases
 
-Baseline: the user-supplied “Proposal to Revenue Services Lesotho — Adaptive Tax Intelligence and Investigation System” and “Technical Summary — Vati AI RSL Taxathon Project”, November 2026. These are product requirements, not verified legal authority.
+Baseline: the user-supplied “Proposal to Revenue Services Lesotho — Adaptive Tax Intelligence and Investigation System” and “Technical Summary — Vati AI RSL Taxathon Project”, November 2026, refined by the 2026-11-06 [framework update](docs/reference/FRAMEWORK.md). These are product requirements, not verified legal authority.
 
 ## Foundation / Taxathon pilot
 
@@ -10,7 +10,28 @@ Five mandatory scenarios: legitimate unusual refund; related-party charges with 
 
 Include taxpayer correction/evidence-response flow, officer briefings with citations, reasonable alternative explanations, human checkpoints, basic supervisor metrics, tenant permissions, provenance, duplicate-event protection and degraded-service handling.
 
-## Expansion
+## Framework update (2026-11-06)
+
+The [Integrated MNE & Refund Assurance Framework](docs/reference/FRAMEWORK.md) keeps the
+architecture and service authority. It changes how the platform plugs into RSL
+([ADR-040](docs/decisions/ADR-040-rsl-existing-systems-integration.md)) and sharpens the pilot core:
+
+- **Plug in, don't rebuild.** e-Tax, Lekuka/IDMS, the Online Refunds Application, RSL's
+  refund-fraud model and ASYCUDA World are sources of record, read through versioned
+  contracts and explicit fixtures (TAX-111). The Vati API sits behind WSO2 API Manager and
+  sign-in goes through WSO2 Identity Server (TAX-117).
+- **Pilot core:** refund lanes with proposed service targets and undisputed-portion
+  release (TAX-114); Lekuka input-VAT match in hybrid mode plus a sixth scenario, fake or
+  undeclared supplier invoice (TAX-112); SAF-T-style source records with a declared-versus-
+  recomputed report (TAX-113); the imported-services three-way match (TAX-115); a named,
+  unverified rule register with the arm's-length policy gap (TAX-116).
+- **Evidence the Call requires:** a synthetic population of about 200 taxpayers, a
+  simulated manual baseline and measured results (TAX-118), required before TAX-058/081.
+- **Later, not must-have:** annual large-group risk rating (BP2), Sesotho/English
+  taxpayer messages, refund-confidentiality access rules, offline case packs and resumable
+  uploads. Operating costs are proposal content, not code. Crypto, serious tax crime and
+  internal integrity stay under long-term value.
+
 
 Approved workflow learning, calibration/peer intelligence, institutional knowledge, objections/appeals, EOI preparation/response handling, tax/customs reconciliation, scheme/ownership/intermediary graph, integrity controls, policy intelligence and operational acceptance.
 
@@ -24,7 +45,7 @@ Tax assessment, enforcement, criminal referrals, refund denial/payment, sending 
 
 ## Delivery management
 
-TAX-001–016 are planning epics. TAX-018–082 are executable tasks. Phase, dependencies, concrete outputs and verification live in each task. The backlog represents the supplied scope, not a promise that the national platform fits in four days. Prioritize a complete five-scenario vertical slice, then expand.
+TAX-001–016 are planning epics. TAX-018–082 and TAX-083–118 are executable tasks. Phase, dependencies, concrete outputs and verification live in each task. The backlog represents the supplied scope, not a promise that the national platform fits in four days. Prioritize a complete five-scenario vertical slice, then expand.
 
 ## Complete frontend and premade UI delivery
 

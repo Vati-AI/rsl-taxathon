@@ -4,33 +4,43 @@
 
 From 2026-11-06 Keletso owns every task, including completed tasks and epics, without exceptions. Previous owners are retained in task notes and Git history. Take the ready task with the lowest `sequence`; a later task can start when its dependencies are DONE.
 
+TAX-111–118 are the must-have additions from the 2026-11-06 framework scope update ([FRAMEWORK.md](../docs/reference/FRAMEWORK.md), [ADR-040](../docs/decisions/ADR-040-rsl-existing-systems-integration.md)). TAX-058 and TAX-081 now also depend on TAX-118 (measured results against a baseline).
+
 | Seq | Task | Title |
 |---|---|---|
 | 1 | [TAX-086](TAX-086.json) | Case findings record for rule and agent output |
 | 2 | [TAX-090](TAX-090.json) | Vati /api/v1 service in Frappe for the auditor app |
 | 3 | [TAX-110](TAX-110.json) | Reliable hosted briefing and evidence reading within free-tier limits |
-| 4 | [TAX-088](TAX-088.json) | AI investigation runtime on real cases |
-| 5 | [TAX-108](TAX-108.json) | Configure and verify OpenAleph tax evidence and graph screens |
-| 6 | [TAX-054](TAX-054.json) | End-to-end pipeline and degraded-service behavior |
-| 7 | [TAX-091](TAX-091.json) | Auditor app hosted in Frappe with real officer login |
-| 8 | [TAX-107](TAX-107.json) | Configure and verify Jube native tax investigation screens |
-| 9 | [TAX-094](TAX-094.json) | Demo seed and reset for the five scenarios |
-| 10 | [TAX-106](TAX-106.json) | Case-aware navigation to native investigation and administration screens |
-| 11 | [TAX-109](TAX-109.json) | Protected original-document access from case evidence and citations |
-| 12 | [TAX-057](TAX-057.json) | Tenant isolation, replay and failure matrix |
-| 13 | [TAX-093](TAX-093.json) | Auditor screens for AI briefing and specialist opinion |
-| 14 | [TAX-095](TAX-095.json) | Presentation environment on the demo laptop |
-| 15 | [TAX-103](TAX-103.json) | Live-app end-to-end regression re-run |
-| 16 | [TAX-063](TAX-063.json) | Deployment configuration, backup and restore rehearsal |
-| 17 | [TAX-098](TAX-098.json) | Taxpayer compliance assistant agent |
-| 18 | [TAX-100](TAX-100.json) | Taxpayer-scoped assistant service in Frappe |
-| 19 | [TAX-101](TAX-101.json) | Taxpayer portal assistant UI |
-| 20 | [TAX-102](TAX-102.json) | Taxpayer assistant scenarios, expected outcomes and leakage tests |
-| 21 | [TAX-058](TAX-058.json) | Five-scenario demo and measured acceptance |
-| 22 | [TAX-099](TAX-099.json) | Taxpayer evidence-response assistant |
-| 23 | [TAX-072](TAX-072.json) | EOI approval and response evidence lifecycle |
-| 24 | [TAX-076](TAX-076.json) | Controlled serious-case referral package |
-| 25 | [TAX-081](TAX-081.json) | Pilot operational acceptance and performance baseline |
+| 4 | [TAX-111](TAX-111.json) | RSL source-system contracts and fixture adapters |
+| 5 | [TAX-112](TAX-112.json) | Lekuka/IDMS input-VAT match in hybrid mode and sixth scenario |
+| 6 | [TAX-113](TAX-113.json) | SAF-T-style source-record intake and recompute engine |
+| 7 | [TAX-114](TAX-114.json) | Refund lane service targets, undisputed-portion release and RSL inputs |
+| 8 | [TAX-115](TAX-115.json) | Imported-services three-way match with CMA caveat |
+| 9 | [TAX-116](TAX-116.json) | Named rule register (unverified) and AfriSam policy-gap entry |
+| 10 | [TAX-088](TAX-088.json) | AI investigation runtime on real cases |
+| 11 | [TAX-108](TAX-108.json) | Configure and verify OpenAleph tax evidence and graph screens |
+| 12 | [TAX-054](TAX-054.json) | End-to-end pipeline and degraded-service behavior |
+| 13 | [TAX-091](TAX-091.json) | Auditor app hosted in Frappe with real officer login |
+| 14 | [TAX-117](TAX-117.json) | Vati API behind WSO2 API Manager and sign-in through WSO2 Identity Server |
+| 15 | [TAX-107](TAX-107.json) | Configure and verify Jube native tax investigation screens |
+| 16 | [TAX-094](TAX-094.json) | Demo seed and reset for the five scenarios |
+| 17 | [TAX-106](TAX-106.json) | Case-aware navigation to native investigation and administration screens |
+| 18 | [TAX-109](TAX-109.json) | Protected original-document access from case evidence and citations |
+| 19 | [TAX-057](TAX-057.json) | Tenant isolation, replay and failure matrix |
+| 20 | [TAX-093](TAX-093.json) | Auditor screens for AI briefing and specialist opinion |
+| 21 | [TAX-095](TAX-095.json) | Presentation environment on the demo laptop |
+| 22 | [TAX-103](TAX-103.json) | Live-app end-to-end regression re-run |
+| 23 | [TAX-063](TAX-063.json) | Deployment configuration, backup and restore rehearsal |
+| 24 | [TAX-098](TAX-098.json) | Taxpayer compliance assistant agent |
+| 25 | [TAX-100](TAX-100.json) | Taxpayer-scoped assistant service in Frappe |
+| 26 | [TAX-101](TAX-101.json) | Taxpayer portal assistant UI |
+| 27 | [TAX-102](TAX-102.json) | Taxpayer assistant scenarios, expected outcomes and leakage tests |
+| 28 | [TAX-118](TAX-118.json) | Synthetic taxpayer population, manual baseline and measured results |
+| 29 | [TAX-058](TAX-058.json) | Five-scenario demo and measured acceptance |
+| 30 | [TAX-099](TAX-099.json) | Taxpayer evidence-response assistant |
+| 31 | [TAX-072](TAX-072.json) | EOI approval and response evidence lifecycle |
+| 32 | [TAX-076](TAX-076.json) | Controlled serious-case referral package |
+| 33 | [TAX-081](TAX-081.json) | Pilot operational acceptance and performance baseline |
 
 Human owner = accountability. AI agent = implementer recorded in `claimed_by`. TAX-001–016 are planning epics; claim leaf tasks TAX-018 onward. TAX-017 tracks workspace setup. Run `python3 scripts/task.py list --owner NAME --ready` to find eligible work. Future phases are planned, not required for the four-day demo.
 
@@ -76,7 +86,7 @@ Human owner = accountability. AI agent = implementer recorded in `claimed_by`. T
 | [TAX-055](TAX-055.json) | Keletso | pilot | Portal and auditor end-to-end regression | TAX-041, TAX-042, TAX-044, TAX-045 |
 | [TAX-056](TAX-056.json) | Keletso | pilot | Agent evaluation and injection regression | TAX-049, TAX-050, TAX-051, TAX-052, TAX-053 |
 | [TAX-057](TAX-057.json) | Keletso | pilot | Tenant isolation, replay and failure matrix | TAX-054, TAX-046 |
-| [TAX-058](TAX-058.json) | Keletso | pilot | Five-scenario demo and measured acceptance | TAX-055, TAX-056, TAX-057, TAX-089, TAX-091, TAX-092, TAX-093, TAX-094, TAX-095, TAX-097, TAX-103, TAX-101, TAX-102 |
+| [TAX-058](TAX-058.json) | Keletso | pilot | Five-scenario demo and measured acceptance | TAX-055, TAX-056, TAX-057, TAX-089, TAX-091, TAX-092, TAX-093, TAX-094, TAX-095, TAX-097, TAX-103, TAX-101, TAX-102, TAX-118 |
 | [TAX-059](TAX-059.json) | Keletso | pilot | Audit ledger and segregation of duties | TAX-046 |
 | [TAX-060](TAX-060.json) | Keletso | pilot | Management workload and assurance dashboard | TAX-040, TAX-059 |
 | [TAX-061](TAX-061.json) | Keletso | pilot | Approved playbook and reusable tool registry | TAX-047, TAX-052 |
@@ -99,7 +109,7 @@ Human owner = accountability. AI agent = implementer recorded in `claimed_by`. T
 | [TAX-078](TAX-078.json) | Keletso | expansion | Recurring submission-error guidance | TAX-044, TAX-069 |
 | [TAX-079](TAX-079.json) | Keletso | future | Lawful payment-channel extension contracts | TAX-073, TAX-074 |
 | [TAX-080](TAX-080.json) | Keletso | future | Additional tax-domain playbook extension design | TAX-061, TAX-070 |
-| [TAX-081](TAX-081.json) | Keletso | expansion | Pilot operational acceptance and performance baseline | TAX-058, TAX-060, TAX-063 |
+| [TAX-081](TAX-081.json) | Keletso | expansion | Pilot operational acceptance and performance baseline | TAX-058, TAX-060, TAX-063, TAX-118 |
 | [TAX-082](TAX-082.json) | Keletso | expansion | User onboarding and officer usability validation | TAX-055, TAX-060 |
 
 | [TAX-083](TAX-083.json) | Keletso | foundation | Prototype engineering standards and checks | none |
@@ -129,3 +139,11 @@ Human owner = accountability. AI agent = implementer recorded in `claimed_by`. T
 | [TAX-108](TAX-108.json) | Keletso | pilot | Configure and verify OpenAleph tax evidence and graph screens | TAX-085, TAX-032, TAX-036, TAX-037 |
 | [TAX-109](TAX-109.json) | Keletso | pilot | Protected original-document access from case evidence and citations | TAX-032, TAX-090, TAX-108 |
 | [TAX-110](TAX-110.json) | Keletso | pilot | Reliable hosted briefing and evidence reading within free-tier limits | TAX-097 |
+| [TAX-111](TAX-111.json) | Keletso | pilot | RSL source-system contracts and fixture adapters | TAX-018, TAX-030, TAX-073 |
+| [TAX-112](TAX-112.json) | Keletso | pilot | Lekuka/IDMS input-VAT match in hybrid mode and sixth scenario | TAX-111, TAX-048, TAX-024 |
+| [TAX-113](TAX-113.json) | Keletso | pilot | SAF-T-style source-record intake and recompute engine | TAX-111, TAX-032, TAX-024 |
+| [TAX-114](TAX-114.json) | Keletso | pilot | Refund lane service targets, undisputed-portion release and RSL inputs | TAX-048, TAX-111, TAX-112, TAX-113 |
+| [TAX-115](TAX-115.json) | Keletso | pilot | Imported-services three-way match with CMA caveat | TAX-050, TAX-079, TAX-113 |
+| [TAX-116](TAX-116.json) | Keletso | pilot | Named rule register (unverified) and AfriSam policy-gap entry | TAX-052, TAX-077 |
+| [TAX-117](TAX-117.json) | Keletso | pilot | Vati API behind WSO2 API Manager and sign-in through WSO2 Identity Server | TAX-090, TAX-091 |
+| [TAX-118](TAX-118.json) | Keletso | pilot | Synthetic taxpayer population, manual baseline and measured results | TAX-112, TAX-113, TAX-114, TAX-115, TAX-116, TAX-056 |

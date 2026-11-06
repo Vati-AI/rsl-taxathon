@@ -1,0 +1,65 @@
+{
+  "id": "TAX-112",
+  "kind": "task",
+  "title": "Lekuka/IDMS input-VAT match in hybrid mode and sixth scenario",
+  "owner": "Keletso",
+  "area": "ai",
+  "phase": "pilot",
+  "status": "BACKLOG",
+  "priority": "P0",
+  "depends_on": [
+    "TAX-111",
+    "TAX-048",
+    "TAX-024"
+  ],
+  "claimed_by": null,
+  "branch": null,
+  "pr": null,
+  "scope": "Deterministic BP4 reconciliation of each claimed input-VAT line against IDMS invoices (supplier TIN, invoice number, date, amount) and the supplier's declared output VAT, with hybrid handling for unintegrated suppliers, plus synthetic scenario SYN-006 (fake or undeclared supplier invoice)",
+  "inputs": [
+    "PROJECT.md",
+    "PROJECT_SCOPE.md",
+    "docs/ARCHITECTURE.md",
+    "docs/DATA_MODEL.md",
+    "docs/ENGINEERING_STANDARD.md",
+    "docs/V1_ACCEPTANCE.md",
+    "docs/reference/FRAMEWORK.md",
+    "docs/decisions/ADR-040-rsl-existing-systems-integration.md",
+    "ai/tools/refund_reconciliation.py",
+    "ai/workflows/refund_lanes.py",
+    "data/synthetic/tax024_records.json"
+  ],
+  "acceptance": [
+    {
+      "text": "Each line is classified matched, supplier_gap, unintegrated_supplier (uses the uploaded invoice from BP1/TAX-043) or unmatched, with the evidence IDs used; matching never joins on names alone",
+      "done": false
+    },
+    {
+      "text": "Hybrid mode: supplier_gap and unmatched lines become targeted taxpayer questions and advisory findings, never a denial; a configuration flag for hard-rule mode exists but defaults off and is documented as requiring RSL Legal confirmation",
+      "done": false
+    },
+    {
+      "text": "SYN-006 synthetic data with expected findings and expected non-findings (one invoice absent from IDMS, one supplier that did not declare output VAT, one legitimate pre-Lekuka invoice); focused tests cover all four classifications and decimal totals",
+      "done": false
+    },
+    {
+      "text": "Record relevant tests and evidence, update task status and open a PR",
+      "done": false
+    }
+  ],
+  "verification": "SYN-006 synthetic data with expected findings and expected non-findings (one invoice absent from IDMS, one supplier that did not declare output VAT, one legitimate pre-Lekuka invoice); focused tests cover all four classifications and decimal totals",
+  "skills": [
+    "start-task",
+    "implement-change",
+    "update-project-task",
+    "finish-task"
+  ],
+  "evidence": [],
+  "notes": [
+    {
+      "at": "2026-11-06",
+      "text": "Added 2026-11-06 from the framework scope update (docs/reference/FRAMEWORK.md, ADR-040) as a must-have for the proposal and pilot."
+    }
+  ],
+  "sequence": 5
+}
