@@ -1,0 +1,110 @@
+{
+  "intro": {
+    "file": "intro.wav",
+    "seconds": 11.072
+  },
+  "s01": {
+    "file": "s01.wav",
+    "seconds": 3.344
+  },
+  "Taxpayer portal": {
+    "file": "taxpayer-portal.wav",
+    "seconds": 4.56
+  },
+  "Submission status": {
+    "file": "submission-status.wav",
+    "seconds": 6.64
+  },
+  "New VAT refund claim": {
+    "file": "new-vat-refund-claim.wav",
+    "seconds": 3.232
+  },
+  "Claim details": {
+    "file": "claim-details.wav",
+    "seconds": 4.096
+  },
+  "Supporting documents": {
+    "file": "supporting-documents.wav",
+    "seconds": 4.704
+  },
+  "Purchase invoices": {
+    "file": "purchase-invoices.wav",
+    "seconds": 4.56
+  },
+  "Check your claim": {
+    "file": "check-your-claim.wav",
+    "seconds": 3.824
+  },
+  "Claim sent": {
+    "file": "claim-sent.wav",
+    "seconds": 4.208
+  },
+  "s02": {
+    "file": "s02.wav",
+    "seconds": 2.304
+  },
+  "Auditor workspace": {
+    "file": "auditor-workspace.wav",
+    "seconds": 4.592
+  },
+  "Risk-selected case queue": {
+    "file": "risk-selected-case-queue.wav",
+    "seconds": 3.408
+  },
+  "Case detail": {
+    "file": "case-detail.wav",
+    "seconds": 5.12
+  },
+  "Evidence": {
+    "file": "evidence.wav",
+    "seconds": 5.616
+  },
+  "Entity relationships": {
+    "file": "entity-relationships.wav",
+    "seconds": 3.296
+  },
+  "AI-assisted findings": {
+    "file": "ai-assisted-findings.wav",
+    "seconds": 4.752
+  },
+  "Evidence record": {
+    "file": "evidence-record.wav",
+    "seconds": 5.296
+  },
+  "Review and decide": {
+    "file": "review-and-decide.wav",
+    "seconds": 5.344
+  },
+  "Officer rationale": {
+    "file": "officer-rationale.wav",
+    "seconds": 2.768
+  },
+  "Confirm before acting": {
+    "file": "confirm-before-acting.wav",
+    "seconds": 2.784
+  },
+  "Decision proposed": {
+    "file": "decision-proposed.wav",
+    "seconds": 5.264
+  },
+  "s03": {
+    "file": "s03.wav",
+    "seconds": 2.864
+  },
+  "Management dashboard": {
+    "file": "management-dashboard.wav",
+    "seconds": 5.68
+  },
+  "Audit assurance": {
+    "file": "audit-assurance.wav",
+    "seconds": 4.512
+  },
+  "Integrity review": {
+    "file": "integrity-review.wav",
+    "seconds": 7.76
+  },
+  "outro": {
+    "file": "outro.wav",
+    "seconds": 4.624
+  }
+}

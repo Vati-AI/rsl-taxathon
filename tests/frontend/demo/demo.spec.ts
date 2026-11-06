@@ -12,6 +12,14 @@ const AUDITOR = process.env.DEMO_AUDITOR ?? 'http://127.0.0.1:58080';
 const TAXPAYER = process.env.DEMO_TAXPAYER ?? 'http://127.0.0.1:58082';
 const SHOTS = 'docs/demo/screenshots';
 const FRAMES = 'docs/demo/frames';
+/** Voiceover lengths from scripts/make_demo_narration.py, so each caption stays up for its line. */
+const NARRATION: Record<string, { seconds: number }> = fs.existsSync(
+  'docs/demo/narration/durations.json',
+)
+  ? JSON.parse(fs.readFileSync('docs/demo/narration/durations.json', 'utf8'))
+  : {};
+/** Wall-clock time each caption appeared, written per scene for the audio mix. */
+let beats: { title: string; ts: number }[] = [];
 
 /**
  * Records each scene as timestamped JPEG frames over the DevTools screencast, so
@@ -26,6 +34,7 @@ const test = base.extend<{ recorder: void }>({
       fs.mkdirSync(dir, { recursive: true });
       const cdp = await page.context().newCDPSession(page);
       const index: string[] = [];
+      beats = [];
       cdp.on('Page.screencastFrame', async (f) => {
         const file = `${String(index.length).padStart(6, '0')}.jpg`;
         fs.writeFileSync(`${dir}/${file}`, Buffer.from(f.data, 'base64'));
@@ -42,6 +51,7 @@ const test = base.extend<{ recorder: void }>({
       await page.waitForTimeout(500);
       await cdp.send('Page.stopScreencast').catch(() => {});
       fs.writeFileSync(`${dir}/index.txt`, index.join('\n') + '\n');
+      fs.writeFileSync(`${dir}/beats.json`, JSON.stringify(beats, null, 2));
     },
     { auto: true },
   ],
@@ -77,6 +87,9 @@ async function caption(page: Page, title: string, body = '') {
 async function beat(page: Page, title: string, body = '', hold = 3500, shot = true) {
   await page.waitForLoadState('networkidle', { timeout: 4000 }).catch(() => {});
   await caption(page, title, body);
+  beats.push({ title, ts: Date.now() / 1000 });
+  const voice = NARRATION[title]?.seconds;
+  if (voice) hold = Math.max(hold, voice * 1000 + 700);
   await page.waitForTimeout(400);
   if (shot) {
     n += 1;
