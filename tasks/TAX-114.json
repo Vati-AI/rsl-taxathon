@@ -5,7 +5,7 @@
   "owner": "Keletso",
   "area": "ai",
   "phase": "pilot",
-  "status": "BACKLOG",
+  "status": "IN_REVIEW",
   "priority": "P0",
   "depends_on": [
     "TAX-048",
@@ -13,9 +13,9 @@
     "TAX-112",
     "TAX-113"
   ],
-  "claimed_by": null,
-  "branch": null,
-  "pr": null,
+  "claimed_by": "claude-code-20261106-vigilant-fermat",
+  "branch": "claude/vigilant-fermat-4x2es6",
+  "pr": "https://github.com/Vati-AI/rsl-taxathon/pull/277",
   "scope": "Extend the TAX-048 lanes with configurable proposed decision-time targets per lane, the calculated undisputed portion, structural-explanation tests first, and new inputs: RSL fraud-model score, BP4 match results, BP1 data quality and an optional group risk rating",
   "inputs": [
     "PROJECT.md",
@@ -33,19 +33,19 @@
   "acceptance": [
     {
       "text": "Lane targets (fast 10, standard 30 working days; investigation case plan 5, target 90) live in versioned configuration marked 'proposed, verify against VAT Act' and each lane proposal carries its target and due date",
-      "done": false
+      "done": true
     },
     {
       "text": "The undisputed portion is computed deterministically as the reconciled amount and shown as a recommendation for the refund auditor; the system never releases or denies payment; disputed items are listed for the targeted request",
-      "done": false
+      "done": true
     },
     {
       "text": "The lane reason cites each input used (RSL score with model version, IDMS match share, data quality, group rating or 'not available'); a missing input never silently counts as clean; tests cover each lane, partial release and missing-input cases",
-      "done": false
+      "done": true
     },
     {
       "text": "Record relevant tests and evidence, update task status and open a PR",
-      "done": false
+      "done": true
     }
   ],
   "verification": "The lane reason cites each input used (RSL score with model version, IDMS match share, data quality, group rating or 'not available'); a missing input never silently counts as clean; tests cover each lane, partial release and missing-input cases",
@@ -55,11 +55,32 @@
     "update-project-task",
     "finish-task"
   ],
-  "evidence": [],
+  "evidence": [
+    {
+      "criterion": 1,
+      "text": "ai/tools/refund_triage_policy.json (status proposed_prototype_choice, 'verify against the VAT Act'): fast 10, standard 30, investigation plan 5 / target 90 working days; each lane proposal carries target and due date (weekdays; holidays not modelled)."
+    },
+    {
+      "criterion": 2,
+      "text": "undisputed_amount = claim less VAT on disputed lines (IDMS gaps and invoices not in the books, counted once), status recommendation_for_refund_auditor; decision None; disputed items listed."
+    },
+    {
+      "criterion": 3,
+      "text": "Lane inputs cite RSL score with model ID/version, IDMS match counts, books check, zero-rated share, group rating 'not available'; missing score stated (test_missing_inputs_are_stated_not_assumed_clean); score alone never investigation; TriageTests cover each lane, partial release and missing inputs."
+    },
+    {
+      "criterion": 4,
+      "text": "PR https://github.com/Vati-AI/rsl-taxathon/pull/277. python3 scripts/dev.py check: Workspace checks passed; python3 scripts/quality.py: First-party quality checks passed (ruff, mypy, frontend build); validate.py passed."
+    }
+  ],
   "notes": [
     {
       "at": "2026-11-06",
       "text": "Added 2026-11-06 from the framework scope update (docs/reference/FRAMEWORK.md, ADR-040) as a must-have for the proposal and pilot."
+    },
+    {
+      "at": "2026-11-06",
+      "text": "Claimed by claude-code-20261106-vigilant-fermat; implemented on claude/vigilant-fermat-4x2es6 and submitted for owner merge in https://github.com/Vati-AI/rsl-taxathon/pull/277."
     }
   ],
   "sequence": 7

@@ -1,0 +1,57 @@
+{
+  "id": "TAX-120",
+  "kind": "task",
+  "title": "Human manual baseline and outside-reviewer scores for TAX-118",
+  "owner": "Keletso",
+  "area": "docs",
+  "phase": "pilot",
+  "status": "BACKLOG",
+  "priority": "P0",
+  "depends_on": [
+    "TAX-118"
+  ],
+  "claimed_by": null,
+  "branch": null,
+  "pr": null,
+  "scope": "Collect the people-measured parts of the TAX-118 results: an accountant times the 20 manual-baseline cases and an outside tax practitioner scores the 20 system case packs blind",
+  "inputs": [
+    "PROJECT.md",
+    "PROJECT_SCOPE.md",
+    "docs/ARCHITECTURE.md",
+    "docs/DATA_MODEL.md",
+    "docs/ENGINEERING_STANDARD.md",
+    "docs/V1_ACCEPTANCE.md",
+    "docs/reference/FRAMEWORK.md",
+    "docs/decisions/ADR-040-rsl-existing-systems-integration.md",
+    "docs/evidence/TAX-118/RESULTS.md"
+  ],
+  "acceptance": [
+    {
+      "text": "The completed docs/evidence/TAX-118/human/manual_baseline/timing_sheet.csv (minutes, issues found, lanes, amounts questioned, coverage notes) is committed, with who did it and when",
+      "done": false
+    },
+    {
+      "text": "The completed reviewer_packs/scoring_form.csv (clarity, correctness, would act) is committed; RESULTS.md gains a human-measured section that replaces the assumed manual time model and compares manual findings with the answer key",
+      "done": false
+    },
+    {
+      "text": "Record relevant tests and evidence, update task status and open a PR",
+      "done": false
+    }
+  ],
+  "verification": "The completed reviewer_packs/scoring_form.csv (clarity, correctness, would act) is committed; RESULTS.md gains a human-measured section that replaces the assumed manual time model and compares manual findings with the answer key",
+  "skills": [
+    "start-task",
+    "implement-change",
+    "update-project-task",
+    "finish-task"
+  ],
+  "evidence": [],
+  "notes": [
+    {
+      "at": "2026-11-06",
+      "text": "Added 2026-11-06 as a follow-up to TAX-118 (results that need documents or people)."
+    }
+  ],
+  "sequence": 29
+}
