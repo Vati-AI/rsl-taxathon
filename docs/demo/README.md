@@ -1,0 +1,52 @@
+# Demo video and screenshot evidence
+
+**Video:** [`vati-rsl-demo.mp4`](vati-rsl-demo.mp4) (about 2 minutes, 1440×900, no audio, captions on screen).
+
+Everything shown runs from this repository in **fixture mode with synthetic data only**. No real taxpayer records, live Revenue Services Lesotho systems or live upstream services are used. The taxpayer portal runs with the same in-browser synthetic session the frontend tests use (`tests/frontend/support/sessions.ts`), so no Frappe site is needed. Every screen is the real Vue application, driven by Playwright.
+
+## Story
+
+| Scene | Persona | What it shows |
+| --- | --- | --- |
+| 1 | Taxpayer | Submissions and status, then a VAT refund claim: details, a document upload, a purchase invoice, the declaration and confirmation. |
+| 2 | Auditor | Overview, the risk-selected case queue, case SYN-003 (evidence, relationships, AI findings with citations), an evidence record, then review and decide: the agent suggestion pre-fills the form, the officer writes the rationale, confirms, and proposes. |
+| 3 | Supervisor | Management dashboard, audit assurance and the integrity review. |
+
+## Screenshots (evidence pack)
+
+| # | Screen | File |
+| --- | --- | --- |
+| 01 | Taxpayer portal | [`screenshots/01-taxpayer-portal.png`](screenshots/01-taxpayer-portal.png) |
+| 02 | Submission status | [`screenshots/02-submission-status.png`](screenshots/02-submission-status.png) |
+| 03 | New vat refund claim | [`screenshots/03-new-vat-refund-claim.png`](screenshots/03-new-vat-refund-claim.png) |
+| 04 | Claim details | [`screenshots/04-claim-details.png`](screenshots/04-claim-details.png) |
+| 05 | Supporting documents | [`screenshots/05-supporting-documents.png`](screenshots/05-supporting-documents.png) |
+| 06 | Purchase invoices | [`screenshots/06-purchase-invoices.png`](screenshots/06-purchase-invoices.png) |
+| 07 | Check your claim | [`screenshots/07-check-your-claim.png`](screenshots/07-check-your-claim.png) |
+| 08 | Claim sent | [`screenshots/08-claim-sent.png`](screenshots/08-claim-sent.png) |
+| 09 | Auditor workspace | [`screenshots/09-auditor-workspace.png`](screenshots/09-auditor-workspace.png) |
+| 10 | Risk selected case queue | [`screenshots/10-risk-selected-case-queue.png`](screenshots/10-risk-selected-case-queue.png) |
+| 11 | Case detail | [`screenshots/11-case-detail.png`](screenshots/11-case-detail.png) |
+| 12 | Evidence | [`screenshots/12-evidence.png`](screenshots/12-evidence.png) |
+| 13 | Entity relationships | [`screenshots/13-entity-relationships.png`](screenshots/13-entity-relationships.png) |
+| 14 | Ai assisted findings | [`screenshots/14-ai-assisted-findings.png`](screenshots/14-ai-assisted-findings.png) |
+| 15 | Evidence record | [`screenshots/15-evidence-record.png`](screenshots/15-evidence-record.png) |
+| 16 | Review and decide | [`screenshots/16-review-and-decide.png`](screenshots/16-review-and-decide.png) |
+| 17 | Officer rationale | [`screenshots/17-officer-rationale.png`](screenshots/17-officer-rationale.png) |
+| 18 | Confirm before acting | [`screenshots/18-confirm-before-acting.png`](screenshots/18-confirm-before-acting.png) |
+| 19 | Decision proposed | [`screenshots/19-decision-proposed.png`](screenshots/19-decision-proposed.png) |
+| 20 | Management dashboard | [`screenshots/20-management-dashboard.png`](screenshots/20-management-dashboard.png) |
+| 21 | Audit assurance | [`screenshots/21-audit-assurance.png`](screenshots/21-audit-assurance.png) |
+| 22 | Integrity review | [`screenshots/22-integrity-review.png`](screenshots/22-integrity-review.png) |
+
+## Regenerate
+
+```sh
+npm ci && npm run build:auditor
+python3 scripts/dev.py serve                                 # restart it for a clean fixture state
+npx vite --config apps/taxpayer-web/vite.config.mts          # second terminal, :58082
+npx playwright test --config tests/frontend/demo/playwright.demo.config.ts
+bash scripts/make_demo_video.sh                              # needs system ffmpeg
+```
+
+Set `DEMO_CHROMIUM=/path/to/chrome` if the Playwright-pinned browser is not installed. Review actions change fixture state until the server restarts, so restart `dev.py serve` before you record again.
