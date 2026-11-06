@@ -2,7 +2,7 @@
   "id": "TAX-046",
   "kind": "task",
   "title": "Human decisions and evidence request authorization",
-  "owner": "Leseli",
+  "owner": "Keletso",
   "area": "backend",
   "phase": "pilot",
   "status": "DONE",
@@ -76,6 +76,10 @@
     {
       "at": "2026-11-04T10:28:57.267297+00:00",
       "text": "Verified PR #133 merged by Kellybrackets at 2026-11-04T10:19:05Z; all three acceptance criteria recorded with evidence. Completion reconciled by claude-gupta-20261104-tax050 at the request of Gupta to unblock TAX-047; owner Leseli unchanged."
+    },
+    {
+      "at": "2026-11-06",
+      "text": "User-directed ownership transfer from Leseli to Keletso for all tasks, including completed tasks and epics. Status, implementation claim and evidence preserved."
     }
   ]
 }

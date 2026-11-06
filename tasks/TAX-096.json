@@ -2,7 +2,7 @@
   "id": "TAX-096",
   "kind": "task",
   "title": "AI briefing, provenance, feedback and taxpayer-assistance contract",
-  "owner": "Leseli",
+  "owner": "Keletso",
   "area": "integration",
   "phase": "pilot",
   "status": "DONE",
@@ -81,6 +81,10 @@
     {
       "at": "2026-11-05T14:08:21.889825+00:00",
       "text": "Criterion 2 review gate removed by ADR-038. Verified merge of #221 (2026-11-05T11:20:26Z); all 3 acceptance criteria have recorded evidence"
+    },
+    {
+      "at": "2026-11-06",
+      "text": "User-directed ownership transfer from Leseli to Keletso for all tasks, including completed tasks and epics. Status, implementation claim and evidence preserved."
     }
   ]
 }

@@ -2,7 +2,7 @@
   "id": "TAX-039",
   "kind": "task",
   "title": "Frappe to Jube submission and state bridge",
-  "owner": "Leseli",
+  "owner": "Keletso",
   "area": "integration",
   "phase": "pilot",
   "status": "DONE",
@@ -81,6 +81,10 @@
     {
       "at": "2026-11-05T08:42:19.451821+00:00",
       "text": "Verified implementation PR #190 merged (ba67f1d, 2026-11-05T08:37Z); all acceptance criteria and evidence recorded. CI did not run on the merge (org billing block); local suites passed."
+    },
+    {
+      "at": "2026-11-06",
+      "text": "User-directed ownership transfer from Leseli to Keletso for all tasks, including completed tasks and epics. Status, implementation claim and evidence preserved."
     }
   ]
 }

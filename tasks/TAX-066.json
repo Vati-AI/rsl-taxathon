@@ -2,7 +2,7 @@
   "id": "TAX-066",
   "kind": "task",
   "title": "Risk calibration and drift evaluation",
-  "owner": "Leseli",
+  "owner": "Keletso",
   "area": "tests/ai",
   "phase": "expansion",
   "status": "DONE",
@@ -75,6 +75,10 @@
     {
       "at": "2026-11-05T09:03:44.856066+00:00",
       "text": "Verified PR #202 merged by leselilexus-cmd at 2026-11-05T09:03:52Z; all acceptance criteria recorded with evidence. Completion reconciled by claude-gupta at Gupta's request to unblock TAX-067/TAX-070; owner Leseli unchanged. GitHub Actions jobs were not started on recent PRs (account billing/spending limit)."
+    },
+    {
+      "at": "2026-11-06",
+      "text": "User-directed ownership transfer from Leseli to Keletso for all tasks, including completed tasks and epics. Status, implementation claim and evidence preserved."
     }
   ]
 }

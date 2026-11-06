@@ -2,7 +2,7 @@
   "id": "TAX-032",
   "kind": "task",
   "title": "Evidence storage, extraction records and provenance",
-  "owner": "Edga",
+  "owner": "Keletso",
   "area": "backend",
   "phase": "pilot",
   "status": "DONE",
@@ -75,6 +75,10 @@
     {
       "at": "2026-11-04T09:34:49.249671+00:00",
       "text": "Verified implementation PR #127 merged (c2b8b09, 2026-11-04T09:30Z); all acceptance criteria and evidence recorded."
+    },
+    {
+      "at": "2026-11-06",
+      "text": "User-directed ownership transfer from Edga to Keletso for all tasks, including completed tasks and epics. Status, implementation claim and evidence preserved."
     }
   ]
 }

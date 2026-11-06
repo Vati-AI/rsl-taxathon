@@ -2,7 +2,7 @@
   "id": "TAX-022",
   "kind": "task",
   "title": "LangGraph state and tool interface",
-  "owner": "Gupta",
+  "owner": "Keletso",
   "area": "ai",
   "phase": "foundation",
   "status": "DONE",
@@ -92,6 +92,10 @@
     {
       "at": "2026-11-03T13:45:14.165436+00:00",
       "text": "Verified implementation PR #93 is merged on GitHub and all three acceptance criteria have recorded evidence; preparing this follow-up to reconcile canonical completion on main."
+    },
+    {
+      "at": "2026-11-06",
+      "text": "User-directed ownership transfer from Gupta to Keletso for all tasks, including completed tasks and epics. Status, implementation claim and evidence preserved."
     }
   ]
 }

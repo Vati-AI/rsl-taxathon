@@ -2,7 +2,7 @@
   "id": "TAX-064",
   "kind": "task",
   "title": "Auditor action observation and workflow proposals",
-  "owner": "Gupta",
+  "owner": "Keletso",
   "area": "ai",
   "phase": "expansion",
   "status": "DONE",
@@ -71,6 +71,10 @@
     {
       "at": "2026-11-04T17:41:11.514152+00:00",
       "text": "Verified PR #154 merged at 2026-11-04T17:41:24Z; all three acceptance criteria recorded with evidence; CI ai-smoke/quality/validate/auditor-browser/frontend-browser passed."
+    },
+    {
+      "at": "2026-11-06",
+      "text": "User-directed ownership transfer from Gupta to Keletso for all tasks, including completed tasks and epics. Status, implementation claim and evidence preserved."
     }
   ]
 }

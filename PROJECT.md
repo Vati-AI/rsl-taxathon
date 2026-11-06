@@ -17,12 +17,14 @@ For live infrastructure: `python3 scripts/dev_env.py`, then `docker compose up -
 
 ## What lives where
 
-- `apps/auditor-web`: officer-facing frontend, owned by Leseli.
-- `apps/taxpayer-web`: portal UX assets; `backend/vati_tax` supplies the Frappe application, forms and permissions. Kananelo owns portal experience, Edga owns server/domain logic.
+Keletso owns all tasks and areas as of 2026-11-06. Previous ownership remains in task notes and Git history.
+
+- `apps/auditor-web`: officer-facing frontend.
+- `apps/taxpayer-web`: portal UX assets; `backend/vati_tax` supplies the Frappe application, forms and permissions.
 - `backend/vati_tax`: custom Frappe app scaffold; `backend`: shared tax-domain and gateway contracts.
 - `integration`: API adapters, service configuration, upstream lock. Keletso owns cross-service coordination.
-- `ai`: Vati LangGraph workflows, approved tools and prompts. Gupta owns AI implementation.
-- `tests/frontend`: Kananelo (frontend QA, reassigned from Jane). `tests/ai`, synthetic fixtures and data evaluation: Leseli (reassigned from Yellow).
+- `ai`: Vati LangGraph workflows, approved tools and prompts.
+- `tests/frontend`: frontend QA. `tests/ai`: AI scenarios, synthetic fixtures and data evaluation.
 - `tasks`: canonical task state. `.agents/skills`: reusable agent workflows.
 
 Jube owns operational cases, assignment/status/escalation/risk execution. Frappe owns application identity/permissions, submissions/evidence requests and approved decision records. The Vati API coordinates these authorities; it must not create a second independent operational case state machine.

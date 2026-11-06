@@ -2,7 +2,7 @@
   "id": "TAX-052",
   "kind": "task",
   "title": "Legal-route registry and policy-gap gate",
-  "owner": "Gupta",
+  "owner": "Keletso",
   "area": "ai",
   "phase": "pilot",
   "status": "DONE",
@@ -75,6 +75,10 @@
     {
       "at": "2026-11-04T07:49:30.051141+00:00",
       "text": "Verified merge of #111 on 2026-11-04"
+    },
+    {
+      "at": "2026-11-06",
+      "text": "User-directed ownership transfer from Gupta to Keletso for all tasks, including completed tasks and epics. Status, implementation claim and evidence preserved."
     }
   ]
 }

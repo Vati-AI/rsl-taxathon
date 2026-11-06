@@ -2,7 +2,7 @@
   "id": "TAX-078",
   "kind": "task",
   "title": "Recurring submission-error guidance",
-  "owner": "Kananelo",
+  "owner": "Keletso",
   "area": "apps/taxpayer-web",
   "phase": "expansion",
   "status": "DONE",
@@ -83,6 +83,10 @@
     {
       "at": "2026-11-05T12:27:48+00:00",
       "text": "Verified merge of #211 (2026-11-05T10:49:38Z); all four acceptance criteria have recorded evidence"
+    },
+    {
+      "at": "2026-11-06",
+      "text": "User-directed ownership transfer from Kananelo to Keletso for all tasks, including completed tasks and epics. Status, implementation claim and evidence preserved."
     }
   ]
 }

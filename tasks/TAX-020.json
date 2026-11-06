@@ -2,7 +2,7 @@
   "id": "TAX-020",
   "kind": "task",
   "title": "Auditor shell and shared visual components",
-  "owner": "Leseli",
+  "owner": "Keletso",
   "area": "apps/auditor-web",
   "phase": "foundation",
   "status": "DONE",
@@ -76,6 +76,10 @@
     {
       "at": "2026-11-03T14:03:22.982292+00:00",
       "text": "Verified PR https://github.com/Vati-AI/rsl-taxathon/pull/91 merged into main as dc54d14 (2026-11-03T13:44:01Z, by Kellybrackets); all 4 acceptance criteria have recorded evidence. Follow-up also rewords auditor UI copy and recorded evidence neutrally and fixes github_sync.py on Windows."
+    },
+    {
+      "at": "2026-11-06",
+      "text": "User-directed ownership transfer from Leseli to Keletso for all tasks, including completed tasks and epics. Status, implementation claim and evidence preserved."
     }
   ]
 }

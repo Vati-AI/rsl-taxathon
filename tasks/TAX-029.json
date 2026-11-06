@@ -2,7 +2,7 @@
   "id": "TAX-029",
   "kind": "task",
   "title": "Frappe identity, roles and tenant permissions",
-  "owner": "Edga",
+  "owner": "Keletso",
   "area": "backend",
   "phase": "foundation",
   "status": "DONE",
@@ -74,6 +74,10 @@
     {
       "at": "2026-11-04T08:24:52.087245+00:00",
       "text": "Verified merge of #118 on 2026-11-04"
+    },
+    {
+      "at": "2026-11-06",
+      "text": "User-directed ownership transfer from Edga to Keletso for all tasks, including completed tasks and epics. Status, implementation claim and evidence preserved."
     }
   ]
 }

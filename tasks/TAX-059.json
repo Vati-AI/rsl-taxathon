@@ -2,7 +2,7 @@
   "id": "TAX-059",
   "kind": "task",
   "title": "Audit ledger and segregation of duties",
-  "owner": "Leseli",
+  "owner": "Keletso",
   "area": "backend",
   "phase": "pilot",
   "status": "DONE",
@@ -74,6 +74,10 @@
     {
       "at": "2026-11-04T11:13:15.690517+00:00",
       "text": "Verified implementation PR #140 merged (b160e36, 2026-11-04T11:11Z); all acceptance criteria and evidence recorded."
+    },
+    {
+      "at": "2026-11-06",
+      "text": "User-directed ownership transfer from Leseli to Keletso for all tasks, including completed tasks and epics. Status, implementation claim and evidence preserved."
     }
   ]
 }

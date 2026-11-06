@@ -4,7 +4,7 @@ Read PROJECT.md, PROJECT_SCOPE.md, docs/ARCHITECTURE.md, docs/API_CONTRACTS.md, 
 
 ## Single-developer delivery (ADR-038)
 
-From 2026-11-05 Keletso owns and implements every open task except TAX-104 (Leseli, in progress). Take the ready task with the lowest `sequence`: `python3 scripts/task.py list --owner Keletso --ready`. tasks/README.md lists the full order. No second-person review is required: open the PR, run the docs/FREE_CI.md local checks (hosted CI is unavailable), record the results in the PR, merge it, then record DONE straight away. Acceptance criteria must not depend on a named person reviewing. Product safeguards (officer approvals, authorised resume, segregation of duties, tenant isolation, synthetic data) are unchanged.
+From 2026-11-06 Keletso owns every task, including completed tasks and epics, with no exceptions. Keletso implements the remaining work; preserve existing agent claims and historical evidence. Take the ready task with the lowest `sequence`: `python3 scripts/task.py list --owner Keletso --ready`. tasks/README.md lists the full order. No second-person review is required: open the PR, run the docs/FREE_CI.md local checks (hosted CI is unavailable), record the results in the PR, merge it, then record DONE straight away. Acceptance criteria must not depend on a named person reviewing. Product safeguards (officer approvals, authorised resume, segregation of duties, tenant isolation, synthetic data) are unchanged.
 
 ## Ownership and task execution
 

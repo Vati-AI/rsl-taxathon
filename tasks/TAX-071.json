@@ -2,7 +2,7 @@
   "id": "TAX-071",
   "kind": "task",
   "title": "EOI evidence-gap and request drafting agent",
-  "owner": "Gupta",
+  "owner": "Keletso",
   "area": "ai",
   "phase": "expansion",
   "status": "DONE",
@@ -71,6 +71,10 @@
     {
       "at": "2026-11-05T08:52:13.034951+00:00",
       "text": "Verified PR #194 merged at 2026-11-05T08:50:09Z; all three acceptance criteria recorded with evidence. GitHub Actions did not run on #194 (jobs not started: account billing/spending limit); local checks passed after merging current main (242 AI tests, TAX-056 evaluation gate PASS)."
+    },
+    {
+      "at": "2026-11-06",
+      "text": "User-directed ownership transfer from Gupta to Keletso for all tasks, including completed tasks and epics. Status, implementation claim and evidence preserved."
     }
   ]
 }

@@ -2,7 +2,7 @@
   "id": "TAX-044",
   "kind": "task",
   "title": "Pre-submission reconciliation and correction UI",
-  "owner": "Kananelo",
+  "owner": "Keletso",
   "area": "apps/taxpayer-web",
   "phase": "pilot",
   "status": "DONE",
@@ -79,6 +79,10 @@
     {
       "at": "2026-11-05T04:59:39.404010+00:00",
       "text": "Implementation PR #173 merged 2026-11-05T04:56:07Z after code-owner approval by Kellybrackets."
+    },
+    {
+      "at": "2026-11-06",
+      "text": "User-directed ownership transfer from Kananelo to Keletso for all tasks, including completed tasks and epics. Status, implementation claim and evidence preserved."
     }
   ]
 }

@@ -2,7 +2,7 @@
   "id": "TAX-024",
   "kind": "task",
   "title": "Five pilot scenarios and expected outcomes",
-  "owner": "Yellow",
+  "owner": "Keletso",
   "area": "data",
   "phase": "foundation",
   "status": "DONE",
@@ -68,6 +68,10 @@
     {
       "at": "2026-11-03T15:17:57.640152+00:00",
       "text": "Verified PR #102 merged at 2026-11-03T15:02:26Z; all three acceptance criteria marked done with three evidence entries; dev.py check and quality.py pass on main 7e0928d (9 tests/data tests OK). Recorded by keletso-claude-code-1 at Keletso's request to unblock TAX-035/048/050/051/052; owner Yellow unchanged."
+    },
+    {
+      "at": "2026-11-06",
+      "text": "User-directed ownership transfer from Yellow to Keletso for all tasks, including completed tasks and epics. Status, implementation claim and evidence preserved."
     }
   ]
 }
