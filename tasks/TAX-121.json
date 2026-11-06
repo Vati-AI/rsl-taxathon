@@ -1,0 +1,72 @@
+{
+  "id": "TAX-121",
+  "kind": "task",
+  "title": "Run the assurance checks inside the live pipeline and re-measure through the platform",
+  "owner": "Keletso",
+  "area": "backend",
+  "phase": "pilot",
+  "status": "BACKLOG",
+  "priority": "P0",
+  "depends_on": [
+    "TAX-086",
+    "TAX-087",
+    "TAX-111",
+    "TAX-112",
+    "TAX-113",
+    "TAX-114",
+    "TAX-115",
+    "TAX-116",
+    "TAX-118"
+  ],
+  "claimed_by": null,
+  "branch": null,
+  "pr": null,
+  "scope": "Make the platform, not a standalone script, responsible for the TAX-118 results: when a refund claim reaches a case, the pipeline runs the TAX-112-116 checks through the TAX-111 source adapters, stores each result as a TAX-086 case finding with its legal route, proposes the TAX-114 lane, and a live benchmark run reads findings and lanes back from the platform and scores them against the sealed TAX-118 answer key",
+  "inputs": [
+    "PROJECT.md",
+    "PROJECT_SCOPE.md",
+    "docs/ARCHITECTURE.md",
+    "docs/DATA_MODEL.md",
+    "docs/ENGINEERING_STANDARD.md",
+    "docs/V1_ACCEPTANCE.md",
+    "docs/reference/FRAMEWORK.md",
+    "docs/decisions/ADR-040-rsl-existing-systems-integration.md",
+    "docs/decisions/ADR-037-event-wiring-frappe-services.md",
+    "backend/vati_tax/vati_tax/pipeline",
+    "ai/evaluation/assurance_pipeline.py",
+    "docs/evidence/TAX-118/RESULTS.md"
+  ],
+  "acceptance": [
+    {
+      "text": "An outbox step after case registration runs the assurance checks for the case's taxpayer and claim, idempotently, and records every finding (category, explanation, evidence refs, unresolved amount, candidate legal route or policy gap) as a TAX-086 finding with producer and version; the proposed lane, service target and undisputed amount are readable per claim; nothing decides, pays, denies or assesses",
+      "done": false
+    },
+    {
+      "text": "A live benchmark mode seeds the 200 TAX-118 test taxpayers (or a stated subset when resources limit it) into Frappe, lets the pipeline run, reads findings and lanes back through the platform and scores them with the TAX-118 scorer; results are committed beside the standalone run with every difference explained",
+      "done": false
+    },
+    {
+      "text": "Degraded services (Jube, Docling, OpenAleph or yente unavailable) are reported per case and in the results as not run, never as clean; the run states which services were live and which were recorded",
+      "done": false
+    },
+    {
+      "text": "Record relevant tests and evidence, update task status and open a PR",
+      "done": false
+    }
+  ],
+  "verification": "Live benchmark mode results committed beside the standalone TAX-118 run with every difference explained",
+  "skills": [
+    "start-task",
+    "implement-change",
+    "update-project-task",
+    "finish-task"
+  ],
+  "evidence": [],
+  "notes": [
+    {
+      "at": "2026-11-06",
+      "text": "Added 2026-11-06 at Keletso's request so the system itself is responsible for the measured results (TAX-118 ran the checks directly, outside the services)."
+    }
+  ],
+  "sequence": 3
+}
