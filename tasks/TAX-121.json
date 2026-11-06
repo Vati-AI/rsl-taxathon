@@ -5,7 +5,7 @@
   "owner": "Keletso",
   "area": "backend",
   "phase": "pilot",
-  "status": "IN_PROGRESS",
+  "status": "IN_REVIEW",
   "priority": "P0",
   "depends_on": [
     "TAX-086",
@@ -20,7 +20,7 @@
   ],
   "claimed_by": "claude-code-20261106-vigilant-fermat",
   "branch": "claude/vigilant-fermat-4x2es6",
-  "pr": null,
+  "pr": "https://github.com/Vati-AI/rsl-taxathon/pull/280",
   "scope": "Make the platform, not a standalone script, responsible for the TAX-118 results: when a refund claim reaches a case, the pipeline runs the TAX-112-116 checks through the TAX-111 source adapters, stores each result as a TAX-086 case finding with its legal route, proposes the TAX-114 lane, and a live benchmark run reads findings and lanes back from the platform and scores them against the sealed TAX-118 answer key",
   "inputs": [
     "PROJECT.md",
@@ -39,19 +39,19 @@
   "acceptance": [
     {
       "text": "An outbox step after case registration runs the assurance checks for the case's taxpayer and claim, idempotently, and records every finding (category, explanation, evidence refs, unresolved amount, candidate legal route or policy gap) as a TAX-086 finding with producer and version; the proposed lane, service target and undisputed amount are readable per claim; nothing decides, pays, denies or assesses",
-      "done": false
+      "done": true
     },
     {
       "text": "A live benchmark mode seeds the 200 TAX-118 test taxpayers (or a stated subset when resources limit it) into Frappe, lets the pipeline run, reads findings and lanes back through the platform and scores them with the TAX-118 scorer; results are committed beside the standalone run with every difference explained",
-      "done": false
+      "done": true
     },
     {
       "text": "Degraded services (Jube, Docling, OpenAleph or yente unavailable) are reported per case and in the results as not run, never as clean; the run states which services were live and which were recorded",
-      "done": false
+      "done": true
     },
     {
       "text": "Record relevant tests and evidence, update task status and open a PR",
-      "done": false
+      "done": true
     }
   ],
   "verification": "Live benchmark mode results committed beside the standalone TAX-118 run with every difference explained",
@@ -73,12 +73,20 @@
     {
       "criterion": 3,
       "text": "Each Vati Assurance Run records services and per-check status. A missing fixture config, or e-Tax or the Online Refunds Application unavailable, gives not_run with a reason code (upstream_unavailable, etax_unavailable) and records no findings or lanes. An unavailable optional system gives degraded_<system>_unavailable. This is covered by the bench and host tests. In the live run, Frappe was live in 4185 cases. RSL sources were recorded (TAX-111 fixture, all systems ok) and the taxpayer records were live. Jube, Docling, OpenAleph and yente were not configured. The Jube case.registered step ended as dead_letter 1200, retry 2815 and pending 170 (jube_not_configured), reported as unavailable, never clean. scripts/frappe_dev.py verify: first run 195 bench tests, FAILED (failures=2, errors=1); a second verify run was OK (195). Rerunning on the kept site gave 3 failures, all in reminders.test_reminders_bench, which is pre-existing and flaky and not touched here. All assurance, bridge, pipeline, findings and outbox bench tests passed. python3 scripts/dev.py check, scripts/quality.py and scripts/validate.py passed."
+    },
+    {
+      "criterion": 4,
+      "text": "PR https://github.com/Vati-AI/rsl-taxathon/pull/280. dev.py check and validate.py passed (rerun by the parent); quality.py passed; live benchmark 0 differences vs TAX-118 on 200 taxpayers / 4,185 claims."
     }
   ],
   "notes": [
     {
       "at": "2026-11-06",
       "text": "Added 2026-11-06 at Keletso's request so the system itself is responsible for the measured results (TAX-118 ran the checks directly, outside the services)."
+    },
+    {
+      "at": "2026-11-06",
+      "text": "IN_REVIEW in PR #280."
     }
   ],
   "sequence": 3
