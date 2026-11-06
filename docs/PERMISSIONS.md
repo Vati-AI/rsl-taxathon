@@ -172,6 +172,18 @@ A permitted workflow only orders steps that were each approved before. Every ste
 | Staff history (`get_reminders`) | staff (`reminder.read`) | taxpayer or service. The read is recorded |
 | Portal list (`get_correction_reminders`) | the taxpayer, own reminders only | other taxpayers' and tenants' reminders are never returned |
 
+## Case findings and finding feedback (TAX-086)
+
+`Vati Case Finding` and `Vati Finding Feedback` are tenant-scoped (`tenant_id`, no `taxpayer_id`). Staff and services read them in Desk; taxpayers have no DocType permission. Nothing is created, edited or deleted through Desk: `vati_tax.findings.store` writes them after the checks below. A refused attempt is recorded in the audit ledger. See [ADR-041](decisions/ADR-041-case-findings-record.md).
+
+| Step | Who | Refused when |
+| --- | --- | --- |
+| Record a rule or agent finding (`record_rule_signal`, `record_playbook_result`, `record_finding`) | any `draft.record` role (staff or service) | taxpayer; case or cited evidence outside the tenant or the case's taxpayer (`not_found`); a citation with no evidence mapping; a document hash that differs from the stored one; labelling words; a verified legal route; an agent finding without valid provenance; the same key with a changed body (`idempotency_conflict`) |
+| Record an officer finding | auditor, specialist, supervisor (`finding.review`) | service or taxpayer; as above |
+| Read findings (`list_findings`, `get_finding`) | staff or service (`case.read`) | taxpayer; another tenant (403 `tenant_scope_denied`, or `not_found` for a case outside the selected tenant) |
+| Record feedback (`record_finding_feedback`) | auditor, specialist, supervisor (`finding.review`) | service or taxpayer; an actor in the body (400); a modified or rejected verdict without a reason of at least 10 characters; corrected wording on a verdict other than modified; feedback on an officer finding; a changed body under the same key |
+| Read feedback for the TAX-070 loop (`feedback_for_review`) | staff or service (`case.read`) | taxpayer; another tenant |
+
 ## Frappe to Jube bridge (TAX-039)
 
 See [ADR-028](decisions/ADR-028-frappe-jube-submission-bridge.md).

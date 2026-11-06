@@ -1,0 +1,225 @@
+{
+ "actions": [],
+ "autoname": "field:feedback_id",
+ "creation": "2026-11-06 10:00:00.000000",
+ "description": "One append-only officer verdict (accepted, modified, rejected) on a rule or agent finding, with the judged finding's producer and provenance (TAX-086). It never changes the finding, case or decision and is not an approval. Read by the TAX-070 feedback loop. Written only by vati_tax.findings.",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "feedback_id",
+  "tenant_id",
+  "case_id",
+  "finding_id",
+  "verdict",
+  "reason_code",
+  "reason",
+  "modified_explanation",
+  "recorded_by",
+  "recorder_role",
+  "recorded_at",
+  "previous_feedback_id",
+  "finding_snapshot",
+  "changes_finding",
+  "trace_section",
+  "correlation_id",
+  "chain_key",
+  "registration_key",
+  "request_digest"
+ ],
+ "fields": [
+  {
+   "fieldname": "feedback_id",
+   "fieldtype": "Data",
+   "label": "Feedback ID",
+   "set_only_once": 1,
+   "reqd": 1,
+   "unique": 1,
+   "length": 36
+  },
+  {
+   "fieldname": "tenant_id",
+   "fieldtype": "Data",
+   "label": "Tenant ID",
+   "set_only_once": 1,
+   "reqd": 1,
+   "search_index": 1,
+   "in_standard_filter": 1,
+   "length": 36
+  },
+  {
+   "fieldname": "case_id",
+   "fieldtype": "Data",
+   "label": "Case ID",
+   "set_only_once": 1,
+   "reqd": 1,
+   "search_index": 1,
+   "in_list_view": 1,
+   "length": 36
+  },
+  {
+   "fieldname": "finding_id",
+   "fieldtype": "Data",
+   "label": "Finding ID",
+   "set_only_once": 1,
+   "reqd": 1,
+   "search_index": 1,
+   "in_list_view": 1,
+   "length": 36
+  },
+  {
+   "fieldname": "verdict",
+   "fieldtype": "Select",
+   "label": "Verdict",
+   "set_only_once": 1,
+   "options": "accepted\nmodified\nrejected",
+   "reqd": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1
+  },
+  {
+   "fieldname": "reason_code",
+   "fieldtype": "Select",
+   "label": "Reason Code",
+   "set_only_once": 1,
+   "options": "evidence_supports\nevidence_does_not_support\ncitation_incorrect\nmissing_context\nlegitimate_explanation\nwrong_category\nwording_unclear\nother",
+   "reqd": 1
+  },
+  {
+   "fieldname": "reason",
+   "fieldtype": "Long Text",
+   "label": "Reason",
+   "set_only_once": 1
+  },
+  {
+   "fieldname": "modified_explanation",
+   "fieldtype": "Long Text",
+   "label": "Modified Explanation",
+   "set_only_once": 1
+  },
+  {
+   "fieldname": "recorded_by",
+   "fieldtype": "Data",
+   "label": "Recorded By (session user)",
+   "set_only_once": 1,
+   "reqd": 1,
+   "in_list_view": 1,
+   "length": 140
+  },
+  {
+   "fieldname": "recorder_role",
+   "fieldtype": "Data",
+   "label": "Recorder Role",
+   "set_only_once": 1,
+   "reqd": 1,
+   "length": 20
+  },
+  {
+   "fieldname": "recorded_at",
+   "fieldtype": "Datetime",
+   "label": "Recorded At (UTC)",
+   "set_only_once": 1,
+   "reqd": 1
+  },
+  {
+   "fieldname": "previous_feedback_id",
+   "fieldtype": "Data",
+   "label": "Previous Feedback (same officer)",
+   "set_only_once": 1,
+   "length": 36
+  },
+  {
+   "fieldname": "finding_snapshot",
+   "fieldtype": "Long Text",
+   "label": "Judged Finding (FindingSnapshot JSON)",
+   "set_only_once": 1,
+   "reqd": 1
+  },
+  {
+   "fieldname": "changes_finding",
+   "fieldtype": "Check",
+   "label": "Changes Finding",
+   "set_only_once": 1,
+   "default": "0",
+   "read_only": 1
+  },
+  {
+   "fieldname": "trace_section",
+   "fieldtype": "Section Break",
+   "label": "Trace"
+  },
+  {
+   "fieldname": "correlation_id",
+   "fieldtype": "Data",
+   "label": "Correlation ID",
+   "set_only_once": 1,
+   "length": 36
+  },
+  {
+   "fieldname": "chain_key",
+   "fieldtype": "Data",
+   "label": "Chain Key",
+   "set_only_once": 1,
+   "reqd": 1,
+   "unique": 1,
+   "hidden": 1,
+   "length": 64
+  },
+  {
+   "fieldname": "registration_key",
+   "fieldtype": "Data",
+   "label": "Registration Key",
+   "set_only_once": 1,
+   "reqd": 1,
+   "unique": 1,
+   "hidden": 1,
+   "length": 64
+  },
+  {
+   "fieldname": "request_digest",
+   "fieldtype": "Data",
+   "label": "Request Digest",
+   "set_only_once": 1,
+   "reqd": 1,
+   "hidden": 1,
+   "length": 64
+  }
+ ],
+ "in_create": 1,
+ "index_web_pages_for_search": 0,
+ "links": [],
+ "modified": "2026-11-06 10:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Vati Tax",
+ "name": "Vati Finding Feedback",
+ "naming_rule": "By fieldname",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "export": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager"
+  },
+  {
+   "read": 1,
+   "role": "Vati Auditor"
+  },
+  {
+   "read": 1,
+   "role": "Vati Specialist"
+  },
+  {
+   "read": 1,
+   "role": "Vati Supervisor"
+  },
+  {
+   "read": 1,
+   "role": "Vati Service"
+  }
+ ],
+ "search_fields": "finding_id,case_id,verdict",
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "verdict"
+}

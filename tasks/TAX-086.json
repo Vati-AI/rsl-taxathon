@@ -5,7 +5,7 @@
   "owner": "Keletso",
   "area": "backend",
   "phase": "pilot",
-  "status": "BACKLOG",
+  "status": "IN_PROGRESS",
   "priority": "P0",
   "depends_on": [
     "TAX-030",
@@ -13,8 +13,8 @@
     "TAX-046",
     "TAX-096"
   ],
-  "claimed_by": null,
-  "branch": null,
+  "claimed_by": "claude-code-20261106-vigilant-fermat",
+  "branch": "claude/vigilant-fermat-4x2es6",
   "pr": null,
   "scope": "Store per-case findings from Jube rules and AI playbooks (code, explanation, rule/playbook version, evidence citations, source, status) as tenant-scoped, append-only Frappe records the officer UI and decisions can read; include analysis provenance (provider, model id, prompt version, fallback level) and officer finding feedback (accepted/modified/rejected with reason)",
   "inputs": [
@@ -31,11 +31,11 @@
   "acceptance": [
     {
       "text": "A Vati Case Finding DocType (or equivalent) with tenant/case isolation via TAX-029 field names, provenance (rule or playbook id + version, evidence refs) and append-only revisions; no risk/fraud labels on people",
-      "done": false
+      "done": true
     },
     {
       "text": "Rule signals from TAX-035 and a playbook result for at least SYN-002 can be recorded and read back per case; cross-tenant and taxpayer reads are refused; replay of the same finding is idempotent",
-      "done": false
+      "done": true
     },
     {
       "text": "Findings and briefings store the TAX-096 analysis provenance; officer feedback on a finding (accepted/modified/rejected with reason) is stored append-only with the actor and is readable by the TAX-070 feedback loop",
@@ -53,7 +53,20 @@
     "update-project-task",
     "finish-task"
   ],
-  "evidence": [],
+  "evidence": [
+    {
+      "criterion": 1,
+      "text": "Vati Case Finding DocType (backend/vati_tax/vati_tax/vati_tax/doctype/vati_case_finding) keyed by tenant_id + case_id (TAX-029 names, no taxpayer_id, no Vati Taxpayer DocPerm), with producer, producer_version, rule_id/rule_version/ruleset_id/ruleset_version/input_digest or playbook name/version/content_digest/registry_version/run_id, EvidenceRef JSON (evidence ID, stored SHA-256, source-record locator) and append-only revisions (revision, supersedes_finding_id, unique revision_key; controller refuses edits and deletes). Finding text refuses the ADR-026 FORBIDDEN_TERMS (kept equal to scheme_graph by tests/integration/test_case_findings.py). Observed: findings/test_engine.py 27 tests OK; bench FindingBenchTests (6) passed in scripts/frappe_dev.py verify (ADR-041)."
+    },
+    {
+      "criterion": 2,
+      "text": "store.record_rule_signal records the SYN-002 TAX-035 rows (TR-VAT-REFUND-MISMATCH, TR-RELATED-PARTY-FEES, TR-PERSISTENT-LOSSES; no_signal/not_applicable record nothing) and store.record_playbook_result records the TAX-049 related-party result as 5 cited findings; list_findings/get_finding read them back per case. Taxpayers get PermissionError (refusal kept in the audit ledger) and cannot get_list the DocType; another tenant's auditor gets tenant_scope_denied or not_found. Replays return the stored record (no new rows); a changed body under the same key is idempotency_conflict. Observed: tests/integration/test_case_findings.py 9 tests OK (1 skipped: LangGraph proposal test, LangGraph not installed) on the live tax_risk.evaluate_record and review_related_party output, validated by integration/api/contract.py; python3 scripts/frappe_dev.py verify: Ran 189 bench tests, FAILED (failures=1), the only failure being reminders.test_reminders_bench test_overturned_source_hides_the_reminder, which also fails (with 1 more error) in a baseline run with the findings bench class skipped."
+    },
+    {
+      "criterion": 3,
+      "text": "langgraph_run findings require a valid TAX-096 AnalysisProvenance (rules.validate_provenance, checked against contract.py on every example provenance and 19 mutations plus each missing required field); rule and officer findings refuse provenance. Vati Finding Feedback stores accepted/modified/rejected with reason_code, reason (>=10 chars for modified/rejected), modified_explanation (modified only), the session user and role (an actor in the body is a 400), previous_feedback_id for the same officer, a FindingSnapshot of the judged finding and changes_finding false; edits and deletes are refused. engine/store.feedback_for_review returns each item with its TAX-070 provenance entry, which ai/workflows/outcome_feedback._component parses (test_case_findings). NOT YET DONE: no briefing record exists, so briefing provenance is not stored yet; the criterion stays open until one is added. Observed in the same unit, integration and bench runs as criteria 1-2."
+    }
+  ],
   "notes": [
     {
       "at": "2026-11-05T06:39:04.925015+00:00",
@@ -66,6 +79,10 @@
     {
       "at": "2026-11-05T14:08:21.889825+00:00",
       "text": "Reassigned from Edga to Keletso (single-developer delivery, ADR-038)"
+    },
+    {
+      "at": "2026-11-06T12:53:31.078765+00:00",
+      "text": "Claimed by claude-code-20261106-vigilant-fermat on claude/vigilant-fermat-4x2es6: Vati Case Finding and Vati Finding Feedback DocTypes, vati_tax.findings engine/store, tests (ADR-041)."
     }
   ],
   "sequence": 1

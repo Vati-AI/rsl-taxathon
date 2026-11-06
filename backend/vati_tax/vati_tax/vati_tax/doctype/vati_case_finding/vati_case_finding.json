@@ -1,0 +1,407 @@
+{
+ "actions": [],
+ "autoname": "field:finding_id",
+ "creation": "2026-11-06 10:00:00.000000",
+ "description": "One case finding from a TAX-035 Jube rule, a LangGraph playbook run or an officer (TAX-086). Append-only: a changed result is a new revision that supersedes the previous one. Advisory: it decides nothing, labels nobody and its legal route stays unverified. Written only by vati_tax.findings.",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "finding_id",
+  "tenant_id",
+  "case_id",
+  "revision",
+  "supersedes_finding_id",
+  "kind",
+  "category",
+  "code",
+  "explanation",
+  "evidence_refs",
+  "unresolved_amount",
+  "unresolved_currency",
+  "confidence",
+  "alternative_explanations",
+  "legal_route_status",
+  "proposed_action",
+  "producer_section",
+  "producer",
+  "producer_version",
+  "subject",
+  "rule_id",
+  "rule_version",
+  "ruleset_id",
+  "ruleset_version",
+  "input_digest",
+  "column_break_playbook",
+  "playbook_id",
+  "playbook_version",
+  "playbook_content_digest",
+  "registry_version",
+  "run_id",
+  "analysis_provenance",
+  "trace_section",
+  "recorded_by",
+  "recorder_role",
+  "created_at",
+  "correlation_id",
+  "lineage_key",
+  "revision_key",
+  "registration_key",
+  "request_digest"
+ ],
+ "fields": [
+  {
+   "fieldname": "finding_id",
+   "fieldtype": "Data",
+   "label": "Finding ID",
+   "set_only_once": 1,
+   "reqd": 1,
+   "unique": 1,
+   "length": 36
+  },
+  {
+   "fieldname": "tenant_id",
+   "fieldtype": "Data",
+   "label": "Tenant ID",
+   "set_only_once": 1,
+   "reqd": 1,
+   "search_index": 1,
+   "in_standard_filter": 1,
+   "length": 36
+  },
+  {
+   "fieldname": "case_id",
+   "fieldtype": "Data",
+   "label": "Case ID",
+   "set_only_once": 1,
+   "reqd": 1,
+   "search_index": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "length": 36
+  },
+  {
+   "fieldname": "revision",
+   "fieldtype": "Int",
+   "label": "Revision",
+   "set_only_once": 1,
+   "reqd": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "supersedes_finding_id",
+   "fieldtype": "Data",
+   "label": "Supersedes Finding",
+   "set_only_once": 1,
+   "length": 36
+  },
+  {
+   "fieldname": "kind",
+   "fieldtype": "Select",
+   "label": "Kind",
+   "set_only_once": 1,
+   "options": "observed_fact\ninference\nmissing_evidence\nunverified_evidence\ncontradictory_evidence",
+   "reqd": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1
+  },
+  {
+   "fieldname": "category",
+   "fieldtype": "Select",
+   "label": "Category",
+   "set_only_once": 1,
+   "options": "refund_reconciliation\nrelated_party\nworker_classification\nimported_services\npolicy_gap\nother",
+   "reqd": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1
+  },
+  {
+   "fieldname": "code",
+   "fieldtype": "Data",
+   "label": "Code",
+   "set_only_once": 1,
+   "length": 64
+  },
+  {
+   "fieldname": "explanation",
+   "fieldtype": "Long Text",
+   "label": "Explanation",
+   "set_only_once": 1,
+   "reqd": 1
+  },
+  {
+   "fieldname": "evidence_refs",
+   "fieldtype": "Long Text",
+   "label": "Evidence References (EvidenceRef JSON)",
+   "set_only_once": 1,
+   "reqd": 1
+  },
+  {
+   "fieldname": "unresolved_amount",
+   "fieldtype": "Data",
+   "label": "Unresolved Amount (decimal string)",
+   "set_only_once": 1,
+   "length": 32
+  },
+  {
+   "fieldname": "unresolved_currency",
+   "fieldtype": "Data",
+   "label": "Unresolved Amount Currency",
+   "set_only_once": 1,
+   "length": 3
+  },
+  {
+   "fieldname": "confidence",
+   "fieldtype": "Select",
+   "label": "Confidence",
+   "set_only_once": 1,
+   "options": "low\nmedium\nhigh",
+   "reqd": 1
+  },
+  {
+   "fieldname": "alternative_explanations",
+   "fieldtype": "Long Text",
+   "label": "Alternative Explanations (JSON)",
+   "set_only_once": 1,
+   "reqd": 1
+  },
+  {
+   "fieldname": "legal_route_status",
+   "fieldtype": "Select",
+   "label": "Legal Route",
+   "set_only_once": 1,
+   "options": "unverified\nno_verified_route",
+   "reqd": 1
+  },
+  {
+   "fieldname": "proposed_action",
+   "fieldtype": "Select",
+   "label": "Proposed Action (requires human approval)",
+   "set_only_once": 1,
+   "options": "none\nhuman_clearance\nrequest_evidence\nspecialist_review\npolicy_gap_review",
+   "reqd": 1
+  },
+  {
+   "fieldname": "producer_section",
+   "fieldtype": "Section Break",
+   "label": "Producer"
+  },
+  {
+   "fieldname": "producer",
+   "fieldtype": "Select",
+   "label": "Producer",
+   "set_only_once": 1,
+   "options": "jube_rule\nlanggraph_run\nofficer",
+   "reqd": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1
+  },
+  {
+   "fieldname": "producer_version",
+   "fieldtype": "Data",
+   "label": "Producer Version",
+   "set_only_once": 1,
+   "reqd": 1,
+   "length": 128
+  },
+  {
+   "fieldname": "subject",
+   "fieldtype": "Data",
+   "label": "Subject",
+   "set_only_once": 1,
+   "length": 255
+  },
+  {
+   "fieldname": "rule_id",
+   "fieldtype": "Data",
+   "label": "Rule ID",
+   "set_only_once": 1,
+   "length": 128
+  },
+  {
+   "fieldname": "rule_version",
+   "fieldtype": "Data",
+   "label": "Rule Version",
+   "set_only_once": 1,
+   "length": 128
+  },
+  {
+   "fieldname": "ruleset_id",
+   "fieldtype": "Data",
+   "label": "Ruleset ID",
+   "set_only_once": 1,
+   "length": 128
+  },
+  {
+   "fieldname": "ruleset_version",
+   "fieldtype": "Data",
+   "label": "Ruleset Version",
+   "set_only_once": 1,
+   "length": 128
+  },
+  {
+   "fieldname": "input_digest",
+   "fieldtype": "Data",
+   "label": "Rule Input Digest",
+   "set_only_once": 1,
+   "length": 128
+  },
+  {
+   "fieldname": "column_break_playbook",
+   "fieldtype": "Column Break",
+   "label": ""
+  },
+  {
+   "fieldname": "playbook_id",
+   "fieldtype": "Data",
+   "label": "Playbook",
+   "set_only_once": 1,
+   "length": 128
+  },
+  {
+   "fieldname": "playbook_version",
+   "fieldtype": "Data",
+   "label": "Playbook Version",
+   "set_only_once": 1,
+   "length": 128
+  },
+  {
+   "fieldname": "playbook_content_digest",
+   "fieldtype": "Data",
+   "label": "Playbook Content Digest",
+   "set_only_once": 1,
+   "length": 64
+  },
+  {
+   "fieldname": "registry_version",
+   "fieldtype": "Data",
+   "label": "Playbook Registry Version",
+   "set_only_once": 1,
+   "length": 128
+  },
+  {
+   "fieldname": "run_id",
+   "fieldtype": "Data",
+   "label": "Run ID",
+   "set_only_once": 1,
+   "length": 128
+  },
+  {
+   "fieldname": "analysis_provenance",
+   "fieldtype": "Long Text",
+   "label": "Analysis Provenance (AnalysisProvenance JSON)",
+   "set_only_once": 1
+  },
+  {
+   "fieldname": "trace_section",
+   "fieldtype": "Section Break",
+   "label": "Trace"
+  },
+  {
+   "fieldname": "recorded_by",
+   "fieldtype": "Data",
+   "label": "Recorded By",
+   "set_only_once": 1,
+   "reqd": 1,
+   "length": 140
+  },
+  {
+   "fieldname": "recorder_role",
+   "fieldtype": "Data",
+   "label": "Recorder Role",
+   "set_only_once": 1,
+   "reqd": 1,
+   "length": 20
+  },
+  {
+   "fieldname": "created_at",
+   "fieldtype": "Datetime",
+   "label": "Created At (UTC)",
+   "set_only_once": 1,
+   "reqd": 1
+  },
+  {
+   "fieldname": "correlation_id",
+   "fieldtype": "Data",
+   "label": "Correlation ID",
+   "set_only_once": 1,
+   "length": 36
+  },
+  {
+   "fieldname": "lineage_key",
+   "fieldtype": "Data",
+   "label": "Lineage Key",
+   "set_only_once": 1,
+   "reqd": 1,
+   "search_index": 1,
+   "hidden": 1,
+   "length": 64
+  },
+  {
+   "fieldname": "revision_key",
+   "fieldtype": "Data",
+   "label": "Revision Key",
+   "set_only_once": 1,
+   "reqd": 1,
+   "unique": 1,
+   "hidden": 1,
+   "length": 64
+  },
+  {
+   "fieldname": "registration_key",
+   "fieldtype": "Data",
+   "label": "Registration Key",
+   "set_only_once": 1,
+   "reqd": 1,
+   "unique": 1,
+   "hidden": 1,
+   "length": 64
+  },
+  {
+   "fieldname": "request_digest",
+   "fieldtype": "Data",
+   "label": "Request Digest",
+   "set_only_once": 1,
+   "reqd": 1,
+   "hidden": 1,
+   "length": 64
+  }
+ ],
+ "in_create": 1,
+ "index_web_pages_for_search": 0,
+ "links": [],
+ "modified": "2026-11-06 10:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Vati Tax",
+ "name": "Vati Case Finding",
+ "naming_rule": "By fieldname",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "export": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager"
+  },
+  {
+   "read": 1,
+   "role": "Vati Auditor"
+  },
+  {
+   "read": 1,
+   "role": "Vati Specialist"
+  },
+  {
+   "read": 1,
+   "role": "Vati Supervisor"
+  },
+  {
+   "read": 1,
+   "role": "Vati Service"
+  }
+ ],
+ "search_fields": "case_id,category,code",
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "category"
+}
