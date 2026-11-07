@@ -1,7 +1,8 @@
 """Frappe binding: the assurance checks as a pipeline step (TAX-121, ADR-042).
 
 Entry point (``doc_events`` on ``Vati Submission``, first in the list so it does not wait
-for Jube): when a taxpayer sends a refund claim, ``on_submission_sent`` registers (or
+for Jube): when a taxpayer sends a refund claim, or RSL's intake sends one read from the
+Online Refunds Application (TAX-122), ``on_submission_sent`` registers (or
 replays) the case with the TAX-039 bridge's own registration key and enqueues one
 ``assurance.requested`` event as the case's next event, in the sender's transaction. The
 bridge's ``case.registered`` follows it with the same correlation ID. The Jube step
@@ -300,7 +301,7 @@ class FrappeRepository:
 def on_submission_sent(doc: Any, method: str | None = None) -> None:
     """``doc_events``: a sent refund claim enqueues ``assurance.requested`` first."""
     before = doc.get_doc_before_save()
-    origin = "jube_mirror" if doc.flags.get("vati_mirror") else "taxpayer"
+    origin = bridge_rules.submission_origin(bool(doc.flags.get("vati_mirror")), doc.get("source"))
     if before is None or not bridge_rules.should_register(before.status, doc.status, origin):
         return
     if doc.submission_type != "refund_claim":
@@ -376,7 +377,8 @@ def handle_assurance_requested(delivery: Any) -> None:
         raise outbox_policy.PermanentDeliveryError("invalid_payload") from None
     sub = frappe.db.get_value(
         SUBMISSION, submission_id,
-        ["name", "tenant_id", "taxpayer_id", "case_id", "version", "period", "submission_type"],
+        ["name", "tenant_id", "taxpayer_id", "case_id", "version", "period", "submission_type",
+         "source", "source_ref"],
         as_dict=True,
     )  # fmt: skip
     if not sub or sub.tenant_id != env.tenant_id or sub.case_id != env.case_id:
@@ -453,6 +455,7 @@ def handle_assurance_requested(delivery: Any) -> None:
         fixture.sources, fixture.params, records, tin=str(tin), period=str(sub.period),
         claimed_amount=str(claim.claimed_amount), bundle_evidence_id=evidence_id,
         bundle_sha256=bundle_sha, assess=assess, register_version=register_version,
+        claim_ref=sub.source_ref if sub.source == bridge_rules.ORIGIN_RSL_ONLINE_REFUNDS else None,
     )  # fmt: skip
     services["rsl_sources"]["systems"] = plan["systems"]
     run.update(checks=plan["checks"], claim_ref=plan["claim_ref"])

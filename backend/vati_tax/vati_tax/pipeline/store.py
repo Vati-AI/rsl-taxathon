@@ -182,7 +182,7 @@ def on_service_link_insert(doc: Any, method: str | None = None) -> None:
 def on_submission_sent(doc: Any, method: str | None = None) -> None:
     """``doc_events``: runs after the bridge registered the case for a sent submission."""
     before = doc.get_doc_before_save()
-    origin = "jube_mirror" if doc.flags.get("vati_mirror") else "taxpayer"
+    origin = bridge_rules.submission_origin(bool(doc.flags.get("vati_mirror")), doc.get("source"))
     if before is None or not bridge_rules.should_register(before.status, doc.status, origin):
         return
     if not doc.case_id:

@@ -156,7 +156,7 @@ def on_submission_update(doc: Any, method: str | None = None) -> None:
     ``case_id`` and the outbox event commit or roll back with the send itself.
     """
     before = doc.get_doc_before_save()
-    origin = "jube_mirror" if doc.flags.get("vati_mirror") else "taxpayer"
+    origin = rules.submission_origin(bool(doc.flags.get("vati_mirror")), doc.get("source"))
     if before is None or not rules.should_register(before.status, doc.status, origin):
         return
     case = mapping.register_case(

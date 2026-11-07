@@ -5,15 +5,15 @@
   "owner": "Keletso",
   "area": "integration",
   "phase": "pilot",
-  "status": "BACKLOG",
+  "status": "IN_PROGRESS",
   "priority": "P0",
   "depends_on": [
     "TAX-111",
     "TAX-039",
     "TAX-121"
   ],
-  "claimed_by": null,
-  "branch": null,
+  "claimed_by": "claude-code-20261107-friendly-newton",
+  "branch": "claude/friendly-newton-iwhm4u",
   "pr": null,
   "scope": "Make an RSL source, not the Vati claim form, start a case: read rsl.online_refunds.claim through the TAX-111 adapter (fixture), create the Vati Submission and Vati Refund Claim with origin rsl_online_refunds keyed on claim_id, and let the existing assurance, bridge and pipeline hooks run unchanged",
   "inputs": [
@@ -57,6 +57,10 @@
     {
       "at": "2026-11-07",
       "text": "Added 2026-11-07 from ADR-043 (Vati downstream of RSL selection; portal answers evidence requests)."
+    },
+    {
+      "at": "2026-11-07",
+      "text": "Claimed by claude-code-20261107-friendly-newton on the session's designated branch claude/friendly-newton-iwhm4u (stacked on the ADR-043 planning PR #281, which adds this task)."
     }
   ],
   "sequence": 11

@@ -99,8 +99,12 @@ _JUBE_ID = re.compile(r"^[1-9][0-9]{0,18}$")
 _ISO = re.compile(r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d{1,6})?Z$")
 _NAMESPACE = uuid.UUID("7c1d4a62-0b39-4f8e-9a51-6f3e2d0c9b17")  # TAX-039 observation IDs
 
-Origin = Literal["taxpayer", "staff", "operator", "jube_mirror"]
+Origin = Literal["taxpayer", "staff", "operator", "jube_mirror", "rsl_online_refunds"]
 ORIGIN_MIRROR: Final = "jube_mirror"
+ORIGIN_TAXPAYER: Final = "taxpayer"
+# TAX-122 (ADR-043): a claim filed in RSL's Online Refunds Application, sent by the intake.
+ORIGIN_RSL_ONLINE_REFUNDS: Final = "rsl_online_refunds"
+SENDING_ORIGINS: Final = frozenset({ORIGIN_TAXPAYER, ORIGIN_RSL_ONLINE_REFUNDS})
 
 
 class StaleUpdate(MappingError):
@@ -113,14 +117,24 @@ class StaleUpdate(MappingError):
 # --- outward: submission -> case.registered ---------------------------------------
 
 
+def submission_origin(mirror: bool, source: str | None) -> str:
+    """Who sent a submission change: the Jube mirror, RSL's intake or the taxpayer."""
+    if mirror:
+        return ORIGIN_MIRROR
+    if source == ORIGIN_RSL_ONLINE_REFUNDS:
+        return ORIGIN_RSL_ONLINE_REFUNDS
+    return ORIGIN_TAXPAYER
+
+
 def should_register(before_status: str | None, after_status: str, origin: str) -> bool:
     """Whether a submission change sends work to Jube.
 
-    Only the taxpayer's own send (``draft``/``correction_needed`` -> ``submitted``)
-    does. A mirror write never changes ``status``; it is refused here too, so a
-    future mirror bug cannot start a loop.
+    A send (``draft``/``correction_needed`` -> ``submitted``) does when the taxpayer
+    sent it from the portal or RSL's intake sent a claim filed in the Online Refunds
+    Application (TAX-122). A mirror write never changes ``status``; it is refused here
+    too, so a future mirror bug cannot start a loop. Any other origin is refused.
     """
-    if origin == ORIGIN_MIRROR:
+    if origin not in SENDING_ORIGINS:
         return False
     return after_status == "submitted" and before_status in ("draft", "correction_needed")
 

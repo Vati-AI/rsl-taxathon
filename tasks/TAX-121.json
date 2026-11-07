@@ -5,7 +5,7 @@
   "owner": "Keletso",
   "area": "backend",
   "phase": "pilot",
-  "status": "IN_REVIEW",
+  "status": "DONE",
   "priority": "P0",
   "depends_on": [
     "TAX-086",
@@ -87,6 +87,10 @@
     {
       "at": "2026-11-06",
       "text": "IN_REVIEW in PR #280."
+    },
+    {
+      "at": "2026-11-07",
+      "text": "Verified PR #280 merged into main as d697629 at 2026-11-07T14:05:00Z; all acceptance criteria satisfied with evidence. Recorded DONE (ADR-038)."
     }
   ],
   "sequence": 3
