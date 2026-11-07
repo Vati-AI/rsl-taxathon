@@ -5,7 +5,7 @@
   "owner": "Keletso",
   "area": "integration",
   "phase": "pilot",
-  "status": "IN_PROGRESS",
+  "status": "IN_REVIEW",
   "priority": "P0",
   "depends_on": [
     "TAX-111",
@@ -14,7 +14,7 @@
   ],
   "claimed_by": "claude-code-20261107-friendly-newton",
   "branch": "claude/friendly-newton-iwhm4u",
-  "pr": null,
+  "pr": "https://github.com/Vati-AI/rsl-taxathon/pull/281",
   "scope": "Make an RSL source, not the Vati claim form, start a case: read rsl.online_refunds.claim through the TAX-111 adapter (fixture), create the Vati Submission and Vati Refund Claim with origin rsl_online_refunds keyed on claim_id, and let the existing assurance, bridge and pipeline hooks run unchanged",
   "inputs": [
     "PROJECT.md",
@@ -30,19 +30,19 @@
   "acceptance": [
     {
       "text": "An ingest step reads Online Refunds claims for a tenant through the TAX-111 adapter and creates one Vati Submission and Vati Refund Claim per claim_id with origin rsl_online_refunds and the RSL claim reference; repeated reads replay, conflicting replays are refused",
-      "done": false
+      "done": true
     },
     {
       "text": "bridge should_register accepts the rsl_online_refunds origin so assurance.requested, case.registered and evidence linking run exactly as for a sent claim; the Jube mirror origin is still refused",
-      "done": false
+      "done": true
     },
     {
       "text": "Claim lines come from the contract; uploaded documents RSL already holds are stored as references with hashes, not copied; an unavailable source is reported as unavailable, never as no claims",
-      "done": false
+      "done": true
     },
     {
       "text": "Record relevant tests and evidence, update task status and open a PR",
-      "done": false
+      "done": true
     }
   ],
   "verification": "Bench test: a fixture Online Refunds claim produces one case with assurance findings and a lane; replay creates nothing twice",
@@ -52,7 +52,24 @@
     "update-project-task",
     "finish-task"
   ],
-  "evidence": [],
+  "evidence": [
+    {
+      "criterion": 1,
+      "text": "backend/vati_tax/vati_tax/rsl_intake: ingest_online_refunds(tenant) reads online_refunds.claim per Vati Taxpayer (TIN) through the site's TAX-111 source (factories.rsl_sources; recorded fixture) and, as the pipeline service identity, records one Vati Submission (source rsl_online_refunds; set-once source_ref = RSL claim_id, source_contract, source_record_sha256, source_refs) and one Vati Refund Claim per claim, keyed by the scoped idempotency key rsl:online-refunds:<claim_id>, then sends it. Replay and conflict: bench test_a_second_read_replays_and_a_changed_record_conflicts (second read: all replayed, nothing changed; a changed record under the same claim ID: conflict, submission and case unchanged). Pure rules: rsl_intake/test_rules.py. Entry point vati_tax.rsl_intake.api.ingest_online_refunds is operator-only (an auditor is refused in the bench test)."
+    },
+    {
+      "criterion": 2,
+      "text": "bridge.rules.submission_origin maps a non-mirror change of an rsl_online_refunds submission to origin rsl_online_refunds, and should_register now accepts exactly the taxpayer and rsl_online_refunds origins (mirror and unknown origins refused; bridge/test_rules.py). The assurance, bridge and pipeline hooks use it. Bench test_rsl_claims_become_sent_cases_and_the_checks_run_unchanged: every ingested claim is submitted with a case_id and events [assurance.requested, case.registered]; after draining, each case's assurance run is completed with claim_ref = the RSL claim ID and one lane proposal for it, no decision. The assurance step now matches an RSL claim by its claim_id (assurance.rules.assess_case claim_ref). Only the service identity or an operator creates/sends such a claim (submissions.domain.check_create, RSL_INTAKE_TRANSITIONS; test_domain.py); a taxpayer cannot edit it or forge one (bench test_only_the_intake_records_and_sends_an_rsl_claim)."
+    },
+    {
+      "criterion": 3,
+      "text": "Claim lines and RSL-held documents are stored as IDs and hashes in source_refs (lines: line_id and kind; documents: document_id, line_id, kind, held_by RSL); no amounts, invoice numbers or files are copied (test_rules: test_a_claim_becomes_one_reference...; bench test_rsl_held_documents_are_references_and_nothing_is_copied: no Vati Evidence for the case, evidence_ids empty). The checks read lines from RSL when they run. RSL unavailable: bench test_rsl_not_answering_is_reported_as_unavailable_never_as_no_claims (online_refunds unavailable -> run and taxpayer status unavailable, no submissions; source not configured -> unavailable with reason)."
+    },
+    {
+      "criterion": 4,
+      "text": "Local checks (hosted CI unavailable): python3 scripts/dev.py check passed; Frappe-free app tests 526 OK (48 skipped). scripts/quality.py: ruff check and mypy (287 files) passed; ruff format --check flags only scripts/make_demo_narration.py, already unformatted on main and not touched here. scripts/frappe_dev.py verify --keep on disposable site verify-20261107t160829.localhost: install, migrate x2, health and imports ok; bench tests 200 run, 1 error in reminders.test_reminders_bench (pre-existing test pollution also recorded in TAX-121 evidence; unrelated to submissions). Re-run by module on that site: rsl_intake 5 OK, assurance 6 OK, bridge 15 OK, submissions 13 OK."
+    }
+  ],
   "notes": [
     {
       "at": "2026-11-07",
@@ -61,6 +78,10 @@
     {
       "at": "2026-11-07",
       "text": "Claimed by claude-code-20261107-friendly-newton on the session's designated branch claude/friendly-newton-iwhm4u (stacked on the ADR-043 planning PR #281, which adds this task)."
+    },
+    {
+      "at": "2026-11-07",
+      "text": "IN_REVIEW in PR #281 (shared with the ADR-043 planning change on the session branch)."
     }
   ],
   "sequence": 11
