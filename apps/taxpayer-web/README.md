@@ -1,5 +1,11 @@
 # taxpayer-frontend
 
+> **Direction (ADR-043, 2026-11-07):** this portal is where taxpayers answer RSL's evidence
+> requests. Claims are filed in RSL's Online Refunds Application. TAX-125 will make evidence
+> requests the home page, turn the submissions list into read-only "My cases" showing RSL's
+> status, and keep the claim form below only as a fixture-only Online Refunds simulator. Until
+> TAX-125 lands, the sections below describe the current behaviour.
+
 Owner: Kananelo. See `tasks/README.md` for work and `docs/ARCHITECTURE.md` for boundaries.
 
 Vue 3 + TypeScript + Vite + Frappe UI taxpayer portal (ADR-002), served by the

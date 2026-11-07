@@ -1,0 +1,63 @@
+{
+  "id": "TAX-122",
+  "kind": "task",
+  "title": "Ingest refund claims from the Online Refunds Application contract into cases",
+  "owner": "Keletso",
+  "area": "integration",
+  "phase": "pilot",
+  "status": "BACKLOG",
+  "priority": "P0",
+  "depends_on": [
+    "TAX-111",
+    "TAX-039",
+    "TAX-121"
+  ],
+  "claimed_by": null,
+  "branch": null,
+  "pr": null,
+  "scope": "Make an RSL source, not the Vati claim form, start a case: read rsl.online_refunds.claim through the TAX-111 adapter (fixture), create the Vati Submission and Vati Refund Claim with origin rsl_online_refunds keyed on claim_id, and let the existing assurance, bridge and pipeline hooks run unchanged",
+  "inputs": [
+    "PROJECT.md",
+    "PROJECT_SCOPE.md",
+    "docs/ARCHITECTURE.md",
+    "docs/decisions/ADR-043-vati-downstream-of-rsl-selection.md",
+    "docs/decisions/ADR-040-rsl-existing-systems-integration.md",
+    "docs/reference/RSL_LANDSCAPE.md",
+    "integration/rsl_sources",
+    "backend/vati_tax/vati_tax/bridge/rules.py",
+    "backend/vati_tax/vati_tax/assurance/store.py"
+  ],
+  "acceptance": [
+    {
+      "text": "An ingest step reads Online Refunds claims for a tenant through the TAX-111 adapter and creates one Vati Submission and Vati Refund Claim per claim_id with origin rsl_online_refunds and the RSL claim reference; repeated reads replay, conflicting replays are refused",
+      "done": false
+    },
+    {
+      "text": "bridge should_register accepts the rsl_online_refunds origin so assurance.requested, case.registered and evidence linking run exactly as for a sent claim; the Jube mirror origin is still refused",
+      "done": false
+    },
+    {
+      "text": "Claim lines come from the contract; uploaded documents RSL already holds are stored as references with hashes, not copied; an unavailable source is reported as unavailable, never as no claims",
+      "done": false
+    },
+    {
+      "text": "Record relevant tests and evidence, update task status and open a PR",
+      "done": false
+    }
+  ],
+  "verification": "Bench test: a fixture Online Refunds claim produces one case with assurance findings and a lane; replay creates nothing twice",
+  "skills": [
+    "start-task",
+    "implement-change",
+    "update-project-task",
+    "finish-task"
+  ],
+  "evidence": [],
+  "notes": [
+    {
+      "at": "2026-11-07",
+      "text": "Added 2026-11-07 from ADR-043 (Vati downstream of RSL selection; portal answers evidence requests)."
+    }
+  ],
+  "sequence": 11
+}

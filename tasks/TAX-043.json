@@ -84,6 +84,10 @@
     {
       "at": "2026-11-06",
       "text": "User-directed ownership transfer from Kananelo to Keletso for all tasks, including completed tasks and epics. Status, implementation claim and evidence preserved."
+    },
+    {
+      "at": "2026-11-07",
+      "text": "ADR-043: the claim form leaves the taxpayer product; submit_refund_claim stays as a fixture-only Online Refunds simulator (TAX-125). Claims come from the Online Refunds Application (TAX-122)."
     }
   ]
 }

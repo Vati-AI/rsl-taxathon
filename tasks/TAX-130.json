@@ -1,0 +1,61 @@
+{
+  "id": "TAX-130",
+  "kind": "task",
+  "title": "Response receipts, practitioner delegation and deadlines",
+  "owner": "Keletso",
+  "area": "apps/taxpayer-web",
+  "phase": "expansion",
+  "status": "BACKLOG",
+  "priority": "P2",
+  "depends_on": [
+    "TAX-125",
+    "TAX-029"
+  ],
+  "claimed_by": null,
+  "branch": null,
+  "pr": null,
+  "scope": "Give each sent response a hashed receipt, let a tax practitioner or Mobile Tax Office officer respond on a taxpayer's behalf with recorded delegation, and show deadlines with extension requests",
+  "inputs": [
+    "PROJECT.md",
+    "PROJECT_SCOPE.md",
+    "docs/ARCHITECTURE.md",
+    "docs/decisions/ADR-043-vati-downstream-of-rsl-selection.md",
+    "docs/decisions/ADR-040-rsl-existing-systems-integration.md",
+    "docs/reference/RSL_LANDSCAPE.md",
+    "apps/taxpayer-web",
+    "backend/vati_tax/vati_tax/identity"
+  ],
+  "acceptance": [
+    {
+      "text": "Each sent response has a receipt with time and content hash",
+      "done": false
+    },
+    {
+      "text": "Delegated responses record who acted for whom and respect tenant scope",
+      "done": false
+    },
+    {
+      "text": "Deadlines and extension requests are visible; extensions need officer approval",
+      "done": false
+    },
+    {
+      "text": "Record relevant tests and evidence, update task status and open a PR",
+      "done": false
+    }
+  ],
+  "verification": "Permission and receipt tests",
+  "skills": [
+    "start-task",
+    "implement-change",
+    "update-project-task",
+    "finish-task"
+  ],
+  "evidence": [],
+  "notes": [
+    {
+      "at": "2026-11-07",
+      "text": "Added 2026-11-07 from ADR-043 (Vati downstream of RSL selection; portal answers evidence requests)."
+    }
+  ],
+  "sequence": 55
+}

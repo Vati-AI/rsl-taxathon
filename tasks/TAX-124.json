@@ -1,0 +1,63 @@
+{
+  "id": "TAX-124",
+  "kind": "task",
+  "title": "Outbound contracts from Vati to RSL systems",
+  "owner": "Keletso",
+  "area": "integration",
+  "phase": "pilot",
+  "status": "BACKLOG",
+  "priority": "P1",
+  "depends_on": [
+    "TAX-111",
+    "TAX-086",
+    "TAX-114",
+    "TAX-046"
+  ],
+  "claimed_by": null,
+  "branch": null,
+  "pr": null,
+  "scope": "Define and emit assumed outbound contracts so results return to RSL: an approved findings pack for the RSL audit case, the lane recommendation and undisputed amount for the Online Refunds Application or PSRM to act on, and an evidence-requested status with a portal deep link",
+  "inputs": [
+    "PROJECT.md",
+    "PROJECT_SCOPE.md",
+    "docs/ARCHITECTURE.md",
+    "docs/decisions/ADR-043-vati-downstream-of-rsl-selection.md",
+    "docs/decisions/ADR-040-rsl-existing-systems-integration.md",
+    "docs/reference/RSL_LANDSCAPE.md",
+    "integration/rsl_sources",
+    "docs/API_CONTRACTS.md"
+  ],
+  "acceptance": [
+    {
+      "text": "Versioned outbound contracts (findings pack, lane recommendation, evidence-requested notice) with fixture sinks that identify themselves as fixtures; WSO2 API Manager is the stated route",
+      "done": false
+    },
+    {
+      "text": "Only officer-approved items are emitted; nothing sets RSL status, pays, offsets or assesses; emission is idempotent and recorded in the audit ledger",
+      "done": false
+    },
+    {
+      "text": "An unavailable RSL sink leaves the item queued and visible as not delivered",
+      "done": false
+    },
+    {
+      "text": "Record relevant tests and evidence, update task status and open a PR",
+      "done": false
+    }
+  ],
+  "verification": "Outbox tests: approved items are emitted once to fixture sinks; unapproved items never leave",
+  "skills": [
+    "start-task",
+    "implement-change",
+    "update-project-task",
+    "finish-task"
+  ],
+  "evidence": [],
+  "notes": [
+    {
+      "at": "2026-11-07",
+      "text": "Added 2026-11-07 from ADR-043 (Vati downstream of RSL selection; portal answers evidence requests)."
+    }
+  ],
+  "sequence": 15
+}

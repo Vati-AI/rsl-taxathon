@@ -1,0 +1,59 @@
+{
+  "id": "TAX-129",
+  "kind": "task",
+  "title": "Check-before-you-file service for refund claims",
+  "owner": "Keletso",
+  "area": "backend",
+  "phase": "pilot",
+  "status": "BACKLOG",
+  "priority": "P1",
+  "depends_on": [
+    "TAX-044",
+    "TAX-112",
+    "TAX-111",
+    "TAX-125"
+  ],
+  "claimed_by": null,
+  "branch": null,
+  "pr": null,
+  "scope": "Keep preventative compliance without a Vati claim front door: a service, callable from the portal and by RSL's front door through WSO2, reads Lekuka and e-Tax data for a period, shows reconciliation issues and sends the taxpayer to the Online Refunds Application to file",
+  "inputs": [
+    "PROJECT.md",
+    "PROJECT_SCOPE.md",
+    "docs/ARCHITECTURE.md",
+    "docs/decisions/ADR-043-vati-downstream-of-rsl-selection.md",
+    "docs/decisions/ADR-040-rsl-existing-systems-integration.md",
+    "docs/reference/RSL_LANDSCAPE.md",
+    "backend/vati_tax/vati_tax/portal",
+    "integration/rsl_sources"
+  ],
+  "acceptance": [
+    {
+      "text": "The check reads RSL-held data instead of asking the taxpayer to type it, and returns guidance only; it never files, blocks or scores",
+      "done": false
+    },
+    {
+      "text": "A portal page shows the result and links to RSL's Online Refunds Application to file",
+      "done": false
+    },
+    {
+      "text": "Record relevant tests and evidence, update task status and open a PR",
+      "done": false
+    }
+  ],
+  "verification": "Service and browser tests on synthetic taxpayers",
+  "skills": [
+    "start-task",
+    "implement-change",
+    "update-project-task",
+    "finish-task"
+  ],
+  "evidence": [],
+  "notes": [
+    {
+      "at": "2026-11-07",
+      "text": "Added 2026-11-07 from ADR-043 (Vati downstream of RSL selection; portal answers evidence requests)."
+    }
+  ],
+  "sequence": 22
+}

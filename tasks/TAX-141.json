@@ -1,0 +1,58 @@
+{
+  "id": "TAX-141",
+  "kind": "task",
+  "title": "Imported services booked as expenses, through cross-border payments",
+  "owner": "Keletso",
+  "area": "ai",
+  "phase": "pilot",
+  "status": "BACKLOG",
+  "priority": "P1",
+  "depends_on": [
+    "TAX-115",
+    "TAX-079",
+    "TAX-118"
+  ],
+  "claimed_by": null,
+  "branch": null,
+  "pr": null,
+  "scope": "Close the TAX-118 miss where foreign fees booked as general expenses escape the three-way match, using the central bank cross-border payment contract",
+  "inputs": [
+    "PROJECT.md",
+    "PROJECT_SCOPE.md",
+    "docs/ARCHITECTURE.md",
+    "docs/decisions/ADR-043-vati-downstream-of-rsl-selection.md",
+    "docs/decisions/ADR-040-rsl-existing-systems-integration.md",
+    "docs/reference/RSL_LANDSCAPE.md",
+    "integration/rsl_sources",
+    "ai/evaluation/assurance_benchmark.py"
+  ],
+  "acceptance": [
+    {
+      "text": "Cross-border payments without matching imported-services VAT or withholding become questions, not conclusions",
+      "done": false
+    },
+    {
+      "text": "Re-measured detection and false positives for imported services",
+      "done": false
+    },
+    {
+      "text": "Record relevant tests and evidence, update task status and open a PR",
+      "done": false
+    }
+  ],
+  "verification": "Benchmark re-run with differences explained",
+  "skills": [
+    "start-task",
+    "implement-change",
+    "update-project-task",
+    "finish-task"
+  ],
+  "evidence": [],
+  "notes": [
+    {
+      "at": "2026-11-07",
+      "text": "Added 2026-11-07 from ADR-043 (Vati downstream of RSL selection; portal answers evidence requests)."
+    }
+  ],
+  "sequence": 18
+}

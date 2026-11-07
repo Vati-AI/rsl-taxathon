@@ -1,0 +1,57 @@
+{
+  "id": "TAX-136",
+  "kind": "task",
+  "title": "One sign-in through WSO2 Identity Server for Jube and OpenAleph",
+  "owner": "Keletso",
+  "area": "integration",
+  "phase": "pilot",
+  "status": "BACKLOG",
+  "priority": "P2",
+  "depends_on": [
+    "TAX-117"
+  ],
+  "claimed_by": null,
+  "branch": null,
+  "pr": null,
+  "scope": "Test OIDC sign-in through WSO2 IS for Jube and OpenAleph at the pinned versions, mapping staff roles explicitly; where a version cannot, record the separate login as a limitation",
+  "inputs": [
+    "PROJECT.md",
+    "PROJECT_SCOPE.md",
+    "docs/ARCHITECTURE.md",
+    "docs/decisions/ADR-043-vati-downstream-of-rsl-selection.md",
+    "docs/decisions/ADR-040-rsl-existing-systems-integration.md",
+    "docs/reference/RSL_LANDSCAPE.md",
+    "docs/decisions/ADR-034-native-ui-integration.md",
+    "integration/jube",
+    "integration/openaleph"
+  ],
+  "acceptance": [
+    {
+      "text": "Supported OIDC options are verified from the pinned source or official docs; nothing is guessed",
+      "done": false
+    },
+    {
+      "text": "Working sign-in is demonstrated, or the limitation is recorded without claiming SSO",
+      "done": false
+    },
+    {
+      "text": "Record relevant tests and evidence, update task status and open a PR",
+      "done": false
+    }
+  ],
+  "verification": "Recorded smoke test or recorded limitation",
+  "skills": [
+    "start-task",
+    "implement-change",
+    "update-project-task",
+    "finish-task"
+  ],
+  "evidence": [],
+  "notes": [
+    {
+      "at": "2026-11-07",
+      "text": "Added 2026-11-07 from ADR-043 (Vati downstream of RSL selection; portal answers evidence requests)."
+    }
+  ],
+  "sequence": 31
+}

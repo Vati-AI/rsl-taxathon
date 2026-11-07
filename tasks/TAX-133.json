@@ -1,0 +1,58 @@
+{
+  "id": "TAX-133",
+  "kind": "task",
+  "title": "Shared reference register including RSL systems",
+  "owner": "Keletso",
+  "area": "backend",
+  "phase": "pilot",
+  "status": "BACKLOG",
+  "priority": "P0",
+  "depends_on": [
+    "TAX-030",
+    "TAX-111",
+    "TAX-122",
+    "TAX-123"
+  ],
+  "claimed_by": null,
+  "branch": null,
+  "pr": null,
+  "scope": "Add RSL systems (online_refunds, audit_system, psrm, etax, idms, asycuda) to the canonical service links and expose one case reference card (RSL claim, TIN, RSL audit case, Vati case, Jube case, OpenAleph collection) to every Vati surface",
+  "inputs": [
+    "PROJECT.md",
+    "PROJECT_SCOPE.md",
+    "docs/ARCHITECTURE.md",
+    "docs/decisions/ADR-043-vati-downstream-of-rsl-selection.md",
+    "docs/decisions/ADR-040-rsl-existing-systems-integration.md",
+    "docs/reference/RSL_LANDSCAPE.md",
+    "backend/vati_tax/vati_tax/vati_tax/doctype/vati_service_link"
+  ],
+  "acceptance": [
+    {
+      "text": "Vati Service Link accepts the RSL services with the same tenant and conflict rules",
+      "done": false
+    },
+    {
+      "text": "A case reference endpoint returns every mapped reference the caller may see",
+      "done": false
+    },
+    {
+      "text": "Record relevant tests and evidence, update task status and open a PR",
+      "done": false
+    }
+  ],
+  "verification": "Mapping, conflict and tenant-boundary tests",
+  "skills": [
+    "start-task",
+    "implement-change",
+    "update-project-task",
+    "finish-task"
+  ],
+  "evidence": [],
+  "notes": [
+    {
+      "at": "2026-11-07",
+      "text": "Added 2026-11-07 from ADR-043 (Vati downstream of RSL selection; portal answers evidence requests)."
+    }
+  ],
+  "sequence": 13
+}

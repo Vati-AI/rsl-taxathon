@@ -20,7 +20,7 @@ For live infrastructure: `python3 scripts/dev_env.py`, then `docker compose up -
 Keletso owns all tasks and areas as of 2026-11-06. Previous ownership remains in task notes and Git history.
 
 - `apps/auditor-web`: officer-facing frontend.
-- `apps/taxpayer-web`: portal UX assets; `backend/vati_tax` supplies the Frappe application, forms and permissions.
+- `apps/taxpayer-web`: taxpayer portal for answering RSL's evidence requests (ADR-043); `backend/vati_tax` supplies the Frappe application, forms and permissions.
 - `backend/vati_tax`: custom Frappe app scaffold; `backend`: shared tax-domain and gateway contracts.
 - `integration`: API adapters, service configuration, upstream lock. Keletso owns cross-service coordination.
 - `ai`: Vati LangGraph workflows, approved tools and prompts.

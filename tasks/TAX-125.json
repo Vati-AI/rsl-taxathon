@@ -1,0 +1,63 @@
+{
+  "id": "TAX-125",
+  "kind": "task",
+  "title": "Re-centre the taxpayer portal on evidence requests and retire the claim form",
+  "owner": "Keletso",
+  "area": "apps/taxpayer-web",
+  "phase": "pilot",
+  "status": "BACKLOG",
+  "priority": "P0",
+  "depends_on": [
+    "TAX-122",
+    "TAX-045",
+    "TAX-092"
+  ],
+  "claimed_by": null,
+  "branch": null,
+  "pr": null,
+  "scope": "Make evidence requests the portal home, turn the submissions list into read-only My cases showing RSL's status labelled as RSL's, remove the New submission route and menu item from the product, and keep submit_refund_claim only as a labelled Online Refunds simulator for fixtures and the demo",
+  "inputs": [
+    "PROJECT.md",
+    "PROJECT_SCOPE.md",
+    "docs/ARCHITECTURE.md",
+    "docs/decisions/ADR-043-vati-downstream-of-rsl-selection.md",
+    "docs/decisions/ADR-040-rsl-existing-systems-integration.md",
+    "docs/reference/RSL_LANDSCAPE.md",
+    "apps/taxpayer-web",
+    "backend/vati_tax/vati_tax/portal",
+    "docs/DESIGN_STANDARD.md"
+  ],
+  "acceptance": [
+    {
+      "text": "Portal home and first navigation item are Evidence requests; deep link /taxpayer/requests/:id works from an RSL screen after login",
+      "done": false
+    },
+    {
+      "text": "My cases is read-only, shows the RSL claim reference and RSL status with its source and a link to RSL's dashboard, and never shows risk or officer detail",
+      "done": false
+    },
+    {
+      "text": "The claim form and invoice entry are absent from the taxpayer product; the simulator is reachable only in fixture mode and labelled as an Online Refunds simulator",
+      "done": false
+    },
+    {
+      "text": "Screenshots at relevant viewports and accessibility checks per docs/DESIGN_STANDARD.md; record relevant tests and evidence, update task status and open a PR",
+      "done": false
+    }
+  ],
+  "verification": "Router and browser tests for the new navigation, deep link, absent routes and fixture-only simulator",
+  "skills": [
+    "start-task",
+    "implement-change",
+    "update-project-task",
+    "finish-task"
+  ],
+  "evidence": [],
+  "notes": [
+    {
+      "at": "2026-11-07",
+      "text": "Added 2026-11-07 from ADR-043 (Vati downstream of RSL selection; portal answers evidence requests)."
+    }
+  ],
+  "sequence": 12
+}

@@ -1,0 +1,57 @@
+{
+  "id": "TAX-137",
+  "kind": "task",
+  "title": "Navigation in both directions and one product identity",
+  "owner": "Keletso",
+  "area": "apps/auditor-web",
+  "phase": "pilot",
+  "status": "BACKLOG",
+  "priority": "P2",
+  "depends_on": [
+    "TAX-106",
+    "TAX-133"
+  ],
+  "claimed_by": null,
+  "branch": null,
+  "pr": null,
+  "scope": "Add permission-checked links from native tools back to the Vati case and on to the RSL system, one product name and header, and one status vocabulary aligned with the Online Refunds Application; RSL branding only with RSL approval",
+  "inputs": [
+    "PROJECT.md",
+    "PROJECT_SCOPE.md",
+    "docs/ARCHITECTURE.md",
+    "docs/decisions/ADR-043-vati-downstream-of-rsl-selection.md",
+    "docs/decisions/ADR-040-rsl-existing-systems-integration.md",
+    "docs/reference/RSL_LANDSCAPE.md",
+    "apps/auditor-web",
+    "docs/DESIGN_STANDARD.md"
+  ],
+  "acceptance": [
+    {
+      "text": "Return links work from Jube and OpenAleph where supported, otherwise the limitation is recorded",
+      "done": false
+    },
+    {
+      "text": "Status labels match across Vati, Jube and the portal",
+      "done": false
+    },
+    {
+      "text": "Screenshots and accessibility checks; record relevant tests and evidence, update task status and open a PR",
+      "done": false
+    }
+  ],
+  "verification": "Browser navigation checks",
+  "skills": [
+    "start-task",
+    "implement-change",
+    "update-project-task",
+    "finish-task"
+  ],
+  "evidence": [],
+  "notes": [
+    {
+      "at": "2026-11-07",
+      "text": "Added 2026-11-07 from ADR-043 (Vati downstream of RSL selection; portal answers evidence requests)."
+    }
+  ],
+  "sequence": 37
+}

@@ -80,6 +80,10 @@
     {
       "at": "2026-11-06",
       "text": "User-directed ownership transfer from Gupta to Keletso for all tasks, including completed tasks and epics. Status, implementation claim and evidence preserved."
+    },
+    {
+      "at": "2026-11-07",
+      "text": "ADR-043: lanes are recommendations for claims in RSL audit (TAX-132)."
     }
   ]
 }

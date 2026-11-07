@@ -1,0 +1,64 @@
+{
+  "id": "TAX-139",
+  "kind": "task",
+  "title": "Persistent VAT credit positions: multi-period pattern and seventh scenario",
+  "owner": "Keletso",
+  "area": "ai",
+  "phase": "pilot",
+  "status": "BACKLOG",
+  "priority": "P0",
+  "depends_on": [
+    "TAX-048",
+    "TAX-111",
+    "TAX-118",
+    "TAX-121"
+  ],
+  "claimed_by": null,
+  "branch": null,
+  "pr": null,
+  "scope": "Cover Challenge 2's persistent VAT credit positions: detect credits that persist across periods, test structural explanations first (zero-rated exports, capital spending), add a seventh synthetic scenario and plant it in a new benchmark seed",
+  "inputs": [
+    "PROJECT.md",
+    "PROJECT_SCOPE.md",
+    "docs/ARCHITECTURE.md",
+    "docs/decisions/ADR-043-vati-downstream-of-rsl-selection.md",
+    "docs/decisions/ADR-040-rsl-existing-systems-integration.md",
+    "docs/reference/RSL_LANDSCAPE.md",
+    "docs/reference/PROPOSAL.md",
+    "ai/evaluation",
+    "data/scenarios"
+  ],
+  "acceptance": [
+    {
+      "text": "A multi-period check flags persistent credits only after structural explanations are tested and recorded",
+      "done": false
+    },
+    {
+      "text": "A seventh synthetic scenario with expected outcome; a legitimate structural credit stays in the fast lane",
+      "done": false
+    },
+    {
+      "text": "Measured on a new sealed seed with false positives reported",
+      "done": false
+    },
+    {
+      "text": "Record relevant tests and evidence, update task status and open a PR",
+      "done": false
+    }
+  ],
+  "verification": "Scenario tests and benchmark results",
+  "skills": [
+    "start-task",
+    "implement-change",
+    "update-project-task",
+    "finish-task"
+  ],
+  "evidence": [],
+  "notes": [
+    {
+      "at": "2026-11-07",
+      "text": "Added 2026-11-07 from ADR-043 (Vati downstream of RSL selection; portal answers evidence requests)."
+    }
+  ],
+  "sequence": 16
+}

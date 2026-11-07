@@ -1,0 +1,63 @@
+{
+  "id": "TAX-131",
+  "kind": "task",
+  "title": "Reframe Jube and Vati risk output downstream of RSL selection",
+  "owner": "Keletso",
+  "area": "integration",
+  "phase": "pilot",
+  "status": "BACKLOG",
+  "priority": "P1",
+  "depends_on": [
+    "TAX-035",
+    "TAX-123",
+    "TAX-066",
+    "TAX-067"
+  ],
+  "claimed_by": null,
+  "branch": null,
+  "pr": null,
+  "scope": "Jube cases are investigation sub-cases of RSL cases: Jube rules triage referred claims only, RSL scores are shown as RSL's, and calibration and peer baselines become corroboration and feedback for RSL's Risk Unit",
+  "inputs": [
+    "PROJECT.md",
+    "PROJECT_SCOPE.md",
+    "docs/ARCHITECTURE.md",
+    "docs/decisions/ADR-043-vati-downstream-of-rsl-selection.md",
+    "docs/decisions/ADR-040-rsl-existing-systems-integration.md",
+    "docs/reference/RSL_LANDSCAPE.md",
+    "integration/jube",
+    "ai/evaluation"
+  ],
+  "acceptance": [
+    {
+      "text": "No Jube rule selects taxpayers from the population; rules run only on cases from TAX-122/123",
+      "done": false
+    },
+    {
+      "text": "RSL fraud and risk-set scores appear as RSL-owned inputs; Vati output is labelled findings or corroboration, never a risk score",
+      "done": false
+    },
+    {
+      "text": "TAX-066/067 output is exportable as Risk Unit feedback",
+      "done": false
+    },
+    {
+      "text": "Record relevant tests and evidence, update task status and open a PR",
+      "done": false
+    }
+  ],
+  "verification": "Rule configuration tests and a wording check of officer-facing labels",
+  "skills": [
+    "start-task",
+    "implement-change",
+    "update-project-task",
+    "finish-task"
+  ],
+  "evidence": [],
+  "notes": [
+    {
+      "at": "2026-11-07",
+      "text": "Added 2026-11-07 from ADR-043 (Vati downstream of RSL selection; portal answers evidence requests)."
+    }
+  ],
+  "sequence": 23
+}

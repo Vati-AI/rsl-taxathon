@@ -1,0 +1,54 @@
+{
+  "id": "TAX-128",
+  "kind": "task",
+  "title": "Structured transfer-pricing and multinational evidence request templates",
+  "owner": "Keletso",
+  "area": "ai",
+  "phase": "pilot",
+  "status": "BACKLOG",
+  "priority": "P2",
+  "depends_on": [
+    "TAX-049",
+    "TAX-116",
+    "TAX-125"
+  ],
+  "claimed_by": null,
+  "branch": null,
+  "pr": null,
+  "scope": "Provide officer-selectable itemised request templates for related-party and multinational cases: intra-group agreements, benefit-test evidence for management fees, local-file sections, loan terms",
+  "inputs": [
+    "PROJECT.md",
+    "PROJECT_SCOPE.md",
+    "docs/ARCHITECTURE.md",
+    "docs/decisions/ADR-043-vati-downstream-of-rsl-selection.md",
+    "docs/decisions/ADR-040-rsl-existing-systems-integration.md",
+    "docs/reference/RSL_LANDSCAPE.md",
+    "ai/workflows",
+    "ai/workflows/rule_register.candidates.json"
+  ],
+  "acceptance": [
+    {
+      "text": "Templates map each item to the playbook question and candidate legal route (unverified) and render as itemised portal requests",
+      "done": false
+    },
+    {
+      "text": "Record relevant tests and evidence, update task status and open a PR",
+      "done": false
+    }
+  ],
+  "verification": "Template validation tests and a synthetic related-party case request",
+  "skills": [
+    "start-task",
+    "implement-change",
+    "update-project-task",
+    "finish-task"
+  ],
+  "evidence": [],
+  "notes": [
+    {
+      "at": "2026-11-07",
+      "text": "Added 2026-11-07 from ADR-043 (Vati downstream of RSL selection; portal answers evidence requests)."
+    }
+  ],
+  "sequence": 54
+}

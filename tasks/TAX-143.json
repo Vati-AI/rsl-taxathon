@@ -1,0 +1,63 @@
+{
+  "id": "TAX-143",
+  "kind": "task",
+  "title": "Demo and tests on the RSL-first journey",
+  "owner": "Keletso",
+  "area": "tests/frontend",
+  "phase": "pilot",
+  "status": "BACKLOG",
+  "priority": "P0",
+  "depends_on": [
+    "TAX-122",
+    "TAX-123",
+    "TAX-125",
+    "TAX-094"
+  ],
+  "claimed_by": null,
+  "branch": null,
+  "pr": null,
+  "scope": "Switch demo seeding and frontend specs from the claim form to the Online Refunds simulator and audit referral fixtures, and test the journey: RSL claim or referral, investigation, approved evidence request shown in RSL, taxpayer response, results back to RSL",
+  "inputs": [
+    "PROJECT.md",
+    "PROJECT_SCOPE.md",
+    "docs/ARCHITECTURE.md",
+    "docs/decisions/ADR-043-vati-downstream-of-rsl-selection.md",
+    "docs/decisions/ADR-040-rsl-existing-systems-integration.md",
+    "docs/reference/RSL_LANDSCAPE.md",
+    "backend/vati_tax/vati_tax/pipeline/demo.py",
+    "tests/frontend"
+  ],
+  "acceptance": [
+    {
+      "text": "demo.py and TAX-094 seeding use the simulator and referral fixtures",
+      "done": false
+    },
+    {
+      "text": "claim, reminders, taxpayer, scenarios, visual, demo specs and support matrix are updated; no test is skipped to pass",
+      "done": false
+    },
+    {
+      "text": "The connected journey passes end to end on fixtures and is labelled as fixture-based",
+      "done": false
+    },
+    {
+      "text": "Record relevant tests and evidence, update task status and open a PR",
+      "done": false
+    }
+  ],
+  "verification": "Frontend suite and demo run",
+  "skills": [
+    "start-task",
+    "implement-change",
+    "update-project-task",
+    "finish-task"
+  ],
+  "evidence": [],
+  "notes": [
+    {
+      "at": "2026-11-07",
+      "text": "Added 2026-11-07 from ADR-043 (Vati downstream of RSL selection; portal answers evidence requests)."
+    }
+  ],
+  "sequence": 35
+}

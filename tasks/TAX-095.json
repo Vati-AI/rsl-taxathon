@@ -79,5 +79,5 @@
       "text": "Implementation merged as #248 (2026-11-05T13:50:50Z): scripts/demo.py profile/status/memory/capture, docs/DEMO_LAPTOP.md, services.json and SETUP_STATUS.md. Not DONE: the cold-start rehearsal, memory measurement and rate-limit observations (criteria 2-3) have not been run."
     }
   ],
-  "sequence": 22
+  "sequence": 42
 }

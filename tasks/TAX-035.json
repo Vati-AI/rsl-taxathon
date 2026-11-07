@@ -71,6 +71,10 @@
     {
       "at": "2026-11-04T07:49:26.842357+00:00",
       "text": "Verified merge of #112 on 2026-11-04"
+    },
+    {
+      "at": "2026-11-07",
+      "text": "ADR-043: Jube rules triage referred cases only; RSL scores are inputs (TAX-131)."
     }
   ]
 }
