@@ -206,10 +206,14 @@ class BridgeBenchTests(IntegrationTestCase):
         frappe.db.commit()
         return frappe.get_doc(SUBMISSION, sub.name)
 
-    def events(self, case_id: str) -> list[Any]:
+    def events(self, case_id: str, *, everything: bool = False) -> list[Any]:
+        """The case's bridge events; TAX-121's assurance step (first per send) only if asked."""
+        filters: dict[str, Any] = {"case_id": case_id}
+        if not everything:
+            filters["event_type"] = ["!=", "assurance.requested"]
         return frappe.get_all(
             OUTBOX,
-            filters={"case_id": case_id},
+            filters=filters,
             fields=["name", "event_type", "status", "source_service", "payload_json",
                     "last_error_code"],
             order_by="sequence asc",
@@ -253,7 +257,8 @@ class BridgeBenchTests(IntegrationTestCase):
 
     def delivered_case(self) -> tuple[Any, str]:
         sub = self.send_claim()
-        self.assertEqual(self.dispatch(), {"delivered": 1})
+        # TAX-121: the send's assurance step is delivered first (not_run here: no RSL fixture).
+        self.assertEqual(self.dispatch(), {"delivered": 2})
         return sub, sub.case_id
 
     # --- outward: submit to risk and case services -------------------------------------
@@ -269,6 +274,9 @@ class BridgeBenchTests(IntegrationTestCase):
         events = self.events(sub.case_id)
         self.assertEqual([(e.event_type, e.source_service) for e in events],
                          [("case.registered", "frappe")])  # fmt: skip
+        # TAX-121: the assurance step comes first, so it never waits for Jube.
+        self.assertEqual([e.event_type for e in self.events(sub.case_id, everything=True)],
+                         ["assurance.requested", "case.registered"])  # fmt: skip
         # References only: no amounts, names or explanations travel in the event.
         self.assertEqual(set(json.loads(events[0].payload_json)),
                          {"submission_id", "submission_version"})  # fmt: skip
@@ -291,7 +299,7 @@ class BridgeBenchTests(IntegrationTestCase):
         sub = self.send_claim()
         self.jube.fail_ensure.append(UpstreamError("risk_evaluation_missing", retryable=True))
         now = datetime.now(UTC)
-        self.assertEqual(self.dispatch(now), {"retry": 1})
+        self.assertEqual(self.dispatch(now), {"delivered": 1, "retry": 1})
         self.assertEqual(self.events(sub.case_id)[0].last_error_code, "risk_evaluation_missing")
         self.assertEqual(self.dispatch(now + timedelta(minutes=5)), {"delivered": 1})
         self.assertEqual(len(self.jube.invocations), 1)  # the completed effect is reused
@@ -300,7 +308,7 @@ class BridgeBenchTests(IntegrationTestCase):
     def test_a_permanent_upstream_refusal_dead_letters_with_its_code_only(self):
         sub = self.send_claim()
         self.jube.fail_ensure.append(UpstreamError("jube_invoker_unauthorised", retryable=False))
-        self.assertEqual(self.dispatch(), {"dead_letter": 1})
+        self.assertEqual(self.dispatch(), {"delivered": 1, "dead_letter": 1})
         self.assertEqual(self.events(sub.case_id)[0].last_error_code, "jube_invoker_unauthorised")
 
     def test_resending_after_a_correction_reuses_the_case(self):
@@ -315,7 +323,7 @@ class BridgeBenchTests(IntegrationTestCase):
         frappe.db.commit()
         self.assertEqual(frappe.db.get_value(SUBMISSION, sub.name, "case_id"), case_id)
         self.assertEqual(len(self.events(case_id)), 2)
-        self.assertEqual(self.dispatch(), {"delivered": 1})
+        self.assertEqual(self.dispatch(), {"delivered": 2})  # assurance and Jube for the resend
         self.assertEqual(self.jube.creates, 1)  # same Jube case
         self.assertEqual(len(self.jube.invocations), 2)  # re-evaluated with the new send
 

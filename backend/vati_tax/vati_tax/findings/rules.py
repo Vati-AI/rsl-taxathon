@@ -10,7 +10,10 @@ them; ``store`` binds the engine to the ``Vati Case Finding`` and
   alternative explanations, legal route, proposed action and producer. A
   ``jube_rule`` finding names its rule and ruleset versions, a ``langgraph_run``
   finding its playbook registry stamp and run and must carry a valid
-  ``AnalysisProvenance``; rule and officer findings carry none.
+  ``AnalysisProvenance``; rule and officer findings carry none. A ``vati_check``
+  finding (TAX-121) names its check in ``rule`` like a Jube rule, may cite RSL source
+  records (``source_refs``, ADR-040 references, never copies) and carries the TAX-116
+  ``candidate_route`` it was routed to (always ineligible for assessment).
 - Finding text never labels a person: the ADR-026 labelling words (``FORBIDDEN_TERMS``,
   the same set as integration/followthemoney/scheme_graph.py) are refused.
 - ``from_rule_signal`` turns one TAX-035 rule result (integration/jube/tax_risk.py)
@@ -62,9 +65,14 @@ CATEGORIES: Final = (
     "other",
 )
 CONFIDENCE: Final = ("low", "medium", "high")
-PRODUCERS: Final = ("jube_rule", "langgraph_run", "officer")
+# ``vati_check``: a deterministic Vati assurance check (TAX-112 to TAX-116) run by the
+# platform's own pipeline (TAX-121, ADR-042). It names its check like a rule.
+PRODUCERS: Final = ("jube_rule", "langgraph_run", "officer", "vati_check")
+RULE_PRODUCERS: Final = ("jube_rule", "vati_check")
 # FindingSnapshot.producer: officers do not give feedback on officer findings.
-REVIEWABLE_PRODUCERS: Final = ("jube_rule", "langgraph_run")
+REVIEWABLE_PRODUCERS: Final = ("jube_rule", "langgraph_run", "vati_check")
+# CandidateRoute.route_status (TAX-116 rule register): never eligible for assessment.
+ROUTE_STATUSES: Final = ("candidate_unverified", "policy_gap", "no_candidate")
 ACTIONS: Final = (
     "none",
     "human_clearance",
@@ -93,7 +101,10 @@ VALIDATION_STATUSES: Final = ("passed", "failed", "not_run")
 MAX_EXPLANATION = 4000
 MAX_ALTERNATIVE = 1000
 MAX_ALTERNATIVES = 20
-MAX_EVIDENCE_REFS = 100
+# A deterministic check over 24 months of books cites more records than a playbook item.
+MAX_EVIDENCE_REFS = 500
+MAX_SOURCE_REFS = 500
+MAX_ROUTE_ITEMS = 20
 MIN_REASON, MAX_REASON = 10, 2000
 MAX_VERSION = 128
 
@@ -421,6 +432,93 @@ def _citations(value: object) -> tuple[EvidenceCitation, ...]:
     return tuple(out)
 
 
+_SOURCE_REF_KEYS = {"source_system", "record_id", "contract_id", "record_sha256", "locator"}
+
+
+def _source_refs(value: object) -> tuple[dict[str, Any], ...]:
+    """``RslSourceRef``s: RSL records a check read (system, ID, contract, record hash)."""
+    if not isinstance(value, list):
+        raise _fail("source_refs must be a list.", "source_refs", "invalid_type")
+    if len(value) > MAX_SOURCE_REFS:
+        raise _fail("Too many source references.", "source_refs", "too_many")
+    out: list[dict[str, Any]] = []
+    seen: set[tuple[str, str, str | None]] = set()
+    for index, item in enumerate(value):
+        where = f"source_refs[{index}]"
+        raw = _closed(item, where, _SOURCE_REF_KEYS, _SOURCE_REF_KEYS)
+        system = _code(raw["source_system"], f"{where}.source_system")
+        record = _ident(raw["record_id"], f"{where}.record_id")
+        contract = _ident(raw["contract_id"], f"{where}.contract_id")
+        sha = raw["record_sha256"]
+        if not isinstance(sha, str) or not _SHA256.fullmatch(sha):
+            raise _fail(
+                "record_sha256 must be a SHA-256 hex digest.", f"{where}.record_sha256", "invalid"
+            )
+        locator = _optional_text(raw["locator"], f"{where}.locator", maximum=255)
+        key = (str(system), record, locator)
+        if key in seen:
+            raise _fail("Duplicate source reference.", where, "duplicate")
+        seen.add(key)
+        out.append({"source_system": system, "record_id": record, "contract_id": contract,
+                    "record_sha256": sha, "locator": locator})  # fmt: skip
+    return tuple(out)
+
+
+def _candidate_route(value: object, route_status: str) -> dict[str, Any] | None:
+    """TAX-116 ``route_for`` result: candidate anchors or policy gaps, all unverified."""
+    if value is None:
+        return None
+    raw = _closed(
+        value, "candidate_route",
+        {"route_status", "candidates", "policy_gaps", "register_version", "eligible_for_assessment"},
+        {"route_status", "candidates", "policy_gaps", "register_version", "eligible_for_assessment"},
+    )  # fmt: skip
+    if raw["eligible_for_assessment"] is not False:
+        raise _fail(
+            "A candidate route is never eligible for assessment.",
+            "candidate_route.eligible_for_assessment",
+            "route_not_verifiable_here",
+        )
+    status = _choice(raw["route_status"], ROUTE_STATUSES, "candidate_route.route_status")
+    expected = "no_verified_route" if status == "policy_gap" else "unverified"
+    if route_status != expected:
+        raise _fail(
+            f"A {status} route is recorded with legal_route.status {expected}.",
+            "legal_route.status",
+            "route_status_mismatch",
+        )
+    candidates = raw["candidates"]
+    gaps = raw["policy_gaps"]
+    if not isinstance(candidates, list) or len(candidates) > MAX_ROUTE_ITEMS:
+        raise _fail("candidates must be a short list.", "candidate_route.candidates", "invalid")
+    if not isinstance(gaps, list) or len(gaps) > MAX_ROUTE_ITEMS:
+        raise _fail("policy_gaps must be a short list.", "candidate_route.policy_gaps", "invalid")
+    items = []
+    for index, item in enumerate(candidates):
+        where = f"candidate_route.candidates[{index}]"
+        entry = _closed(item, where, {"rule_id", "instrument"}, {"rule_id", "instrument"})
+        items.append({"rule_id": _ident(entry["rule_id"], f"{where}.rule_id"),
+                      "instrument": _text(entry["instrument"], f"{where}.instrument",
+                                          maximum=512)})  # fmt: skip
+    gap_ids = [_ident(g, f"candidate_route.policy_gaps[{i}]") for i, g in enumerate(gaps)]
+    if status == "policy_gap" and (items or not gap_ids):
+        raise _fail("A policy-gap route names gaps only.", "candidate_route", "invalid")
+    if status == "candidate_unverified" and (gap_ids or not items):
+        raise _fail("A candidate route names candidates only.", "candidate_route", "invalid")
+    if status == "no_candidate" and (items or gap_ids):
+        raise _fail("no_candidate names nothing.", "candidate_route", "invalid")
+    return {
+        "route_status": status,
+        "candidates": items,
+        "policy_gaps": gap_ids,
+        # The TAX-116 version joins two register versions with "+".
+        "register_version": _text(
+            raw["register_version"], "candidate_route.register_version", maximum=128
+        ),
+        "eligible_for_assessment": False,
+    }
+
+
 @dataclass(frozen=True)
 class FindingInput:
     """A validated ``Finding`` body (contract fields plus Vati provenance fields)."""
@@ -449,11 +547,14 @@ class FindingInput:
     registry_version: str | None = None
     run_id: str | None = None
     analysis_provenance: dict[str, Any] | None = None
+    source_refs: tuple[dict[str, Any], ...] = ()
+    candidate_route: dict[str, Any] | None = None
 
     _BODY = {
         "kind", "category", "code", "explanation", "evidence_refs", "unresolved_amount",
         "confidence", "alternative_explanations", "legal_route", "proposed_action",
         "producer", "producer_version", "subject", "rule", "playbook", "analysis_provenance",
+        "source_refs", "candidate_route",
     }  # fmt: skip
 
     @classmethod
@@ -527,9 +628,11 @@ class FindingInput:
             "producer": producer,
             "producer_version": _ident(body["producer_version"], "producer_version"),
             "subject": subject,
+            "source_refs": _source_refs(body.get("source_refs", [])),
+            "candidate_route": _candidate_route(body.get("candidate_route"), route_status),
         }
         provenance = body.get("analysis_provenance")
-        if producer == "jube_rule":
+        if producer in RULE_PRODUCERS:
             rule = _closed(
                 body.get("rule"), "rule", {"rule_id", "rule_version", "ruleset_id", "ruleset_version", "input_digest"},
                 {"rule_id", "rule_version", "ruleset_id", "ruleset_version"},
@@ -544,7 +647,7 @@ class FindingInput:
                 else None,
             )
         elif "rule" in body:
-            raise _fail("Only a jube_rule finding names a rule.", "rule", "unexpected_field")
+            raise _fail("Only rule and check findings name a rule.", "rule", "unexpected_field")
         if producer == "langgraph_run":
             playbook = _closed(
                 body.get("playbook"), "playbook",
@@ -610,6 +713,9 @@ class FindingInput:
                 "playbook": [self.playbook_id, self.playbook_version, self.playbook_content_digest,
                              self.registry_version, self.run_id],
                 "analysis_provenance": self.analysis_provenance,
+                # Added by TAX-121; omitted when empty so earlier digests are unchanged.
+                **({"source_refs": list(self.source_refs)} if self.source_refs else {}),
+                **({"candidate_route": self.candidate_route} if self.candidate_route else {}),
             }
         )  # fmt: skip
 
@@ -928,7 +1034,7 @@ def feedback_chain_key(finding_id: str, user: str, previous_feedback_id: str | N
 
 def component_stamp(snapshot: Mapping[str, Any]) -> dict[str, Any] | None:
     """The TAX-070 provenance entry (ai/workflows/outcome_feedback.py) for a judged finding."""
-    if snapshot.get("producer") == "jube_rule" and snapshot.get("rule_id"):
+    if snapshot.get("producer") in RULE_PRODUCERS and snapshot.get("rule_id"):
         return {
             "kind": "rule",
             "rule_id": snapshot["rule_id"],

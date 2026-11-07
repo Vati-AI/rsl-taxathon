@@ -52,6 +52,8 @@ EVENT_TYPES = (
     "investigation.requested",
     "finding.recorded",
     "evidence_request.recorded",
+    # TAX-121 (ADR-042): run the TAX-112-116 assurance checks for a sent refund claim.
+    "assurance.requested",
 )
 SOURCE_SERVICES = ("jube", "frappe", "openaleph", "yente", "docling", "langgraph", "vati")
 PAYLOAD_VALUE_MAX = 255

@@ -11,6 +11,8 @@ called directly by Frappe handlers):
 - ``docling_extraction(tenant_id, jobs=..., sink=...)``: TAX-038 Docling adapter.
 - ``openaleph_ingest(tenant_id)``: TAX-036 entity ingest into the site's collection.
 - ``yente_matcher(tenant_id)``: TAX-037 yente candidate lookup for the site's dataset.
+- ``rsl_sources(tenant_id)``: TAX-111 RSL source fixture recorded for the site (site key
+  ``vati_rsl_sources``, TAX-121). There is no live RSL connection; the fixture says so.
 
 Each reads ``frappe.conf["vati_services"]`` (written by ``scripts/frappe_dev.py
 init`` from ignored local config) on every call and raises
@@ -51,3 +53,7 @@ def openaleph_ingest(tenant_id: str) -> config.OpenAlephIngest:
 
 def yente_matcher(tenant_id: str) -> config.YenteMatcher:
     return config.yente_matcher(frappe.conf)
+
+
+def rsl_sources(tenant_id: str) -> config.RslSourceFixture:
+    return config.rsl_sources(frappe.conf, vati_tenant_id=tenant_id)

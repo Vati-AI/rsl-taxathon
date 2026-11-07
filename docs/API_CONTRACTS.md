@@ -9,7 +9,7 @@ Production route names below are proposed Vati routes to implement in TAX-018. T
 
 Every request resolves tenant/user permissions; case IDs alone never authorize access. Every mutation carries idempotency key and expected version. Event envelope: schema_version, event_id, tenant_id, case_id, correlation_id, type, occurred_at, idempotency_key, payload. Monetary values are decimal strings with currency.
 
-Findings distinguish facts, inference, missing/unverified/contradictory evidence, legal-route verification and proposed action. Evidence references include source record/document SHA-256 and page/record locator. Errors identify service, retryable code and correlation ID without leaking document content or credentials.
+Findings distinguish facts, inference, missing/unverified/contradictory evidence, legal-route verification and proposed action. Evidence references include source record/document SHA-256 and page/record locator. TAX-121 ([ADR-042](decisions/ADR-042-assurance-checks-in-the-pipeline.md)) adds the producer `vati_check` (a deterministic Vati assurance check) and two optional `Finding` fields: `source_refs` (`RslSourceRef`: RSL source record references, never copies) and `candidate_route` (`CandidateRoute`: the TAX-116 candidate anchors or policy gaps, `eligible_for_assessment: false`). It also adds the `assurance.requested` event type. Errors identify service, retryable code and correlation ID without leaking document content or credentials.
 
 ## Executable fixture interface
 
