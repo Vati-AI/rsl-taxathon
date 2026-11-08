@@ -15,6 +15,8 @@ vi.mock('./pages/SubmissionPage.vue', stubPage);
 vi.mock('./pages/NewSubmissionPage.vue', stubPage);
 vi.mock('./pages/AccountPage.vue', stubPage);
 vi.mock('./pages/NotFoundPage.vue', stubPage);
+vi.mock('./pages/EvidenceRequestsPage.vue', stubPage);
+vi.mock('./pages/EvidenceRequestPage.vue', stubPage);
 
 const { createPortalRouter } = await import('./router');
 const { logout, resetSession, sessionState } = await import('./lib/session');
@@ -85,6 +87,52 @@ describe('portal router session boundary', () => {
     const router = createPortalRouter(createMemoryHistory(), nav());
     await router.push('/nope/at/all');
     expect(router.currentRoute.value.name).toBe('not-found');
+  });
+});
+
+describe('evidence-first portal (TAX-125)', () => {
+  beforeEach(() => {
+    call.mockReset();
+    resetSession();
+  });
+
+  it('opens on evidence requests', async () => {
+    call.mockResolvedValue(SESSION);
+    const router = createPortalRouter(createMemoryHistory(), nav());
+    await router.push('/');
+    expect(router.currentRoute.value.name).toBe('evidence-requests');
+  });
+
+  it('keeps a deep link to one evidence request', async () => {
+    call.mockResolvedValue(SESSION);
+    const router = createPortalRouter(createMemoryHistory(), nav());
+    await router.push('/requests/45000000-0000-4000-8000-000000000001');
+    expect(router.currentRoute.value.name).toBe('evidence-request');
+    expect(router.currentRoute.value.params.id).toBe('45000000-0000-4000-8000-000000000001');
+  });
+
+  it('sends a signed-out deep link to login and back to the same request', async () => {
+    call.mockRejectedValue({ exc_type: 'PermissionError', status: 403 });
+    const navigator = nav();
+    await createPortalRouter(createMemoryHistory(), navigator).push('/requests/R-1');
+    expect(navigator.assign).toHaveBeenCalledWith(
+      '/login?redirect-to=%2Ftaxpayer%2Frequests%2FR-1',
+    );
+  });
+
+  it('has no claim form unless the site enables the Online Refunds simulator', async () => {
+    call.mockResolvedValue(SESSION);
+    const router = createPortalRouter(createMemoryHistory(), nav());
+    await router.push('/submissions/new');
+    expect(router.currentRoute.value.name).toBe('not-found');
+    expect(router.currentRoute.value.fullPath).toBe('/submissions/new');
+  });
+
+  it('opens the simulator on a site that enables it', async () => {
+    call.mockResolvedValue({ ...SESSION, simulator_enabled: true });
+    const router = createPortalRouter(createMemoryHistory(), nav());
+    await router.push('/submissions/new');
+    expect(router.currentRoute.value.name).toBe('new-submission');
   });
 });
 

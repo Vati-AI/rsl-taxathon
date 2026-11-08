@@ -5,15 +5,15 @@
   "owner": "Keletso",
   "area": "apps/taxpayer-web",
   "phase": "pilot",
-  "status": "BACKLOG",
+  "status": "IN_PROGRESS",
   "priority": "P0",
   "depends_on": [
     "TAX-122",
     "TAX-045",
     "TAX-092"
   ],
-  "claimed_by": null,
-  "branch": null,
+  "claimed_by": "claude-code-20261108-friendly-newton",
+  "branch": "claude/friendly-newton-iwhm4u",
   "pr": null,
   "scope": "Make evidence requests the portal home, turn the submissions list into read-only My cases showing RSL's status labelled as RSL's, remove the New submission route and menu item from the product, and keep submit_refund_claim only as a labelled Online Refunds simulator for fixtures and the demo",
   "inputs": [
@@ -57,6 +57,10 @@
     {
       "at": "2026-11-07",
       "text": "Added 2026-11-07 from ADR-043 (Vati downstream of RSL selection; portal answers evidence requests)."
+    },
+    {
+      "at": "2026-11-08",
+      "text": "Claimed by claude-code-20261108-friendly-newton on the session's designated branch claude/friendly-newton-iwhm4u."
     }
   ],
   "sequence": 12

@@ -75,17 +75,20 @@ test.describe('taxpayer onboarding (TAX-082)', () => {
       'check-status',
       'Find out where my submission is and what happens next',
       async () => {
+        // TAX-125: the portal opens on evidence requests; cases are one step away.
         await page.goto(TAXPAYER + '/taxpayer/');
-        await pageReady(page, 'Your submissions');
+        await pageReady(page, 'Evidence requests');
         const open = page.getByText('Response needed');
         if ((await open.count()) === 0) {
           proxy.friction(
-            'The landing page (Your submissions) does not mention that an evidence request is waiting for a response',
+            'The landing page (Evidence requests) does not show that a request is waiting for a response',
           );
         }
         await shot(page, 'taxpayer-1-landing', w);
+        await proxy.click(nav.getByRole('link', { name: 'My cases' }), 'nav: My cases');
+        await pageReady(page, 'My cases');
         await proxy.click(
-          page.getByRole('list', { name: 'Submissions' }).getByRole('link').first(),
+          page.getByRole('list', { name: 'My cases' }).getByRole('link').first(),
           'first submission',
         );
         await expect(page.getByText('What happens next')).toBeVisible();
@@ -136,10 +139,10 @@ test.describe('taxpayer onboarding (TAX-082)', () => {
 
     await proxy.run('send-claim', 'Send a VAT refund claim with one invoice', async () => {
       await proxy.click(
-        nav.getByRole('link', { name: mobile ? 'New' : 'New submission' }),
-        'nav: New submission',
+        nav.getByRole('link', { name: mobile ? 'Simulator' : 'Online Refunds simulator' }),
+        'nav: Online Refunds simulator',
       );
-      await pageReady(page, 'New VAT refund claim');
+      await pageReady(page, 'Online Refunds simulator');
       await proxy.fill(page.getByLabel('Tax period'), '2026-09', 'Tax period');
       await proxy.fill(page.getByLabel('Amount claimed (LSL)'), '48210.55', 'Amount claimed');
       await proxy.fill(page.getByLabel('Output VAT for the period (LSL)'), '0', 'Output VAT');
@@ -189,9 +192,9 @@ test.describe('taxpayer onboarding (TAX-082)', () => {
     });
 
     await proxy.run('find-new-claim', 'Find the claim I just sent in my submissions', async () => {
-      await proxy.click(nav.getByRole('link', { name: 'Submissions' }), 'nav: Submissions');
-      await pageReady(page, 'Your submissions');
-      const first = page.getByRole('list', { name: 'Submissions' }).getByRole('link').first();
+      await proxy.click(nav.getByRole('link', { name: 'My cases' }), 'nav: My cases');
+      await pageReady(page, 'My cases');
+      const first = page.getByRole('list', { name: 'My cases' }).getByRole('link').first();
       await expect(first).toContainText('REF-2026-');
       await expect(first).toContainText('Under review');
     });
@@ -224,15 +227,15 @@ test.describe('taxpayer onboarding (TAX-082)', () => {
       'check-status',
       'Open my first submission and read what happens next',
       async () => {
-        await page.goto(TAXPAYER + '/taxpayer/');
-        await pageReady(page, 'Your submissions');
+        await page.goto(TAXPAYER + '/taxpayer/submissions');
+        await pageReady(page, 'My cases');
         await proxy.tabTo(
           page.getByRole('link', { name: 'Skip to main content' }),
           'Skip to main content',
         );
         await proxy.press('Enter');
         await proxy.tabTo(
-          page.getByRole('list', { name: 'Submissions' }).getByRole('link').first(),
+          page.getByRole('list', { name: 'My cases' }).getByRole('link').first(),
           'first submission',
         );
         await proxy.press('Enter');

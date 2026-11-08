@@ -453,12 +453,14 @@ test.describe('taxpayer journey (TAX-055)', () => {
     const nav = page.getByRole('navigation', { name: 'Taxpayer portal' }).filter({ visible: true });
 
     await page.goto(TAXPAYER + '/taxpayer/submissions');
-    await pageReady(page, 'Your submissions');
+    await pageReady(page, 'My cases');
     await accessible(page);
     await shot(page, 'taxpayer-1-submissions', w);
 
-    await nav.getByRole('link', { name: mobile ? 'New' : 'New submission' }).click();
-    await pageReady(page, 'New VAT refund claim');
+    await nav
+      .getByRole('link', { name: mobile ? 'Simulator' : 'Online Refunds simulator' })
+      .click();
+    await pageReady(page, 'Online Refunds simulator');
     await fillDetails(page, {
       claimed: s.refund_claim,
       outputVat: '0',
@@ -576,7 +578,7 @@ test.describe('accessibility states (TAX-055)', () => {
     // Taxpayer: the pre-submission checks with prompts.
     await mockTaxpayerSession(page, 'taxpayer');
     await page.goto(TAXPAYER + '/taxpayer/submissions/new');
-    await pageReady(page, 'New VAT refund claim');
+    await pageReady(page, 'Online Refunds simulator');
     await fillDetails(page);
     await (await upload(page)).getByText('Uploaded').waitFor();
     await toInvoices(page);

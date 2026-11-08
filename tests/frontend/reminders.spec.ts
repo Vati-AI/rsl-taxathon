@@ -17,7 +17,7 @@ import { mockTaxpayerSession, SYNTHETIC_REMINDERS, type PortalMock } from './sup
 const capture = Boolean(process.env.CAPTURE_SCREENSHOTS);
 const out = path.resolve(__dirname, '../../docs/evidence/TAX-078');
 const NEW_CLAIM = '/taxpayer/submissions/new';
-const HEADING = 'New VAT refund claim';
+const HEADING = 'Online Refunds simulator';
 const PANEL = 'From your earlier claims';
 
 async function shot(page: Page, name: string, width: string) {

@@ -1,27 +1,30 @@
 import { createRouter, createWebHistory, type Router, type RouterHistory } from 'vue-router';
 import { PORTAL_ROOT } from './lib/portal-path';
-import { ensureSession, redirectToLogin, type Navigator } from './lib/session';
+import { ensureSession, redirectToLogin, simulatorEnabled, type Navigator } from './lib/session';
 
 export const routes = [
-  { path: '/', redirect: { name: 'submissions' } },
+  // TAX-125 (ADR-043): the portal is where taxpayers answer RSL's evidence requests.
+  { path: '/', redirect: { name: 'evidence-requests' } },
   {
     path: '/submissions',
     name: 'submissions',
     component: () => import('./pages/SubmissionsPage.vue'),
-    meta: { title: 'Your submissions' },
+    meta: { title: 'My cases' },
   },
   {
+    // The fixture-only Online Refunds simulator (the former TAX-043 claim form). Absent
+    // unless the site enables it; claims are filed in RSL's Online Refunds Application.
     path: '/submissions/new',
     name: 'new-submission',
     component: () => import('./pages/NewSubmissionPage.vue'),
-    meta: { title: 'New submission' },
+    meta: { title: 'Online Refunds simulator', simulator: true },
   },
   {
     path: '/submissions/:id',
     name: 'submission',
     component: () => import('./pages/SubmissionPage.vue'),
     props: true,
-    meta: { title: 'Submission status' },
+    meta: { title: 'Case status' },
   },
   {
     path: '/requests',
@@ -63,6 +66,14 @@ export function createPortalRouter(
     if (state.status === 'error' && state.error.kind === 'unauthenticated') {
       redirectToLogin(PORTAL_ROOT + to.fullPath, nav);
       return false;
+    }
+    // TAX-125: without the simulator its route does not exist for this site.
+    if (to.meta.simulator === true && !simulatorEnabled(state)) {
+      return {
+        name: 'not-found',
+        params: { pathMatch: to.path.slice(1).split('/') },
+        replace: true,
+      };
     }
     return true;
   });

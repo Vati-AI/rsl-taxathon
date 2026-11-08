@@ -41,7 +41,7 @@ onMounted(load);
   <section aria-labelledby="page-title">
     <PortalHeader
       title="Evidence requests"
-      description="Documents an officer has asked you for, and the answers you have sent."
+      description="Documents RSL has asked you for about a claim you filed, and the answers you have sent."
     />
 
     <div v-if="loading" role="status" class="py-8">

@@ -1,16 +1,31 @@
 # taxpayer-frontend
 
-> **Direction (ADR-043, 2026-11-07):** this portal is where taxpayers answer RSL's evidence
-> requests. Claims are filed in RSL's Online Refunds Application. TAX-125 will make evidence
-> requests the home page, turn the submissions list into read-only "My cases" showing RSL's
-> status, and keep the claim form below only as a fixture-only Online Refunds simulator. Until
-> TAX-125 lands, the sections below describe the current behaviour.
+## Evidence first (TAX-125, ADR-043)
 
-Owner: Kananelo. See `tasks/README.md` for work and `docs/ARCHITECTURE.md` for boundaries.
+Taxpayers file refund claims in RSL's Online Refunds Application. This portal is where they
+answer RSL's evidence requests.
 
-Vue 3 + TypeScript + Vite + Frappe UI taxpayer portal (ADR-002), served by the
-`vati_tax` Frappe app at `/taxpayer`. TAX-021 delivers the authenticated shell:
-routes, login/logout, submissions list and submission status.
+- **Home and first menu item: Evidence requests** (`/taxpayer/` opens `/taxpayer/requests`).
+  RSL's screens can link straight to one request, `/taxpayer/requests/:id`. A signed-out
+  taxpayer is sent to login and returned to that request.
+- **My cases** (`/taxpayer/submissions`) is read-only. A claim read from RSL (TAX-122)
+  shows RSL's claim reference and the status RSL reports for it, read from the site's RSL
+  source when the page opens. The status is labelled with its source; a recorded fixture
+  is never called live. If RSL does not answer, the page says so instead of showing a
+  status. A link to RSL's dashboard appears only when the site configures one
+  (`vati_rsl_links.online_refunds_dashboard`, https only). There are no risk, case or
+  officer details.
+- **Online Refunds simulator** (`/taxpayer/submissions/new`): the former claim form
+  (TAX-043/044), labelled as a synthetic stand-in for RSL's system. It exists only on
+  sites that set `vati_online_refunds_simulator` (development, test and demo sites;
+  `scripts/frappe_dev.py init` sets it on the developer site). Elsewhere the route is
+  "Page not found", the menu has no link to it, and `submit_refund_claim` and
+  `review_refund_claim` answer 403. The browser harness turns it on by default because it
+  is fixture tooling; `mockTaxpayerSession(page, persona, { simulatorEnabled: false })`
+  checks the production portal.
+
+The sections below describe the screens and the simulator's claim flow as built in
+TAX-021 to TAX-092.
 
 ## Live submissions (TAX-092)
 
@@ -27,7 +42,7 @@ or `fixture` only when it is also labelled `synthetic: true`, and refuses
 anything else. The "Synthetic fixture data" notice and the "Synthetic fixture"
 sidebar label appear only for fixture data; live data is labelled "Live data".
 
-## VAT refund claim (TAX-043)
+## VAT refund claim (TAX-043; the Online Refunds simulator since TAX-125)
 
 `/taxpayer/submissions/new` is the VAT refund claim form (refund claims only;
 VAT returns are out of scope). Three steps, then a confirmation:

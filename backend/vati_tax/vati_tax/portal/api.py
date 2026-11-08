@@ -20,6 +20,13 @@ one of them (``vati_tax.responses``).
 ``get_correction_reminders`` (TAX-078) lists the caller's own reminders from
 reviewed omissions in earlier claims, and ``review_refund_claim`` marks the
 prompts they cover (``vati_tax.reminders``).
+
+TAX-125 (ADR-043): taxpayers file refund claims in RSL's Online Refunds Application and
+answer RSL's evidence requests here. A claim read from RSL (TAX-122) shows RSL's claim
+reference and the status RSL reports for it, read from the site's RSL source when the
+list is opened (RSL keeps that status). ``submit_refund_claim`` and
+``review_refund_claim`` are the fixture-only Online Refunds simulator: they answer only
+on a site with ``vati_online_refunds_simulator`` set (``portal.rsl``).
 """
 
 from __future__ import annotations
@@ -35,7 +42,10 @@ from vati_tax.bridge import store as bridge_store
 from vati_tax.identity.permissions import get_principal
 from vati_tax.identity.policy import TAXPAYER, canonical_uuid
 from vati_tax.ids.canonical import CaseNotFound, MappingError
+from vati_tax.integrations import config as integration_config
+from vati_tax.integrations import factories
 from vati_tax.portal import claims, presubmission
+from vati_tax.portal import rsl as portal_rsl
 from vati_tax.portal import submissions as portal_submissions
 from vati_tax.reminders import rules as reminder_rules
 from vati_tax.reminders import store as reminder_store
@@ -61,6 +71,10 @@ SUBMISSION_FIELDS = (
     "review_status_at",
     "taxpayer_id",
     "creation",
+    # TAX-125: where the submission came from and RSL's claim reference (TAX-122).
+    "tenant_id",
+    "source",
+    "source_ref",
 )
 INVOICE_ROW = "Vati Refund Claim Invoice"
 INVOICE_FIELDS = (
@@ -152,7 +166,58 @@ def get_session() -> dict[str, Any]:
         "taxpayers": [
             {"tenant_id": tenant_id, "taxpayer_id": taxpayer_id} for tenant_id, taxpayer_id in scope
         ],
+        # TAX-125: the claim form is a fixture-only Online Refunds simulator.
+        "simulator_enabled": portal_rsl.simulator_enabled(frappe.conf),
+        "rsl_online_refunds_url": portal_rsl.online_refunds_url(frappe.conf),
     }
+
+
+def _require_simulator() -> None:
+    """The Online Refunds simulator answers only where the site enables it (TAX-125)."""
+    if not portal_rsl.simulator_enabled(frappe.conf):
+        _log("online_refunds_simulator", "simulator_not_available")
+        raise frappe.PermissionError(
+            _("Refund claims are filed in RSL's Online Refunds Application.")
+        )
+
+
+def _rsl_claim_statuses(rows: list[Any]) -> dict[str, portal_submissions.RslClaim]:
+    """RSL's status for each claim read from RSL (TAX-122), by submission name.
+
+    One read per taxpayer from the site's RSL source. A source that is not configured or
+    does not answer is reported as unavailable, never as a status.
+    """
+    link = portal_rsl.online_refunds_url(frappe.conf)
+    out: dict[str, portal_submissions.RslClaim] = {}
+    filed = [r for r in rows if r.source == portal_submissions.RSL_ONLINE_REFUNDS and r.source_ref]
+    by_taxpayer: dict[tuple[str, str], list[Any]] = {}
+    for row in filed:
+        by_taxpayer.setdefault((row.tenant_id, row.taxpayer_id), []).append(row)
+    for (tenant_id, taxpayer_id), items in by_taxpayer.items():
+        statuses: dict[str, str | None] = {}
+        available, recorded = False, True
+        tin = frappe.db.get_value(TAXPAYER_DOCTYPE, taxpayer_id, "tin")
+        try:
+            fixture = factories.rsl_sources(tenant_id)
+            recorded = fixture.mode == "recorded"
+            envelope = fixture.sources.read(
+                "online_refunds", "claim", tenant_id=str(fixture.params["tenant_id"]),
+                taxpayer=str(tin),
+            )  # fmt: skip
+            if envelope.get("status") == "ok" and tin:
+                available = True
+                statuses = {str(r["claim_id"]): r.get("status") for r in envelope["records"]}
+        except integration_config.ServiceNotConfigured:
+            available = False
+        for row in items:
+            out[row.name] = portal_submissions.rsl_claim(
+                claim_ref=str(row.source_ref),
+                status=statuses.get(str(row.source_ref)),
+                available=available,
+                recorded=recorded,
+                link=link,
+            )
+    return out
 
 
 def _local_iso(value: Any) -> str | None:
@@ -190,6 +255,7 @@ def _own_submissions(
             fields=["submission_id", "claimed_amount"],
         )
     }
+    rsl_claims = _rsl_claim_statuses(rows)
     taxpayers = {row.taxpayer_id for row in rows}
     display = {
         item.name: item.display_name
@@ -216,6 +282,8 @@ def _own_submissions(
                 if amount is None
                 else domain.format_money(domain.parse_money(amount, "claimed_amount")),
                 taxpayer_name=display.get(row.taxpayer_id),
+                source=row.source,
+                rsl=rsl_claims.get(row.name),
             )
         )
     created = {row.name: _local_iso(row.creation) for row in rows}
@@ -367,6 +435,7 @@ def submit_refund_claim(
     answers it is refused with ``idempotency_conflict`` (422).
     """
     _user, scope = _require_taxpayer()
+    _require_simulator()
     tenant, taxpayer = _claim_owner(scope, tenant_id)
     try:
         request = claims.validate_claim(
@@ -552,6 +621,7 @@ def review_refund_claim(
     figures and correction prompts only; prompts never block sending.
     """
     _user, scope = _require_taxpayer()
+    _require_simulator()
     tenant, taxpayer = _claim_owner(scope, tenant_id)
     action = "review_refund_claim"
     try:

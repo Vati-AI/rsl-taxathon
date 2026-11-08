@@ -70,7 +70,7 @@ export const AUDITOR_ROUTES: MatrixRoute[] = [
 ];
 
 export const TAXPAYER_ROUTES: MatrixRoute[] = [
-  { name: 'submissions', path: '/taxpayer/submissions', heading: 'Your submissions' },
+  { name: 'submissions', path: '/taxpayer/submissions', heading: 'My cases' },
   // SUB-SYN-0001: owned by the synthetic taxpayer user (docs/PERMISSIONS.md, TAX-029).
   {
     name: 'submission',
@@ -78,7 +78,11 @@ export const TAXPAYER_ROUTES: MatrixRoute[] = [
     heading: /^VAT refund claim · /,
   },
   // TAX-043: the new-submission route is the VAT refund claim form.
-  { name: 'new-submission', path: '/taxpayer/submissions/new', heading: 'New VAT refund claim' },
+  {
+    name: 'new-submission',
+    path: '/taxpayer/submissions/new',
+    heading: 'Online Refunds simulator',
+  },
   // TAX-045: evidence requests (OPEN_REQUEST_ID in support/sessions.ts).
   { name: 'evidence-requests', path: '/taxpayer/requests', heading: 'Evidence requests' },
   {

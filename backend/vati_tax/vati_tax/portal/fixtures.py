@@ -23,6 +23,16 @@ class SubmissionStep(TypedDict):
     at: str | None
 
 
+class RslClaimFixture(TypedDict):
+    claim_ref: str
+    system: str
+    status: str | None
+    status_label: str | None
+    status_state: str
+    recorded: bool
+    dashboard_url: str | None
+
+
 class SubmissionFixture(TypedDict):
     id: str
     reference: str
@@ -35,6 +45,9 @@ class SubmissionFixture(TypedDict):
     submitted_at: str
     next_step: str
     steps: list[SubmissionStep]
+    # TAX-125: rsl_online_refunds (filed with RSL, TAX-122) or portal.
+    origin: str
+    rsl: RslClaimFixture | None
 
 
 def _steps(*states: tuple[str, str, str | None]) -> list[SubmissionStep]:
@@ -52,13 +65,26 @@ SUBMISSIONS: tuple[SubmissionFixture, ...] = (
         "currency": "LSL",
         "status": "under_review",
         "submitted_at": "2026-10-06T09:14:00Z",
-        "next_step": "An officer is reviewing your claim. No action is needed from you yet.",
+        "next_step": (
+            "RSL is reviewing this claim. If RSL needs more evidence from you, the request will"
+            " appear under Evidence requests."
+        ),
         "steps": _steps(
-            ("Submitted", "complete", "2026-10-06T09:14:00Z"),
-            ("Documents checked", "complete", "2026-10-06T09:20:00Z"),
+            ("Filed with RSL", "complete", "2026-10-06T09:14:00Z"),
             ("Officer review", "current", None),
             ("Outcome issued", "upcoming", None),
         ),
+        # Filed in RSL's Online Refunds Application and read into Vati (TAX-122).
+        "origin": "rsl_online_refunds",
+        "rsl": {
+            "claim_ref": "ORA-SYN-2026-09-0184",
+            "system": "RSL's Online Refunds Application",
+            "status": "audit_in_progress",
+            "status_label": "Audit in progress",
+            "status_state": "reported",
+            "recorded": True,
+            "dashboard_url": None,
+        },
     },
     {
         "id": "SUB-SYN-0002",
@@ -81,6 +107,8 @@ SUBMISSIONS: tuple[SubmissionFixture, ...] = (
             ("Officer review", "upcoming", None),
             ("Outcome issued", "upcoming", None),
         ),
+        "origin": "portal",
+        "rsl": None,
     },
     {
         "id": "SUB-SYN-0003",
@@ -97,6 +125,8 @@ SUBMISSIONS: tuple[SubmissionFixture, ...] = (
             ("Draft saved", "current", "2026-10-30T16:45:00Z"),
             ("Submitted", "upcoming", None),
         ),
+        "origin": "portal",
+        "rsl": None,
     },
     {
         "id": "SUB-SYN-0004",
@@ -115,6 +145,8 @@ SUBMISSIONS: tuple[SubmissionFixture, ...] = (
             ("Officer review", "complete", "2026-08-21T10:00:00Z"),
             ("Outcome issued", "complete", "2026-08-22T09:00:00Z"),
         ),
+        "origin": "portal",
+        "rsl": None,
     },
 )
 

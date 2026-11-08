@@ -1,4 +1,4 @@
-"""Frappe-free tests for the taxpayer's live submission view (TAX-092)."""
+"""Frappe-free tests for the taxpayer's live submission view (TAX-092, TAX-125)."""
 
 from __future__ import annotations
 
@@ -31,6 +31,8 @@ KEYS = {
     "submitted_at",
     "next_step",
     "steps",
+    "origin",
+    "rsl",
 }
 # Words that would reveal internal case, risk or staff detail to a taxpayer.
 INTERNAL = re.compile(r"risk|lane|score|jube|case|finding|fraud|suspic|officer'?s name", re.I)
@@ -87,6 +89,52 @@ class SubmissionViewTests(unittest.TestCase):
         draft = view(submission_id="C", submitted_at=None, status="draft")
         ordered = submissions.newest_first([old, draft, new], {"C": "2026-10-15T09:00:00"})
         self.assertEqual([i["id"] for i in ordered], ["B", "C", "A"])
+
+
+def rsl(**overrides):
+    args = {"claim_ref": "ORA-2026-0001", "status": "audit_in_progress", "available": True,
+            "recorded": True, "link": "https://refunds.example.test/dashboard"}  # fmt: skip
+    return submissions.rsl_claim(**{**args, **overrides})
+
+
+class RslClaimTests(unittest.TestCase):
+    """TAX-125: a claim filed with RSL shows RSL's reference and status, labelled."""
+
+    def test_a_claim_filed_with_rsl_shows_rsl_reference_status_and_source(self):
+        item = view(source="rsl_online_refunds", rsl=rsl())
+        self.assertEqual(item["origin"], "rsl_online_refunds")
+        block = item["rsl"]
+        assert block is not None
+        self.assertEqual(block["claim_ref"], "ORA-2026-0001")
+        self.assertEqual((block["status"], block["status_label"], block["status_state"]),
+                         ("audit_in_progress", "Audit in progress", "reported"))  # fmt: skip
+        self.assertEqual(block["system"], "RSL's Online Refunds Application")
+        self.assertTrue(block["recorded"])
+        self.assertEqual(block["dashboard_url"], "https://refunds.example.test/dashboard")
+        self.assertEqual(item["steps"][0]["label"], "Filed with RSL")
+        self.assertIn("RSL is reviewing", item["next_step"])
+        self.assertNotRegex(item["next_step"], INTERNAL)
+
+    def test_a_portal_submission_has_no_rsl_block(self):
+        item = view(source="portal", rsl=rsl())
+        self.assertEqual((item["origin"], item["rsl"]), ("portal", None))
+        self.assertEqual(view()["origin"], "portal")
+        self.assertEqual(item["steps"][0]["label"], "Submitted")
+
+    def test_missing_or_unknown_status_and_rsl_not_answering_are_told_apart(self):
+        self.assertEqual(rsl(status=None)["status_state"], "not_reported")
+        unknown = rsl(status="APPROVED_BY_X")
+        self.assertEqual((unknown["status_state"], unknown["status"]), ("not_reported", None))
+        self.assertNotIn("APPROVED_BY_X", str(unknown))
+        down = rsl(available=False)
+        self.assertEqual((down["status_state"], down["status"], down["status_label"]),
+                         ("unavailable", None, None))  # fmt: skip
+
+    def test_only_a_plain_https_dashboard_link_is_offered(self):
+        for link in (None, "", "http://refunds.example.test", "javascript:alert(1)",
+                     "https://user:pw@refunds.example.test", "https:///nohost", 42):  # fmt: skip
+            with self.subTest(link=link):
+                self.assertIsNone(rsl(link=link)["dashboard_url"])
 
 
 if __name__ == "__main__":
