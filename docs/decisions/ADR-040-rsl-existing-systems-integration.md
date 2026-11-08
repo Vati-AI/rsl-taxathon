@@ -3,6 +3,7 @@
 Status: proposed
 Owner and task: Keletso; scope update from [FRAMEWORK.md](../reference/FRAMEWORK.md); implemented by TAX-111 to TAX-118
 Date: 2026-11-06
+Amended by: [ADR-043](ADR-043-vati-downstream-of-rsl-selection.md) (2026-11-07), which replaces §4's component positioning
 
 Context and smallest prototype need:
 The framework update names RSL systems the original proposal did not: e-Tax, Lekuka/IDMS,

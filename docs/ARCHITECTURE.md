@@ -42,7 +42,7 @@ authority; WSO2 Identity Server becomes the sign-in provider once TAX-117 record
 | Responsibility | Authority | Other components |
 |---|---|---|
 | Operational investigation case, assignment/status/escalation, risk execution | Jube | Vati maps IDs and exposes a stable API; Frappe keeps a read projection |
-| Application users, roles, taxpayer submissions, portal forms | Frappe custom app `vati_tax` | Browser sessions and Vati calls are checked against role/tenant permissions |
+| Application users, roles, taxpayer evidence responses (claims are ingested from RSL, ADR-043), portal forms | Frappe custom app `vati_tax` | Browser sessions and Vati calls are checked against role/tenant permissions |
 | Approved human decision rationale and evidence requests | Frappe custom DocTypes | Authorized actions request matching Jube transitions through Vati |
 | Cross-service IDs, idempotency/outbox and normalized contracts | Vati integration layer | No competing operational case lifecycle |
 | Original evidence provenance and restricted reference | Frappe/evidence store | OpenAleph search index is derived and rebuildable |

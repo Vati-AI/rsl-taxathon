@@ -19,7 +19,7 @@ and access to Jube/OpenAleph; this document makes the missing integration explic
 | Native operational investigation and risk configuration | Jube, adapted to tax cases and role-restricted | TAX-034, 035, 107 |
 | Evidence search, entity exploration and interactive network diagrams | Native OpenAleph, scoped collections and real mapped records | TAX-036, 108 |
 | Users, roles, memberships, business records and permitted administration | Frappe Desk, not a duplicate custom admin app | TAX-029, 091, 106 |
-| Submission list/status, claim, invoice schedule, upload, correction, evidence response and account | Separate Vati taxpayer portal hosted in Frappe | TAX-021, 043–045, 078, 092 |
+| Evidence requests (home), evidence response with checks, read-only My cases showing RSL's status, check before you file, and account. Claims are filed in RSL's Online Refunds Application, not here (ADR-043) | Separate Vati taxpayer portal hosted in Frappe | TAX-021, 045, 125–127, 129, 130 (TAX-043/044/092 reframed) |
 | Taxpayer compliance and evidence-response assistance | Taxpayer portal, never officer-only risk/findings | TAX-098–102 |
 
 Policy-gap/integrity views (TAX-077), appeals (TAX-069/070), EOI (TAX-071/072),

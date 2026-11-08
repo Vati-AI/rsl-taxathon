@@ -59,7 +59,11 @@
     {
       "at": "2026-11-06",
       "text": "Added 2026-11-06 from the framework scope update (docs/reference/FRAMEWORK.md, ADR-040) as a must-have for the proposal and pilot."
+    },
+    {
+      "at": "2026-11-07",
+      "text": "ADR-043: TAX-136 extends WSO2 sign-in to Jube and OpenAleph."
     }
   ],
-  "sequence": 15
+  "sequence": 30
 }

@@ -15,7 +15,8 @@
     "TAX-106",
     "TAX-107",
     "TAX-108",
-    "TAX-109"
+    "TAX-109",
+    "TAX-143"
   ],
   "claimed_by": null,
   "branch": null,
@@ -68,7 +69,11 @@
     {
       "at": "2026-11-05T14:08:21.889825+00:00",
       "text": "Reassigned from Kananelo to Keletso (single-developer delivery, ADR-038)"
+    },
+    {
+      "at": "2026-11-07",
+      "text": "ADR-043: now also depends on TAX-143 (RSL-first journey)."
     }
   ],
-  "sequence": 23
+  "sequence": 43
 }

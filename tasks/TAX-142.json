@@ -1,0 +1,53 @@
+{
+  "id": "TAX-142",
+  "kind": "task",
+  "title": "Refund-confidentiality access rules in the pilot",
+  "owner": "Keletso",
+  "area": "backend",
+  "phase": "pilot",
+  "status": "BACKLOG",
+  "priority": "P1",
+  "depends_on": [
+    "TAX-029",
+    "TAX-062"
+  ],
+  "claimed_by": null,
+  "branch": null,
+  "pr": null,
+  "scope": "Move refund-confidentiality access rules from later to the pilot: refund case data is visible only to assigned refund roles, with denied access tested and logged",
+  "inputs": [
+    "PROJECT.md",
+    "PROJECT_SCOPE.md",
+    "docs/ARCHITECTURE.md",
+    "docs/decisions/ADR-043-vati-downstream-of-rsl-selection.md",
+    "docs/decisions/ADR-040-rsl-existing-systems-integration.md",
+    "docs/reference/RSL_LANDSCAPE.md",
+    "docs/PERMISSIONS.md",
+    "backend/vati_tax/vati_tax/identity"
+  ],
+  "acceptance": [
+    {
+      "text": "Role and case rules restrict refund data; cross-role and cross-case access is denied and logged",
+      "done": false
+    },
+    {
+      "text": "Record relevant tests and evidence, update task status and open a PR",
+      "done": false
+    }
+  ],
+  "verification": "Permission tests",
+  "skills": [
+    "start-task",
+    "implement-change",
+    "update-project-task",
+    "finish-task"
+  ],
+  "evidence": [],
+  "notes": [
+    {
+      "at": "2026-11-07",
+      "text": "Added 2026-11-07 from ADR-043 (Vati downstream of RSL selection; portal answers evidence requests)."
+    }
+  ],
+  "sequence": 19
+}

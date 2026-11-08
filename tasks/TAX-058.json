@@ -21,7 +21,8 @@
     "TAX-103",
     "TAX-101",
     "TAX-102",
-    "TAX-118"
+    "TAX-118",
+    "TAX-139"
   ],
   "claimed_by": null,
   "branch": null,
@@ -80,7 +81,11 @@
     {
       "at": "2026-11-06",
       "text": "Now depends on TAX-118: the framework update requires measured test results against a baseline (Part 7) before measured acceptance."
+    },
+    {
+      "at": "2026-11-07",
+      "text": "ADR-043: now also depends on TAX-139 (seventh scenario, persistent VAT credit positions)."
     }
   ],
-  "sequence": 32
+  "sequence": 53
 }

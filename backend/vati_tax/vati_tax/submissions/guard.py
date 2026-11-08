@@ -100,7 +100,7 @@ def parent_submission(doc: Any) -> Any:
     parent = frappe.db.get_value(
         SUBMISSION,
         submission_id,
-        ["name", "tenant_id", "taxpayer_id", "submission_type", "status", "period"],
+        ["name", "tenant_id", "taxpayer_id", "submission_type", "status", "period", "source"],
         as_dict=True,
     )
     if (

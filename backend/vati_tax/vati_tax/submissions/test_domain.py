@@ -150,6 +150,37 @@ class StatusAndWriteTests(unittest.TestCase):
                 with self.assertRaises(domain.TransitionDenied):
                     domain.check_transition(before, after, actor)
 
+    def test_rsl_filed_claims_are_created_and_sent_by_the_intake_only(self):
+        # TAX-122 (ADR-043): the taxpayer filed it in RSL's system; RSL's intake records it.
+        rsl = domain.SOURCE_RSL_ONLINE_REFUNDS
+        domain.check_create("service", rsl, "refund_claim")
+        domain.check_create("operator", rsl, "refund_claim")
+        domain.check_transition("draft", "submitted", "service", rsl)
+        domain.check_transition("submitted", "correction_needed", "auditor", rsl)
+        for actor, source, kind in [
+            ("taxpayer", rsl, "refund_claim"),
+            ("auditor", rsl, "refund_claim"),
+            ("service", rsl, "vat_return"),
+            ("service", "portal", "refund_claim"),
+            ("auditor", "portal", "refund_claim"),
+        ]:
+            with self.subTest(actor=actor, source=source, kind=kind):
+                with self.assertRaises(domain.TransitionDenied):
+                    domain.check_create(actor, source, kind)
+        domain.check_create("taxpayer", "portal", "refund_claim")
+        for before, after, actor in [
+            ("draft", "submitted", "taxpayer"),
+            ("draft", "submitted", "auditor"),
+            ("submitted", "correction_needed", "service"),
+            ("draft", "withdrawn", "service"),
+        ]:
+            with self.subTest(before=before, after=after, actor=actor):
+                with self.assertRaises(domain.TransitionDenied):
+                    domain.check_transition(before, after, actor, rsl)
+        self.assertFalse(domain.declaration_required(rsl))
+        self.assertTrue(domain.declaration_required("portal"))
+        self.assertTrue(domain.declaration_required(None))
+
     def test_field_writes_by_actor(self):
         writable = {"taxpayer": frozenset({"declaration"}), "service": frozenset({"case_id"})}
         server = frozenset({"version"})

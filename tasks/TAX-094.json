@@ -53,7 +53,11 @@
     {
       "at": "2026-11-05T06:39:04.925015+00:00",
       "text": "Added 2026-11-05 after a runtime gap analysis for the RSL demo: the component code existed but this link was not wired at runtime and no task covered it."
+    },
+    {
+      "at": "2026-11-07",
+      "text": "ADR-043: seeding moves to the Online Refunds simulator and referral fixtures in TAX-143."
     }
   ],
-  "sequence": 17
+  "sequence": 34
 }

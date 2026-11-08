@@ -84,6 +84,18 @@ TRANSITIONS: Final[dict[tuple[str, str], frozenset[str]]] = {
     (SUBMITTED, CORRECTION_NEEDED): frozenset({"auditor", "supervisor"}),
 }
 
+# Where a submission came from. ``rsl_online_refunds`` (TAX-122, ADR-043): the claim was
+# filed in RSL's Online Refunds Application and read through the TAX-111 contract; the
+# pipeline service identity creates and sends it, and no taxpayer can.
+SOURCE_PORTAL: Final = "portal"
+SOURCE_RSL_ONLINE_REFUNDS: Final = "rsl_online_refunds"
+SOURCES: Final = (SOURCE_PORTAL, "api", "synthetic_seed", SOURCE_RSL_ONLINE_REFUNDS)
+RSL_SOURCES: Final = frozenset({SOURCE_RSL_ONLINE_REFUNDS})
+# The only transition the service identity takes, and only for an RSL-sourced claim.
+RSL_INTAKE_TRANSITIONS: Final[dict[tuple[str, str], frozenset[str]]] = {
+    (DRAFT, SUBMITTED): frozenset({"service"}),
+}
+
 TAXPAYER_TYPES: Final = ("individual", "company", "partnership", "trust", "other")
 _TIN = re.compile(r"^[0-9]{6,15}$")
 _COUNTRY = re.compile(r"^[A-Z]{2}$")
@@ -363,15 +375,47 @@ def validate_country(value: object) -> str:
 # Status and write rules ------------------------------------------------------
 
 
-def check_transition(before: str, after: str, actor: str) -> None:
-    """Raise ``TransitionDenied`` unless ``actor`` may move ``before`` -> ``after``."""
+def check_transition(before: str, after: str, actor: str, source: str | None = None) -> None:
+    """Raise ``TransitionDenied`` unless ``actor`` may move ``before`` -> ``after``.
+
+    An RSL-sourced claim (``source`` in ``RSL_SOURCES``) is sent by the service identity
+    that read it from RSL, never by the taxpayer: the taxpayer filed it in RSL's system.
+    """
     if before == after:
         return
-    allowed = TRANSITIONS.get((before, after))
+    if source in RSL_SOURCES:
+        allowed = RSL_INTAKE_TRANSITIONS.get((before, after)) or TRANSITIONS.get((before, after))
+        if (before, after) in RSL_INTAKE_TRANSITIONS and actor == "taxpayer":
+            raise TransitionDenied("This claim was filed with RSL; it is sent by RSL's intake.")
+    else:
+        allowed = TRANSITIONS.get((before, after))
     if allowed is None:
         raise TransitionDenied(f"A submission cannot move from {before} to {after}.")
     if actor != "operator" and actor not in allowed:
         raise TransitionDenied(f"Your role cannot move a submission from {before} to {after}.")
+
+
+def check_create(actor: str, source: str | None, submission_type: str) -> None:
+    """Raise ``TransitionDenied`` unless ``actor`` may create a submission from ``source``.
+
+    Taxpayers create their own portal submissions. Only the service identity (or a site
+    operator) records a claim filed in an RSL system, and only a refund claim.
+    """
+    if source in RSL_SOURCES:
+        if submission_type != "refund_claim":
+            raise TransitionDenied(
+                "Only refund claims are read from the Online Refunds Application."
+            )
+        if actor not in ("service", "operator"):
+            raise TransitionDenied("Only RSL's intake records a claim filed with RSL.")
+        return
+    if actor not in ("taxpayer", "operator"):
+        raise TransitionDenied("Only the taxpayer creates a submission.")
+
+
+def declaration_required(source: str | None) -> bool:
+    """A portal send needs the taxpayer's declaration; an RSL claim was declared in RSL's system."""
+    return source not in RSL_SOURCES
 
 
 def check_writes(

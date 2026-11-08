@@ -34,3 +34,8 @@ Money is a decimal string with at most two places, and floats are refused. Dates
 ```sh
 python3 -m unittest tests/integration/test_rsl_sources.py -v
 ```
+
+## Consumers
+
+- TAX-121 assurance checks (`backend/vati_tax/vati_tax/assurance`).
+- TAX-122 claim intake (`backend/vati_tax/vati_tax/rsl_intake`, ADR-043): reads `online_refunds.claim` per taxpayer and records each claim as a sent `Vati Submission` with source `rsl_online_refunds`, keeping references and hashes only.

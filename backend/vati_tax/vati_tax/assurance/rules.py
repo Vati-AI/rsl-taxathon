@@ -672,6 +672,7 @@ def assess_case(
     bundle_sha256: str,
     assess: Any,
     register_version: str,
+    claim_ref: str | None = None,
 ) -> dict[str, Any]:
     """Run the checks for one sent claim and return what to record (no I/O but the reads).
 
@@ -679,7 +680,8 @@ def assess_case(
     assumptions (RSL tenant, synthetic rates, materiality), ``records`` the taxpayer's own
     records read from Frappe and ``assess`` the TAX-118 ``assess_taxpayer``. The claim is
     the taxpayer's Online Refunds Application record for ``period``; its amount must equal
-    the amount sent in Frappe. Returns ``status`` (``completed``, ``degraded`` or
+    the amount sent in Frappe. A claim read from RSL (TAX-122) passes its RSL ``claim_ref``
+    and is matched by that ID, not only by period. Returns ``status`` (``completed``, ``degraded`` or
     ``not_run``), ``reason``, per-check status, the RSL systems' answers and, when it ran,
     the finding bodies, the claim's lane proposal and the run summary.
     """
@@ -697,7 +699,11 @@ def assess_case(
     if status == "not_run":
         return plan
     claims = next(e for e in envelopes if e["source_system"] == "online_refunds")["records"]
-    found = next((c for c in claims if c["period"] == period), None)
+    found = next(
+        (c for c in claims
+         if c["period"] == period and (claim_ref is None or str(c["claim_id"]) == claim_ref)),
+        None,
+    )  # fmt: skip
     if found is None:
         return {**plan, "status": "not_run", "reason": "rsl_claim_not_found"}
     plan["claim_ref"] = str(found["claim_id"])

@@ -25,6 +25,16 @@ WRITABLE: dict[str, frozenset[str]] = {
     "supervisor": frozenset({"status", "correction_reason"}),
     "service": frozenset({"case_id"}),
 }
+# TAX-122 (ADR-043): a claim filed in RSL's Online Refunds Application is recorded and
+# sent by RSL's intake, running as the service identity. The taxpayer cannot change it:
+# what they filed lives in RSL's system.
+RSL_WRITABLE: dict[str, frozenset[str]] = {
+    **WRITABLE,
+    "taxpayer": frozenset(),
+    "service": frozenset({"case_id", "status"}),
+}
+# What an RSL-sourced submission references in RSL. Set once on insert by the intake.
+SOURCE_FIELDS = ("source_ref", "source_contract", "source_record_sha256", "source_refs")
 SERVER = frozenset(
     {
         "reference",
@@ -35,6 +45,7 @@ SERVER = frozenset(
         "submitted_at",
         "submitted_by",
         "submission_key",
+        *SOURCE_FIELDS,
     }
 )
 # TAX-039: mirrored from Jube by vati_tax.bridge with a direct database write.
@@ -70,6 +81,10 @@ class VatiSubmission(Document):
         declaration: int
         contact_email: str | None
         source: str
+        source_ref: str | None
+        source_contract: str | None
+        source_record_sha256: str | None
+        source_refs: str | None
         idempotency_key: str | None
         submission_key: str | None
         submitted_at: str | None
@@ -88,8 +103,17 @@ class VatiSubmission(Document):
             else domain.new_uuid()
         )
         actor = guard.actor_for(self.tenant_id)
-        if actor not in ("taxpayer", "operator"):
-            frappe.throw("Only the taxpayer creates a submission.", frappe.PermissionError)
+        self.source = self.source or domain.SOURCE_PORTAL
+        guard.domain_call(domain.check_create, actor, self.source, self.submission_type)
+        if self.source not in domain.RSL_SOURCES:
+            for field in SOURCE_FIELDS:
+                self.set(field, None)
+        elif not self.source_ref or not self.source_record_sha256:
+            frappe.throw(
+                "A claim read from RSL needs its RSL reference and record hash.",
+                guard.InvalidDomainInput,
+                title="source_reference_required",
+            )
         # Server-set on insert whatever the client sent.
         self.status = domain.DRAFT
         self.version = 1
@@ -109,14 +133,17 @@ class VatiSubmission(Document):
         if before is not None:
             for field in MIRRORED:
                 self.set(field, before.get(field))
-            guard.check_writes(self, actor, WRITABLE, SERVER, WATCHED)
+            writable = RSL_WRITABLE if self.source in domain.RSL_SOURCES else WRITABLE
+            guard.check_writes(self, actor, writable, SERVER, WATCHED)
             changed = guard.changed_fields(self, TAXPAYER_FIELDS)
             if changed and before.status not in domain.EDITABLE_STATUSES:
                 frappe.throw(
                     f"The submission is {before.status}; it can no longer change.",
                     frappe.PermissionError,
                 )
-            guard.domain_call(domain.check_transition, before.status, self.status, actor)
+            guard.domain_call(
+                domain.check_transition, before.status, self.status, actor, self.source
+            )
             # Written once: Frappe's set_only_once would also refuse the first link.
             if before.case_id and before.case_id != self.case_id:
                 frappe.throw("case_id cannot change once set.", frappe.CannotChangeConstantError)
@@ -154,7 +181,7 @@ class VatiSubmission(Document):
 
     def _on_transition(self, before: str) -> None:
         if self.status == domain.SUBMITTED:
-            if not self.declaration:
+            if domain.declaration_required(self.source) and not self.declaration:
                 frappe.throw(
                     "Confirm the declaration before sending the submission.",
                     guard.InvalidDomainInput,

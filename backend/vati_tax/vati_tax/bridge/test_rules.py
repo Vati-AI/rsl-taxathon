@@ -205,6 +205,21 @@ class LoopGuardTests(unittest.TestCase):
     def test_a_mirror_write_never_registers(self):
         self.assertFalse(rules.should_register("draft", "submitted", rules.ORIGIN_MIRROR))
 
+    def test_an_rsl_intake_send_registers_and_unknown_origins_do_not(self):
+        # TAX-122: a claim filed in RSL's Online Refunds Application, sent by the intake.
+        rsl = rules.ORIGIN_RSL_ONLINE_REFUNDS
+        self.assertTrue(rules.should_register("draft", "submitted", rsl))
+        self.assertFalse(rules.should_register("submitted", "submitted", rsl))
+        self.assertFalse(rules.should_register("draft", "submitted", "staff"))
+        self.assertFalse(rules.should_register("draft", "submitted", "someone_else"))
+
+    def test_origin_of_a_change(self):
+        self.assertEqual(rules.submission_origin(True, "rsl_online_refunds"), rules.ORIGIN_MIRROR)
+        self.assertEqual(rules.submission_origin(False, "rsl_online_refunds"),
+                         rules.ORIGIN_RSL_ONLINE_REFUNDS)  # fmt: skip
+        for source in ("portal", "api", "synthetic_seed", None):
+            self.assertEqual(rules.submission_origin(False, source), rules.ORIGIN_TAXPAYER)
+
     def test_registration_keys_are_stable_per_send(self):
         key1, payload = rules.registration_event(SUBMISSION, 2)
         self.assertEqual(rules.registration_event(SUBMISSION, 2)[0], key1)

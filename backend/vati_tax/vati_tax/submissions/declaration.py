@@ -5,7 +5,8 @@ taxpayer's declared figures. Each one belongs to one ``Vati Submission`` of the
 same tenant and taxpayer, copies its period, and can only be created, changed
 or deleted while that submission is ``draft`` or ``correction_needed``. Only the
 taxpayer (and site operators) write figures; staff and service identities read
-them.
+them. Exception (TAX-122): for a claim filed in RSL's Online Refunds Application, RSL's
+intake (the service identity) records the claimed figures and the taxpayer cannot.
 """
 
 from __future__ import annotations
@@ -19,6 +20,13 @@ from frappe.model.document import Document
 from vati_tax.submissions import domain, guard
 
 REFERENCE_FIELDS = ("tenant_id", "taxpayer_id", "submission_id")
+
+
+def _may_declare(actor: str, parent: Any) -> bool:
+    """The taxpayer declares portal figures; RSL's intake records an RSL-filed claim (TAX-122)."""
+    if parent.get("source") in domain.RSL_SOURCES:
+        return actor in ("service", "operator")
+    return actor in ("taxpayer", "operator")
 
 
 class DeclarationDocument(Document):
@@ -50,9 +58,10 @@ class DeclarationDocument(Document):
             )
         guard.require_editable(parent)
         actor = guard.actor_for(self.tenant_id)
-        writable = {"taxpayer": self.DECLARED}
+        rsl_filed = parent.get("source") in domain.RSL_SOURCES
+        writable: dict[str, frozenset[str]] = {} if rsl_filed else {"taxpayer": self.DECLARED}
         guard.check_writes(self, actor, writable, self.SERVER, (*self.DECLARED, *self.SERVER))
-        if self.is_new() and actor not in ("taxpayer", "operator"):
+        if self.is_new() and not _may_declare(actor, parent):
             frappe.throw("Only the taxpayer declares figures.", frappe.PermissionError)
         self.period = parent.period
         self.currency = guard.domain_call(domain.validate_currency, self.get("currency"))

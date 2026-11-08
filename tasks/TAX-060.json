@@ -95,6 +95,10 @@
     {
       "at": "2026-11-06",
       "text": "User-directed ownership transfer from Leseli to Keletso for all tasks, including completed tasks and epics. Status, implementation claim and evidence preserved."
+    },
+    {
+      "at": "2026-11-07",
+      "text": "ADR-043: metrics cover Vati-investigated cases and evidence turnaround only."
     }
   ]
 }

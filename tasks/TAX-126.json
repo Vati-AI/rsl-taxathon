@@ -1,0 +1,59 @@
+{
+  "id": "TAX-126",
+  "kind": "task",
+  "title": "Checks on evidence responses before they are sent",
+  "owner": "Keletso",
+  "area": "apps/taxpayer-web",
+  "phase": "pilot",
+  "status": "BACKLOG",
+  "priority": "P1",
+  "depends_on": [
+    "TAX-125",
+    "TAX-044",
+    "TAX-078",
+    "TAX-038"
+  ],
+  "claimed_by": null,
+  "branch": null,
+  "pr": null,
+  "scope": "Move the TAX-044/048 checks and TAX-078 reminders onto the evidence-response page so wrong periods, unreadable files and amounts that do not match the requested item are flagged before sending",
+  "inputs": [
+    "PROJECT.md",
+    "PROJECT_SCOPE.md",
+    "docs/ARCHITECTURE.md",
+    "docs/decisions/ADR-043-vati-downstream-of-rsl-selection.md",
+    "docs/decisions/ADR-040-rsl-existing-systems-integration.md",
+    "docs/reference/RSL_LANDSCAPE.md",
+    "apps/taxpayer-web/src/lib/responses.ts",
+    "backend/vati_tax/vati_tax/responses"
+  ],
+  "acceptance": [
+    {
+      "text": "Before sending, each answered item shows guidance from the reconciliation and Docling extraction (period, legibility, amount against the requested line); guidance never blocks sending",
+      "done": false
+    },
+    {
+      "text": "Relevant earlier-claim reminders appear on the response page; failure to load them never blocks the response",
+      "done": false
+    },
+    {
+      "text": "Record relevant tests and evidence, update task status and open a PR",
+      "done": false
+    }
+  ],
+  "verification": "Unit and browser tests for each check and the non-blocking behaviour",
+  "skills": [
+    "start-task",
+    "implement-change",
+    "update-project-task",
+    "finish-task"
+  ],
+  "evidence": [],
+  "notes": [
+    {
+      "at": "2026-11-07",
+      "text": "Added 2026-11-07 from ADR-043 (Vati downstream of RSL selection; portal answers evidence requests)."
+    }
+  ],
+  "sequence": 20
+}

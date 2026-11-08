@@ -1,0 +1,58 @@
+{
+  "id": "TAX-140",
+  "kind": "task",
+  "title": "In-house loss creation through intra-group financing",
+  "owner": "Keletso",
+  "area": "ai",
+  "phase": "pilot",
+  "status": "BACKLOG",
+  "priority": "P1",
+  "depends_on": [
+    "TAX-049",
+    "TAX-116",
+    "TAX-118"
+  ],
+  "claimed_by": null,
+  "branch": null,
+  "pr": null,
+  "scope": "Extend the related-party playbook to losses created by intra-group interest and financing, with the thin-capitalisation candidate route (unverified) and a loss carry-forward pattern",
+  "inputs": [
+    "PROJECT.md",
+    "PROJECT_SCOPE.md",
+    "docs/ARCHITECTURE.md",
+    "docs/decisions/ADR-043-vati-downstream-of-rsl-selection.md",
+    "docs/decisions/ADR-040-rsl-existing-systems-integration.md",
+    "docs/reference/RSL_LANDSCAPE.md",
+    "ai/workflows",
+    "ai/workflows/rule_register.candidates.json"
+  ],
+  "acceptance": [
+    {
+      "text": "Findings separate financing-driven losses from operating losses and test alternative explanations",
+      "done": false
+    },
+    {
+      "text": "Routes stay unverified candidates or policy gaps",
+      "done": false
+    },
+    {
+      "text": "Record relevant tests and evidence, update task status and open a PR",
+      "done": false
+    }
+  ],
+  "verification": "Playbook tests on synthetic cases",
+  "skills": [
+    "start-task",
+    "implement-change",
+    "update-project-task",
+    "finish-task"
+  ],
+  "evidence": [],
+  "notes": [
+    {
+      "at": "2026-11-07",
+      "text": "Added 2026-11-07 from ADR-043 (Vati downstream of RSL selection; portal answers evidence requests)."
+    }
+  ],
+  "sequence": 17
+}

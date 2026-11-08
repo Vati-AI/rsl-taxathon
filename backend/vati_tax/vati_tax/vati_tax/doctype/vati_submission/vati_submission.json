@@ -28,6 +28,10 @@
   "review_status_at",
   "integration_section",
   "source",
+  "source_ref",
+  "source_contract",
+  "source_record_sha256",
+  "source_refs",
   "idempotency_key",
   "submission_key",
   "case_id",
@@ -199,7 +203,42 @@
    "fieldname": "source",
    "fieldtype": "Select",
    "label": "Source",
-   "options": "portal\napi\nsynthetic_seed",
+   "options": "portal\napi\nsynthetic_seed\nrsl_online_refunds",
+   "set_only_once": 1
+  },
+  {
+   "description": "RSL record ID of a claim read from an RSL system (TAX-122), e.g. the Online Refunds Application claim_id. Set once by the intake.",
+   "fieldname": "source_ref",
+   "fieldtype": "Data",
+   "label": "RSL Source Reference",
+   "length": 80,
+   "read_only": 1,
+   "set_only_once": 1
+  },
+  {
+   "description": "TAX-111 source contract the record was read through.",
+   "fieldname": "source_contract",
+   "fieldtype": "Data",
+   "label": "RSL Source Contract",
+   "length": 80,
+   "read_only": 1,
+   "set_only_once": 1
+  },
+  {
+   "description": "SHA-256 of the RSL record as read; a different record under the same reference is refused as a conflict.",
+   "fieldname": "source_record_sha256",
+   "fieldtype": "Data",
+   "label": "RSL Record SHA-256",
+   "length": 64,
+   "read_only": 1,
+   "set_only_once": 1
+  },
+  {
+   "description": "References to what RSL holds for this claim (claim lines and uploaded documents): IDs and hashes only, never copies.",
+   "fieldname": "source_refs",
+   "fieldtype": "JSON",
+   "label": "RSL Source References",
+   "read_only": 1,
    "set_only_once": 1
   },
   {
@@ -235,7 +274,7 @@
  ],
  "index_web_pages_for_search": 0,
  "links": [],
- "modified": "2026-11-04 12:00:00.000000",
+ "modified": "2026-11-07 16:30:00.000000",
  "modified_by": "Administrator",
  "module": "Vati Tax",
  "name": "Vati Submission",

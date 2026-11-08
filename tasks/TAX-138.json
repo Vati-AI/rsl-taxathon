@@ -1,0 +1,58 @@
+{
+  "id": "TAX-138",
+  "kind": "task",
+  "title": "Source-system labels on every value",
+  "owner": "Keletso",
+  "area": "backend",
+  "phase": "pilot",
+  "status": "BACKLOG",
+  "priority": "P1",
+  "depends_on": [
+    "TAX-133",
+    "TAX-086",
+    "TAX-090"
+  ],
+  "claimed_by": null,
+  "branch": null,
+  "pr": null,
+  "scope": "Every displayed value states its source (RSL e-Tax, Lekuka, ASYCUDA, Online Refunds, RSL fraud model, or Vati, Docling, yente) in Vati screens, briefings and exports",
+  "inputs": [
+    "PROJECT.md",
+    "PROJECT_SCOPE.md",
+    "docs/ARCHITECTURE.md",
+    "docs/decisions/ADR-043-vati-downstream-of-rsl-selection.md",
+    "docs/decisions/ADR-040-rsl-existing-systems-integration.md",
+    "docs/reference/RSL_LANDSCAPE.md",
+    "backend/vati_tax/vati_tax/findings",
+    "apps/auditor-web"
+  ],
+  "acceptance": [
+    {
+      "text": "API responses carry a source system for each sourced value",
+      "done": false
+    },
+    {
+      "text": "Officer screens and briefings display it",
+      "done": false
+    },
+    {
+      "text": "Record relevant tests and evidence, update task status and open a PR",
+      "done": false
+    }
+  ],
+  "verification": "Contract tests and screenshots",
+  "skills": [
+    "start-task",
+    "implement-change",
+    "update-project-task",
+    "finish-task"
+  ],
+  "evidence": [],
+  "notes": [
+    {
+      "at": "2026-11-07",
+      "text": "Added 2026-11-07 from ADR-043 (Vati downstream of RSL selection; portal answers evidence requests)."
+    }
+  ],
+  "sequence": 38
+}

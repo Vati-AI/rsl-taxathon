@@ -26,7 +26,7 @@
   ],
   "acceptance": [
     {
-      "text": "Configure and record tax statuses, queues, display fields, forms, selection reasons, assignments and rule administration using the pinned deployment; preserve source/version and canonical IDs.",
+      "text": "Configure and record tax statuses, queues, display fields, forms, referral reasons received from RSL, assignments and rule administration using the pinned deployment; preserve source/version and canonical IDs.",
       "done": false
     },
     {
@@ -51,7 +51,8 @@
   ],
   "evidence": [],
   "notes": [
-    "Added by TAX-105 from user-requested complete frontend/native UI scope; not implemented or claimed."
+    "Added by TAX-105 from user-requested complete frontend/native UI scope; not implemented or claimed.",
+    "ADR-043: Jube cases are investigation sub-cases of RSL cases; selection reasons are received from RSL referrals, not configured as population selection. RSL context is added by TAX-134."
   ],
-  "sequence": 16
+  "sequence": 32
 }

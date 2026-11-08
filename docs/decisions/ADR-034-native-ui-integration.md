@@ -3,6 +3,7 @@
 Status: proposed for human review; records the user's requested scope clarification.
 Owner and task: Keletso, TAX-105
 Date: 2026-11-05
+Revisited by: [ADR-043](ADR-043-vati-downstream-of-rsl-selection.md) (2026-11-07). RSL already runs WSO2 Identity Server, so TAX-136 tests one sign-in for Jube and OpenAleph; the no-fork rule stands.
 
 Context and smallest prototype need: The original technical summary section 7 calls
 for full officer/taxpayer experiences and advanced access to Jube/OpenAleph. The auditor

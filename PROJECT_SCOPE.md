@@ -4,7 +4,7 @@ Baseline: the user-supplied “Proposal to Revenue Services Lesotho — Adaptive
 
 ## Foundation / Taxathon pilot
 
-Connect Frappe taxpayer submission → Docling processing → FtM/yente entity resolution → Jube risk and operational case → LangGraph investigation → OpenAleph evidence/relationships → auditor review → approved human outcome and audit record.
+Connect an RSL source (an Online Refunds Application claim or an RSL audit referral) → Docling processing → FtM/yente entity resolution → Jube risk and operational case → LangGraph investigation → OpenAleph evidence/relationships → auditor review → approved human outcome and audit record → results back to RSL. Taxpayers answer RSL's evidence requests in the Frappe portal; they file claims in RSL's own systems ([ADR-043](docs/decisions/ADR-043-vati-downstream-of-rsl-selection.md)).
 
 Five mandatory scenarios: legitimate unusual refund; related-party charges with persistent losses; employment-versus-consultancy ambiguity; imported-services VAT/withholding evidence gap; economic concern with no verified legal route, recorded as policy gap. Use fast/standard/targeted refund lanes without automatic denial or payment.
 
@@ -35,6 +35,30 @@ architecture and service authority. It changes how the platform plugs into RSL
   uploads. Operating costs are proposal content, not code. Crypto, serious tax crime and
   internal integrity stay under long-term value.
 
+
+## Repositioning downstream of RSL (2026-11-07)
+
+[ADR-043](docs/decisions/ADR-043-vati-downstream-of-rsl-selection.md) applies the framework
+update to the code and to the open-source tools. Public research on RSL's systems is in
+[RSL_LANDSCAPE.md](docs/reference/RSL_LANDSCAPE.md); it is unverified.
+
+- **RSL selects, Vati investigates, RSL acts.** Cases start from an Online Refunds claim
+  (TAX-122) or an RSL audit referral (TAX-123). Approved findings, lane recommendations and
+  evidence-requested notices go back to RSL (TAX-124). RSL keeps status, payment and assessment.
+- **The taxpayer portal answers evidence requests** (TAX-125 to TAX-128, TAX-130). The claim
+  form becomes a fixture-only Online Refunds simulator. Preventative checks continue as a
+  check-before-you-file service (TAX-129).
+- **Reframed, not rebuilt:** Jube cases are investigation sub-cases of RSL cases, and Vati
+  output is corroboration rather than a competing score (TAX-131). Lanes are recommendations
+  (TAX-132).
+- **One system on RSL:** RSL references, source labels, two-way navigation and one sign-in
+  across Vati, Jube and OpenAleph (TAX-133 to TAX-138).
+- **Challenge 2 gaps:**
+  - a seventh scenario, persistent VAT credit positions (TAX-139);
+  - in-house loss creation through intra-group financing (TAX-140);
+  - imported services booked as expenses (TAX-141);
+  - refund-confidentiality rules in the pilot (TAX-142).
+- **Demo:** TAX-143 runs the RSL-first journey on fixtures.
 
 Approved workflow learning, calibration/peer intelligence, institutional knowledge, objections/appeals, EOI preparation/response handling, tax/customs reconciliation, scheme/ownership/intermediary graph, integrity controls, policy intelligence and operational acceptance.
 

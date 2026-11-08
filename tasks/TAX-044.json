@@ -83,6 +83,10 @@
     {
       "at": "2026-11-06",
       "text": "User-directed ownership transfer from Kananelo to Keletso for all tasks, including completed tasks and epics. Status, implementation claim and evidence preserved."
+    },
+    {
+      "at": "2026-11-07",
+      "text": "ADR-043: the invoice entry step is retired (lines come from the claim and Lekuka); the checks continue as the check-before-you-file service (TAX-129) and response checks (TAX-126)."
     }
   ]
 }
