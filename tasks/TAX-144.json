@@ -5,14 +5,14 @@
   "owner": "Keletso",
   "area": "tests/frontend",
   "phase": "pilot",
-  "status": "IN_PROGRESS",
+  "status": "IN_REVIEW",
   "priority": "P0",
   "depends_on": [
     "TAX-023"
   ],
   "claimed_by": "claude-code-20261108-vigilant-fermat",
   "branch": "claude/vigilant-fermat-4x2es6",
-  "pr": null,
+  "pr": "https://github.com/Vati-AI/rsl-taxathon/pull/284",
   "scope": "Capture before-screenshots of every auditor and taxpayer screen at 1440x900 and add browser checks that fail when an operational screen exceeds the page-length budget or user-visible text names an open-source component",
   "inputs": [
     "PROJECT.md",
@@ -38,7 +38,7 @@
     },
     {
       "text": "Record relevant tests and evidence, update task status and open a PR",
-      "done": false
+      "done": true
     }
   ],
   "verification": "Playwright report on the fixture build plus screenshots in docs/evidence/TAX-144",
@@ -60,6 +60,10 @@
     {
       "criterion": 3,
       "text": "support/layout.ts scans visible text nodes, aria-label/title/alt/placeholder and the document title for Jube, OpenAleph, Frappe, Docling, yente, LangGraph and Groq, skipping [data-component-names-allowed] (About page and Admin diagnostics, TAX-150). Found 19 occurrences on 9 auditor screens and none on taxpayer screens (listed in the inventory). It reports them and blocks any increase; the baseline names TAX-150, which empties it and so makes the check fully blocking."
+    },
+    {
+      "criterion": 4,
+      "text": "Tests and evidence recorded in docs/evidence/TAX-144 and tests/frontend/README.md; harness run 89 passed, 4 skipped; dev.py check, lint, format and typecheck passed; PR https://github.com/Vati-AI/rsl-taxathon/pull/284."
     }
   ],
   "notes": [
