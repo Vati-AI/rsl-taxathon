@@ -667,5 +667,9 @@ class RefundClaimPortalTests(IntegrationTestCase):
         if case_id:
             self.assertNotIn(case_id, text)
         allowed = {"id", "reference", "taxpayer_name", "tax_type", "period", "amount", "currency",
-                   "status", "submitted_at", "next_step", "steps"}  # fmt: skip
+                   "status", "submitted_at", "next_step", "steps",
+                   # TAX-125: where it came from; RSL's block only for a claim filed with RSL.
+                   "origin", "rsl"}  # fmt: skip
         self.assertEqual(set(payloads[1]["data"]), allowed)
+        self.assertEqual((payloads[1]["data"]["origin"], payloads[1]["data"]["rsl"]),
+                         ("portal", None))  # fmt: skip

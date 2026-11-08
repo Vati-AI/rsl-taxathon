@@ -42,7 +42,10 @@ test.describe('taxpayer portal', () => {
     await page.goto(TAXPAYER + '/taxpayer/');
     await expect(page).toHaveURL(/\/taxpayer\/requests$/);
     await pageReady(page, 'Evidence requests');
-    await expect(nav(page).getByRole('link').first()).toHaveAccessibleName(
+    // The current bottom-bar item is a button in frappe-ui (it scrolls to top), so take
+    // the first item in document order, link or button.
+    const items = nav(page).getByRole('link').or(nav(page).getByRole('button'));
+    await expect(items.first()).toHaveAccessibleName(
       isMobile(testInfo.project.name) ? 'Requests' : 'Evidence requests',
     );
     // TAX-092: the server says the data is live, so the fixture notice is not shown.

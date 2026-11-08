@@ -287,8 +287,9 @@ class RslIntakeBenchTests(IntegrationTestCase):
                                        "vati_tenant_id": self.tenant,
                                        "unavailable": []}  # fmt: skip
         try:
-            tin = next(t for t, rows in self.claims.items() if rows)
-            first = self.claims[tin][0]
+            # The claim _keep_claims gave an RSL status, and its taxpayer.
+            first = next(c for rows in self.claims.values() for c in rows if c.get("status"))
+            tin = str(first["tin"])
             self.as_user(f"tax121-{tin}-{self.run_id}@example.test")
             items = portal_api.get_submissions()["data"]
             mine = {i["rsl"]["claim_ref"]: i for i in items if i["origin"] == "rsl_online_refunds"}
@@ -298,8 +299,10 @@ class RslIntakeBenchTests(IntegrationTestCase):
                              ("audit_in_progress", "Audit in progress", "reported"))  # fmt: skip
             self.assertTrue(block["recorded"])
             self.assertIsNone(block["dashboard_url"])
-            for other in self.claims[tin][1:]:
-                self.assertEqual(mine[other["claim_id"]]["rsl"]["status_state"], "not_reported")
+            for other in self.claims[tin]:
+                if other is not first:
+                    state = mine[other["claim_id"]]["rsl"]["status_state"]
+                    self.assertEqual(state, "not_reported")
             for item in items:
                 self.assertNotIn("case_id", item)
             frappe.local.conf[conf_key]["unavailable"] = ["online_refunds"]
