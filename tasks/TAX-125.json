@@ -30,19 +30,19 @@
   "acceptance": [
     {
       "text": "Portal home and first navigation item are Evidence requests; deep link /taxpayer/requests/:id works from an RSL screen after login",
-      "done": false
+      "done": true
     },
     {
       "text": "My cases is read-only, shows the RSL claim reference and RSL status with its source and a link to RSL's dashboard, and never shows risk or officer detail",
-      "done": false
+      "done": true
     },
     {
       "text": "The claim form and invoice entry are absent from the taxpayer product; the simulator is reachable only in fixture mode and labelled as an Online Refunds simulator",
-      "done": false
+      "done": true
     },
     {
       "text": "Screenshots at relevant viewports and accessibility checks per docs/DESIGN_STANDARD.md; record relevant tests and evidence, update task status and open a PR",
-      "done": false
+      "done": true
     }
   ],
   "verification": "Router and browser tests for the new navigation, deep link, absent routes and fixture-only simulator",
@@ -52,7 +52,24 @@
     "update-project-task",
     "finish-task"
   ],
-  "evidence": [],
+  "evidence": [
+    {
+      "criterion": 1,
+      "text": "Home and first navigation item are Evidence requests: router '/' redirects to evidence-requests; App.vue sidebar and bottom bar list Evidence requests first, then My cases and Account. Browser: taxpayer.spec 'positive navigation' asserts /taxpayer/ lands on /taxpayer/requests and the first nav item is Evidence requests (all three widths). Deep link: a signed-out visit to /taxpayer/requests/:id goes to /login?redirect-to=%2Ftaxpayer%2Frequests%2F<id> and, signed in, opens that request (taxpayer.spec 'a link from RSL to one evidence request...', router.test.ts, portal/test_access.py)."
+    },
+    {
+      "criterion": 2,
+      "text": "My cases (/taxpayer/submissions) is read-only (no claim action; asserted in the browser). For a claim read from RSL (TAX-122) the view carries an rsl block: RSL claim reference, the status RSL reports (read from the site's RSL source at view time through the TAX-111 contract, which gains an optional status limited to processing/pending/audit_in_progress/processed/rejected/cancelled), its source system and whether it is a recorded fixture; RSL not answering is 'unavailable', a missing or unknown status 'not_reported', never shown raw. A link to RSL's dashboard comes only from site config vati_rsl_links.online_refunds_dashboard (https, no credentials); otherwise the page says to sign in to RSL's system. Tests: portal/test_submissions.py RslClaimTests, portal/test_rsl.py, tests/integration/test_rsl_sources.py, bench rsl_intake test_the_taxpayer_sees_rsl_reference_and_status_labelled_with_its_source (reported, not_reported and unavailable through portal_api), bench test_internal_case_and_risk_detail_never_reach_the_view (allowlist now includes origin and rsl, rsl None for portal claims), browser 'a case filed with RSL shows RSL reference, status and source, and no internal detail' and 'a configured RSL link opens ... in a new tab'."
+    },
+    {
+      "criterion": 3,
+      "text": "The claim form and invoice entry are the 'Online Refunds simulator': labelled page and banner, listed under 'Fixture tools'. Only on sites with vati_online_refunds_simulator (scripts/frappe_dev.py init sets it on taxathon.localhost; observed in site_config.json). Elsewhere the route renders Page not found (router meta guard), the menu has no link and submit_refund_claim/review_refund_claim raise PermissionError (bench test_without_the_simulator_claims_are_refused_and_the_session_says_so; browser 'without the simulator the portal has no claim form or link to one'). The fixture demo and the bench tests that use the form enable it explicitly."
+    },
+    {
+      "criterion": 4,
+      "text": "Screenshots at 1440/1024/390 in docs/evidence/TAX-125 (home, my cases, RSL case, simulator, simulator absent) with axe (WCAG 2.1 A/AA serious/critical) and reflow checks in the same test. Local checks: dev.py check passed; backend Frappe-free tests 533 OK; vitest 77 OK; vue-tsc, eslint, prettier, ruff check and mypy passed (ruff format flags only scripts/make_demo_narration.py, already unformatted on main). Playwright (all three widths): 208 passed, 9 skipped, 11 failed in the first full run: 9 are tests/frontend/demo/demo.spec.ts, which needs its own manually started servers (playwright.demo.config.ts, :58082) and is unchanged in that respect from main; 1 was the mobile nav assertion (fixed: frappe-ui renders the current bottom-bar item as a button); 1 claim.spec tablet timeout on a cold dev server. taxpayer.spec and claim.spec then passed 192/192 with --repeat-each 2. frappe_dev.py verify on fresh site verify-20261108t064016.localhost: install, migrate x2 OK; 202 bench tests, failures only in reminders.test_reminders_bench (2 failures, 1 error), each of which passes when run alone: cross-test pollution in that module, also recorded in TAX-121's evidence; rsl_intake (6) and portal refund-claim (25) bench modules pass."
+    }
+  ],
   "notes": [
     {
       "at": "2026-11-07",
