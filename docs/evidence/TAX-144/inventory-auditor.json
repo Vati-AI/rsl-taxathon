@@ -1,0 +1,361 @@
+{
+  "budget_viewports": 1.5,
+  "viewport": "1440x900",
+  "screens": [
+    {
+      "screen": "auditor/overview",
+      "path": "/auditor/",
+      "role": "auditor",
+      "length": {
+        "heightPx": 900,
+        "viewportPx": 900,
+        "viewports": 1,
+        "source": "document"
+      },
+      "overBudget": false,
+      "names": [
+        {
+          "name": "Jube",
+          "where": "text",
+          "context": "us. Statuses come from case management (Jube); they describe processing, not outcome"
+        }
+      ],
+      "verdict": [
+        "known component names, fixed by TAX-150"
+      ]
+    },
+    {
+      "screen": "auditor/queue",
+      "path": "/auditor/cases",
+      "role": "auditor",
+      "length": {
+        "heightPx": 900,
+        "viewportPx": 900,
+        "viewports": 1,
+        "source": "document"
+      },
+      "overBudget": false,
+      "names": [
+        {
+          "name": "Docling",
+          "where": "text",
+          "context": "Document extraction (Docling) timed out"
+        },
+        {
+          "name": "Jube",
+          "where": "text",
+          "context": "Waiting for Case management (Jube)"
+        }
+      ],
+      "verdict": [
+        "known component names, fixed by TAX-150"
+      ]
+    },
+    {
+      "screen": "auditor/case-detail",
+      "path": "/auditor/cases/40000000-0000-4000-8000-000000000002",
+      "role": "auditor",
+      "length": {
+        "heightPx": 900,
+        "viewportPx": 900,
+        "viewports": 1,
+        "source": "document"
+      },
+      "overBudget": false,
+      "names": [
+        {
+          "name": "Jube",
+          "where": "text",
+          "context": "Signal from Case management (Jube)"
+        },
+        {
+          "name": "Jube",
+          "where": "text",
+          "context": "Signal from Case management (Jube)"
+        },
+        {
+          "name": "Frappe",
+          "where": "text",
+          "context": "Taxpayer portal (Frappe)"
+        },
+        {
+          "name": "Jube",
+          "where": "text",
+          "context": "Case management (Jube)"
+        },
+        {
+          "name": "Jube",
+          "where": "text",
+          "context": "syn-jube-3002"
+        },
+        {
+          "name": "LangGraph",
+          "where": "text",
+          "context": "Investigation workflow (LangGraph)"
+        }
+      ],
+      "verdict": [
+        "known component names, fixed by TAX-150"
+      ]
+    },
+    {
+      "screen": "auditor/case-review",
+      "path": "/auditor/cases/40000000-0000-4000-8000-000000000002/review",
+      "role": "auditor",
+      "length": {
+        "heightPx": 2031,
+        "viewportPx": 900,
+        "viewports": 2.26,
+        "source": "document"
+      },
+      "overBudget": true,
+      "names": [
+        {
+          "name": "Jube",
+          "where": "text",
+          "context": "Recorded by Jube with the case update. It is not a risk"
+        }
+      ],
+      "verdict": [
+        "known over budget, fixed by TAX-148",
+        "known component names, fixed by TAX-150"
+      ]
+    },
+    {
+      "screen": "auditor/taxpayer",
+      "path": "/auditor/taxpayers/20000000-0000-4000-8000-000000000002",
+      "role": "auditor",
+      "length": {
+        "heightPx": 900,
+        "viewportPx": 900,
+        "viewports": 1,
+        "source": "document"
+      },
+      "overBudget": false,
+      "names": [
+        {
+          "name": "Frappe",
+          "where": "text",
+          "context": "payer context from the taxpayer portal (Frappe). Identifiers are masked."
+        }
+      ],
+      "verdict": [
+        "known component names, fixed by TAX-150"
+      ]
+    },
+    {
+      "screen": "auditor/management",
+      "path": "/auditor/management",
+      "role": "auditor",
+      "length": {
+        "heightPx": 900,
+        "viewportPx": 900,
+        "viewports": 1,
+        "source": "document"
+      },
+      "overBudget": false,
+      "names": [],
+      "verdict": []
+    },
+    {
+      "screen": "auditor/integrity",
+      "path": "/auditor/management/integrity",
+      "role": "auditor",
+      "length": {
+        "heightPx": 900,
+        "viewportPx": 900,
+        "viewports": 1,
+        "source": "document"
+      },
+      "overBudget": false,
+      "names": [],
+      "verdict": []
+    },
+    {
+      "screen": "auditor/showcase",
+      "path": "/auditor/showcase",
+      "role": "auditor",
+      "length": {
+        "heightPx": 2654,
+        "viewportPx": 900,
+        "viewports": 2.95,
+        "source": "document"
+      },
+      "overBudget": false,
+      "names": [
+        {
+          "name": "Frappe",
+          "where": "text",
+          "context": "The shared Vati visual contract on frappe-ui components. Every example uses synth"
+        },
+        {
+          "name": "Docling",
+          "where": "text",
+          "context": "Document extraction (Docling) timed out"
+        }
+      ],
+      "verdict": [
+        "exempt: development-only component showcase (DESIGN_STANDARD.md); leaves operational navigation in TAX-146",
+        "known component names, fixed by TAX-150"
+      ]
+    },
+    {
+      "screen": "auditor/not-found",
+      "path": "/auditor/no-such-page",
+      "role": "auditor",
+      "length": {
+        "heightPx": 900,
+        "viewportPx": 900,
+        "viewports": 1,
+        "source": "document"
+      },
+      "overBudget": false,
+      "names": [],
+      "verdict": []
+    },
+    {
+      "screen": "auditor/case-evidence",
+      "path": "/auditor/cases/40000000-0000-4000-8000-000000000002?tab=evidence",
+      "role": "auditor",
+      "length": {
+        "heightPx": 900,
+        "viewportPx": 900,
+        "viewports": 1,
+        "source": "document"
+      },
+      "overBudget": false,
+      "names": [],
+      "verdict": []
+    },
+    {
+      "screen": "auditor/case-relationships",
+      "path": "/auditor/cases/40000000-0000-4000-8000-000000000002?tab=relationships",
+      "role": "auditor",
+      "length": {
+        "heightPx": 1202,
+        "viewportPx": 900,
+        "viewports": 1.34,
+        "source": "document"
+      },
+      "overBudget": false,
+      "names": [
+        {
+          "name": "yente",
+          "where": "text",
+          "context": "syn-yente-0042 in vati_synthetic (20261103), simi"
+        },
+        {
+          "name": "yente",
+          "where": "text",
+          "context": "syn-yente-0107 in vati_synthetic (20261103), simi"
+        },
+        {
+          "name": "yente",
+          "where": "text",
+          "context": "syn-yente-0108 in vati_synthetic (20261103), simi"
+        }
+      ],
+      "verdict": [
+        "known component names, fixed by TAX-150"
+      ]
+    },
+    {
+      "screen": "auditor/case-findings",
+      "path": "/auditor/cases/40000000-0000-4000-8000-000000000002?tab=findings",
+      "role": "auditor",
+      "length": {
+        "heightPx": 1751,
+        "viewportPx": 900,
+        "viewports": 1.95,
+        "source": "document"
+      },
+      "overBudget": true,
+      "names": [],
+      "verdict": [
+        "known over budget, fixed by TAX-148"
+      ]
+    },
+    {
+      "screen": "auditor/evidence-record",
+      "path": "/auditor/cases/40000000-0000-4000-8000-000000000002/evidence/50000000-0000-4000-8000-000000000021",
+      "role": "auditor",
+      "length": {
+        "heightPx": 900,
+        "viewportPx": 900,
+        "viewports": 1,
+        "source": "document"
+      },
+      "overBudget": false,
+      "names": [
+        {
+          "name": "Docling",
+          "where": "text",
+          "context": "docling-serve@locked"
+        },
+        {
+          "name": "Frappe",
+          "where": "text",
+          "context": "Taxpayer portal (Frappe), restricted file"
+        }
+      ],
+      "verdict": [
+        "known component names, fixed by TAX-150"
+      ]
+    },
+    {
+      "screen": "auditor/case-review-supervisor",
+      "path": "/auditor/cases/40000000-0000-4000-8000-000000000002/review",
+      "role": "supervisor",
+      "length": {
+        "heightPx": 2031,
+        "viewportPx": 900,
+        "viewports": 2.26,
+        "source": "document"
+      },
+      "overBudget": true,
+      "names": [
+        {
+          "name": "Jube",
+          "where": "text",
+          "context": "Recorded by Jube with the case update. It is not a risk"
+        }
+      ],
+      "verdict": [
+        "known over budget, fixed by TAX-148",
+        "known component names, fixed by TAX-150"
+      ]
+    },
+    {
+      "screen": "auditor/management-supervisor",
+      "path": "/auditor/management",
+      "role": "supervisor",
+      "length": {
+        "heightPx": 1743,
+        "viewportPx": 900,
+        "viewports": 1.94,
+        "source": "document"
+      },
+      "overBudget": true,
+      "names": [],
+      "verdict": [
+        "known over budget, fixed by TAX-149"
+      ]
+    },
+    {
+      "screen": "auditor/integrity-supervisor",
+      "path": "/auditor/management/integrity",
+      "role": "supervisor",
+      "length": {
+        "heightPx": 1479,
+        "viewportPx": 900,
+        "viewports": 1.64,
+        "source": "document"
+      },
+      "overBudget": true,
+      "names": [],
+      "verdict": [
+        "known over budget, fixed by TAX-149"
+      ]
+    }
+  ]
+}

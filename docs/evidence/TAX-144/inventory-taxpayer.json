@@ -1,0 +1,104 @@
+{
+  "budget_viewports": 1.5,
+  "viewport": "1440x900",
+  "screens": [
+    {
+      "screen": "taxpayer/submissions",
+      "path": "/taxpayer/submissions",
+      "role": "taxpayer",
+      "length": {
+        "heightPx": 900,
+        "viewportPx": 900,
+        "viewports": 1,
+        "source": "document"
+      },
+      "overBudget": false,
+      "names": [],
+      "verdict": []
+    },
+    {
+      "screen": "taxpayer/submission",
+      "path": "/taxpayer/submissions/SUB-SYN-0001",
+      "role": "taxpayer",
+      "length": {
+        "heightPx": 900,
+        "viewportPx": 900,
+        "viewports": 1,
+        "source": "document"
+      },
+      "overBudget": false,
+      "names": [],
+      "verdict": []
+    },
+    {
+      "screen": "taxpayer/new-submission",
+      "path": "/taxpayer/submissions/new",
+      "role": "taxpayer",
+      "length": {
+        "heightPx": 1028,
+        "viewportPx": 900,
+        "viewports": 1.14,
+        "source": "div"
+      },
+      "overBudget": false,
+      "names": [],
+      "verdict": []
+    },
+    {
+      "screen": "taxpayer/evidence-requests",
+      "path": "/taxpayer/requests",
+      "role": "taxpayer",
+      "length": {
+        "heightPx": 900,
+        "viewportPx": 900,
+        "viewports": 1,
+        "source": "document"
+      },
+      "overBudget": false,
+      "names": [],
+      "verdict": []
+    },
+    {
+      "screen": "taxpayer/evidence-request",
+      "path": "/taxpayer/requests/45000000-0000-4000-8000-000000000001",
+      "role": "taxpayer",
+      "length": {
+        "heightPx": 1081,
+        "viewportPx": 900,
+        "viewports": 1.2,
+        "source": "div"
+      },
+      "overBudget": false,
+      "names": [],
+      "verdict": []
+    },
+    {
+      "screen": "taxpayer/account",
+      "path": "/taxpayer/account",
+      "role": "taxpayer",
+      "length": {
+        "heightPx": 900,
+        "viewportPx": 900,
+        "viewports": 1,
+        "source": "document"
+      },
+      "overBudget": false,
+      "names": [],
+      "verdict": []
+    },
+    {
+      "screen": "taxpayer/not-found",
+      "path": "/taxpayer/no-such-page",
+      "role": "taxpayer",
+      "length": {
+        "heightPx": 900,
+        "viewportPx": 900,
+        "viewports": 1,
+        "source": "document"
+      },
+      "overBudget": false,
+      "names": [],
+      "verdict": []
+    }
+  ]
+}

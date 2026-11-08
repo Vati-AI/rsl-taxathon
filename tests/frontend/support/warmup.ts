@@ -9,8 +9,8 @@ import { mockTaxpayerSession } from './sessions';
  * reload; doing that here keeps the reload out of the tests themselves.
  */
 export default async function warmup(config: FullConfig): Promise<void> {
-  const channel = config.projects[0]?.use.channel;
-  const browser = await chromium.launch({ channel });
+  const { channel, launchOptions } = config.projects[0]?.use ?? {};
+  const browser = await chromium.launch({ ...launchOptions, channel });
   try {
     const page = await browser.newPage();
     await mockTaxpayerSession(page, 'taxpayer');

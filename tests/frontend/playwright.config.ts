@@ -33,6 +33,8 @@ export default defineConfig({
   use: {
     // Local Windows runs can use the installed, signed Edge: PLAYWRIGHT_CHANNEL=msedge.
     channel: process.env.PLAYWRIGHT_CHANNEL || undefined,
+    // A preinstalled browser outside Playwright's cache (for example a cloud container).
+    launchOptions: { executablePath: process.env.PLAYWRIGHT_EXECUTABLE_PATH || undefined },
     trace: 'retain-on-failure',
   },
   projects: VIEWPORTS.map((viewport) => ({
