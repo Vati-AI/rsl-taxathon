@@ -1,0 +1,63 @@
+{
+  "id": "TAX-151",
+  "kind": "task",
+  "title": "Vati theme and name on the native investigation, explore and admin screens",
+  "owner": "Keletso",
+  "area": "integration",
+  "phase": "pilot",
+  "status": "BACKLOG",
+  "priority": "P1",
+  "depends_on": [
+    "TAX-145",
+    "TAX-107",
+    "TAX-108",
+    "TAX-091"
+  ],
+  "claimed_by": null,
+  "branch": null,
+  "pr": null,
+  "scope": "Apply the Vati name, logo, favicon and colour tokens to Jube (Investigation), OpenAleph (Explore) and Frappe Desk, login and system emails (Admin) using only supported configuration, an injected stylesheet or reverse-proxy header and footer, without forking; add a Vati header strip with a link back to the case where supported",
+  "inputs": [
+    "PROJECT.md",
+    "PROJECT_SCOPE.md",
+    "docs/DESIGN_STANDARD.md",
+    "docs/decisions/ADR-044-vati-workspace-identity-and-design-v2.md",
+    "docs/decisions/ADR-004-auditor-frontend-stack.md",
+    "docs/UI_INTEGRATION_SCOPE.md",
+    "docs/decisions/ADR-034-native-ui-integration.md",
+    "config"
+  ],
+  "acceptance": [
+    {
+      "text": "Record, for the pinned versions, the licence terms and the supported branding options of Jube, OpenAleph and Frappe from official sources; attribution required by each licence stays visible or is linked from the About page",
+      "done": false
+    },
+    {
+      "text": "Authenticated screenshots of the themed Investigation, Explore, Admin and login screens next to the Vati apps show one product; every place a pinned version cannot be renamed or themed is listed as a limitation, not hidden",
+      "done": false
+    },
+    {
+      "text": "Theming does not change permissions or native behaviour; the TAX-107/108 permission tests still pass",
+      "done": false
+    },
+    {
+      "text": "Record relevant tests and evidence, update task status and open a PR; do not claim native runtime readiness from fixtures",
+      "done": false
+    }
+  ],
+  "verification": "Live native deployments on the dev stack with screenshots and permission re-tests",
+  "skills": [
+    "start-task",
+    "implement-change",
+    "update-project-task",
+    "finish-task"
+  ],
+  "evidence": [],
+  "notes": [
+    {
+      "at": "2026-11-08",
+      "text": "Added 2026-11-08 from ADR-044 (one Vati Workspace identity and design system v2) after the user's UI review against Cloudflare's dashboard and Zoho Workplace."
+    }
+  ],
+  "sequence": 42
+}

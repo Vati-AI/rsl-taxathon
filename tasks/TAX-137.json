@@ -1,7 +1,7 @@
 {
   "id": "TAX-137",
   "kind": "task",
-  "title": "Navigation in both directions and one product identity",
+  "title": "Navigation in both directions and one status vocabulary",
   "owner": "Keletso",
   "area": "apps/auditor-web",
   "phase": "pilot",
@@ -9,12 +9,14 @@
   "priority": "P2",
   "depends_on": [
     "TAX-106",
-    "TAX-133"
+    "TAX-133",
+    "TAX-150",
+    "TAX-151"
   ],
   "claimed_by": null,
   "branch": null,
   "pr": null,
-  "scope": "Add permission-checked links from native tools back to the Vati case and on to the RSL system, one product name and header, and one status vocabulary aligned with the Online Refunds Application; RSL branding only with RSL approval",
+  "scope": "Add permission-checked links from native tools back to the Vati case and on to the RSL system, and one status vocabulary aligned with the Online Refunds Application; the product name, header and native theming moved to TAX-146, TAX-150 and TAX-151 (ADR-044); RSL branding only with RSL approval",
   "inputs": [
     "PROJECT.md",
     "PROJECT_SCOPE.md",
@@ -27,11 +29,11 @@
   ],
   "acceptance": [
     {
-      "text": "Return links work from Jube and OpenAleph where supported, otherwise the limitation is recorded",
+      "text": "Return links work from Investigation (Jube) and Explore (OpenAleph) where supported, otherwise the limitation is recorded",
       "done": false
     },
     {
-      "text": "Status labels match across Vati, Jube and the portal",
+      "text": "Status labels match across Vati Workspace, Investigation and the taxpayer portal",
       "done": false
     },
     {
@@ -51,7 +53,11 @@
     {
       "at": "2026-11-07",
       "text": "Added 2026-11-07 from ADR-043 (Vati downstream of RSL selection; portal answers evidence requests)."
+    },
+    {
+      "at": "2026-11-08",
+      "text": "ADR-044: one product name and header moved to TAX-146/TAX-150 and native theming to TAX-151."
     }
   ],
-  "sequence": 37
+  "sequence": 46
 }

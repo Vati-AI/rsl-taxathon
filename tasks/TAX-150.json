@@ -1,0 +1,60 @@
+{
+  "id": "TAX-150",
+  "kind": "task",
+  "title": "One product name across Vati screens and an open-source notices page",
+  "owner": "Keletso",
+  "area": "apps/auditor-web",
+  "phase": "pilot",
+  "status": "BACKLOG",
+  "priority": "P0",
+  "depends_on": [
+    "TAX-146",
+    "TAX-144"
+  ],
+  "claimed_by": null,
+  "branch": null,
+  "pr": null,
+  "scope": "Apply the DESIGN_STANDARD.md naming register to every user-visible string in both apps, emails and exported documents (Vati Workspace, Investigation, Explore, Admin, Document reading, Name screening, Vati assistant), keep component names only in API fields, logs, Admin diagnostics and an About - Open-source notices page, and make the TAX-144 naming check blocking",
+  "inputs": [
+    "PROJECT.md",
+    "PROJECT_SCOPE.md",
+    "docs/DESIGN_STANDARD.md",
+    "docs/decisions/ADR-044-vati-workspace-identity-and-design-v2.md",
+    "docs/decisions/ADR-004-auditor-frontend-stack.md",
+    "docs/UI_INTEGRATION_SCOPE.md",
+    "apps/auditor-web"
+  ],
+  "acceptance": [
+    {
+      "text": "No banned component name appears in visible text or accessible names in either app, exports or notification templates; the TAX-144 naming check blocks in npm run check",
+      "done": false
+    },
+    {
+      "text": "An About - Open-source notices page lists each component, version and licence with links, reachable from the user menu and from the taxpayer portal footer",
+      "done": false
+    },
+    {
+      "text": "Provenance is not lost: audit ledger, API source fields and Admin diagnostics still identify the component; RSL system names are unchanged",
+      "done": false
+    },
+    {
+      "text": "Screenshots at 1440, 1024 and 390px with loading, empty, error and denied states, keyboard/focus and axe results, and the TAX-144 page-length result; record relevant tests and evidence, update task status and open a PR",
+      "done": false
+    }
+  ],
+  "verification": "Naming check, unit tests and screenshots",
+  "skills": [
+    "start-task",
+    "implement-change",
+    "update-project-task",
+    "finish-task"
+  ],
+  "evidence": [],
+  "notes": [
+    {
+      "at": "2026-11-08",
+      "text": "Added 2026-11-08 from ADR-044 (one Vati Workspace identity and design system v2) after the user's UI review against Cloudflare's dashboard and Zoho Workplace."
+    }
+  ],
+  "sequence": 16
+}

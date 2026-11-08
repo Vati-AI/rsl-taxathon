@@ -87,5 +87,5 @@
       "text": "ADR-043: now also depends on TAX-139 (seventh scenario, persistent VAT credit positions)."
     }
   ],
-  "sequence": 53
+  "sequence": 62
 }
