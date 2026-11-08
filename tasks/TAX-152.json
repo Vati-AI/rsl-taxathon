@@ -1,0 +1,61 @@
+{
+  "id": "TAX-152",
+  "kind": "task",
+  "title": "Taxpayer portal on the Vati Workspace shell with an evidence-request inbox",
+  "owner": "Keletso",
+  "area": "apps/taxpayer-web",
+  "phase": "pilot",
+  "status": "BACKLOG",
+  "priority": "P0",
+  "depends_on": [
+    "TAX-146",
+    "TAX-125",
+    "TAX-150"
+  ],
+  "claimed_by": null,
+  "branch": null,
+  "pr": null,
+  "scope": "Rebuild the re-centred portal (TAX-125) as an inbox: evidence requests listed like messages grouped by due date with a reading pane, responses as short steps with the TAX-126 checks, My cases with RSL's status labelled as RSL's, and account; remove starter copy, hero titles and card-grid layouts",
+  "inputs": [
+    "PROJECT.md",
+    "PROJECT_SCOPE.md",
+    "docs/DESIGN_STANDARD.md",
+    "docs/decisions/ADR-044-vati-workspace-identity-and-design-v2.md",
+    "docs/decisions/ADR-004-auditor-frontend-stack.md",
+    "docs/UI_INTEGRATION_SCOPE.md",
+    "apps/taxpayer-web"
+  ],
+  "acceptance": [
+    {
+      "text": "Evidence requests use a list-detail layout on desktop and list-then-detail on 390px; each response step fits one viewport and keeps entered values on error",
+      "done": false
+    },
+    {
+      "text": "Taxpayers never see officer navigation, risk signals or component names; the portal footer links the open-source notices",
+      "done": false
+    },
+    {
+      "text": "Live Frappe login is used where available; fixture mode is labelled in the header strip",
+      "done": false
+    },
+    {
+      "text": "Screenshots at 1440, 1024 and 390px with loading, empty, error and denied states, keyboard/focus and axe results, and the TAX-144 page-length result; record relevant tests and evidence, update task status and open a PR",
+      "done": false
+    }
+  ],
+  "verification": "Updated taxpayer unit and Playwright tests against the Frappe dev site",
+  "skills": [
+    "start-task",
+    "implement-change",
+    "update-project-task",
+    "finish-task"
+  ],
+  "evidence": [],
+  "notes": [
+    {
+      "at": "2026-11-08",
+      "text": "Added 2026-11-08 from ADR-044 (one Vati Workspace identity and design system v2) after the user's UI review against Cloudflare's dashboard and Zoho Workplace."
+    }
+  ],
+  "sequence": 20
+}

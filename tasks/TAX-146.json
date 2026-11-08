@@ -1,0 +1,60 @@
+{
+  "id": "TAX-146",
+  "kind": "task",
+  "title": "Vati Workspace app shell for the auditor app and taxpayer portal",
+  "owner": "Keletso",
+  "area": "apps/auditor-web",
+  "phase": "pilot",
+  "status": "BACKLOG",
+  "priority": "P0",
+  "depends_on": [
+    "TAX-145",
+    "TAX-021"
+  ],
+  "claimed_by": null,
+  "branch": null,
+  "pr": null,
+  "scope": "One workspace header (product mark, app tabs Cases / Investigation / Explore / Reports / Admin as permitted, global search and command palette, notifications, help, user menu with tenant and sign-out), a collapsible sidebar with views and counts, a 'Back to cases' item in case context, breadcrumbs, and fixture mode as a slim header strip; a simpler variant for the taxpayer portal",
+  "inputs": [
+    "PROJECT.md",
+    "PROJECT_SCOPE.md",
+    "docs/DESIGN_STANDARD.md",
+    "docs/decisions/ADR-044-vati-workspace-identity-and-design-v2.md",
+    "docs/decisions/ADR-004-auditor-frontend-stack.md",
+    "docs/UI_INTEGRATION_SCOPE.md",
+    "apps/auditor-web"
+  ],
+  "acceptance": [
+    {
+      "text": "Both apps render inside the shell on every route; the sidebar collapses to an icon rail and to an accessible drawer below 1024px; content is left-aligned beside the sidebar up to 1280px",
+      "done": false
+    },
+    {
+      "text": "App tabs and sidebar items appear only when the server-side access scope permits them; native-tool tabs show an honest unavailable state until TAX-106 supplies verified destinations",
+      "done": false
+    },
+    {
+      "text": "The command palette finds pages, case references and TINs the user may see, by keyboard alone; the component showcase leaves operational navigation",
+      "done": false
+    },
+    {
+      "text": "Screenshots at 1440, 1024 and 390px with loading, empty, error and denied states, keyboard/focus and axe results, and the TAX-144 page-length result; record relevant tests and evidence, update task status and open a PR",
+      "done": false
+    }
+  ],
+  "verification": "Component and Playwright tests on the fixture build",
+  "skills": [
+    "start-task",
+    "implement-change",
+    "update-project-task",
+    "finish-task"
+  ],
+  "evidence": [],
+  "notes": [
+    {
+      "at": "2026-11-08",
+      "text": "Added 2026-11-08 from ADR-044 (one Vati Workspace identity and design system v2) after the user's UI review against Cloudflare's dashboard and Zoho Workplace."
+    }
+  ],
+  "sequence": 15
+}

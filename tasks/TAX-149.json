@@ -1,0 +1,57 @@
+{
+  "id": "TAX-149",
+  "kind": "task",
+  "title": "Management and integrity views as tabbed reports",
+  "owner": "Keletso",
+  "area": "apps/auditor-web",
+  "phase": "pilot",
+  "status": "BACKLOG",
+  "priority": "P1",
+  "depends_on": [
+    "TAX-146",
+    "TAX-060",
+    "TAX-077"
+  ],
+  "claimed_by": null,
+  "branch": null,
+  "pr": null,
+  "scope": "Move the management dashboard and integrity review under Reports with tabs (Workload, Timeliness, Evidence, Outcomes, Ledger assurance, Integrity), compact figure tiles and tables, within the page-length budget",
+  "inputs": [
+    "PROJECT.md",
+    "PROJECT_SCOPE.md",
+    "docs/DESIGN_STANDARD.md",
+    "docs/decisions/ADR-044-vati-workspace-identity-and-design-v2.md",
+    "docs/decisions/ADR-004-auditor-frontend-stack.md",
+    "docs/UI_INTEGRATION_SCOPE.md",
+    "apps/auditor-web"
+  ],
+  "acceptance": [
+    {
+      "text": "The supervisor management page (1.9 screens on 2026-11-08) and integrity page each fit the budget; every figure comes from the existing summary API, with small groups still combined (ADR-036)",
+      "done": false
+    },
+    {
+      "text": "Non-supervisors still cannot reach Reports, including by direct URL",
+      "done": false
+    },
+    {
+      "text": "Screenshots at 1440, 1024 and 390px with loading, empty, error and denied states, keyboard/focus and axe results, and the TAX-144 page-length result; record relevant tests and evidence, update task status and open a PR",
+      "done": false
+    }
+  ],
+  "verification": "Updated Playwright tests on the fixture build",
+  "skills": [
+    "start-task",
+    "implement-change",
+    "update-project-task",
+    "finish-task"
+  ],
+  "evidence": [],
+  "notes": [
+    {
+      "at": "2026-11-08",
+      "text": "Added 2026-11-08 from ADR-044 (one Vati Workspace identity and design system v2) after the user's UI review against Cloudflare's dashboard and Zoho Workplace."
+    }
+  ],
+  "sequence": 19
+}

@@ -54,5 +54,5 @@
     "Added by TAX-105 from user-requested complete frontend/native UI scope; not implemented or claimed.",
     "ADR-043: Jube cases are investigation sub-cases of RSL cases; selection reasons are received from RSL referrals, not configured as population selection. RSL context is added by TAX-134."
   ],
-  "sequence": 32
+  "sequence": 40
 }

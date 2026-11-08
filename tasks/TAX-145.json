@@ -1,0 +1,60 @@
+{
+  "id": "TAX-145",
+  "kind": "task",
+  "title": "Design tokens v2 and shared Vati Workspace component kit",
+  "owner": "Keletso",
+  "area": "apps/auditor-web",
+  "phase": "pilot",
+  "status": "BACKLOG",
+  "priority": "P0",
+  "depends_on": [
+    "TAX-144",
+    "TAX-020"
+  ],
+  "claimed_by": null,
+  "branch": null,
+  "pr": null,
+  "scope": "Replace the shared tokens with the v2 contract and build the shared components once (header, app rail and sidebar, page header, notices, table toolbar, data table, usage line, key-facts strip, routed tabs, drawer, dialog, status chip, empty state, skeleton, toast, command palette) on frappe-ui, used by both apps",
+  "inputs": [
+    "PROJECT.md",
+    "PROJECT_SCOPE.md",
+    "docs/DESIGN_STANDARD.md",
+    "docs/decisions/ADR-044-vati-workspace-identity-and-design-v2.md",
+    "docs/decisions/ADR-004-auditor-frontend-stack.md",
+    "docs/UI_INTEGRATION_SCOPE.md",
+    "apps/auditor-web"
+  ],
+  "acceptance": [
+    {
+      "text": "apps/shared/design tokens implement the v2 colour, type, spacing, radius and status values with measured WCAG AA contrast for every text/background pair used",
+      "done": false
+    },
+    {
+      "text": "Each shared component exists once, is used by both apps where relevant and appears in the rebuilt showcase in normal, hover, focus, disabled, loading, empty and error states",
+      "done": false
+    },
+    {
+      "text": "No Cloudflare or Zoho logo, colour, illustration or copy is used; patterns only (ADR-044); the stack stays Vue 3 + frappe-ui",
+      "done": false
+    },
+    {
+      "text": "Screenshots at 1440, 1024 and 390px with loading, empty, error and denied states, keyboard/focus and axe results, and the TAX-144 page-length result; record relevant tests and evidence, update task status and open a PR",
+      "done": false
+    }
+  ],
+  "verification": "Component tests, showcase screenshots and axe",
+  "skills": [
+    "start-task",
+    "implement-change",
+    "update-project-task",
+    "finish-task"
+  ],
+  "evidence": [],
+  "notes": [
+    {
+      "at": "2026-11-08",
+      "text": "Added 2026-11-08 from ADR-044 (one Vati Workspace identity and design system v2) after the user's UI review against Cloudflare's dashboard and Zoho Workplace."
+    }
+  ],
+  "sequence": 14
+}

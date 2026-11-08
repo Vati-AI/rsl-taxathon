@@ -1,0 +1,59 @@
+{
+  "id": "TAX-144",
+  "kind": "task",
+  "title": "UI audit baseline and page-length and naming checks",
+  "owner": "Keletso",
+  "area": "tests/frontend",
+  "phase": "pilot",
+  "status": "BACKLOG",
+  "priority": "P0",
+  "depends_on": [
+    "TAX-023"
+  ],
+  "claimed_by": null,
+  "branch": null,
+  "pr": null,
+  "scope": "Capture before-screenshots of every auditor and taxpayer screen at 1440x900 and add browser checks that fail when an operational screen exceeds the page-length budget or user-visible text names an open-source component",
+  "inputs": [
+    "PROJECT.md",
+    "PROJECT_SCOPE.md",
+    "docs/DESIGN_STANDARD.md",
+    "docs/decisions/ADR-044-vati-workspace-identity-and-design-v2.md",
+    "docs/decisions/ADR-004-auditor-frontend-stack.md",
+    "docs/UI_INTEGRATION_SCOPE.md",
+    "tests/frontend"
+  ],
+  "acceptance": [
+    {
+      "text": "A screen inventory with before-screenshots and measured page heights for every auditor and taxpayer route, including the taxpayer app against a running Frappe site or with the reason it could not run",
+      "done": false
+    },
+    {
+      "text": "A Playwright check measures each operational route at 1440x900 against the DESIGN_STANDARD.md budget (1.5 viewport heights, tables scroll inside a labelled region) and reports the worst offenders; the showcase is exempt",
+      "done": false
+    },
+    {
+      "text": "A naming check fails when visible text or accessible names contain a banned component name from the DESIGN_STANDARD.md register (Jube, OpenAleph, Frappe, Docling, yente, LangGraph, Groq) outside the About page and Admin diagnostics; it starts as a report and becomes blocking in TAX-150",
+      "done": false
+    },
+    {
+      "text": "Record relevant tests and evidence, update task status and open a PR",
+      "done": false
+    }
+  ],
+  "verification": "Playwright report on the fixture build plus screenshots in docs/evidence/TAX-144",
+  "skills": [
+    "start-task",
+    "implement-change",
+    "update-project-task",
+    "finish-task"
+  ],
+  "evidence": [],
+  "notes": [
+    {
+      "at": "2026-11-08",
+      "text": "Added 2026-11-08 from ADR-044 (one Vati Workspace identity and design system v2) after the user's UI review against Cloudflare's dashboard and Zoho Workplace."
+    }
+  ],
+  "sequence": 13
+}
