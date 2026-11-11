@@ -5,7 +5,7 @@
   "owner": "Keletso",
   "area": "apps/auditor-web",
   "phase": "pilot",
-  "status": "IN_REVIEW",
+  "status": "DONE",
   "priority": "P0",
   "depends_on": [
     "TAX-145",
@@ -83,6 +83,10 @@
     {
       "at": "2026-11-11",
       "text": "IN_REVIEW in PR #289."
+    },
+    {
+      "at": "2026-11-11",
+      "text": "PR #289 merged into main on 2026-11-11 (4fa9f34); status DONE."
     }
   ],
   "sequence": 15

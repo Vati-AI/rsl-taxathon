@@ -5,7 +5,7 @@
   "owner": "Keletso",
   "area": "ai",
   "phase": "pilot",
-  "status": "BACKLOG",
+  "status": "IN_PROGRESS",
   "priority": "P0",
   "depends_on": [
     "TAX-048",
@@ -13,8 +13,8 @@
     "TAX-118",
     "TAX-121"
   ],
-  "claimed_by": null,
-  "branch": null,
+  "claimed_by": "claude-code-20261111-friendly-newton",
+  "branch": "claude/friendly-newton-iwhm4u",
   "pr": null,
   "scope": "Cover Challenge 2's persistent VAT credit positions: detect credits that persist across periods, test structural explanations first (zero-rated exports, capital spending), add a seventh synthetic scenario and plant it in a new benchmark seed",
   "inputs": [
@@ -62,6 +62,10 @@
     {
       "at": "2026-11-11T12:27:49.740246+00:00",
       "text": "2026-11-11 (ADR-045): Keletso keeps this task in the AI and new UI lane. No task in this lane depends on an open task in the other lane."
+    },
+    {
+      "at": "2026-11-11",
+      "text": "Claimed by claude-code-20261111-friendly-newton on the session's designated branch claude/friendly-newton-iwhm4u."
     }
   ],
   "sequence": 24
