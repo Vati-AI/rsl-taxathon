@@ -11,9 +11,14 @@ through `src/api/review.ts`, and the supervisor-only `getManagementSummary`
 (ADR-020) through `src/api/management.ts`, all served from synthetic fixtures by
 `scripts/dev.py serve`. Live services arrive with later tasks.
 
-Screens: overview (assigned cases by status, failed-processing alert), my case
-queue (search, status and refund-lane filters, sorting, pagination, selection
-reasons and processing state), the case workspace (TAX-148: one header with
+Screens: overview (TAX-147: action items for Overdue, Awaiting approval,
+Awaiting evidence and Processing failed, each with its count, first cases and a
+link to the queue view, then cases by status), my case queue (TAX-147: saved
+views in the sidebar with counts from the same case list, one toolbar row with
+search, status and refund-lane filters, display options kept in the browser,
+CSV export of the visible columns and "Open first case", a usage line and a
+dense sortable table with column help, muted empty values and an "Open" row
+action; view, search, filters, sort and page live in the URL), the case workspace (TAX-148: one header with
 the status chip and key facts, and routed tabs, each its own URL: Summary
 `/auditor/cases/{id}` with selection reasons, taxpayer and per-service
 processing; Evidence `/auditor/cases/{id}/evidence` with the documents beside a
@@ -23,7 +28,7 @@ Relationships `/relationships`; Findings `/findings`; Review `/review`: the
 decision state, evidence requests, agent suggestions and the review trail, with
 the propose and request-evidence forms in right-side drawers and every action
 confirmed in a dialog first; links from before TAX-148 with `?tab=` redirect),
-taxpayer profile, management dashboard (`/auditor/management`, supervisors only:
+taxpayer profile (key facts and an open-cases table), management dashboard (`/auditor/management`, supervisors only:
 workload, elapsed time, unresolved evidence, closures with no further action,
 legal-route coverage and audit ledger assurance), integrity review
 (`/auditor/management/integrity`, supervisors only: policy exposure by policy

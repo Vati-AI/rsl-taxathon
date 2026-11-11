@@ -1149,7 +1149,20 @@
           "service_links": { "type": "array", "items": { "$ref": "#/components/schemas/ServiceLink" } },
           "created_at": { "$ref": "#/components/schemas/Timestamp" },
           "updated_at": { "$ref": "#/components/schemas/Timestamp" },
+          "attention": { "$ref": "#/components/schemas/CaseAttention" },
           "synthetic": { "type": "boolean" }
+        }
+      },
+      "CaseAttention": {
+        "type": "object",
+        "additionalProperties": false,
+        "description": "Optional, computed by the server from its own records (TAX-147), so queue views and counts never guess. A server that cannot compute it omits it, and clients then show no count. Overdue means an outstanding evidence request (recorded or sent, not answered) is past its due date.",
+        "required": ["decision_awaiting_approval", "outstanding_evidence_requests", "evidence_due_date", "overdue"],
+        "properties": {
+          "decision_awaiting_approval": { "type": "boolean", "description": "A proposed decision is waiting for a supervisor who did not propose it." },
+          "outstanding_evidence_requests": { "type": "integer", "minimum": 0 },
+          "evidence_due_date": { "anyOf": [{ "type": "string", "format": "date" }, { "type": "null" }], "description": "Earliest due date of the outstanding evidence requests." },
+          "overdue": { "type": "boolean" }
         }
       },
       "CaseEnvelope": {

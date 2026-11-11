@@ -2,9 +2,24 @@
   "description": "Synthetic officer review state for the fixture server (TAX-042): fixture principals, findings with agent suggestions and seeded decisions. Times are given in hours before the server starts so the seeds never go stale. Fixture only; no live service data.",
   "synthetic": true,
   "principals": {
-    "auditor": { "officer_id": "80000000-0000-4000-8000-000000000001", "roles": ["auditor"] },
-    "specialist": { "officer_id": "80000000-0000-4000-8000-000000000004", "roles": ["specialist"] },
-    "supervisor": { "officer_id": "80000000-0000-4000-8000-000000000003", "roles": ["supervisor"] }
+    "auditor": {
+      "officer_id": "80000000-0000-4000-8000-000000000001",
+      "roles": [
+        "auditor"
+      ]
+    },
+    "specialist": {
+      "officer_id": "80000000-0000-4000-8000-000000000004",
+      "roles": [
+        "specialist"
+      ]
+    },
+    "supervisor": {
+      "officer_id": "80000000-0000-4000-8000-000000000003",
+      "roles": [
+        "supervisor"
+      ]
+    }
   },
   "findings": [
     {
@@ -17,14 +32,24 @@
         {
           "evidence_id": "50000000-0000-4000-8000-000000000101",
           "document_sha256": "1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a",
-          "locator": { "page": 2, "record": null }
+          "locator": {
+            "page": 2,
+            "record": null
+          }
         }
       ],
       "unresolved_amount": null,
       "confidence": "high",
       "alternative_explanations": [],
-      "legal_route": { "status": "unverified", "citation": null, "verified_by": null },
-      "proposed_action": { "type": "human_clearance", "requires_human_approval": true },
+      "legal_route": {
+        "status": "unverified",
+        "citation": null,
+        "verified_by": null
+      },
+      "proposed_action": {
+        "type": "human_clearance",
+        "requires_human_approval": true
+      },
       "producer": "langgraph_run",
       "producer_version": "refund_reconciliation@1",
       "hours_ago": 30
@@ -36,11 +61,23 @@
       "category": "related_party",
       "explanation": "No synthetic service agreement was supplied for management fees paid to a company that shares a director with the taxpayer.",
       "evidence_refs": [],
-      "unresolved_amount": { "amount": "48500.00", "currency": "LSL" },
+      "unresolved_amount": {
+        "amount": "48500.00",
+        "currency": "LSL"
+      },
       "confidence": "medium",
-      "alternative_explanations": ["The fees may be at arm's length and the agreement simply not uploaded yet."],
-      "legal_route": { "status": "unverified", "citation": null, "verified_by": null },
-      "proposed_action": { "type": "request_evidence", "requires_human_approval": true },
+      "alternative_explanations": [
+        "The fees may be at arm's length and the agreement simply not uploaded yet."
+      ],
+      "legal_route": {
+        "status": "unverified",
+        "citation": null,
+        "verified_by": null
+      },
+      "proposed_action": {
+        "type": "request_evidence",
+        "requires_human_approval": true
+      },
       "producer": "langgraph_run",
       "producer_version": "related_party_review@1",
       "hours_ago": 20
@@ -55,17 +92,30 @@
         {
           "evidence_id": "50000000-0000-4000-8000-000000000301",
           "document_sha256": "3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c",
-          "locator": { "page": null, "record": "payroll-2026-07" }
+          "locator": {
+            "page": null,
+            "record": "payroll-2026-07"
+          }
         }
       ],
-      "unresolved_amount": { "amount": "12750.00", "currency": "LSL" },
+      "unresolved_amount": {
+        "amount": "12750.00",
+        "currency": "LSL"
+      },
       "confidence": "low",
       "alternative_explanations": [
         "The people may have held two separate roles during the overlap.",
         "Invoices may relate to a period after the employment ended."
       ],
-      "legal_route": { "status": "no_verified_route", "citation": null, "verified_by": null },
-      "proposed_action": { "type": "specialist_review", "requires_human_approval": true },
+      "legal_route": {
+        "status": "no_verified_route",
+        "citation": null,
+        "verified_by": null
+      },
+      "proposed_action": {
+        "type": "specialist_review",
+        "requires_human_approval": true
+      },
       "producer": "langgraph_run",
       "producer_version": "worker_classification@1",
       "hours_ago": 26
@@ -77,11 +127,21 @@
       "category": "imported_services",
       "explanation": "No synthetic withholding or reverse-charge record was found for the imported consulting service.",
       "evidence_refs": [],
-      "unresolved_amount": { "amount": "3000.00", "currency": "LSL" },
+      "unresolved_amount": {
+        "amount": "3000.00",
+        "currency": "LSL"
+      },
       "confidence": "medium",
       "alternative_explanations": [],
-      "legal_route": { "status": "unverified", "citation": null, "verified_by": null },
-      "proposed_action": { "type": "request_evidence", "requires_human_approval": true },
+      "legal_route": {
+        "status": "unverified",
+        "citation": null,
+        "verified_by": null
+      },
+      "proposed_action": {
+        "type": "request_evidence",
+        "requires_human_approval": true
+      },
       "producer": "jube_rule",
       "producer_version": "imported_services_rules@1",
       "hours_ago": 50
@@ -96,8 +156,15 @@
       "unresolved_amount": null,
       "confidence": "medium",
       "alternative_explanations": [],
-      "legal_route": { "status": "no_verified_route", "citation": null, "verified_by": null },
-      "proposed_action": { "type": "policy_gap_review", "requires_human_approval": true },
+      "legal_route": {
+        "status": "no_verified_route",
+        "citation": null,
+        "verified_by": null
+      },
+      "proposed_action": {
+        "type": "policy_gap_review",
+        "requires_human_approval": true
+      },
       "producer": "langgraph_run",
       "producer_version": "policy_gap_gate@1",
       "hours_ago": 90
@@ -259,7 +326,9 @@
       "outcome": "close_no_further_action",
       "rationale": "Purchase invoices for the period reconcile with the declared input VAT; no further action is needed.",
       "evidence_ids": [],
-      "finding_ids": ["70000000-0000-4000-8000-000000000101"],
+      "finding_ids": [
+        "70000000-0000-4000-8000-000000000101"
+      ],
       "rating": 2,
       "proposed_by": "auditor",
       "hours_ago": 3
@@ -270,10 +339,42 @@
       "outcome": "continue_investigation",
       "rationale": "The refund treatment has no verified legal route yet; keep investigating until the policy gap is reviewed.",
       "evidence_ids": [],
-      "finding_ids": ["70000000-0000-4000-8000-000000000501"],
+      "finding_ids": [
+        "70000000-0000-4000-8000-000000000501"
+      ],
       "rating": 3,
       "proposed_by": "auditor",
       "hours_ago": 80
+    }
+  ],
+  "evidence_requests": [
+    {
+      "request_id": "45000000-0000-4000-8000-000000000401",
+      "case_id": "40000000-0000-4000-8000-000000000004",
+      "due_in_days": -3,
+      "status": "sent",
+      "items": [
+        {
+          "document_type": "other",
+          "description": "Synthetic: reverse-charge declaration for the imported consulting service."
+        }
+      ],
+      "authorised_by": "auditor",
+      "days_ago": 17
+    },
+    {
+      "request_id": "45000000-0000-4000-8000-000000000201",
+      "case_id": "40000000-0000-4000-8000-000000000002",
+      "due_in_days": 9,
+      "status": "recorded",
+      "items": [
+        {
+          "document_type": "contract",
+          "description": "Synthetic: signed management services agreement."
+        }
+      ],
+      "authorised_by": "auditor",
+      "days_ago": 5
     }
   ]
 }

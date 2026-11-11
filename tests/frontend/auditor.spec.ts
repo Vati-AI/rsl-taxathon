@@ -25,10 +25,10 @@ test.describe('auditor workspace', () => {
     // TAX-146: fixture mode is a slim strip in the header.
     await expect(page.locator('[data-kit="fixture-strip"]')).toHaveText('Synthetic data');
 
-    await (await nav(page)).getByRole('link', { name: 'My case queue' }).click();
+    await (await nav(page)).getByRole('link', { name: /^My cases/ }).click();
     await expect(page).toHaveURL(/\/auditor\/cases$/);
     await pageReady(page, 'My case queue');
-    await expect((await nav(page)).getByRole('link', { name: 'My case queue' })).toHaveAttribute(
+    await expect((await nav(page)).getByRole('link', { name: /^My cases/ })).toHaveAttribute(
       'aria-current',
       'page',
     );
@@ -78,7 +78,7 @@ test.describe('auditor workspace', () => {
     await page.keyboard.press('Enter');
     await expect(page.locator('#main-content')).toBeFocused();
 
-    const link = (await nav(page)).getByRole('link', { name: 'My case queue' });
+    const link = (await nav(page)).getByRole('link', { name: /^My cases/ });
     await page.keyboard.press('Shift+Tab');
     await tabUntilFocused(page, link);
     expect(await hasVisibleFocus(link)).toBe(true);

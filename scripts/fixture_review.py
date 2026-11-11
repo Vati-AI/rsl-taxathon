@@ -184,14 +184,56 @@ class ReviewStore:
                 proposed_at,
             )
 
+        for seed in self.review.get("evidence_requests", []):
+            authoriser = self.review["principals"][seed["authorised_by"]]
+            created = self.started - datetime.timedelta(days=seed["days_ago"])
+            due = (self.now() + datetime.timedelta(days=seed["due_in_days"])).date()
+            self.requests[seed["request_id"]] = {
+                "request_id": seed["request_id"],
+                "case_id": seed["case_id"],
+                "tenant_id": tenant,
+                "status": seed["status"],
+                "authorised_by": authoriser["officer_id"],
+                "finding_ids": [],
+                "items": copy.deepcopy(seed["items"]),
+                "due_date": due.isoformat(),
+                "case_version": self.versions[seed["case_id"]],
+                "service_links": [],
+                "created_at": _iso(created),
+            }
+
+    def ensure_seeded(self, cases: list[dict[str, Any]]) -> None:
+        """Seed review state before a read that reports on it (listCases, getCase)."""
+        with self.lock:
+            self._seed(cases)
+
     # --- views --------------------------------------------------------------------
 
     def overlay_case(self, case: dict[str, Any]) -> dict[str, Any]:
-        """A case with the status a fixture approval moved it to (Jube projection)."""
+        """A case with the status a fixture approval moved it to (Jube projection) and its
+        TAX-147 attention fields, computed from the decisions and evidence requests here."""
         status = self.jube_status.get(case["case_id"])
-        if status is None or status == case["status"]:
-            return case
-        return {**case, "status": status, "updated_at": _iso(self.now())}
+        out = case
+        if status is not None and status != case["status"]:
+            out = {**case, "status": status, "updated_at": _iso(self.now())}
+        if self._seeded:
+            out = {**out, "attention": self.attention(out["case_id"])}
+        return out
+
+    def attention(self, case_id: str) -> dict[str, Any]:
+        today = self.now().date()
+        outstanding = [
+            r
+            for r in self.requests.values()
+            if r["case_id"] == case_id and r["status"] in ("recorded", "sent")
+        ]
+        due = sorted(r["due_date"] for r in outstanding)
+        return {
+            "decision_awaiting_approval": self._open_decision(case_id) is not None,
+            "outstanding_evidence_requests": len(outstanding),
+            "evidence_due_date": due[0] if due else None,
+            "overdue": any(datetime.date.fromisoformat(d) < today for d in due),
+        }
 
     def _open_decision(self, case_id: str) -> dict[str, Any] | None:
         for record in self.decisions.values():

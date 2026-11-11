@@ -60,7 +60,15 @@ export interface Case {
   service_links: ServiceLink[];
   created_at: string;
   updated_at: string;
+  /** Computed by the server (TAX-147); absent when it cannot compute it. */
+  attention?: CaseAttention;
   synthetic: true;
+}
+export interface CaseAttention {
+  decision_awaiting_approval: boolean;
+  outstanding_evidence_requests: number;
+  evidence_due_date: string | null;
+  overdue: boolean;
 }
 export interface OpenCaseRef {
   case_id: string;
@@ -239,7 +247,21 @@ export function parseCase(value: unknown): Case {
     ...(value as unknown as Case),
     refund_claim: money(value.refund_claim),
     service_links: serviceLinks(value.service_links),
+    attention: attention(value.attention),
   };
+}
+
+function attention(value: unknown): CaseAttention | undefined {
+  if (value === undefined) return undefined;
+  if (
+    !isRecord(value) ||
+    typeof value.decision_awaiting_approval !== 'boolean' ||
+    typeof value.overdue !== 'boolean' ||
+    !Number.isInteger(value.outstanding_evidence_requests) ||
+    (value.evidence_due_date !== null && typeof value.evidence_due_date !== 'string')
+  )
+    invalid('case attention');
+  return value as unknown as CaseAttention;
 }
 
 export function parseTaxpayer(value: unknown): TaxpayerProfile {
