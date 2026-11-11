@@ -76,6 +76,10 @@
     {
       "at": "2026-11-07",
       "text": "ADR-043: now also depends on TAX-143 (RSL-first journey)."
+    },
+    {
+      "at": "2026-11-11T12:27:49.740246+00:00",
+      "text": "2026-11-11 (ADR-045): final-wave task owned by Keletso; it needs work from both lanes, so it starts only after both lanes are finished."
     }
   ],
   "sequence": 52

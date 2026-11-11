@@ -2,7 +2,7 @@
   "id": "TAX-132",
   "kind": "task",
   "title": "Refund lanes read RSL status and recommend for claims in audit",
-  "owner": "Keletso",
+  "owner": "Gupta",
   "area": "backend",
   "phase": "pilot",
   "status": "BACKLOG",
@@ -51,6 +51,10 @@
     {
       "at": "2026-11-07",
       "text": "Added 2026-11-07 from ADR-043 (Vati downstream of RSL selection; portal answers evidence requests)."
+    },
+    {
+      "at": "2026-11-11T12:27:49.740246+00:00",
+      "text": "2026-11-11 (ADR-045): owner changed from Keletso to Gupta; RSL integration lane. No task in this lane depends on an open task in the other lane."
     }
   ],
   "sequence": 32

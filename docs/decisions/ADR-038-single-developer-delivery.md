@@ -1,6 +1,6 @@
 # ADR-038: Single-developer delivery of the remaining backlog
 
-Status: accepted
+Status: accepted; decision 1 (ownership) amended by ADR-045 on 2026-11-11
 Owner and task: Keletso; applies to every task (2026-11-06 amendment)
 Date: 2026-11-05
 

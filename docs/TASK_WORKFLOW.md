@@ -3,7 +3,7 @@
 `tasks/TAX-XXX.json` is canonical. Human owner = accountability (under ADR-038 also the implementer who merges); claimed_by = current AI implementer. The board is a mirror. Epics group scope but cannot be claimed. When the last child task of an epic is DONE, close the epic in the same follow-up: mark its criteria done, cite the child PRs as evidence and set DONE. Dependency-ready leaf tasks appear in `task.py list --ready` even if their stored status is BACKLOG.
 
 ```sh
-python3 scripts/task.py list --owner Keletso --ready
+python3 scripts/task.py list --owner NAME --ready   # Keletso or Gupta, one lane each (ADR-045)
 python3 scripts/task.py start TAX-020 --agent leseli-codex-session-1
 # implement and run focused checks
 python3 scripts/task.py evidence TAX-020 --criterion 1 --text 'Observed output and test command/result'

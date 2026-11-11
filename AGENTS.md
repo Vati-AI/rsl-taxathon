@@ -2,9 +2,9 @@
 
 Read PROJECT.md, PROJECT_SCOPE.md, docs/ARCHITECTURE.md, docs/API_CONTRACTS.md, docs/ENGINEERING_STANDARD.md and the chosen task. Use the repository skills in `.agents/skills` (or `.claude/skills` aliases). Start with `start-task`; finish with `finish-task`.
 
-## Single-developer delivery (ADR-038)
+## Two-lane delivery (ADR-038, ADR-045)
 
-From 2026-11-06 Keletso owns every task, including completed tasks and epics, with no exceptions. Keletso implements the remaining work; preserve existing agent claims and historical evidence. Take the ready task with the lowest `sequence`: `python3 scripts/task.py list --owner Keletso --ready`. tasks/README.md lists the full order. No second-person review is required: open the PR, run the docs/FREE_CI.md local checks (hosted CI is unavailable), record the results in the PR, merge it, then record DONE straight away. Acceptance criteria must not depend on a named person reviewing. Product safeguards (officer approvals, authorised resume, segregation of duties, tenant isolation, synthetic data) are unchanged.
+From 2026-11-11 the open leaf tasks are split into two independent lanes (ADR-045). Keletso owns the AI and new UI lane and the final wave; Gupta owns the RSL integration lane. No task in one lane depends on an open task in the other. Epics and DONE tasks stay with Keletso. Preserve existing agent claims and historical evidence. Work only on your own lane: take the ready task with the lowest `sequence` from `python3 scripts/task.py list --owner NAME --ready`. tasks/README.md lists the full order and the lanes. No second-person review is required: open the PR, run the docs/FREE_CI.md local checks (hosted CI is unavailable), record the results in the PR, merge it, then record DONE straight away. Acceptance criteria must not depend on a named person reviewing. Product safeguards (officer approvals, authorised resume, segregation of duties, tenant isolation, synthetic data) are unchanged.
 
 ## Ownership and task execution
 

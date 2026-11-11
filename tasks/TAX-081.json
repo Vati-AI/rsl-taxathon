@@ -60,6 +60,10 @@
     {
       "at": "2026-11-06",
       "text": "Now depends on TAX-118: the framework update requires measured test results against a baseline (Part 7) before measured acceptance."
+    },
+    {
+      "at": "2026-11-11T12:27:49.740246+00:00",
+      "text": "2026-11-11 (ADR-045): final-wave task owned by Keletso; it needs work from both lanes, so it starts only after both lanes are finished."
     }
   ],
   "sequence": 67

@@ -2,7 +2,7 @@
   "id": "TAX-108",
   "kind": "task",
   "title": "Configure and verify OpenAleph tax evidence and graph screens",
-  "owner": "Keletso",
+  "owner": "Gupta",
   "area": "integration",
   "phase": "pilot",
   "status": "BACKLOG",
@@ -59,6 +59,10 @@
     {
       "at": "2026-11-07",
       "text": "ADR-043: RSL identifiers and source labels are added by TAX-135."
+    },
+    {
+      "at": "2026-11-11T12:27:49.740246+00:00",
+      "text": "2026-11-11 (ADR-045): owner changed from Keletso to Gupta; RSL integration lane. No task in this lane depends on an open task in the other lane."
     }
   ],
   "sequence": 34
