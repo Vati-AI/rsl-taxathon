@@ -1,0 +1,15 @@
+{
+  "policy_version": "tax139-persistent-credit-v1",
+  "status": "proposed_prototype_choice",
+  "notice": "Prototype choices, not RSL policy. Thresholds are untested assumptions tuned on synthetic data only; RSL sets the real values.",
+  "persistence": {
+    "min_credit_periods": 6,
+    "min_credit_share_of_window": "0.50"
+  },
+  "explanation_order": ["zero_rated_sales", "import_vat_paid_at_border", "capital_spending"],
+  "unexplained": {
+    "min_amount_per_period": "1000.00",
+    "min_periods": 6,
+    "min_share_of_window": "0.50"
+  }
+}

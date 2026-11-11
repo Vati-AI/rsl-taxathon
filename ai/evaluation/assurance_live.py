@@ -49,6 +49,9 @@ CATEGORY_ISSUE = {
     "related_party": "related_party_loss",
     "policy_gap": "policy_gap",
 }
+# Finding codes whose issue is not the one their category implies (TAX-139 shares the
+# refund_reconciliation category with the input-VAT finding).
+CODE_ISSUE = {"persistent_vat_credit_unexplained": "persistent_credit"}
 
 
 # --------------------------------------------------------------------------- inputs
@@ -143,7 +146,7 @@ def platform_results(export: Mapping[str, Any]) -> tuple[dict[str, dict[str, Any
             seconds += float(run["seconds"])
             summaries.append(run["summary"])
             for f in case["assurance"]["findings"]:
-                issue = CATEGORY_ISSUE[f["category"]]
+                issue = CODE_ISSUE.get(f["code"]) or CATEGORY_ISSUE[f["category"]]
                 flags.add(issue)
                 route = f["candidate_route"]
                 findings.setdefault(

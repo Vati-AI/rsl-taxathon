@@ -23,6 +23,14 @@ foreign services, treaty relief, genuine consultants, explained start-up losses,
 market-rate loans). Noise: TIN typing slips, late-claimed invoices, DD/MM/YYYY dates,
 exchange-rate rounding, missing invoice copies, duplicate schedule lines, supplier
 non-declaration, name variations and CMA payments absent from Central Bank data.
+
+TAX-139 adds an optional sixth issue, ``persistent_credit``, enabled only when the
+``persistent_credit`` parameter is passed (``{"planted": n, "capex_lookalikes": m}``):
+planted taxpayers are non-exporters that under-declare standard-rated sales in their
+returns and books from some month on, so input VAT exceeds output VAT period after period
+with no structural reason; capital-spending look-alikes are clean non-exporters with a
+long equipment programme booked to asset accounts. Both draw from their own streams, so
+without the parameter every population, including the sealed TAX-118 seed, is unchanged.
 """
 
 from __future__ import annotations
@@ -77,6 +85,9 @@ ISSUES = (
     "related_party_loss",
     "policy_gap",
 )
+# TAX-139: planted only when the ``persistent_credit`` parameter is passed; never "mixed".
+PERSISTENT_CREDIT = "persistent_credit"
+CAPITAL_ACCOUNT = "1600"
 SYLLABLES = (
     "Lesa",
     "Maluti",
@@ -216,6 +227,19 @@ def generate(seed: int, params: dict[str, Any] | None = None) -> tuple[dict, dic
                 slots.append([issue])
     slots += [[] for _ in range(n - len(slots))]
     alloc.shuffle(slots)
+    # TAX-139 (optional): pick planted persistent-credit taxpayers and capital-spending
+    # look-alikes among the clean slots, on a stream of their own.
+    pc_params = p.get("persistent_credit")
+    pc_planted: set[int] = set()
+    pc_capex: set[int] = set()
+    if pc_params:
+        clean_slots = [i for i, s in enumerate(slots) if not s]
+        n_planted = int(pc_params.get("planted", 0))
+        n_capex = int(pc_params.get("capex_lookalikes", 0))
+        chosen = rs("pc:alloc").sample(clean_slots, n_planted + n_capex)
+        pc_planted, pc_capex = set(chosen[:n_planted]), set(chosen[n_planted:])
+        for i in pc_planted:
+            slots[i] = [PERSISTENT_CREDIT]
 
     # Shared supplier pool.
     pool_rng = rs("suppliers")
@@ -270,6 +294,13 @@ def generate(seed: int, params: dict[str, Any] | None = None) -> tuple[dict, dic
         imports = r.random() < 0.30
         dmy = Decimal(str(r.random())) < noise["dmy_dates_per_taxpayer"]
         counterparts: list[str] = []
+        pc_r = rs(f"pc:{t}") if t in pc_planted | pc_capex else None
+        if pc_r is not None:
+            # Non-exporters: whatever credit they show has no zero-rated explanation.
+            refund_prone = False
+            zero_share = Decimal(str(round(pc_r.uniform(0.0, 0.12), 4)))
+            if t in pc_capex:
+                counterparts.append("capex_lookalike")
         if refund_prone and not issues:
             counterparts.append("structural_refund")
 
@@ -679,11 +710,30 @@ def generate(seed: int, params: dict[str, Any] | None = None) -> tuple[dict, dic
         candidate_fake = [pp for pp in periods[2:]]
         if "fake_invoices" in issues:
             fake_months = set(r.sample(candidate_fake, r.randint(4, 8)))
+        # TAX-139: suppression from a start month (planted) or a capital programme
+        # (look-alike), drawn from the taxpayer's own pc stream.
+        suppress_from: str | None = None
+        suppress_factor = Decimal("1")
+        capex_months: set[str] = set()
+        suppressed_total = ZERO
+        if pc_r is not None and t in pc_planted:
+            suppress_from = periods[pc_r.randint(0, 8)]
+            suppress_factor = Decimal(str(round(pc_r.uniform(0.45, 0.70), 4)))
+        elif pc_r is not None:
+            start = pc_r.randint(0, 8)
+            capex_months = set(periods[start : start + pc_r.randint(12, 16)])
         for period in periods:
             sales = _d(base_sales * Decimal(str(r.uniform(0.85, 1.15))))
             z = _d(sales * zero_share)
             ex = _d(sales * Decimal("0.03"))
             std = sales - z - ex
+            suppressed_vat = ZERO
+            if suppress_from is not None and period >= suppress_from:
+                # Declared (and booked) standard-rated sales fall short of the real ones.
+                true_out = _d(std * vat)
+                std = _d(std * suppress_factor)
+                suppressed_vat = true_out - _d(std * vat)
+                suppressed_total += suppressed_vat
             out_vat = _d(std * vat)
             sales_vat[period] = out_vat
             saft["sales_summary"] += [
@@ -793,6 +843,61 @@ def generate(seed: int, params: dict[str, Any] | None = None) -> tuple[dict, dic
                             "invoice_date": _date(period, 10),
                             "net": cv,
                             "vat": ivat,
+                            "fake": None,
+                        }
+                    )
+            if pc_r is not None and period in capex_months:
+                for _ in range(pc_r.randint(1, 3)):
+                    s = pc_r.choice(suppliers)
+                    net = _d(Decimal(str(pc_r.uniform(250000, 1100000))))
+                    iv = _d(net * vat)
+                    inv_no = f"CAP-{s['tin'][-4:]}-{period.replace('-', '')}-{tin[-4:]}"
+                    inv_no += f"{len(this_lines):02d}"
+                    inv_date = _date(period, pc_r.randint(1, 28))
+                    saft["supplier_invoices"].append(
+                        {
+                            "entry_id": entry("SI"),
+                            "period": period,
+                            "supplier_ref": s["tin"],
+                            "invoice_number": inv_no,
+                            "invoice_date": inv_date,
+                            "net": _s(net),
+                            "vat": _s(iv),
+                            "tax_code": "STD",
+                            "account": CAPITAL_ACCOUNT,
+                        }
+                    )
+                    if not any(x["supplier_ref"] == s["tin"] for x in saft["suppliers"]):
+                        saft["suppliers"].append(
+                            {
+                                "supplier_ref": s["tin"],
+                                "name": s["short"],
+                                "country": "ls",
+                                "resident": True,
+                            }
+                        )
+                    ledger_in[period] = ledger_in.get(period, ZERO) + iv
+                    if s["tin"] in integrated:
+                        records["idms.invoice"].append(
+                            {
+                                "idms_id": f"IDMS-{inv_no}-{tin}",
+                                "invoice_number": inv_no,
+                                "supplier_tin": s["tin"],
+                                "buyer_tin": tin,
+                                "issue_date": inv_date,
+                                "net_amount": _s(net),
+                                "vat_amount": _s(iv),
+                                "supplier_output_declared": True,
+                            }
+                        )
+                    this_lines.append(
+                        {
+                            "kind": "domestic",
+                            "supplier": s,
+                            "invoice_number": inv_no,
+                            "invoice_date": inv_date,
+                            "net": net,
+                            "vat": iv,
                             "fake": None,
                         }
                     )
@@ -1020,9 +1125,19 @@ def generate(seed: int, params: dict[str, Any] | None = None) -> tuple[dict, dic
                 "valid_refund": _s(refund - min(refund, fake_vat_period)),
                 "claimed": _s(refund),
             }
+            if suppress_from is not None:
+                # The refund is overstated by the output VAT left off the return.
+                tk["claims"][claim_id]["suppressed_output_vat"] = _s(suppressed_vat)
+                tk["claims"][claim_id]["valid_refund"] = _s(max(ZERO, refund - suppressed_vat))
         if "fake_invoices" in issues:
             tk["amount_at_risk"]["fake_invoices"] = _s(fake_total)
             tk["expected_routes"]["fake_invoices"] = ["CAND-INPUT-VAT-EVIDENCE"]
+        if suppress_from is not None:
+            tk["amount_at_risk"][PERSISTENT_CREDIT] = _s(suppressed_total)
+            tk["expected_routes"][PERSISTENT_CREDIT] = ["CAND-REFUNDS", "CAND-RECORDS"]
+            tk["suppression"] = {"from": suppress_from, "factor": str(suppress_factor)}
+        if capex_months:
+            tk["capex_months"] = sorted(capex_months)
 
         # Bank file and supplier master.
         saft["suppliers"] += list(foreign_parties.values())

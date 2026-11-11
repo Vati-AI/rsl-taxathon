@@ -59,8 +59,11 @@ ISSUES: Final[dict[str, tuple[str, str, str, str]]] = {
     ),
     "related_party_loss": ("related_party", "observed_fact", "specialist_review", "medium"),
     "policy_gap": ("policy_gap", "observed_fact", "policy_gap_review", "medium"),
+    # TAX-139: a persistent credit no structural explanation covers; evidence is requested.
+    "persistent_credit": (
+        "refund_reconciliation", "missing_evidence", "request_evidence", "medium",
+    ),
 }  # fmt: skip
-CATEGORY_ISSUE: Final = {category: issue for issue, (category, *_rest) in ISSUES.items()}
 LANES: Final = ("fast", "standard", "investigation")
 
 # RSL source kinds the checks read (assurance_pipeline.SOURCE_KINDS). Without e-Tax or the
@@ -80,7 +83,7 @@ REQUIRED_SYSTEMS: Final = frozenset({"etax", "online_refunds"})
 DEGRADES: Final[dict[str, tuple[str, ...]]] = {
     "idms": ("idms_line_match", "refund_lane"),
     "rsl_fraud_model": ("refund_lane",),
-    "asycuda": ("idms_line_match",),
+    "asycuda": ("idms_line_match", "persistent_credit"),
     "central_bank": ("three_way_match",),
     "registry": ("idms_line_match",),
 }
@@ -89,6 +92,7 @@ CHECKS: Final = (
     "three_way_match",
     "related_party_signals",
     "work_arrangement",
+    "persistent_credit",
     "rule_register",
     "idms_line_match",
     "refund_lane",
@@ -373,6 +377,7 @@ def _details(result: Mapping[str, Any]) -> list[dict[str, Any]]:
     """
     flags = iter(result.get("three_way", {}).get("flags", []))
     rp = iter(result.get("related_party", {}).get("findings", []))
+    pc = iter(result.get("persistent_credit", {}).get("findings", []))
     out = []
     for finding in result.get("findings", []):
         issue = finding.get("issue")
@@ -380,6 +385,8 @@ def _details(result: Mapping[str, Any]) -> list[dict[str, Any]]:
             out.append({"finding": finding, "source": next(flags, {})})
         elif issue in ("related_party_loss", "policy_gap"):
             out.append({"finding": finding, "source": next(rp, {})})
+        elif issue == "persistent_credit":
+            out.append({"finding": finding, "source": next(pc, {})})
         else:
             out.append({"finding": finding, "source": {}})
     return out
@@ -487,6 +494,26 @@ def finding_bodies(
             )
             rule_version = str(result["related_party"].get("signals_version", version))
             subject = f"{code}:{source.get('counterparty') or 'all'}"
+        elif issue == "persistent_credit":
+            review = result.get("persistent_credit", {})
+            explanation = _neutral(
+                source.get("reason"),
+                "VAT credits persist across periods and the structural explanations tested "
+                "do not cover them.",
+            ) + (
+                " The records do not establish why; this is a request for evidence, not a "
+                "refund decision."
+            )
+            amount = _money(source.get("unexplained_total"))
+            periods = set(source.get("periods", []))
+            cited = [
+                row["return_id"]
+                for row in review.get("periods", [])
+                if row.get("period") in periods and row.get("return_id")
+            ]
+            alternatives = _tested(review.get("explanation_order", []))
+            rule_version = str(review.get("policy_version", version))
+            subject = code
         else:  # disguised_employment
             referrals = result.get("work_arrangement", {}).get("referrals", [])
             explanation = (

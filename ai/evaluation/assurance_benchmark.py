@@ -38,7 +38,7 @@ from pathlib import Path
 from typing import Any
 
 from ai.evaluation.assurance_pipeline import assess_taxpayer, build_sources
-from ai.evaluation.assurance_population import ISSUES, generate
+from ai.evaluation.assurance_population import ISSUES, PERSISTENT_CREDIT, generate
 
 ROOT = Path(__file__).resolve().parents[2]
 WORK = ROOT / ".benchmark"
@@ -118,13 +118,18 @@ def _rate(n: int, d: int) -> dict[str, Any]:
     return {"count": n, "of": d, "rate": None if d == 0 else round(n / d, 4)}
 
 
+def key_issues(key: Mapping[str, Any]) -> tuple[str, ...]:
+    """Issues the population can carry: TAX-139's only when it was planted."""
+    return ISSUES + ((PERSISTENT_CREDIT,) if key["params"].get("persistent_credit") else ())
+
+
 def score(results: Mapping[str, Mapping[str, Any]], key: Mapping[str, Any]) -> dict[str, Any]:
     """Score system results for the given taxpayers against the answer key."""
     tk = {t: key["taxpayers"][t] for t in results}
     out: dict[str, Any] = {"taxpayers": len(results)}
     # Taxpayer-level detection.
     per_issue = {}
-    for issue in ISSUES:
+    for issue in key_issues(key):
         planted = [t for t in results if issue in tk[t]["issues"]]
         found = [t for t in planted if issue in results[t]["flags"]]
         others = [t for t in results if issue not in tk[t]["issues"]]
@@ -337,7 +342,7 @@ def simple_rule(
                 len([t for t in results if i in tk[t]["issues"] and t in flagged]),
                 len([t for t in results if i in tk[t]["issues"]]),
             )
-            for i in ISSUES
+            for i in key_issues(key)
         },
         "clean_taxpayers_flagged": _rate(len([t for t in clean if t in flagged]), len(clean)),
         "valid_claims_paid_without_audit": _rate(valid_pay, valid),
@@ -397,11 +402,32 @@ def _miss_reason(issue: str, k: Mapping[str, Any], r: Mapping[str, Any]) -> str:
         return "Facts did not conflict, so no specialist referral."
     if issue == "related_party_loss":
         return "Loss or fee-growth trigger did not fire."
+    if issue == PERSISTENT_CREDIT:
+        pc = r.get("persistent_credit", {})
+        return (
+            f"Unexplained credit in {len(pc.get('unexplained_periods', []))} of "
+            f"{pc.get('window', {}).get('periods')} periods after the structural tests: "
+            "below the persistence threshold."
+        )
     return "Interest-free loan trigger did not fire."
 
 
 def _fp_reason(issue: str, k: Mapping[str, Any], r: Mapping[str, Any]) -> str:
     counterparts = set(k.get("counterparts", []))
+    if issue == PERSISTENT_CREDIT:
+        what = (
+            "a capital-spending look-alike"
+            if "capex_lookalike" in counterparts
+            else "an exporter"
+            if "structural_refund" in counterparts
+            else "a taxpayer with another planted issue"
+            if k.get("issues")
+            else "a clean taxpayer"
+        )
+        return (
+            f"Credits of {what} kept an unexplained remainder after the structural tests in "
+            f"{len(r['persistent_credit']['unexplained_periods'])} periods."
+        )
     if issue == "untaxed_imported_services":
         if "wht_payee_reference_variant" in k.get("noise_taxpayer", []):
             return (

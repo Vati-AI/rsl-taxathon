@@ -64,7 +64,7 @@
       "topic": "Record production",
       "instrument": "Record-keeping and information-production powers in the Income Tax Act 1993 and VAT Act 2001",
       "test": "Power to require the taxpayer's books and source evidence in a standard structure",
-      "finding_codes": [],
+      "finding_codes": ["persistent_vat_credit_unexplained"],
       "verification_status": "unverified"
     },
     {
@@ -72,7 +72,7 @@
       "topic": "Refund handling",
       "instrument": "VAT Act 2001 refund provisions",
       "test": "Refund timelines, interest on late refunds and partial payment of the undisputed amount",
-      "finding_codes": [],
+      "finding_codes": ["persistent_vat_credit_unexplained"],
       "verification_status": "unverified"
     },
     {

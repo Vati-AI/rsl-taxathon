@@ -160,7 +160,7 @@ class AssuranceBenchTests(IntegrationTestCase):
             self.assertTrue(view["findings"])
             for finding in view["findings"]:
                 self.assertEqual(finding["producer"], "vati_check")
-                self.assertEqual(finding["producer_version"], "tax118-pipeline-v1")
+                self.assertEqual(finding["producer_version"], "tax139-pipeline-v2")
                 self.assertIs(finding["candidate_route"]["eligible_for_assessment"], False)
                 self.assertIn(finding["legal_route"]["status"], ("unverified", "no_verified_route"))
                 self.assertTrue(finding["proposed_action"]["requires_human_approval"])
