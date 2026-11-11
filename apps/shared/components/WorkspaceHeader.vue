@@ -106,13 +106,14 @@ const isMac = typeof navigator !== 'undefined' && /Mac|iPhone|iPad/.test(navigat
       </ul>
     </nav>
 
-    <div v-if="fixture || $slots.fixture" class="flex shrink-0 items-center gap-2">
+    <div v-if="fixture || $slots.fixture" class="flex shrink-0 items-center gap-1 sm:gap-2">
       <span
         v-if="fixture"
         data-kit="fixture-strip"
-        class="shrink-0 whitespace-nowrap rounded-full bg-vati-fixture-bg px-2 py-0.5 text-xs font-medium text-vati-fixture-text"
+        class="relative shrink-0 whitespace-nowrap rounded-full bg-vati-fixture-bg px-2 py-0.5 text-xs font-medium text-vati-fixture-text"
       >
-        Synthetic data
+        <!-- "Synthetic" on phones; "data" stays in the text for assistive technology. -->
+        Synthetic<span class="sr-only sm:not-sr-only"> data</span>
       </span>
       <slot name="fixture" />
     </div>

@@ -137,7 +137,7 @@ function reloadPage() {
         <label class="flex items-center gap-1 text-xs text-vati-muted">
           <span class="vati-sr-only">Acting as (fixture)</span>
           <select
-            class="h-7 rounded-control border border-vati-border bg-vati-surface py-0 pl-2 pr-7 text-xs text-vati-text"
+            class="h-7 rounded-control border border-vati-border bg-vati-surface py-0 pl-1.5 pr-6 text-xs text-vati-text"
             :value="fixtureRole"
             @change="setFixtureRole(($event.target as HTMLSelectElement).value as FixtureRole)"
           >
