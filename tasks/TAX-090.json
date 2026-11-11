@@ -5,15 +5,15 @@
   "owner": "Gupta",
   "area": "backend",
   "phase": "pilot",
-  "status": "BACKLOG",
+  "status": "IN_PROGRESS",
   "priority": "P0",
   "depends_on": [
     "TAX-086",
     "TAX-039",
     "TAX-096"
   ],
-  "claimed_by": null,
-  "branch": null,
+  "claimed_by": "claude-opus-5-5-gupta",
+  "branch": "task/TAX-090",
   "pr": null,
   "scope": "Serve the integration/api/openapi.json operations the auditor app uses (cases, case detail, evidence, entities, findings, review state, decisions, evidence requests, taxpayer, management summary) from Frappe with real data, roles and tenant headers, plus the TAX-096 briefing and finding-feedback operations",
   "inputs": [
@@ -61,6 +61,10 @@
     {
       "at": "2026-11-11T12:27:49.740246+00:00",
       "text": "2026-11-11 (ADR-045): owner changed from Keletso to Gupta; RSL integration lane. No task in this lane depends on an open task in the other lane."
+    },
+    {
+      "at": "2026-11-11T14:58:02.948727+00:00",
+      "text": "Claimed by claude-opus-5-5-gupta"
     }
   ],
   "sequence": 2
