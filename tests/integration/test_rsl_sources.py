@@ -98,6 +98,37 @@ class ContractTests(unittest.TestCase):
         with self.assertRaises(SourceContractError):
             validate_record(contract_for("rsl_fraud_model", "score"), {**SCORE, "owner": "Vati"})
 
+    def test_audit_referral_contract_keeps_risk_sets_rsl_owned(self):
+        """TAX-123: rsl.audit_system.referral.v0-assumed."""
+        contract = contract_for("audit_system", "referral")
+        self.assertEqual(contract.contract_id, "rsl.audit_system.referral.v0-assumed")
+        referral = {
+            "audit_case_ref": "SYN-AUD-1",
+            "tin": "510000006",
+            "referred_on": "2026-11-03",
+            "selection_reason": "risk_set_threshold",
+            "risk_sets": [
+                {"risk_set_id": "RS-1", "risk_set_version": "1", "score": "0.81", "owner": "RSL"}
+            ],
+        }
+        validate_record(contract, referral)
+        validate_record(contract, {**referral, "period": "2026-09", "risk_sets": []})
+        bad_items = [
+            {**referral["risk_sets"][0], "owner": "Vati"},
+            {**referral["risk_sets"][0], "score": "81"},
+            {**referral["risk_sets"][0], "vati_score": "0.1"},
+        ]
+        for item in bad_items:
+            with self.subTest(item=item), self.assertRaises(SourceContractError):
+                validate_record(contract, {**referral, "risk_sets": [item]})
+        for broken in (
+            {**referral, "period": "2026-13"},
+            {**referral, "url": "https://example.test"},
+            {k: v for k, v in referral.items() if k != "audit_case_ref"},
+        ):
+            with self.subTest(broken=sorted(broken)), self.assertRaises(SourceContractError):
+                validate_record(contract, broken)
+
 
 class FixtureSourceTests(unittest.TestCase):
     def test_envelope_identifies_fixture_and_keeps_references_not_copies(self):

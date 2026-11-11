@@ -5,16 +5,16 @@
   "owner": "Gupta",
   "area": "backend",
   "phase": "pilot",
-  "status": "BACKLOG",
+  "status": "IN_REVIEW",
   "priority": "P0",
   "depends_on": [
     "TAX-086",
     "TAX-039",
     "TAX-096"
   ],
-  "claimed_by": null,
-  "branch": null,
-  "pr": null,
+  "claimed_by": "claude-opus-5-5-gupta",
+  "branch": "task/TAX-090",
+  "pr": "https://github.com/Vati-AI/rsl-taxathon/pull/291",
   "scope": "Serve the integration/api/openapi.json operations the auditor app uses (cases, case detail, evidence, entities, findings, review state, decisions, evidence requests, taxpayer, management summary) from Frappe with real data, roles and tenant headers, plus the TAX-096 briefing and finding-feedback operations",
   "inputs": [
     "PROJECT.md",
@@ -30,15 +30,15 @@
   "acceptance": [
     {
       "text": "A Frappe-hosted /api/v1 router (or whitelisted equivalents with the same contract shapes) backed by Frappe records, the Jube case projection, OpenAleph/yente entities and TAX-086 findings; CSRF/session auth; ADR-003 error codes; contract tests reuse the existing examples",
-      "done": false
+      "done": true
     },
     {
       "text": "Every auditor-app call has a live implementation that passes the contract checks; officer roles and separation of duties are enforced server-side; no fixture data is returned in live mode and the management summary is computed from real records",
-      "done": false
+      "done": true
     },
     {
       "text": "Record relevant tests and evidence, update task status and open a PR",
-      "done": false
+      "done": true
     }
   ],
   "verification": "Every auditor-app call has a live implementation that passes the contract checks; officer roles and separation of duties are enforced server-side; no fixture data is returned in live mode and the management summary is computed from real records",
@@ -48,7 +48,20 @@
     "update-project-task",
     "finish-task"
   ],
-  "evidence": [],
+  "evidence": [
+    {
+      "criterion": 1,
+      "text": "vati_tax.api_v1: one whitelisted Frappe method (api.route, contract path in ?path=) serves the contract from Frappe records, Jube's projection (Vati Case Sync), OpenAleph/yente entities and TAX-086 findings; Frappe session/API-key auth and CSRF; ADR-003 error envelope. Frappe v16.54.0 offers no app hook for /api/v1 routes (ADR-046). test_core.py runs all 30 contract examples for the served operations through the router with contract.check_example (26 tests, OK)."
+    },
+    {
+      "criterion": 2,
+      "text": "Disposable verify site (frappe_dev.py verify, 2026-11-11): install and two migrations ok; test_api_v1_bench.py 13/13 OK (rerun after merging main, which added getWorkspaceSession: also served). Every served auditor-app operation answered through api.route and passed contract.check_example; tenant scope (403 tenant_scope_denied / 404 across tenants), roles (taxpayer 403, auditor 403 on management summary/integrity), separation of duties (proposer cannot approve), idempotent replay and key reuse (422), stale version (409 with current_version), ledger-recorded refusals; no fixture fallback (X-Vati-Mode: live; briefing 404 until TAX-088); management summary computed from Frappe records and the ledger with the rules shared with the fixture server."
+    },
+    {
+      "criterion": 3,
+      "text": "Frappe-free: test_core 26 OK; tests/contracts 72 OK (fixture server on the shared summary module); ruff, ruff format, mypy clean. Bench suite on a clean site: 570 unit OK; site tests fail only in reminders/test_reminders_bench (the same tests fail on main 57499b2, unrelated). Windows-only failure portal/test_presubmission path separators (pre-existing)."
+    }
+  ],
   "notes": [
     {
       "at": "2026-11-05T06:39:04.925015+00:00",
@@ -65,6 +78,14 @@
     {
       "at": "2026-11-11",
       "text": "TAX-146 added getWorkspaceSession (GET /api/v1/session) to the contract and the fixture server, for the Vati Workspace app shell. The Frappe /api/v1 service built here must serve it too, from the TAX-029 memberships (see integration/api/README.md)."
+    },
+    {
+      "at": "2026-11-11T14:58:02.948727+00:00",
+      "text": "Claimed by claude-opus-5-5-gupta"
+    },
+    {
+      "at": "2026-11-11T18:19:45.231930+00:00",
+      "text": "PR opened with local verification (ADR-038)"
     }
   ],
   "sequence": 2

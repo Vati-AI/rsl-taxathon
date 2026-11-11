@@ -1,0 +1,57 @@
+{
+  "format": "vati.rsl_sources_fixture.v1",
+  "fixture": true,
+  "synthetic": true,
+  "description": "Synthetic RSL audit referrals (TAX-123). Assumed contract rsl.audit_system.referral.v0-assumed: not RSL data, not an RSL interface, no real host, path or field name. Risk-set IDs, versions, scores and selection-reason codes are invented stand-ins owned by RSL in the fixture.",
+  "tenant_id": "SYN-TENANT-RSL",
+  "retrieved_at": "2026-11-11T08:00:00Z",
+  "rates_assumed": {},
+  "materiality": {},
+  "records": {
+    "audit_system.referral": [
+      {
+        "audit_case_ref": "SYN-AUD-2026-0001",
+        "tin": "510000006",
+        "referred_on": "2026-11-03",
+        "selection_reason": "risk_set_threshold",
+        "period": "2026-09",
+        "risk_sets": [
+          {
+            "risk_set_id": "SYN-RS-VAT-REFUND",
+            "risk_set_version": "fixture-1",
+            "score": "0.8100",
+            "owner": "RSL"
+          },
+          {
+            "risk_set_id": "SYN-RS-INPUT-VAT-TREND",
+            "risk_set_version": "fixture-1",
+            "score": "0.6400",
+            "owner": "RSL"
+          }
+        ]
+      },
+      {
+        "audit_case_ref": "SYN-AUD-2026-0002",
+        "tin": "510000014",
+        "referred_on": "2026-11-05",
+        "selection_reason": "team_leader_selection",
+        "risk_sets": []
+      },
+      {
+        "audit_case_ref": "SYN-AUD-2026-0003",
+        "tin": "510000014",
+        "referred_on": "2026-11-06",
+        "selection_reason": "risk_set_threshold",
+        "period": "2026-08",
+        "risk_sets": [
+          {
+            "risk_set_id": "SYN-RS-RELATED-PARTY",
+            "risk_set_version": "fixture-1",
+            "score": "0.7200",
+            "owner": "RSL"
+          }
+        ]
+      }
+    ]
+  }
+}

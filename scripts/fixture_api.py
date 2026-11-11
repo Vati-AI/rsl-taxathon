@@ -21,11 +21,8 @@ from __future__ import annotations
 import datetime
 import importlib
 import json
-import math
 import sys
 import uuid
-from collections import Counter
-from decimal import ROUND_HALF_UP, Decimal
 from pathlib import Path
 from typing import Any
 
@@ -85,21 +82,13 @@ def load_management(path: Path = MANAGEMENT_PATH) -> dict[str, Any]:
 
 # --- management summary (TAX-060) ----------------------------------------------------
 #
-# Measured from the fixture records, as the Vati service will measure them from Jube
-# (open cases), Frappe (decisions, evidence requests), the findings store and the
-# TAX-059 ledger. Nothing is estimated: every ratio carries its denominator and every
-# known gap is listed in missing_data.
+# Measured from the fixture records with the same rules the live Vati service uses
+# (vati_tax.api_v1.management, TAX-090) over Jube's case projection, Frappe's decisions
+# and evidence requests, the findings store and the TAX-059 ledger. Nothing is
+# estimated: every ratio carries its denominator and every known gap is listed in
+# missing_data.
 
 _FIXTURE_EVENT_NS = uuid.UUID("5a7e0000-0000-4000-8000-000000000060")
-_SIGNAL_KINDS = ("repeated_overrides", "repeated_separation_of_duties_attempts", "ledger_integrity")
-_OPEN_ORDER = (
-    "RECEIVED",
-    "VALIDATING",
-    "INVESTIGATING",
-    "AWAITING_EVIDENCE",
-    "AWAITING_HUMAN",
-    "FAILED_PROCESSING",
-)
 
 
 def _ts(value: str | None) -> datetime.datetime | None:
@@ -108,40 +97,17 @@ def _ts(value: str | None) -> datetime.datetime | None:
     return datetime.datetime.fromisoformat(value.replace("Z", "+00:00"))
 
 
-def _iso(value: datetime.datetime) -> str:
-    return value.astimezone(datetime.UTC).strftime("%Y-%m-%dT%H:%M:%SZ")
-
-
-def _hours(value: float) -> str:
-    return str(Decimal(str(value)).quantize(Decimal("0.1"), rounding=ROUND_HALF_UP))
-
-
-def _plural(n: int, one: str, many: str) -> str:
-    return f"{n} {one if n == 1 else many}"
-
-
 def duration_stats(hours: list[float], excluded: int = 0) -> dict[str, Any]:
-    """Median, nearest-rank 90th percentile and maximum, in hours."""
-    values = sorted(hours)
-    if not values:
-        return {
-            "count": 0,
-            "excluded": excluded,
-            "median_hours": None,
-            "p90_hours": None,
-            "max_hours": None,
-        }
-    n = len(values)
-    mid = n // 2
-    median = values[mid] if n % 2 else (values[mid - 1] + values[mid]) / 2
-    p90 = values[max(math.ceil(0.9 * n) - 1, 0)]
-    return {
-        "count": n,
-        "excluded": excluded,
-        "median_hours": _hours(median),
-        "p90_hours": _hours(p90),
-        "max_hours": _hours(values[-1]),
-    }
+    """Median, nearest-rank 90th percentile and maximum, in hours (shared rules)."""
+    result: dict[str, Any] = management_module().duration_stats(hours, excluded)
+    return result
+
+
+def management_module() -> Any:
+    """The Frappe-free summary rules the live Vati service uses (TAX-090)."""
+    if str(BACKEND_DIR) not in sys.path:
+        sys.path.insert(0, str(BACKEND_DIR))
+    return importlib.import_module("vati_tax.api_v1.management")
 
 
 def ledger_module() -> Any:
@@ -179,70 +145,6 @@ def ledger_entries(tenant_id: str, events: list[dict[str, Any]]) -> list[Any]:
     return list(store.entries(tenant_id))
 
 
-def _assurance(
-    entries: list[Any] | None,
-    viewer_login: str,
-    since: datetime.datetime,
-    until: datetime.datetime,
-    days: int,
-) -> dict[str, Any]:
-    if entries is None:
-        return {
-            "available": False,
-            "reason": "The audit ledger is not available in this environment.",
-        }
-    ledger = ledger_module()
-    summary = ledger.summary(entries, since=since, until=until)
-    signals = ledger.integrity_signals(entries, now=until, viewer=viewer_login, window_days=days)
-    kinds = Counter(s["kind"] for s in signals["signals"])
-    return {
-        "available": True,
-        "ledger_intact": summary["ledger_intact"],
-        "entries": summary["entries"],
-        "overrides": summary["by_category"]["override"],
-        "refusals": summary["by_category"]["denied"],
-        "distinct_actors": summary["distinct_actors"],
-        "review_signals": [{"kind": k, "count": kinds[k]} for k in _SIGNAL_KINDS if kinds[k]],
-        "withheld_about_viewer": signals["withheld_about_viewer"],
-    }
-
-
-def _workload(
-    open_cases: list[dict[str, Any]],
-    officers: dict[str, dict[str, Any]],
-    missing: list[dict[str, str]],
-) -> dict[str, Any]:
-    status_counts = Counter(c["status"] for c in open_cases)
-    rows: dict[str, dict[str, Any]] = {}
-    unnamed = 0
-    for case in open_cases:
-        officer_id = case["assigned_officer_id"]
-        if officer_id is None:
-            continue
-        if officer_id not in rows:
-            known = officers.get(officer_id)
-            unnamed += known is None
-            rows[officer_id] = {
-                "officer_id": officer_id,
-                "display_name": known["display_name"]
-                if known
-                else "Officer with no name on record",
-                "open_cases": 0,
-                "awaiting_officer_review": 0,
-            }
-        rows[officer_id]["open_cases"] += 1
-        rows[officer_id]["awaiting_officer_review"] += case["status"] == "AWAITING_HUMAN"
-    if unnamed:
-        detail = f"{_plural(unnamed, 'assigned officer has', 'assigned officers have')} no name on record."
-        missing.append({"metric": "workload", "detail": detail})
-    return {
-        "open_cases": len(open_cases),
-        "unassigned_open_cases": sum(c["assigned_officer_id"] is None for c in open_cases),
-        "by_status": [{"status": s, "count": status_counts[s]} for s in _OPEN_ORDER],
-        "by_officer": sorted(rows.values(), key=lambda r: (r["display_name"], r["officer_id"])),
-    }
-
-
 def management_summary(
     data: dict[str, Any],
     mgmt: dict[str, Any],
@@ -269,103 +171,35 @@ def management_summary(
     until = _ts(mgmt["as_of"])
     if until is None:
         raise ValueError("management fixture needs as_of")
-    since = until - datetime.timedelta(days=window_days)
-    missing: list[dict[str, str]] = []
-
-    open_cases = [c for c in data["cases"] if c["status"] in OPEN_STATUSES]
-    workload = _workload(open_cases, officers, missing)
-
-    ages: list[float] = []
-    for case in open_cases:
-        created = _ts(case.get("created_at"))
-        if created is not None:
-            ages.append((until - created).total_seconds() / 3600)
-    if len(ages) < len(open_cases):
-        n = len(open_cases) - len(ages)
-        detail = f"{_plural(n, 'open case has', 'open cases have')} no creation time and is not measured."
-        missing.append({"metric": "open_case_age", "detail": detail})
-
-    closed = []
-    for case in mgmt["closed_cases"]:
-        closed_at = _ts(case["closed_at"])
-        if closed_at is not None and since <= closed_at <= until:
-            closed.append((case, closed_at))
-    to_close: list[float] = []
-    for case, closed_at in closed:
-        created = _ts(case.get("created_at"))
-        if created is not None:
-            to_close.append((closed_at - created).total_seconds() / 3600)
-    if len(to_close) < len(closed):
-        n = len(closed) - len(to_close)
-        detail = (
-            f"{_plural(n, 'closed case has', 'closed cases have')} no creation time "
-            "and is not in the time to close."
-        )
-        missing.append({"metric": "time_to_close", "detail": detail})
-    with_outcome = [case for case, _ in closed if case.get("outcome")]
-    if len(with_outcome) < len(closed):
-        n = len(closed) - len(with_outcome)
-        detail = (
-            f"{_plural(n, 'closed case has', 'closed cases have')} no recorded decision outcome "
-            "and is excluded from both ratios."
-        )
-        missing.append({"metric": "closure_outcomes", "detail": detail})
-    outcomes = Counter(case["outcome"] for case in with_outcome)
-
-    outstanding = [r for r in mgmt["evidence_requests"] if r["status"] in ("recorded", "sent")]
-    overdue = [r for r in outstanding if datetime.date.fromisoformat(r["due_date"]) < until.date()]
-
-    in_scope = {c["case_id"] for c in open_cases} | {case["case_id"] for case, _ in closed}
-    findings = [f for f in mgmt["findings"] if f["case_id"] in in_scope]
-    routes = Counter(f["legal_route_status"] for f in findings)
-
     if entries is None and "ledger_events" in mgmt:
         entries = ledger_entries(principal["tenant_id"], mgmt["ledger_events"])
-    assurance = _assurance(entries, viewer_login, since, until, window_days)
-    if not assurance["available"]:
-        missing.append({"metric": "assurance", "detail": assurance["reason"]})
-
-    return {
-        "tenant_id": principal["tenant_id"],
-        "generated_at": _iso(until),
-        "window": {"since": _iso(since), "until": _iso(until), "days": window_days},
-        "workload": workload,
-        "elapsed": {
-            "open_case_age": duration_stats(ages, len(open_cases) - len(ages)),
-            "time_to_close": duration_stats(to_close, len(closed) - len(to_close)),
-        },
-        "unresolved_evidence": {
-            "outstanding_requests": len(outstanding),
-            "overdue_requests": len(overdue),
-            "cases_with_outstanding_requests": len({r["case_id"] for r in outstanding}),
-            "open_cases_awaiting_evidence": sum(
-                c["status"] == "AWAITING_EVIDENCE" for c in open_cases
-            ),
-        },
-        "closure_outcomes": {
-            "closed_in_window": len(closed),
-            "without_recorded_outcome": len(closed) - len(with_outcome),
-            "no_further_action": {
-                "numerator": outcomes["close_no_further_action"],
-                "denominator": len(with_outcome),
-            },
-            "after_correction": {
-                "numerator": outcomes["close_after_correction"],
-                "denominator": len(with_outcome),
-            },
-        },
-        "legal_route_coverage": {
-            "verified_by_reviewer": {
-                "numerator": routes["verified_by_reviewer"],
-                "denominator": len(findings),
-            },
-            "unverified": routes["unverified"],
-            "no_verified_route": routes["no_verified_route"],
-        },
-        "assurance": assurance,
-        "missing_data": missing,
-        "synthetic": True,
-    }
+    open_cases = [
+        {**c, "created_at": _ts(c.get("created_at"))}
+        for c in data["cases"]
+        if c["status"] in OPEN_STATUSES
+    ]
+    closed_cases = [
+        {**c, "created_at": _ts(c.get("created_at")), "closed_at": _ts(c["closed_at"])}
+        for c in mgmt["closed_cases"]
+    ]
+    requests = [
+        {**r, "due_date": datetime.date.fromisoformat(r["due_date"])}
+        for r in mgmt["evidence_requests"]
+    ]
+    body: dict[str, Any] = management_module().summary(
+        tenant_id=principal["tenant_id"],
+        until=until,
+        window_days=window_days,
+        open_cases=open_cases,
+        closed_cases=closed_cases,
+        evidence_requests=requests,
+        findings=mgmt["findings"],
+        officers={o["officer_id"]: o["display_name"] for o in mgmt["officers"]},
+        viewer_login=viewer_login,
+        entries=entries,
+        synthetic=True,
+    )
+    return body
 
 
 def load_fixture(path: Path = FIXTURE_PATH, records: Path = RECORDS_PATH) -> dict[str, Any]:
