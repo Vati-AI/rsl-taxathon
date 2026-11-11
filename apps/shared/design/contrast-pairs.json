@@ -1,0 +1,144 @@
+{
+  "_comment": "Every text/background pair the shared components (apps/shared/components) and app shells use, by token name. scripts/check_contrast.py resolves the values in tokens.css and fails below WCAG 2.1 AA: 4.5:1 for text, 3:1 for large text and UI indicators such as the focus ring (TAX-145). Add a pair here when a component uses a new combination.",
+  "pairs": [
+    {
+      "fg": "--vati-text",
+      "bg": "--vati-canvas",
+      "kind": "text",
+      "use": "Body text on the page canvas"
+    },
+    {
+      "fg": "--vati-text",
+      "bg": "--vati-surface",
+      "kind": "text",
+      "use": "Body text on cards, tables, drawers"
+    },
+    {
+      "fg": "--vati-text",
+      "bg": "--vati-surface-subtle",
+      "kind": "text",
+      "use": "Table header, hovered row"
+    },
+    {
+      "fg": "--vati-text-muted",
+      "bg": "--vati-canvas",
+      "kind": "text",
+      "use": "Page description, usage line"
+    },
+    {
+      "fg": "--vati-text-muted",
+      "bg": "--vati-surface",
+      "kind": "text",
+      "use": "Supporting text, empty value dash, key-fact labels"
+    },
+    {
+      "fg": "--vati-text-muted",
+      "bg": "--vati-surface-subtle",
+      "kind": "text",
+      "use": "Column header info text"
+    },
+    {
+      "fg": "--vati-accent",
+      "bg": "--vati-surface",
+      "kind": "text",
+      "use": "Links and row actions"
+    },
+    { "fg": "--vati-accent", "bg": "--vati-canvas", "kind": "text", "use": "Links on the canvas" },
+    {
+      "fg": "--vati-accent",
+      "bg": "--vati-accent-subtle",
+      "kind": "text",
+      "use": "Active tab and active sidebar item"
+    },
+    {
+      "fg": "--vati-surface",
+      "bg": "--vati-accent",
+      "kind": "text",
+      "use": "Primary button label"
+    },
+    {
+      "fg": "--vati-surface",
+      "bg": "--vati-accent-hover",
+      "kind": "text",
+      "use": "Primary button label, hover"
+    },
+    {
+      "fg": "--vati-info-text",
+      "bg": "--vati-info-bg",
+      "kind": "text",
+      "use": "Info status chip and notice"
+    },
+    {
+      "fg": "--vati-success-text",
+      "bg": "--vati-success-bg",
+      "kind": "text",
+      "use": "Success status chip and notice"
+    },
+    {
+      "fg": "--vati-warning-text",
+      "bg": "--vati-warning-bg",
+      "kind": "text",
+      "use": "Warning status chip and notice"
+    },
+    {
+      "fg": "--vati-danger-text",
+      "bg": "--vati-danger-bg",
+      "kind": "text",
+      "use": "Danger status chip, inline error"
+    },
+    {
+      "fg": "--vati-danger-text",
+      "bg": "--vati-surface",
+      "kind": "text",
+      "use": "Inline error on a surface"
+    },
+    {
+      "fg": "--vati-neutral-text",
+      "bg": "--vati-neutral-bg",
+      "kind": "text",
+      "use": "Neutral status chip (not available)"
+    },
+    {
+      "fg": "--vati-fixture-text",
+      "bg": "--vati-fixture-bg",
+      "kind": "text",
+      "use": "Fixture-mode strip in the header"
+    },
+    {
+      "fg": "--vati-nav-text",
+      "bg": "--vati-nav-bg",
+      "kind": "text",
+      "use": "Dark navigation panel item"
+    },
+    {
+      "fg": "--vati-nav-text",
+      "bg": "--vati-nav-active-bg",
+      "kind": "text",
+      "use": "Dark navigation panel, active item"
+    },
+    {
+      "fg": "--vati-nav-text-muted",
+      "bg": "--vati-nav-bg",
+      "kind": "text",
+      "use": "Dark navigation panel section label and count"
+    },
+    {
+      "fg": "--vati-accent",
+      "bg": "--vati-surface",
+      "kind": "ui",
+      "use": "Focus ring on a surface"
+    },
+    {
+      "fg": "--vati-accent",
+      "bg": "--vati-canvas",
+      "kind": "ui",
+      "use": "Focus ring on the canvas"
+    },
+    {
+      "fg": "--vati-nav-text",
+      "bg": "--vati-nav-bg",
+      "kind": "ui",
+      "use": "Focus ring in the dark navigation panel"
+    }
+  ]
+}

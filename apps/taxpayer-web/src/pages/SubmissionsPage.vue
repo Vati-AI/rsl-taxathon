@@ -3,6 +3,7 @@ import { Alert, Badge, Button, LoadingText } from 'frappe-ui';
 import { computed, onMounted, ref } from 'vue';
 import { RouterLink } from 'vue-router';
 import PortalHeader from '../components/PortalHeader.vue';
+import { EmptyState } from '../../../shared/components';
 import { fetchSubmissions, PortalError } from '../lib/api';
 import {
   formatAmount,
@@ -81,15 +82,12 @@ onMounted(load);
       </template>
     </Alert>
 
-    <div
+    <EmptyState
       v-else-if="items.length === 0"
-      class="rounded-lg border border-outline-gray-2 p-8 text-center"
-    >
-      <h2 class="text-lg font-semibold text-ink-gray-9">No cases yet</h2>
-      <p class="mt-1 text-ink-gray-6">
-        When RSL reviews a refund claim you filed, it appears here.
-      </p>
-    </div>
+      title="No cases yet"
+      message="When RSL reviews a refund claim you filed, it appears here."
+      icon="lucide-file-text"
+    />
 
     <ul
       v-else
