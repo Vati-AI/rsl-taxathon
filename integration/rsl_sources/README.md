@@ -13,6 +13,7 @@ name is claimed. Nothing here opens a network connection.
 | Lekuka / IDMS | `invoice`, `supplier_integration` | `rsl.idms.<kind>.v0-assumed` |
 | Online Refunds Application | `claim` (with the invoice schedule and uploaded copies) | `rsl.online_refunds.claim.v0-assumed` |
 | RSL refund-fraud model | `score` (owner must be `RSL`; model ID and version kept) | `rsl.rsl_fraud_model.score.v0-assumed` |
+| Risk-based audit system (PSRM) | `referral` (audit case reference, selection reason, risk sets whose owner must be `RSL`; TAX-123) | `rsl.audit_system.referral.v0-assumed` |
 | ASYCUDA World | `entry` | `rsl.asycuda.entry.v0-assumed` |
 | Registry | `entity` | `rsl.registry.entity.v0-assumed` |
 | Central Bank | `cross_border_payment` (CMA payments may be absent) | `rsl.central_bank.cross_border_payment.v0-assumed` |
@@ -38,4 +39,5 @@ python3 -m unittest tests/integration/test_rsl_sources.py -v
 ## Consumers
 
 - TAX-121 assurance checks (`backend/vati_tax/vati_tax/assurance`).
+- TAX-123 audit referrals (`backend/vati_tax/vati_tax/rsl_referrals`, [ADR-047](../../docs/decisions/ADR-047-rsl-audit-referrals.md)): reads `audit_system.referral` per taxpayer, opens one Vati case per RSL audit case reference and keeps RSL's risk sets and scores as RSL-owned inputs. `fixtures/audit_referrals.json` is the synthetic referral fixture in the site fixture format.
 - TAX-122 claim intake (`backend/vati_tax/vati_tax/rsl_intake`, ADR-043): reads `online_refunds.claim` per taxpayer and records each claim as a sent `Vati Submission` with source `rsl_online_refunds`, keeping references and hashes only.

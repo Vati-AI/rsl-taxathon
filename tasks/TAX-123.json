@@ -5,15 +5,15 @@
   "owner": "Gupta",
   "area": "integration",
   "phase": "pilot",
-  "status": "BACKLOG",
+  "status": "IN_REVIEW",
   "priority": "P1",
   "depends_on": [
     "TAX-111",
     "TAX-034"
   ],
-  "claimed_by": null,
-  "branch": null,
-  "pr": null,
+  "claimed_by": "claude-opus-5-5-gupta",
+  "branch": "task/TAX-123",
+  "pr": "https://github.com/Vati-AI/rsl-taxathon/pull/292",
   "scope": "Add a TAX-111-style assumed contract for audit referrals from RSL's risk-based audit system on PSRM (case reference, TIN, risk sets and scores owned by RSL, selection reason) and open a Vati investigation linked to that RSL case",
   "inputs": [
     "PROJECT.md",
@@ -28,15 +28,15 @@
   "acceptance": [
     {
       "text": "Contract rsl.audit_system.referral.v0-assumed with fixture records that identify themselves as fixtures; no real host, path or field name invented",
-      "done": false
+      "done": true
     },
     {
       "text": "A referral opens or reuses one Vati case linked to the RSL audit case reference; RSL risk-set scores are stored as RSL-owned inputs and never relabelled as Vati scores",
-      "done": false
+      "done": true
     },
     {
       "text": "Record relevant tests and evidence, update task status and open a PR",
-      "done": false
+      "done": true
     }
   ],
   "verification": "Contract and adapter tests; a fixture referral opens one linked case and replays idempotently",
@@ -46,7 +46,20 @@
     "update-project-task",
     "finish-task"
   ],
-  "evidence": [],
+  "evidence": [
+    {
+      "criterion": 1,
+      "text": "integration/rsl_sources/contracts.py: rsl.audit_system.referral.v0-assumed (audit_case_ref, tin, referred_on, selection_reason, optional period, risk_sets with owner RSL; unexpected fields, floats and non-RSL owners refused). Fixture integration/rsl_sources/fixtures/audit_referrals.json (fixture/synthetic, assumed-contract description, no host/path/URL); envelopes carry fixture: true and the contract notice. tests/integration/test_rsl_sources.py 10 OK; rsl_referrals/test_rules.py 9 OK (fixture read through the TAX-111 adapter, checked against the contract)."
+    },
+    {
+      "criterion": 2,
+      "text": "vati_tax.rsl_referrals + append-only Vati RSL Referral (ADR-047): one case per RSL audit case reference via a scoped register_case key; a second read replays and reuses the case, a changed record is a reported conflict and changes nothing; RSL risk sets/scores stored as RSL-owned inputs (owner RSL enforced by rules and controller), no finding, lane, score or decision written. Disposable verify site 2026-11-11: test_rsl_referrals_bench.py 6/6 OK (linked cases, replay, conflict, unavailable/unconfigured source, officer read, taxpayer and cross-tenant refusal, append-only, operator-only intake)."
+    },
+    {
+      "criterion": 3,
+      "text": "ruff, ruff format, mypy clean; validate.py ok; bench suite on a clean site with TAX-090 merged locally: 570 unit OK, site tests 1 error in reminders/test_reminders_bench (also fails on main 57499b2, unrelated)."
+    }
+  ],
   "notes": [
     {
       "at": "2026-11-07",
@@ -55,6 +68,14 @@
     {
       "at": "2026-11-11T12:27:49.740246+00:00",
       "text": "2026-11-11 (ADR-045): owner changed from Keletso to Gupta; RSL integration lane. No task in this lane depends on an open task in the other lane."
+    },
+    {
+      "at": "2026-11-11T15:16:20.907392+00:00",
+      "text": "Claimed by claude-opus-5-5-gupta"
+    },
+    {
+      "at": "2026-11-11T18:21:14.438890+00:00",
+      "text": "PR opened with local verification (ADR-038)"
     }
   ],
   "sequence": 22
