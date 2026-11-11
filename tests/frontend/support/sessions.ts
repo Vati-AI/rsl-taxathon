@@ -143,6 +143,14 @@ export interface PortalMock {
   reminders: CorrectionReminderMock[];
   /** Answer `get_correction_reminders` with 503, as when the site is unavailable. */
   remindersUnavailable: boolean;
+  /**
+   * TAX-125: whether the site offers the fixture-only Online Refunds simulator (the
+   * former claim form). The harness is fixture tooling, so it is on unless a test
+   * turns it off to check the production portal.
+   */
+  simulatorEnabled: boolean;
+  /** TAX-125: the configured link to RSL's Online Refunds dashboard (none by default). */
+  rslUrl: string | null;
 }
 
 /** Taxpayer view of a TAX-078 reminder (vati_tax.reminders.rules.taxpayer_view). */
@@ -378,6 +386,9 @@ function ownSubmissions(mock: PortalMock): PortalSubmission[] {
         { label: 'Officer review', state: 'current', at: null },
         { label: 'Outcome issued', state: 'upcoming', at: null },
       ],
+      // Sent through the simulator, so not a claim read from RSL (TAX-125).
+      origin: 'portal',
+      rsl: null,
     };
   });
   return [...sent, ...PORTAL_SUBMISSIONS];
@@ -386,7 +397,11 @@ function ownSubmissions(mock: PortalMock): PortalSubmission[] {
 export async function mockTaxpayerSession(
   page: Page,
   persona: TaxpayerPersona,
-  options: { dataMode?: 'live' | 'fixture' } = {},
+  options: {
+    dataMode?: 'live' | 'fixture';
+    simulatorEnabled?: boolean;
+    rslUrl?: string | null;
+  } = {},
 ): Promise<PortalMock> {
   const mock: PortalMock = {
     dataMode: options.dataMode ?? 'live',
@@ -402,6 +417,8 @@ export async function mockTaxpayerSession(
     dropNextRespondResponse: false,
     reminders: [],
     remindersUnavailable: false,
+    simulatorEnabled: options.simulatorEnabled ?? true,
+    rslUrl: options.rslUrl ?? null,
   };
 
   await page.route('**/login**', (route) =>
@@ -428,6 +445,8 @@ export async function mockTaxpayerSession(
         user,
         full_name,
         taxpayers: [{ tenant_id: SYNTHETIC_TENANT_ID, taxpayer_id }],
+        simulator_enabled: mock.simulatorEnabled,
+        rsl_online_refunds_url: mock.rslUrl,
       });
     }
     if (
@@ -460,6 +479,14 @@ export async function mockTaxpayerSession(
         received_at: '2026-11-04T10:00:00Z',
         synthetic: true,
       });
+    }
+    if (
+      !mock.simulatorEnabled &&
+      (method === 'vati_tax.portal.api.review_refund_claim' ||
+        method === 'vati_tax.portal.api.submit_refund_claim')
+    ) {
+      // As the server (TAX-125): without the simulator, claims are filed with RSL.
+      return refused(route, 'PermissionError', 403, 'Refund claims are filed with RSL.');
     }
     if (method === 'vati_tax.portal.api.review_refund_claim') {
       const body = (route.request().postDataJSON() ?? {}) as Record<string, unknown>;

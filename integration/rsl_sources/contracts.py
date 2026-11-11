@@ -33,6 +33,11 @@ _TIN = re.compile(r"\d{9}")
 _REF = re.compile(r"[A-Za-z0-9][A-Za-z0-9._:\-]{0,79}")
 _CURRENCY = re.compile(r"[A-Z]{3}")
 _SCORE = re.compile(r"(0(\.\d{1,4})?|1(\.0{1,4})?)")
+# Claim statuses RSL's Online Refunds Application is publicly reported to show (October 2025
+# launch coverage, docs/reference/RSL_LANDSCAPE.md). Assumed codes, not RSL's own values.
+CLAIM_STATUSES = frozenset(
+    {"processing", "pending", "audit_in_progress", "processed", "rejected", "cancelled"}
+)
 
 
 class SourceContractError(ValueError):
@@ -56,6 +61,7 @@ class SourceContract:
     fields: Mapping[str, str]  # field -> rule name
     optional: frozenset[str] = frozenset()
     lists: Mapping[str, Mapping[str, str]] | None = None  # list field -> item rules
+    optional_rules: Mapping[str, str] | None = None  # optional field -> rule name
 
 
 def _c(system: str, kind: str, taxpayer: str, ident: str, fields: dict[str, str], **kw: Any):
@@ -170,6 +176,8 @@ CONTRACTS: dict[tuple[str, str], SourceContract] = {
                 "claimed_amount": "money",
                 "submitted_on": "date",
             },
+            # TAX-125: the status RSL shows the taxpayer, when RSL supplies it.
+            optional_rules={"status": "claim_status"},
             lists={
                 "lines": {
                     "line_id": "ref",
@@ -272,6 +280,8 @@ def _check(rule: str, value: object, field: str) -> None:
         ok = isinstance(value, str) and bool(_CURRENCY.fullmatch(value))
     elif rule == "owner_rsl":
         ok = value == "RSL"
+    elif rule == "claim_status":
+        ok = value in CLAIM_STATUSES
     else:  # pragma: no cover - contract definition error
         raise AssertionError(rule)
     if not ok:
@@ -282,7 +292,12 @@ def validate_record(contract: SourceContract, record: object) -> dict[str, Any]:
     """Return a copy of ``record`` if it satisfies ``contract``; raise otherwise."""
     if not isinstance(record, Mapping):
         raise SourceContractError("invalid_record", contract.kind, "record must be an object")
-    allowed = set(contract.fields) | set(contract.optional) | set(contract.lists or {})
+    allowed = (
+        set(contract.fields)
+        | set(contract.optional)
+        | set(contract.lists or {})
+        | set(contract.optional_rules or {})
+    )
     extra = set(record) - allowed
     if extra:
         raise SourceContractError("unexpected_field", sorted(extra)[0], "not in the contract")
@@ -293,6 +308,9 @@ def validate_record(contract: SourceContract, record: object) -> dict[str, Any]:
     for field in contract.optional:
         if record.get(field) is not None:
             _check("tin" if field == "tin" else "ref", record[field], field)
+    for field, rule in (contract.optional_rules or {}).items():
+        if record.get(field) is not None:
+            _check(rule, record[field], field)
     for field, rules in (contract.lists or {}).items():
         items = record.get(field)
         if not isinstance(items, list):

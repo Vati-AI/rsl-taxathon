@@ -112,8 +112,9 @@ async function soft(label: string, fn: () => Promise<void>) {
 
 test('01 taxpayer: VAT refund claim', async ({ page }) => {
   await mockTaxpayerSession(page, 'taxpayer', { dataMode: 'fixture' });
-  await page.goto(TAXPAYER + '/taxpayer/');
-  await expect(page.getByRole('heading', { name: 'Your submissions' })).toBeVisible();
+  // TAX-125: the portal opens on evidence requests; the demo starts at the taxpayer's cases.
+  await page.goto(TAXPAYER + '/taxpayer/submissions');
+  await expect(page.getByRole('heading', { name: 'My cases' })).toBeVisible();
   await beat(
     page,
     'Taxpayer portal',
@@ -121,7 +122,7 @@ test('01 taxpayer: VAT refund claim', async ({ page }) => {
   );
 
   await soft('open submission', async () => {
-    await page.getByRole('list', { name: 'Submissions' }).getByRole('link').first().click();
+    await page.getByRole('list', { name: 'My cases' }).getByRole('link').first().click();
     await beat(
       page,
       'Submission status',
@@ -133,7 +134,7 @@ test('01 taxpayer: VAT refund claim', async ({ page }) => {
   await page.goto(TAXPAYER + '/taxpayer/submissions/new');
   await beat(
     page,
-    'New VAT refund claim',
+    'Online Refunds simulator',
     'A guided three-step claim: details, supporting documents and invoices, then review.',
     2500,
   );

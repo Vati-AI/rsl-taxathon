@@ -15,12 +15,12 @@ import {
 import { computed, ref } from 'vue';
 import { RouterView, useRoute } from 'vue-router';
 import FixtureNotice from './components/FixtureNotice.vue';
-import { logout, sessionState } from './lib/session';
+import { logout, sessionState, simulatorEnabled } from './lib/session';
 import { useDesktop } from './lib/use-desktop';
 
 const desktop = useDesktop();
 const route = useRoute();
-// Highlight the owning section, so a submission's status page keeps "Submissions" active.
+// Highlight the owning section, so a case's status page keeps "My cases" active.
 const section = computed(() => {
   if (route.name === 'submissions' || route.name === 'submission') return 'submissions';
   if (route.name === 'new-submission') return 'new';
@@ -36,6 +36,8 @@ const fullName = computed(() =>
 const fixtureMode = computed(
   () => state.value.status === 'ready' && state.value.session.mode === 'fixture',
 );
+// TAX-125: the Online Refunds simulator appears only where the site enables it.
+const simulator = computed(() => simulatorEnabled(state.value));
 const loggingOut = ref(false);
 
 async function onLogout() {
@@ -83,22 +85,16 @@ function retry() {
           />
           <div class="flex-1 overflow-y-auto">
             <SidebarItem
-              label="Submissions"
-              icon="lucide-file-text"
-              :route="{ name: 'submissions' }"
-              :active="section === 'submissions'"
-            />
-            <SidebarItem
-              label="New submission"
-              icon="lucide-file-plus"
-              :route="{ name: 'new-submission' }"
-              :active="section === 'new'"
-            />
-            <SidebarItem
               label="Evidence requests"
               icon="lucide-inbox"
               :route="{ name: 'evidence-requests' }"
               :active="section === 'requests'"
+            />
+            <SidebarItem
+              label="My cases"
+              icon="lucide-file-text"
+              :route="{ name: 'submissions' }"
+              :active="section === 'submissions'"
             />
             <SidebarItem
               label="Account"
@@ -106,6 +102,17 @@ function retry() {
               :route="{ name: 'account' }"
               :active="section === 'account'"
             />
+            <template v-if="simulator">
+              <p class="mt-4 px-2 pb-1 text-xs font-medium uppercase text-ink-gray-6">
+                Fixture tools
+              </p>
+              <SidebarItem
+                label="Online Refunds simulator"
+                icon="lucide-flask-conical"
+                :route="{ name: 'new-submission' }"
+                :active="section === 'new'"
+              />
+            </template>
           </div>
           <div class="border-t border-outline-gray-1 p-3">
             <p class="mb-2 break-words text-sm text-ink-gray-6">Signed in as {{ fullName }}</p>
@@ -133,22 +140,23 @@ function retry() {
       <template #nav>
         <MobileNav aria-label="Taxpayer portal">
           <MobileNavItem
-            label="Submissions"
+            label="Requests"
+            icon="lucide-inbox"
+            :route="{ name: 'evidence-requests' }"
+            :active="section === 'requests'"
+          />
+          <MobileNavItem
+            label="My cases"
             icon="lucide-file-text"
             :route="{ name: 'submissions' }"
             :active="section === 'submissions'"
           />
           <MobileNavItem
-            label="New"
-            icon="lucide-file-plus"
+            v-if="simulator"
+            label="Simulator"
+            icon="lucide-flask-conical"
             :route="{ name: 'new-submission' }"
             :active="section === 'new'"
-          />
-          <MobileNavItem
-            label="Requests"
-            icon="lucide-inbox"
-            :route="{ name: 'evidence-requests' }"
-            :active="section === 'requests'"
           />
           <MobileNavItem
             label="Account"

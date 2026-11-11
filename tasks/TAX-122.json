@@ -5,7 +5,7 @@
   "owner": "Keletso",
   "area": "integration",
   "phase": "pilot",
-  "status": "IN_REVIEW",
+  "status": "DONE",
   "priority": "P0",
   "depends_on": [
     "TAX-111",
@@ -82,6 +82,10 @@
     {
       "at": "2026-11-07",
       "text": "IN_REVIEW in PR #281 (shared with the ADR-043 planning change on the session branch)."
+    },
+    {
+      "at": "2026-11-08",
+      "text": "Verified PR #281 merged into main as ec96066; all acceptance criteria satisfied with evidence. Recorded DONE (ADR-038)."
     }
   ],
   "sequence": 11

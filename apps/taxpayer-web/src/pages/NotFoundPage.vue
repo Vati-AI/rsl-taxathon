@@ -9,6 +9,6 @@ import PortalHeader from '../components/PortalHeader.vue';
       title="Page not found"
       description="This portal page does not exist or has moved."
     />
-    <Button label="Go to your submissions" :route="{ name: 'submissions' }" />
+    <Button label="Go to evidence requests" :route="{ name: 'evidence-requests' }" />
   </section>
 </template>

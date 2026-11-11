@@ -32,6 +32,11 @@ export function ensureSession(): Promise<SessionState> {
   return pending;
 }
 
+/** TAX-125: whether this site offers the fixture-only Online Refunds simulator. */
+export function simulatorEnabled(state: SessionState = sessionState.value): boolean {
+  return state.status === 'ready' && state.session.simulator_enabled === true;
+}
+
 export function resetSession(): void {
   sessionState.value = { status: 'idle' };
   pending = null;

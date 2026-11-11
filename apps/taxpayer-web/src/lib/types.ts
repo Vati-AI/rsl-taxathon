@@ -28,6 +28,13 @@ export type PortalSession = DataMeta & {
   full_name: string;
   /** Present from TAX-043; selects the tenant for evidence uploads. */
   taxpayers?: TaxpayerScope[];
+  /**
+   * TAX-125: the claim form is a fixture-only simulator of RSL's Online Refunds
+   * Application. True only on development, test and demo sites.
+   */
+  simulator_enabled?: boolean;
+  /** TAX-125: RSL's Online Refunds dashboard, when the site configures it (https only). */
+  rsl_online_refunds_url?: string | null;
 };
 
 /** One uploaded supporting document (TAX-032 evidence view; never a file path or URL). */
@@ -68,6 +75,22 @@ export interface SubmissionStep {
 export type SubmissionStatus =
   'draft' | 'under_review' | 'evidence_requested' | 'correction_needed' | 'completed' | 'withdrawn';
 
+/**
+ * TAX-125: RSL's reference and status for a claim filed in RSL's Online Refunds
+ * Application. RSL keeps the status; the portal only shows it, labelled.
+ */
+export interface RslClaim {
+  claim_ref: string;
+  system: string;
+  status: string | null;
+  status_label: string | null;
+  /** reported, not_reported (RSL's record has none) or unavailable (RSL did not answer). */
+  status_state: 'reported' | 'not_reported' | 'unavailable';
+  /** True when RSL's record came from a recorded synthetic fixture. */
+  recorded: boolean;
+  dashboard_url: string | null;
+}
+
 export interface Submission {
   id: string;
   reference: string;
@@ -82,6 +105,9 @@ export interface Submission {
   submitted_at: string | null;
   next_step: string;
   steps: SubmissionStep[];
+  /** TAX-125: filed with RSL (rsl_online_refunds) or sent in this portal. */
+  origin?: 'rsl_online_refunds' | 'portal';
+  rsl?: RslClaim | null;
 }
 
 export type DataEnvelope<T> = DataMeta & {

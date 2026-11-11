@@ -1,15 +1,29 @@
 <script setup lang="ts">
 import { Alert, Badge, Button, LoadingText } from 'frappe-ui';
-import { onMounted, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import { RouterLink } from 'vue-router';
 import PortalHeader from '../components/PortalHeader.vue';
 import { fetchSubmissions, PortalError } from '../lib/api';
-import { formatAmount, formatDate, formatPeriod, statusDisplay } from '../lib/format';
+import {
+  formatAmount,
+  formatDate,
+  formatPeriod,
+  rslStatusText,
+  statusDisplay,
+} from '../lib/format';
+import { sessionState } from '../lib/session';
 import type { Submission } from '../lib/types';
 
+// TAX-125 (ADR-043): a read-only list. Claims are filed in RSL's Online Refunds
+// Application; RSL keeps their status, and this list only shows it.
 const items = ref<Submission[]>([]);
 const loading = ref(true);
 const error = ref<PortalError | null>(null);
+const rslUrl = computed(() =>
+  sessionState.value.status === 'ready'
+    ? (sessionState.value.session.rsl_online_refunds_url ?? null)
+    : null,
+);
 
 async function load() {
   loading.value = true;
@@ -28,25 +42,38 @@ onMounted(load);
 
 <template>
   <section aria-labelledby="page-title">
-    <PortalHeader title="Your submissions" description="Track returns and claims you have sent.">
-      <template #actions>
-        <Button
-          variant="solid"
-          label="New submission"
-          icon-left="lucide-plus"
-          :route="{ name: 'new-submission' }"
-        />
+    <PortalHeader
+      title="My cases"
+      description="Refund claims you filed with RSL that RSL is reviewing with you. RSL's evidence requests appear under Evidence requests."
+    />
+
+    <Alert class="mb-6" theme="gray" title="To file or change a refund claim, use RSL's system">
+      <template #description>
+        <p>
+          Refund claims are filed in RSL's Online Refunds Application. RSL keeps each claim's status
+          there; this list shows it for reference.
+        </p>
       </template>
-    </PortalHeader>
+      <template v-if="rslUrl" #actions>
+        <a
+          :href="rslUrl"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="text-base font-medium text-ink-blue-8 underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-600"
+        >
+          Open RSL's Online Refunds Application<span class="sr-only"> (opens in a new tab)</span>
+        </a>
+      </template>
+    </Alert>
 
     <div v-if="loading" role="status" class="py-8">
-      <LoadingText text="Loading submissions…" />
+      <LoadingText text="Loading your cases…" />
     </div>
 
     <Alert
       v-else-if="error"
       :theme="error.kind === 'denied' ? 'amber' : 'red'"
-      :title="error.kind === 'denied' ? 'Access denied' : 'Submissions could not be loaded'"
+      :title="error.kind === 'denied' ? 'Access denied' : 'Your cases could not be loaded'"
       :description="error.message"
     >
       <template v-if="error.kind !== 'denied'" #actions>
@@ -58,14 +85,16 @@ onMounted(load);
       v-else-if="items.length === 0"
       class="rounded-lg border border-outline-gray-2 p-8 text-center"
     >
-      <h2 class="text-lg font-semibold text-ink-gray-9">No submissions yet</h2>
-      <p class="mt-1 text-ink-gray-6">Returns and claims you send will appear here.</p>
+      <h2 class="text-lg font-semibold text-ink-gray-9">No cases yet</h2>
+      <p class="mt-1 text-ink-gray-6">
+        When RSL reviews a refund claim you filed, it appears here.
+      </p>
     </div>
 
     <ul
       v-else
       class="divide-y divide-outline-gray-1 rounded-lg border border-outline-gray-2"
-      aria-label="Submissions"
+      aria-label="My cases"
     >
       <li v-for="item in items" :key="item.id">
         <RouterLink
@@ -76,7 +105,10 @@ onMounted(load);
             <p class="font-medium text-ink-gray-9">
               {{ item.tax_type }} · {{ formatPeriod(item.period) }}
             </p>
-            <p class="break-words text-sm text-ink-gray-6">
+            <p v-if="item.rsl" class="break-words text-sm text-ink-gray-6">
+              RSL claim {{ item.rsl.claim_ref }} · RSL status: {{ rslStatusText(item.rsl) }}
+            </p>
+            <p v-else class="break-words text-sm text-ink-gray-6">
               {{ item.reference }} ·
               {{ item.submitted_at ? `Sent ${formatDate(item.submitted_at)}` : 'Not sent yet' }}
             </p>

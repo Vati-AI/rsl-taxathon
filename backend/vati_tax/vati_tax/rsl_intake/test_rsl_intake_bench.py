@@ -31,6 +31,7 @@ try:
     from vati_tax.outbox import store as outbox_store
     from vati_tax.outbox import worker
     from vati_tax.pipeline import store as pipeline_store
+    from vati_tax.portal import api as portal_api
     from vati_tax.rsl_intake import api, store
 except ImportError as exc:  # pragma: no cover - CI without a bench
     raise unittest.SkipTest(f"Frappe is not installed ({exc}); run with bench run-tests")
@@ -65,6 +66,9 @@ def _keep_claims(doc: dict[str, Any], tins: list[str]) -> dict[str, Any]:
         if tin in tins and kept.get(tin, 0) < CLAIMS_PER_TAXPAYER:
             kept[tin] = kept.get(tin, 0) + 1
             rows.append(claim)
+    # TAX-125: RSL's own status for the first claim; the second has none.
+    if rows:
+        rows[0]["status"] = "audit_in_progress"
     doc["records"]["online_refunds.claim"] = rows
     return doc
 
@@ -273,3 +277,37 @@ class RslIntakeBenchTests(IntegrationTestCase):
                 api.ingest_online_refunds(self.tenant)
         finally:
             self.as_user("Administrator")
+
+    def test_the_taxpayer_sees_rsl_reference_and_status_labelled_with_its_source(self) -> None:
+        # TAX-125: the portal reads RSL's status from the site's RSL source on each view.
+        self.ingest()
+        conf_key = config.RSL_SOURCES_KEY
+        previous = frappe.local.conf.get(conf_key)
+        frappe.local.conf[conf_key] = {"fixture_path": self.fixture_path,
+                                       "vati_tenant_id": self.tenant,
+                                       "unavailable": []}  # fmt: skip
+        try:
+            # The claim _keep_claims gave an RSL status, and its taxpayer.
+            first = next(c for rows in self.claims.values() for c in rows if c.get("status"))
+            tin = str(first["tin"])
+            self.as_user(f"tax121-{tin}-{self.run_id}@example.test")
+            items = portal_api.get_submissions()["data"]
+            mine = {i["rsl"]["claim_ref"]: i for i in items if i["origin"] == "rsl_online_refunds"}
+            self.assertEqual(set(mine), {c["claim_id"] for c in self.claims[tin]})
+            block = mine[first["claim_id"]]["rsl"]
+            self.assertEqual((block["status"], block["status_label"], block["status_state"]),
+                             ("audit_in_progress", "Audit in progress", "reported"))  # fmt: skip
+            self.assertTrue(block["recorded"])
+            self.assertIsNone(block["dashboard_url"])
+            for other in self.claims[tin]:
+                if other is not first:
+                    state = mine[other["claim_id"]]["rsl"]["status_state"]
+                    self.assertEqual(state, "not_reported")
+            for item in items:
+                self.assertNotIn("case_id", item)
+            frappe.local.conf[conf_key]["unavailable"] = ["online_refunds"]
+            down = portal_api.get_submission(mine[first["claim_id"]]["id"])["data"]["rsl"]
+            self.assertEqual((down["status_state"], down["status"]), ("unavailable", None))
+        finally:
+            self.as_user("Administrator")
+            frappe.local.conf[conf_key] = previous

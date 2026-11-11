@@ -30,6 +30,16 @@ class PortalAccessTests(unittest.TestCase):
         self.assertTrue(decision.location.startswith("/login?"))
         self.assertEqual(redirect_target(decision.location), "/taxpayer/submissions/SUB-SYN-0001")
 
+    def test_an_evidence_request_link_from_rsl_returns_to_that_request_after_login(self):
+        # TAX-125: RSL's screens link straight to one evidence request.
+        path = "/taxpayer/requests/45000000-0000-4000-8000-000000000001"
+        decision = portal_access("Guest", path, is_taxpayer=False)
+        self.assertEqual(decision.outcome, "login")
+        assert decision.location is not None
+        self.assertEqual(redirect_target(decision.location), path)
+        allowed = portal_access("taxpayer.a@example.test", path, is_taxpayer=True)
+        self.assertEqual(allowed.outcome, "allow")
+
     def test_missing_session_is_treated_as_guest(self):
         self.assertEqual(portal_access(None, "/taxpayer", is_taxpayer=False).outcome, "login")
         self.assertEqual(portal_access("", "/taxpayer", is_taxpayer=False).outcome, "login")

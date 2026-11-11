@@ -285,6 +285,9 @@ if 'vati_tax' not in installed:
     cmd(['bench','--site','taxathon.localhost','install-app','vati_tax'])
 cmd(['bench','--site','taxathon.localhost','migrate'])
 cmd(['bench','use','taxathon.localhost'])
+# TAX-125 / ADR-043: this developer site keeps the fixture-only Online Refunds simulator
+# (the former claim form). Real sites leave it unset: taxpayers file claims with RSL.
+cmd(['bench','--site','taxathon.localhost','set-config','--parse','vati_online_refunds_simulator','True'])
 configured=apply_services(site)
 print('Service adapters configured for taxathon.localhost: '+(', '.join(configured) or 'none'))
 print('Pinned Frappe developer site and Vati app initialized')

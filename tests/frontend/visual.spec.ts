@@ -59,7 +59,7 @@ test('taxpayer screens and denied states', async ({ page }, testInfo) => {
     await check(page, `taxpayer-${route.name}-${w}`);
   }
   await page.goto(TAXPAYER + `/taxpayer/submissions/${OTHER_TAXPAYER_SUBMISSION_ID}`);
-  await pageReady(page, 'Submission not found');
+  await pageReady(page, 'Case not found');
   await check(page, `taxpayer-other-taxpayer-${w}`);
   mock.persona = 'revoked';
   await page.goto(TAXPAYER + '/taxpayer/submissions');
@@ -75,7 +75,7 @@ test('keyboard focus states', async ({ page }, testInfo) => {
 
   await mockTaxpayerSession(page, 'taxpayer');
   await page.goto(TAXPAYER + '/taxpayer/submissions/new');
-  await pageReady(page, 'New VAT refund claim');
+  await pageReady(page, 'Online Refunds simulator');
   await page.getByLabel('Tax period').press('Enter');
   await expect(page.getByLabel('Tax period')).toBeFocused();
   await check(page, 'taxpayer-focus-first-invalid-1440');

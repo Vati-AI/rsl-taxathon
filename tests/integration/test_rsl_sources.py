@@ -78,6 +78,22 @@ class ContractTests(unittest.TestCase):
             validate_record(contract, missing)
         self.assertEqual(ctx.exception.code, "missing_field")
 
+    def test_claim_status_is_optional_and_limited_to_the_reported_statuses(self):
+        # TAX-125: RSL's own claim status, when RSL supplies it (assumed codes).
+        contract = contract_for("online_refunds", "claim")
+        claim = {"claim_id": "ORA-1", "tin": "510000006", "period": "2026-09",
+                 "return_id": "VAT-1", "claimed_amount": "15.00", "submitted_on": "2026-10-19",
+                 "lines": [], "uploaded_documents": []}  # fmt: skip
+        self.assertNotIn("status", validate_record(contract, claim))
+        for status in ("processing", "pending", "audit_in_progress", "processed", "rejected",
+                       "cancelled"):  # fmt: skip
+            self.assertEqual(validate_record(contract, {**claim, "status": status})["status"],
+                             status)  # fmt: skip
+        for bad in ("Audit in progress", "approved", 1):
+            with self.subTest(bad=bad):
+                with self.assertRaises(SourceContractError):
+                    validate_record(contract, {**claim, "status": bad})
+
     def test_rsl_score_stays_rsl_owned(self):
         with self.assertRaises(SourceContractError):
             validate_record(contract_for("rsl_fraud_model", "score"), {**SCORE, "owner": "Vati"})

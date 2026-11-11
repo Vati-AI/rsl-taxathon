@@ -122,10 +122,14 @@ class RefundClaimPortalTests(IntegrationTestCase):
         frappe.set_user("Administrator")
         frappe.local.response = frappe._dict()
         clear_principal_cache()
+        # TAX-125: the claim form is the fixture-only Online Refunds simulator.
+        self._simulator = frappe.local.conf.get("vati_online_refunds_simulator")
+        frappe.local.conf["vati_online_refunds_simulator"] = True
 
     def tearDown(self):
         frappe.set_user("Administrator")
         frappe.local.request = None
+        frappe.local.conf["vati_online_refunds_simulator"] = self._simulator
         frappe.db.rollback()
 
     # --- helpers ---------------------------------------------------------------------
@@ -220,6 +224,22 @@ class RefundClaimPortalTests(IntegrationTestCase):
 
     def count(self, doctype: str, **filters) -> int:
         return frappe.db.count(doctype, filters)
+
+    # --- simulator only (TAX-125) ------------------------------------------------------
+
+    def test_without_the_simulator_claims_are_refused_and_the_session_says_so(self):
+        frappe.local.conf["vati_online_refunds_simulator"] = None
+        evidence = self.upload("taxpayer-a", self.t1)
+        before = self.count(SUBMISSION, tenant_id=self.t1)
+        with self.assertRaises(frappe.PermissionError):
+            self.claim("taxpayer-a", [evidence["evidence_id"]])
+        with self.assertRaises(frappe.PermissionError):
+            self.review("taxpayer-a", [evidence["evidence_id"]])
+        self.assertEqual(self.count(SUBMISSION, tenant_id=self.t1), before)
+        self.as_user("taxpayer-a")
+        self.assertFalse(portal_api.get_session()["simulator_enabled"])
+        frappe.local.conf["vati_online_refunds_simulator"] = True
+        self.assertTrue(portal_api.get_session()["simulator_enabled"])
 
     # --- valid submission ------------------------------------------------------------
 
@@ -647,5 +667,9 @@ class RefundClaimPortalTests(IntegrationTestCase):
         if case_id:
             self.assertNotIn(case_id, text)
         allowed = {"id", "reference", "taxpayer_name", "tax_type", "period", "amount", "currency",
-                   "status", "submitted_at", "next_step", "steps"}  # fmt: skip
+                   "status", "submitted_at", "next_step", "steps",
+                   # TAX-125: where it came from; RSL's block only for a claim filed with RSL.
+                   "origin", "rsl"}  # fmt: skip
         self.assertEqual(set(payloads[1]["data"]), allowed)
+        self.assertEqual((payloads[1]["data"]["origin"], payloads[1]["data"]["rsl"]),
+                         ("portal", None))  # fmt: skip

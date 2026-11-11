@@ -129,11 +129,15 @@ class ReminderBenchTests(IntegrationTestCase):
         self.jube = FakeLifecycle()
         decisions_store.set_lifecycle_factory(lambda _tenant: self.jube)
         self.decision_id = self.approved_decision(self.tp_a, "close_after_correction")
+        # TAX-125: the claim form is the fixture-only Online Refunds simulator.
+        self._simulator = frappe.local.conf.get("vati_online_refunds_simulator")
+        frappe.local.conf["vati_online_refunds_simulator"] = True
 
     def tearDown(self):
         frappe.set_user("Administrator")
         frappe.local.request = None
         decisions_store.set_lifecycle_factory(None)
+        frappe.local.conf["vati_online_refunds_simulator"] = self._simulator
 
     # --- helpers ---------------------------------------------------------------------
 

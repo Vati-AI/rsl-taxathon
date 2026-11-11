@@ -35,6 +35,7 @@ from vati_tax.ids import mapping
 from vati_tax.integrations import config
 from vati_tax.outbox import worker
 from vati_tax.pipeline import fakes, scenarios, store
+from vati_tax.portal import rsl as portal_rsl
 
 VERIFY_SITE = re.compile(r"^verify-[0-9]{8}t[0-9]{6}\.localhost$")
 SERVICES = ("jube", "docling", "openaleph", "yente")
@@ -143,7 +144,34 @@ def send_scenario(tenant: str, scenario: dict[str, Any], run_id: str) -> dict[st
         rows.append(
             scenarios.schedule_row(scenario, day, invoice, evidence_id, contracts[invoice[1]])
         )
-    result = portal_api.submit_refund_claim(
+    # TAX-125: the claim form is the Online Refunds simulator. The demo stands in for RSL's
+    # Online Refunds Application with it, on its synthetic tenant, until TAX-143.
+    previous = frappe.local.conf.get(portal_rsl.SIMULATOR_KEY)
+    frappe.local.conf[portal_rsl.SIMULATOR_KEY] = True
+    try:
+        result = _send_claim(portal_api, scenario, run_id, tenant, evidence_ids, rows)
+    finally:
+        frappe.local.conf[portal_rsl.SIMULATOR_KEY] = previous
+    _as("Administrator")
+    frappe.db.commit()
+    submission = result["data"]["submission_id"]
+    return {
+        "scenario": scenario["case"],
+        "submission_id": submission,
+        "case_id": frappe.db.get_value("Vati Submission", submission, "case_id"),
+        "evidence_ids": evidence_ids,
+    }
+
+
+def _send_claim(
+    portal_api: Any,
+    scenario: dict[str, Any],
+    run_id: str,
+    tenant: str,
+    evidence_ids: list[str],
+    rows: list[Any],
+) -> dict[str, Any]:
+    return portal_api.submit_refund_claim(
         idempotency_key=f"tax087-{run_id}-{scenario['case']}-claim",
         period=scenario["period"],
         claimed_amount=scenario["refund_claim"],
@@ -156,15 +184,6 @@ def send_scenario(tenant: str, scenario: dict[str, Any], run_id: str) -> dict[st
         period_input_vat=scenario["input_vat_claimed"],
         invoices=rows,
     )
-    _as("Administrator")
-    frappe.db.commit()
-    submission = result["data"]["submission_id"]
-    return {
-        "scenario": scenario["case"],
-        "submission_id": submission,
-        "case_id": frappe.db.get_value("Vati Submission", submission, "case_id"),
-        "evidence_ids": evidence_ids,
-    }
 
 
 def drain(tenant: str, rounds: int = 20) -> dict[str, int]:

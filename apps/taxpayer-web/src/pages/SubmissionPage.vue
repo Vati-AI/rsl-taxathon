@@ -7,6 +7,8 @@ import {
   formatAmount,
   formatDate,
   formatPeriod,
+  rslSourceNote,
+  rslStatusText,
   statusDisplay,
   stepStateLabel,
 } from '../lib/format';
@@ -43,26 +45,24 @@ const stepIcon = {
 <template>
   <section>
     <div v-if="loading" role="status" class="py-8">
-      <LoadingText text="Loading submission…" />
+      <LoadingText text="Loading case…" />
     </div>
 
     <template v-else-if="error">
-      <PortalHeader
-        :title="error.kind === 'not_found' ? 'Submission not found' : 'Submission status'"
-      />
+      <PortalHeader :title="error.kind === 'not_found' ? 'Case not found' : 'Case status'" />
       <Alert
         :theme="error.kind === 'not_found' ? 'gray' : error.kind === 'denied' ? 'amber' : 'red'"
         :title="error.kind === 'denied' ? 'Access denied' : error.message"
         :description="
           error.kind === 'not_found'
-            ? 'Check the link, or open the submission from your list.'
+            ? 'Check the link, or open the case from your list.'
             : error.kind === 'denied'
               ? error.message
               : undefined
         "
       >
         <template #actions>
-          <Button label="Back to submissions" :route="{ name: 'submissions' }" />
+          <Button label="Back to my cases" :route="{ name: 'submissions' }" />
           <Button v-if="error.kind === 'unavailable'" label="Try again" @click="load" />
         </template>
       </Alert>
@@ -74,7 +74,7 @@ const stepIcon = {
           <Breadcrumbs
             class="mb-2"
             :items="[
-              { label: 'Submissions', route: { name: 'submissions' } },
+              { label: 'My cases', route: { name: 'submissions' } },
               { label: item.reference, route: { name: 'submission', params: { id: item.id } } },
             ]"
           />
@@ -90,6 +90,44 @@ const stepIcon = {
 
       <Alert class="mb-6" theme="gray" title="What happens next" :description="item.next_step" />
 
+      <section
+        v-if="item.rsl"
+        aria-labelledby="rsl-title"
+        class="mb-6 rounded-lg border border-outline-gray-2 p-5"
+      >
+        <h2 id="rsl-title" class="mb-1 text-lg font-semibold text-ink-gray-9">
+          In {{ item.rsl.system }}
+        </h2>
+        <p class="mb-4 text-sm text-ink-gray-6">
+          You filed this claim with RSL. RSL keeps its status; to change the claim, use RSL's
+          system.
+        </p>
+        <dl class="grid grid-cols-[minmax(0,10rem)_minmax(0,1fr)] gap-x-4 gap-y-3">
+          <dt class="text-ink-gray-6">RSL claim reference</dt>
+          <dd class="break-words text-ink-gray-9">{{ item.rsl.claim_ref }}</dd>
+          <dt class="text-ink-gray-6">RSL status</dt>
+          <dd class="text-ink-gray-9">
+            <span class="font-medium">{{ rslStatusText(item.rsl) }}</span>
+            <span class="block text-sm text-ink-gray-6">{{ rslSourceNote(item.rsl) }}</span>
+          </dd>
+        </dl>
+        <p class="mt-4">
+          <a
+            v-if="item.rsl.dashboard_url"
+            :href="item.rsl.dashboard_url"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="font-medium text-ink-blue-8 underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-600"
+          >
+            See this claim in {{ item.rsl.system
+            }}<span class="sr-only"> (opens in a new tab)</span>
+          </a>
+          <span v-else class="text-sm text-ink-gray-6">
+            Sign in to {{ item.rsl.system }} from RSL's website to see this claim there.
+          </span>
+        </p>
+      </section>
+
       <div class="grid gap-6 lg:grid-cols-2">
         <section
           aria-labelledby="details-title"
@@ -97,7 +135,7 @@ const stepIcon = {
         >
           <h2 id="details-title" class="mb-4 text-lg font-semibold text-ink-gray-9">Details</h2>
           <dl class="grid grid-cols-[minmax(0,10rem)_minmax(0,1fr)] gap-x-4 gap-y-3">
-            <dt class="text-ink-gray-6">Reference</dt>
+            <dt class="text-ink-gray-6">{{ item.rsl ? 'Case reference' : 'Reference' }}</dt>
             <dd class="break-words text-ink-gray-9">{{ item.reference }}</dd>
             <dt class="text-ink-gray-6">Taxpayer</dt>
             <dd class="break-words text-ink-gray-9">{{ item.taxpayer_name }}</dd>
@@ -107,7 +145,7 @@ const stepIcon = {
             <dd class="tabular-nums text-ink-gray-9">
               {{ formatAmount(item.amount, item.currency) }}
             </dd>
-            <dt class="text-ink-gray-6">Sent</dt>
+            <dt class="text-ink-gray-6">{{ item.rsl ? 'Filed' : 'Sent' }}</dt>
             <dd class="text-ink-gray-9">
               {{ item.submitted_at ? formatDate(item.submitted_at) : 'Not sent yet' }}
             </dd>

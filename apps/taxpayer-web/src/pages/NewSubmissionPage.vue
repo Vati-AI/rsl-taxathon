@@ -303,8 +303,16 @@ async function send() {
 <template>
   <section class="max-w-2xl">
     <PortalHeader
-      title="New VAT refund claim"
-      description="Claim back VAT you have overpaid and attach the documents that support it."
+      title="Online Refunds simulator"
+      description="A synthetic stand-in for RSL's Online Refunds Application, for development and demonstrations only."
+    />
+
+    <!-- TAX-125 (ADR-043): real claims are filed with RSL; this form only simulates that. -->
+    <Alert
+      class="mb-6"
+      theme="amber"
+      title="Simulator: not RSL's Online Refunds Application"
+      description="This page exists only on development, test and demo sites. It sends a synthetic VAT refund claim as if it had been filed with RSL. Taxpayers file real refund claims in RSL's Online Refunds Application."
     />
 
     <Alert
@@ -528,11 +536,7 @@ async function send() {
         :title="sendProblem.title"
         :description="sendProblem.description"
       />
-      <Button
-        v-if="sendProblem?.conflict"
-        label="View your submissions"
-        :route="{ name: 'submissions' }"
-      />
+      <Button v-if="sendProblem?.conflict" label="View my cases" :route="{ name: 'submissions' }" />
 
       <div class="rounded-lg border border-outline-gray-2 p-5">
         <div class="mb-3 flex items-center justify-between gap-3">
@@ -671,7 +675,7 @@ async function send() {
           <dd class="text-ink-gray-9">{{ result.data.evidence_count }}</dd>
         </dl>
       </div>
-      <Button size="lg" label="Back to submissions" :route="{ name: 'submissions' }" />
+      <Button size="lg" label="Go to my cases" :route="{ name: 'submissions' }" />
     </section>
   </section>
 </template>
