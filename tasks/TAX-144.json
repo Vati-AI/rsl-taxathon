@@ -5,14 +5,14 @@
   "owner": "Keletso",
   "area": "tests/frontend",
   "phase": "pilot",
-  "status": "BACKLOG",
+  "status": "IN_REVIEW",
   "priority": "P0",
   "depends_on": [
     "TAX-023"
   ],
-  "claimed_by": null,
-  "branch": null,
-  "pr": null,
+  "claimed_by": "claude-code-20261108-vigilant-fermat",
+  "branch": "claude/vigilant-fermat-4x2es6",
+  "pr": "https://github.com/Vati-AI/rsl-taxathon/pull/284",
   "scope": "Capture before-screenshots of every auditor and taxpayer screen at 1440x900 and add browser checks that fail when an operational screen exceeds the page-length budget or user-visible text names an open-source component",
   "inputs": [
     "PROJECT.md",
@@ -26,19 +26,19 @@
   "acceptance": [
     {
       "text": "A screen inventory with before-screenshots and measured page heights for every auditor and taxpayer route, including the taxpayer app against a running Frappe site or with the reason it could not run",
-      "done": false
+      "done": true
     },
     {
       "text": "A Playwright check measures each operational route at 1440x900 against the DESIGN_STANDARD.md budget (1.5 viewport heights, tables scroll inside a labelled region) and reports the worst offenders; the showcase is exempt",
-      "done": false
+      "done": true
     },
     {
       "text": "A naming check fails when visible text or accessible names contain a banned component name from the DESIGN_STANDARD.md register (Jube, OpenAleph, Frappe, Docling, yente, LangGraph, Groq) outside the About page and Admin diagnostics; it starts as a report and becomes blocking in TAX-150",
-      "done": false
+      "done": true
     },
     {
       "text": "Record relevant tests and evidence, update task status and open a PR",
-      "done": false
+      "done": true
     }
   ],
   "verification": "Playwright report on the fixture build plus screenshots in docs/evidence/TAX-144",
@@ -48,7 +48,24 @@
     "update-project-task",
     "finish-task"
   ],
-  "evidence": [],
+  "evidence": [
+    {
+      "criterion": 1,
+      "text": "docs/evidence/TAX-144/inventory-auditor.{md,json} and inventory-taxpayer.{md,json} list every auditor route (as auditor and supervisor, the three case tabs and one evidence record) and every taxpayer route at 1440x900, with measured height, viewports, component names and verdict; docs/evidence/TAX-144/before/ holds 23 full-length before-screenshots. The taxpayer app was measured in the TAX-023 harness with the Frappe v16-shaped session mocks (support/sessions.ts) because no Frappe site ran in this environment; the live-site measurement is left to TAX-152."
+    },
+    {
+      "criterion": 2,
+      "text": "tests/frontend/layout.spec.ts (desktop-1440, part of npm run test:frontend:browser) measures each route with support/layout.ts (document or page-level scroll container; labelled regions may scroll) against the 1.5-viewport budget and ratchets against support/layout-baseline.json. Worst offenders: review and decide 2.26 (2031px, TAX-148), case findings tab 1.95 (TAX-148), management as supervisor 1.94 (TAX-149), integrity as supervisor 1.64 (TAX-149); showcase 2.95 exempt. All taxpayer routes fit (max 1.2). Observed: 2 passed. Negative test: lowering the recorded review height, removing the integrity entry and lowering a name count produced exactly three FAIL messages, then the baseline was restored."
+    },
+    {
+      "criterion": 3,
+      "text": "support/layout.ts scans visible text nodes, aria-label/title/alt/placeholder and the document title for Jube, OpenAleph, Frappe, Docling, yente, LangGraph and Groq, skipping [data-component-names-allowed] (About page and Admin diagnostics, TAX-150). Found 19 occurrences on 9 auditor screens and none on taxpayer screens (listed in the inventory). It reports them and blocks any increase; the baseline names TAX-150, which empties it and so makes the check fully blocking."
+    },
+    {
+      "criterion": 4,
+      "text": "Tests and evidence recorded in docs/evidence/TAX-144 and tests/frontend/README.md; harness run 89 passed, 4 skipped; dev.py check, lint, format and typecheck passed; PR https://github.com/Vati-AI/rsl-taxathon/pull/284."
+    }
+  ],
   "notes": [
     {
       "at": "2026-11-08",
