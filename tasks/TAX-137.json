@@ -57,6 +57,10 @@
     {
       "at": "2026-11-08",
       "text": "ADR-044: one product name and header moved to TAX-146/TAX-150 and native theming to TAX-151."
+    },
+    {
+      "at": "2026-11-11T12:27:49.740246+00:00",
+      "text": "2026-11-11 (ADR-045): final-wave task owned by Keletso; it needs work from both lanes, so it starts only after both lanes are finished."
     }
   ],
   "sequence": 46

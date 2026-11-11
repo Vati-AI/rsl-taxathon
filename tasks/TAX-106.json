@@ -2,7 +2,7 @@
   "id": "TAX-106",
   "kind": "task",
   "title": "Case-aware navigation to native investigation and administration screens",
-  "owner": "Keletso",
+  "owner": "Gupta",
   "area": "apps/auditor-web",
   "phase": "pilot",
   "status": "BACKLOG",
@@ -60,6 +60,10 @@
     {
       "at": "2026-11-07",
       "text": "ADR-043: extended by TAX-137 (return links, RSL references, one product identity)."
+    },
+    {
+      "at": "2026-11-11T12:27:49.740246+00:00",
+      "text": "2026-11-11 (ADR-045): owner changed from Keletso to Gupta; RSL integration lane. No task in this lane depends on an open task in the other lane."
     }
   ],
   "sequence": 45

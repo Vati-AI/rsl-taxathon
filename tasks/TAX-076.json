@@ -2,7 +2,7 @@
   "id": "TAX-076",
   "kind": "task",
   "title": "Controlled serious-case referral package",
-  "owner": "Keletso",
+  "owner": "Gupta",
   "area": "backend",
   "phase": "expansion",
   "status": "BACKLOG",
@@ -58,6 +58,10 @@
     {
       "at": "2026-11-06",
       "text": "User-directed ownership transfer from Leseli to Keletso for all tasks, including completed tasks and epics. Status, implementation claim and evidence preserved."
+    },
+    {
+      "at": "2026-11-11T12:27:49.740246+00:00",
+      "text": "2026-11-11 (ADR-045): owner changed from Keletso to Gupta; RSL integration lane. No task in this lane depends on an open task in the other lane."
     }
   ],
   "sequence": 66

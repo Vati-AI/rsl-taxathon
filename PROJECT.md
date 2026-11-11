@@ -8,7 +8,7 @@ Build an API-connected tax intelligence platform for RSL Challenge 2. Read this 
 python3 scripts/dev.py check
 python3 scripts/dev.py serve
 # in another terminal, or in your agent chat:
-python3 scripts/task.py list --owner Keletso --ready
+python3 scripts/task.py list --owner NAME --ready   # Keletso or Gupta (ADR-045)
 ```
 
 The fixture server runs on http://127.0.0.1:58080 and serves both starter interfaces and synthetic contract data. It requires no API keys, paid model, upstream deployment or Python packages. It is explicitly fixture mode, not a tax system or authentication layer.
@@ -17,7 +17,7 @@ For live infrastructure: `python3 scripts/dev_env.py`, then `docker compose up -
 
 ## What lives where
 
-Keletso owns all tasks and areas as of 2026-11-06. Previous ownership remains in task notes and Git history.
+From 2026-11-11 open tasks are split into two independent lanes (ADR-045): Keletso owns the AI and new UI lane and the final wave, Gupta owns the RSL integration lane. Epics and DONE tasks stay with Keletso. Previous ownership remains in task notes and Git history.
 
 - `apps/auditor-web`: officer-facing frontend.
 - `apps/taxpayer-web`: taxpayer portal for answering RSL's evidence requests (ADR-043); `backend/vati_tax` supplies the Frappe application, forms and permissions.
@@ -37,7 +37,7 @@ Jube owns operational cases, assignment/status/escalation/risk execution. Frappe
 4. `docs/ONBOARDING.md`, `docs/DEVELOPMENT.md` — commands and verification.
 5. `tasks/TAX-XXX.json` — the assigned unit of work.
 
-Foundation and pilot tasks build the five-scenario vertical slice. Expansion and future tasks describe the broader national platform; they are deliberately not claimed as already implemented. Keletso implements and merges the remaining work after local checks (ADR-038); humans still approve consequential investigation actions. Agents implement, test and keep task files/issues current.
+Foundation and pilot tasks build the five-scenario vertical slice. Expansion and future tasks describe the broader national platform; they are deliberately not claimed as already implemented. Keletso and Gupta implement and merge their own lanes after local checks (ADR-038, ADR-045); humans still approve consequential investigation actions. Agents implement, test and keep task files/issues current.
 
 Frontend implementation and review must follow [the shared design standard](docs/DESIGN_STANDARD.md). Leseli and Kananelo establish representative screen baselines; Kananelo owns frontend QA (visual consistency and accessibility checks).
 
