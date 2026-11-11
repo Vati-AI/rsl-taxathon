@@ -243,3 +243,36 @@ class GeneratorTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class LivePathTests(unittest.TestCase):
+    """The TAX-121 live path turns the SYN-007 finding into a valid finding body."""
+
+    def test_finding_body_requests_evidence_and_passes_finding_validation(self) -> None:
+        import sys
+
+        sys.path.insert(0, str(ROOT / "backend" / "vati_tax"))
+        from vati_tax.assurance import rules
+        from vati_tax.findings import rules as finding_rules
+
+        world = json.loads(SYN007.read_text())["world"]
+        result = assess_taxpayer(world, build_sources(world), "510000073")
+        bodies = rules.finding_bodies(
+            result,
+            sources={},
+            bundle_evidence_id="00000000-0000-4000-8000-000000000139",
+            register_version="test",
+            input_digest="0" * 64,
+        )
+        ((body, key),) = bodies
+        self.assertEqual(body["code"], FINDING_CODE)
+        self.assertEqual(body["category"], "refund_reconciliation")
+        self.assertEqual(body["proposed_action"], {"type": "request_evidence",
+                                                   "requires_human_approval": True})  # fmt: skip
+        self.assertEqual(body["unresolved_amount"]["amount"], "374625.00")
+        self.assertEqual(len(body["alternative_explanations"]), len(TESTS))
+        self.assertEqual(len(body["evidence_refs"]), 9)  # the nine unexplained returns
+        self.assertTrue(key.startswith("check:"))
+        finding = finding_rules.FindingInput.build(body)
+        self.assertEqual(finding.proposed_action, "request_evidence")
+        self.assertIsNone(result["decision"])
