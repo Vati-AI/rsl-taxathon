@@ -5,7 +5,7 @@
   "owner": "Keletso",
   "area": "apps/auditor-web",
   "phase": "pilot",
-  "status": "IN_PROGRESS",
+  "status": "IN_REVIEW",
   "priority": "P0",
   "depends_on": [
     "TAX-144",
@@ -13,7 +13,7 @@
   ],
   "claimed_by": "claude-code-20261111-friendly-newton",
   "branch": "claude/friendly-newton-iwhm4u",
-  "pr": null,
+  "pr": "https://github.com/Vati-AI/rsl-taxathon/pull/288",
   "scope": "Replace the shared tokens with the v2 contract and build the shared components once (header, app rail and sidebar, page header, notices, table toolbar, data table, usage line, key-facts strip, routed tabs, drawer, dialog, status chip, empty state, skeleton, toast, command palette) on frappe-ui, used by both apps",
   "inputs": [
     "PROJECT.md",
@@ -79,6 +79,10 @@
     {
       "at": "2026-11-11",
       "text": "Claimed by claude-code-20261111-friendly-newton on the session's designated branch claude/friendly-newton-iwhm4u."
+    },
+    {
+      "at": "2026-11-11",
+      "text": "IN_REVIEW in PR #288."
     }
   ],
   "sequence": 14
