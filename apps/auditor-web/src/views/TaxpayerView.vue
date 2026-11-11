@@ -21,7 +21,7 @@ const profile = computed(() => (state.value.status === 'ready' ? state.value.dat
 <template>
   <PageLayout
     :title="profile ? profile.display_name : 'Taxpayer'"
-    description="Read-only taxpayer context from the taxpayer portal (Frappe). Identifiers are masked."
+    description="Read-only taxpayer context from Vati records. Identifiers are masked."
     :breadcrumbs="[
       { label: 'My case queue', route: { name: 'queue' } },
       { label: profile ? profile.display_name : 'Taxpayer' },

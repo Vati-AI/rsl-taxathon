@@ -69,7 +69,7 @@ def lifecycle_for(tenant_id: str) -> engine.CaseLifecycle:
     path = frappe.conf.get("vati_case_lifecycle")
     if not path:
         raise rules.UpstreamUnavailable(
-            "The Jube case adapter is not configured for this site.",
+            "The Investigation case connection is not configured for this site.",
             "case_id",
             "jube_not_configured",
         )

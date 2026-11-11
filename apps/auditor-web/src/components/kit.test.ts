@@ -13,7 +13,9 @@ import {
   InlineError,
   KeyFacts,
   NoticePanel,
+  OpenSourceNotices,
   PageHeader,
+  ProvenanceValue,
   RoutedTabs,
   SideDrawer,
   StatusChip,
@@ -328,5 +330,28 @@ describe('overlays', () => {
     expect(w.emitted('select')?.[0]?.[0]).toMatchObject({ id: '2' });
     expect(w.emitted('update:open')?.at(-1)).toEqual([false]);
     w.unmount();
+  });
+});
+
+describe('product naming (TAX-150)', () => {
+  it('ProvenanceValue shows a service value verbatim inside an exempt region', () => {
+    const w = mount(ProvenanceValue, { props: { value: 'docling-serve@locked' } });
+    expect(w.text()).toBe('docling-serve@locked');
+    expect(w.attributes()).toHaveProperty('data-component-names-allowed');
+  });
+
+  it('the notices list every pinned component with a licence link, all in one exempt region', () => {
+    const w = mount(OpenSourceNotices);
+    const root = w.find('[data-component-names-allowed]');
+    expect(root.exists()).toBe(true);
+    const rows = root.findAll('tbody tr');
+    expect(rows.length).toBeGreaterThanOrEqual(13);
+    for (const row of rows) {
+      const links = row.findAll('a');
+      expect(links).toHaveLength(2);
+      expect(links[1].attributes('href')).toMatch(/^https:\/\//);
+    }
+    expect(root.text()).toContain('AGPL-3.0');
+    expect(root.text()).toContain('Vati Workspace · Investigation');
   });
 });

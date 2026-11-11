@@ -181,7 +181,7 @@ function submit() {
       <Select
         v-model="form.rating"
         label="Investigator rating (1–5)"
-        description="Recorded by Jube with the case update. It is not a risk verdict."
+        description="Recorded in Investigation with the case update. It is not a risk verdict."
         :options="['1', '2', '3', '4', '5'].map((v) => ({ label: v, value: v }))"
       />
     </div>

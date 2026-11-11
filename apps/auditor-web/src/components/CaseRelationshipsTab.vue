@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import { Badge } from 'frappe-ui';
+import { ProvenanceValue } from '../../../shared/components';
 import type { CaseRecords } from '../api/caseRecords';
 import AmountText from './AmountText.vue';
 import StatePanel from './StatePanel.vue';
@@ -76,9 +77,11 @@ const sourceLabel = (id: string) => {
                   class="whitespace-nowrap"
                 />
                 <span class="break-words">
-                  {{ candidate.candidate_id }} in {{ candidate.dataset }} ({{
-                    candidate.dataset_version
-                  }}), similarity {{ candidate.score }}
+                  Name screening candidate
+                  <ProvenanceValue :value="candidate.candidate_id" /> in
+                  <ProvenanceValue
+                    :value="`${candidate.dataset} (${candidate.dataset_version})`"
+                  />, similarity {{ candidate.score }}
                 </span>
               </li>
             </ul>

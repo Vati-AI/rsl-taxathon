@@ -265,12 +265,12 @@ def _jube_status(lifecycle: CaseLifecycle, ctx: Context, case_id: str) -> str:
         code = getattr(exc, "code", None)
         if code == "not_found":
             raise DecisionRefused(
-                "The case has no Jube case yet.", "case_id", "no_jube_case"
+                "The case has no Investigation case yet.", "case_id", "no_jube_case"
             ) from None
         if code is None and not isinstance(exc, OSError):
             raise
         raise UpstreamUnavailable(
-            "Jube could not be reached to confirm the case status.", "case_id", "jube_unavailable"
+            "Investigation could not be reached to confirm the case status.", "case_id", "jube_unavailable"
         ) from None
     return str(case.status)
 
@@ -459,7 +459,7 @@ def propose(
     current = _jube_status(lifecycle, ctx, case.case_id)
     if current != proposal.expected_case_status:
         raise VersionConflict(
-            "The case status in Jube differs from the one you reviewed.",
+            "The case status in Investigation differs from the one you reviewed.",
             "expected_case_status",
             "case_state_changed",
         )

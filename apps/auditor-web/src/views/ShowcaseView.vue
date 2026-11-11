@@ -145,7 +145,7 @@ function showLoading() {
 <template>
   <PageLayout
     title="Component showcase"
-    description="The shared Vati visual contract on frappe-ui components. Every example uses synthetic data and performs no real action."
+    description="The shared Vati Workspace components and visual contract. Every example uses synthetic data and performs no real action."
     :breadcrumbs="[{ label: 'Component showcase' }]"
   >
     <div class="space-y-6">

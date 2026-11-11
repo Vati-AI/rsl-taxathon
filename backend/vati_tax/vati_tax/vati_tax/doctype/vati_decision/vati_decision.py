@@ -84,7 +84,7 @@ class VatiDecision(Document):
         ):
             frappe.throw("Only an officer can propose a decision.")
         if self.sync_state != "not_started" and self.status != "approved":
-            frappe.throw("Only an approved decision reaches Jube.")
+            frappe.throw("Only an approved decision reaches Investigation.")
         if self.is_new():
             return
         before = self.get_doc_before_save()

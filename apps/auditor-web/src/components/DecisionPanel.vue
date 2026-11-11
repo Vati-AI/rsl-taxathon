@@ -206,7 +206,7 @@ const dialog = computed(() => {
       title: 'Confirm the proposed decision',
       confirmLabel: 'Propose decision',
       consequence:
-        'The proposal is recorded in Frappe and waits for a supervisor who did not propose it. Nothing is sent to Jube until then.',
+        'The proposal is recorded in Vati records and waits for a supervisor who did not propose it. Nothing is sent to Investigation until then.',
       rows: [
         caseRow,
         { label: 'Outcome', value: `${info.label}. ${info.description}` },
@@ -227,13 +227,13 @@ const dialog = computed(() => {
     if (a.action === 'approve') {
       rows.push(
         { label: 'Rationale', value: a.decision.rationale },
-        { label: 'Jube update', value: jube },
+        { label: 'Investigation update', value: jube },
       );
       return {
         title: 'Approve this decision?',
-        confirmLabel: 'Approve and apply in Jube',
+        confirmLabel: 'Approve and apply in Investigation',
         consequence:
-          "Approving records your approval and runs this decision's one Jube update now. It cannot be undone from this screen.",
+          "Approving records your approval and runs this decision's one Investigation update now. It cannot be undone from this screen.",
         rows,
       };
     }
@@ -242,14 +242,14 @@ const dialog = computed(() => {
       return {
         title: 'Reject this decision?',
         confirmLabel: 'Reject decision',
-        consequence: 'The proposal is closed with your reason. Nothing is sent to Jube.',
+        consequence: 'The proposal is closed with your reason. Nothing is sent to Investigation.',
         rows,
       };
     }
     return {
       title: 'Withdraw your proposal?',
       confirmLabel: 'Withdraw proposal',
-      consequence: 'Your proposal is closed. Nothing is sent to Jube.',
+      consequence: 'Your proposal is closed. Nothing is sent to Investigation.',
       rows,
     };
   }
@@ -257,7 +257,7 @@ const dialog = computed(() => {
     title: 'Confirm the evidence request',
     confirmLabel: 'Record evidence request',
     consequence:
-      'The request is recorded in Frappe for delivery through the taxpayer portal. It does not change the case status; to wait for the response, propose “Wait for further evidence”.',
+      'The request is recorded in Vati records for delivery through the taxpayer portal. It does not change the case status; to wait for the response, propose “Wait for further evidence”.',
     rows: [
       caseRow,
       {
@@ -296,7 +296,7 @@ async function confirm() {
         theme: 'blue',
         title: 'Decision proposed',
         description:
-          'It now waits for a supervisor who did not propose it. Nothing has been sent to Jube.',
+          'It now waits for a supervisor who did not propose it. Nothing has been sent to Investigation.',
       };
       resetDecision.value++;
     } else if (a.kind === 'review') {
@@ -315,7 +315,7 @@ async function confirm() {
       result.value = {
         theme: a.action === 'approve' && sync.tone === 'green' ? 'green' : 'blue',
         title: titles[a.action],
-        description: a.action === 'approve' ? sync.text : 'Nothing was sent to Jube.',
+        description: a.action === 'approve' ? sync.text : 'Nothing was sent to Investigation.',
       };
       if (a.action === 'approve') emit('changed');
     } else {

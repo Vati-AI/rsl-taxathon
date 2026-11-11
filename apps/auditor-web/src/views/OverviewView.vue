@@ -18,7 +18,7 @@ const failed = computed(() => cases.value.filter((c) => processingState(c).kind 
 <template>
   <PageLayout
     title="Overview"
-    description="Your assigned cases by status. Statuses come from case management (Jube); they describe processing, not outcomes."
+    description="Your assigned cases by status. Statuses come from Investigation, the case management app; they describe processing, not outcomes."
     :breadcrumbs="[{ label: 'Overview' }]"
   >
     <template #actions>

@@ -56,7 +56,7 @@ test('an agent suggestion only fills the form; the officer confirms by keyboard'
   await page.keyboard.press('Enter');
   const dialog = page.getByRole('dialog', { name: 'Confirm the proposed decision' });
   await expect(dialog).toBeVisible();
-  await expect(dialog).toContainText('Nothing is sent to Jube until then.');
+  await expect(dialog).toContainText('Nothing is sent to Investigation until then.');
   await axe(page);
 
   await page.keyboard.press('Escape');
@@ -91,9 +91,9 @@ test('the proposer cannot approve; a different supervisor approves and Jube appl
   await page.getByRole('button', { name: 'Approve…' }).click();
   const dialog = page.getByRole('dialog', { name: 'Approve this decision?' });
   await expect(dialog).toContainText('Move the case to Resolved');
-  await dialog.getByRole('button', { name: 'Approve and apply in Jube' }).click();
+  await dialog.getByRole('button', { name: 'Approve and apply in Investigation' }).click();
   await expect(
-    page.getByRole('status').getByText('Applied in Jube: case is now Resolved.'),
+    page.getByRole('status').getByText('Applied in Investigation: case is now Resolved.'),
   ).toBeVisible();
   await expect(page.getByText('Resolved', { exact: true }).first()).toBeVisible();
   await expect(
@@ -179,7 +179,7 @@ test('an expired proposal cannot be approved', async ({ page }) => {
   await ready(page);
   await page.getByRole('button', { name: 'Approve…' }).click();
   const dialog = page.getByRole('dialog', { name: 'Approve this decision?' });
-  await dialog.getByRole('button', { name: 'Approve and apply in Jube' }).click();
+  await dialog.getByRole('button', { name: 'Approve and apply in Investigation' }).click();
   await expect(dialog).toContainText('This proposal is too old to approve');
 });
 

@@ -70,6 +70,12 @@ export const routes: RouteRecordRaw[] = [
     meta: { section: 'none', title: 'Not connected' },
   },
   {
+    path: '/about/notices',
+    name: 'notices',
+    component: () => import('./views/NoticesView.vue'),
+    meta: { section: 'none', title: 'Open-source notices' },
+  },
+  {
     path: '/showcase',
     name: 'showcase',
     component: () => import('./views/ShowcaseView.vue'),
@@ -89,5 +95,5 @@ export const router = createRouter({
 });
 
 router.afterEach((to) => {
-  document.title = `${to.meta.title} · Vati AI auditor workspace`;
+  document.title = `${to.meta.title} · Vati Workspace · Cases`;
 });

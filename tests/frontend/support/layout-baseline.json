@@ -22,44 +22,7 @@
       "task": "TAX-149"
     }
   },
-  "component_names": {
-    "auditor/overview": {
-      "count": 1,
-      "task": "TAX-150"
-    },
-    "auditor/queue": {
-      "count": 2,
-      "task": "TAX-150"
-    },
-    "auditor/case-detail": {
-      "count": 6,
-      "task": "TAX-150"
-    },
-    "auditor/case-review": {
-      "count": 1,
-      "task": "TAX-150"
-    },
-    "auditor/taxpayer": {
-      "count": 1,
-      "task": "TAX-150"
-    },
-    "auditor/showcase": {
-      "count": 2,
-      "task": "TAX-150"
-    },
-    "auditor/case-relationships": {
-      "count": 3,
-      "task": "TAX-150"
-    },
-    "auditor/evidence-record": {
-      "count": 2,
-      "task": "TAX-150"
-    },
-    "auditor/case-review-supervisor": {
-      "count": 1,
-      "task": "TAX-150"
-    }
-  },
+  "component_names": {},
   "exempt": {
     "auditor/showcase": "development-only component showcase (DESIGN_STANDARD.md); leaves operational navigation in TAX-146"
   }

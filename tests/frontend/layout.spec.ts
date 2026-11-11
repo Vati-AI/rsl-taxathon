@@ -22,7 +22,8 @@ import { mockTaxpayerSession } from './support/sessions';
 //     component name;
 //   - a listed screen fails when it gets taller (beyond a small rendering
 //     tolerance) or shows more component names than recorded.
-// Fixing tasks shrink the baseline; TAX-150 empties the naming list.
+// Fixing tasks shrink the baseline. TAX-150 emptied the naming list: any component name
+// shown outside a data-component-names-allowed region now fails.
 //
 //   LAYOUT_REPORT=1        also write docs/evidence/TAX-144/inventory-*.{json,md}
 //   CAPTURE_SCREENSHOTS=1  also write full-length screenshots to docs/evidence/TAX-144/before

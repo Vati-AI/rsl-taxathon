@@ -2,6 +2,7 @@
 import { computed, ref, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { Alert, Button, Skeleton, TabList, TabPanel, TabTrigger, Tabs } from 'frappe-ui';
+import { ProvenanceValue } from '../../../shared/components';
 import { getCaseRecords } from '../api/caseRecords';
 import { getCase } from '../api/vati';
 import AmountText from '../components/AmountText.vue';
@@ -236,7 +237,8 @@ const SYNC_LABELS = { synced: 'Up to date', pending: 'Waiting', failed: 'Failed'
                     >
                       <td class="px-3 py-2 text-ink-gray-8">{{ serviceLabel(link.service) }}</td>
                       <td class="px-3 py-2 text-ink-gray-6">
-                        {{ link.external_id ?? 'Not created yet' }}
+                        <ProvenanceValue v-if="link.external_id" :value="link.external_id" />
+                        <template v-else>Not created yet</template>
                       </td>
                       <td
                         :class="[

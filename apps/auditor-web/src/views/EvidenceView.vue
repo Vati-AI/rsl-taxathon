@@ -2,6 +2,7 @@
 import { computed } from 'vue';
 import { useRoute } from 'vue-router';
 import { Alert, Badge, Button, Skeleton } from 'frappe-ui';
+import { ProvenanceValue } from '../../../shared/components';
 import { getCaseRecords } from '../api/caseRecords';
 import { getCase } from '../api/vati';
 import PageLayout from '../components/PageLayout.vue';
@@ -199,7 +200,8 @@ const frappeFile = computed(
                   class="whitespace-nowrap"
                 />
                 <span v-if="evidence.extraction.extractor_version" class="text-sm text-ink-gray-5">
-                  {{ evidence.extraction.extractor_version }}
+                  Document reading,
+                  <ProvenanceValue :value="evidence.extraction.extractor_version" />
                 </span>
               </dd>
             </div>
@@ -212,7 +214,8 @@ const frappeFile = computed(
             <div class="sm:col-span-2">
               <dt class="text-sm text-ink-gray-5">Stored file reference</dt>
               <dd class="break-all text-ink-gray-8">
-                {{ frappeFile?.external_id ?? 'Not stored yet' }}
+                <ProvenanceValue v-if="frappeFile?.external_id" :value="frappeFile.external_id" />
+                <template v-else>Not stored yet</template>
                 <span v-if="frappeFile" class="block text-sm text-ink-gray-5">
                   {{ serviceLabel(frappeFile.service) }}, restricted file
                 </span>

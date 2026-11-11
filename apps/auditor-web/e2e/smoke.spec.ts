@@ -119,7 +119,7 @@ test.describe('processing states', () => {
     await alert.getByRole('link', { name: 'View failed cases' }).click();
     await expect(page).toHaveURL(/status=FAILED_PROCESSING/);
     await expect(rows(page)).toHaveCount(2);
-    await expect(rows(page).nth(1)).toContainText('Document extraction (Docling) timed out');
+    await expect(rows(page).nth(1)).toContainText('Document reading timed out');
     await expect(rows(page).nth(1)).toContainText('Not evaluated yet');
 
     await page.getByRole('link', { name: 'SYN-006' }).click();
@@ -134,7 +134,7 @@ test.describe('processing states', () => {
 
   test('a case still validating shows what it is waiting for', async ({ page }) => {
     await page.goto('/auditor/cases?status=VALIDATING');
-    await expect(rows(page).nth(1)).toContainText('Waiting for Case management (Jube)');
+    await expect(rows(page).nth(1)).toContainText('Waiting for Investigation');
   });
 });
 

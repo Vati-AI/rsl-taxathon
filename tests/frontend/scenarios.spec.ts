@@ -222,7 +222,7 @@ test.describe('five scenario routes: auditor workspace (TAX-055)', () => {
       page,
       page.getByRole('button', { name: 'Approve…' }),
       'Approve this decision?',
-      'Approve and apply in Jube',
+      'Approve and apply in Investigation',
       'syn-001-6-approve-dialog',
       w,
     );
@@ -330,7 +330,7 @@ test.describe('five scenario routes: auditor workspace (TAX-055)', () => {
       page,
       page.getByRole('button', { name: 'Approve…' }),
       'Approve this decision?',
-      'Approve and apply in Jube',
+      'Approve and apply in Investigation',
       'syn-003-7-approve-dialog',
       w,
     );
@@ -431,7 +431,7 @@ test.describe('five scenario routes: auditor workspace (TAX-055)', () => {
       w,
     );
     const alert = await result(page, 'Decision rejected');
-    await expect(alert).toContainText('Nothing was sent to Jube.');
+    await expect(alert).toContainText('Nothing was sent to Investigation.');
     // The case is unchanged and open for a new proposal.
     await expect(caseStatus(page, 'Awaiting officer review')).toBeVisible();
     await expect(page.getByRole('form', { name: 'Propose a decision' })).toBeVisible();
@@ -567,7 +567,7 @@ test.describe('accessibility states (TAX-055)', () => {
     await expect(d.getByRole('heading', { name: 'Approve this decision?' })).toBeVisible();
     await accessible(page);
     await shot(page, 'forced-colors-approve-dialog', w, d);
-    const confirm = d.getByRole('button', { name: 'Approve and apply in Jube' });
+    const confirm = d.getByRole('button', { name: 'Approve and apply in Investigation' });
     await confirm.focus();
     expect(await hasVisibleFocus(confirm)).toBe(true);
     await page.keyboard.press('Enter');

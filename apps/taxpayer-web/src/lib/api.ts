@@ -174,6 +174,7 @@ async function post<T>(
 ): Promise<T> {
   const headers: Record<string, string> = { Accept: 'application/json' };
   const token = window.csrf_token;
+  // naming-allowed: HTTP header name required by the server, never shown.
   if (token && token !== '{{ csrf_token }}') headers['X-Frappe-CSRF-Token'] = token;
   if (tenantId) headers['X-Vati-Tenant-ID'] = tenantId;
   const isForm = body instanceof FormData;

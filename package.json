@@ -16,7 +16,8 @@
     "test:taxpayer": "vitest run --config apps/taxpayer-web/vite.config.mts",
     "typecheck:frontend-tests": "tsc --noEmit -p tests/frontend/tsconfig.json",
     "test:frontend:browser": "playwright test --config tests/frontend/playwright.config.ts",
-    "check": "npm run lint && npm run format:check && npm run typecheck:auditor && npm run test:auditor && npm run build:auditor && npm run typecheck:taxpayer && npm run test:taxpayer && npm run build:taxpayer && npm run typecheck:frontend-tests"
+    "check": "npm run check:naming && npm run lint && npm run format:check && npm run typecheck:auditor && npm run test:auditor && npm run build:auditor && npm run typecheck:taxpayer && npm run test:taxpayer && npm run build:taxpayer && npm run typecheck:frontend-tests",
+    "check:naming": "node scripts/check_naming.mjs && node --test scripts/check_naming.test.mjs"
   },
   "devDependencies": {
     "@axe-core/playwright": "4.14.0",

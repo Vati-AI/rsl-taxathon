@@ -91,7 +91,7 @@ function reject() {
       <dd class="text-ink-gray-8">{{ decision.rating }} of 5</dd>
       <dt class="text-sm text-ink-gray-5">Case status seen</dt>
       <dd class="text-ink-gray-8">{{ statusInfo(decision.case_status_at_proposal).label }}</dd>
-      <dt class="text-sm text-ink-gray-5">Jube</dt>
+      <dt class="text-sm text-ink-gray-5">Investigation</dt>
       <dd :class="sync.tone === 'red' ? 'text-ink-red-7' : 'text-ink-gray-8'">{{ sync.text }}</dd>
     </dl>
 

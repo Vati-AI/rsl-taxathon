@@ -192,7 +192,7 @@ test('02 auditor: risk-selected case to human decision', async ({ page }) => {
   await beat(
     page,
     'Auditor workspace',
-    'Officers see assigned cases by status, straight from case management (Jube).',
+    'Officers see assigned cases by status, straight from Investigation, the case management app.',
   );
 
   await page.goto(AUDITOR + '/auditor/cases');

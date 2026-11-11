@@ -628,8 +628,10 @@ test.describe('officer onboarding (TAX-082)', () => {
     await proxy.run('approve', 'Approve the decision', async () => {
       await proxy.click(page.getByRole('button', { name: 'Approve…' }), 'Approve…');
       await proxy.click(
-        page.getByRole('dialog').getByRole('button', { name: 'Approve and apply in Jube' }),
-        'Approve and apply in Jube',
+        page
+          .getByRole('dialog')
+          .getByRole('button', { name: 'Approve and apply in Investigation' }),
+        'Approve and apply in Investigation',
       );
       await expect(page.getByRole('status').filter({ hasText: 'Decision approved' })).toBeVisible();
     });

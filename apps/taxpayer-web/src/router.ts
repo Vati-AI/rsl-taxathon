@@ -46,6 +46,12 @@ export const routes = [
     meta: { title: 'Account' },
   },
   {
+    path: '/about/notices',
+    name: 'notices',
+    component: () => import('./pages/NoticesPage.vue'),
+    meta: { title: 'Open-source notices' },
+  },
+  {
     path: '/:pathMatch(.*)*',
     name: 'not-found',
     component: () => import('./pages/NotFoundPage.vue'),
@@ -80,7 +86,7 @@ export function createPortalRouter(
 
   router.afterEach((to) => {
     const title = typeof to.meta.title === 'string' ? to.meta.title : 'Taxpayer portal';
-    document.title = `${title} · Vati taxpayer portal`;
+    document.title = `${title} · Vati Taxpayer Portal`;
   });
 
   return router;
