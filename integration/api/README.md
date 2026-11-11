@@ -1,9 +1,10 @@
 # Vati integration API contract (TAX-018)
 
-`openapi.json` is the versioned contract (`/api/v1`) for the Vati coordination boundary. It describes Vati routes only; it makes no claims about upstream Jube, Frappe, OpenAleph, yente, Docling or LangGraph endpoints. No server implements it yet.
+`openapi.json` is the versioned contract (`/api/v1`) for the Vati coordination boundary. It describes Vati routes only; it makes no claims about upstream Jube, Frappe, OpenAleph, yente, Docling or LangGraph endpoints. The live service is `vati_tax.api_v1` in Frappe (TAX-090, [ADR-046](../../docs/decisions/ADR-046-vati-api-v1-in-frappe.md)); the fixture server below answers the same operations from synthetic files for UI work.
 
 | Operation | Route |
 |---|---|
+| getWorkspaceSession | `GET /api/v1/session` |
 | listCases | `GET /api/v1/cases` |
 | createCase | `POST /api/v1/cases` |
 | getCase | `GET /api/v1/cases/{case_id}` |
@@ -41,7 +42,9 @@ Rules every implementation must keep (see [ADR-003](../../docs/decisions/ADR-003
 
 `getManagementSummary` (TAX-060, [ADR-020](../../docs/decisions/ADR-020-management-summary-contract.md)) gives supervisors measured workload and assurance counts. Anyone else gets `403 forbidden`. Every ratio carries its denominator, gaps are listed in `missing_data`, and review signals are counted by kind only.
 
-`getCaseBriefing` and `recordFindingFeedback` (officers) and the five taxpayer-assistance operations (TAX-096, [ADR-034](../../docs/decisions/ADR-034-ai-briefing-feedback-taxpayer-assistance-contract.md)) carry `AnalysisProvenance` and `AiDisclosure`. Taxpayer-assistance operations are marked `x-vati-audience: taxpayer` and may use only closed `TaxpayerFacing*` schemas plus a few shared primitives. `lint_spec` refuses officer-only schemas or field names there, and `check_example` checks `taxpayer_id` against the path. They are not served by the fixture server (404) until TAX-090 and TAX-100 implement them. See [API_CONTRACTS.md](../../docs/API_CONTRACTS.md).
+`getCaseBriefing` and `recordFindingFeedback` (officers) and the five taxpayer-assistance operations (TAX-096, [ADR-034](../../docs/decisions/ADR-034-ai-briefing-feedback-taxpayer-assistance-contract.md)) carry `AnalysisProvenance` and `AiDisclosure`. Taxpayer-assistance operations are marked `x-vati-audience: taxpayer` and may use only closed `TaxpayerFacing*` schemas plus a few shared primitives. `lint_spec` refuses officer-only schemas or field names there, and `check_example` checks `taxpayer_id` against the path. The fixture server does not serve them (404). The live service (TAX-090) serves the two officer operations; a case with no recorded briefing is 404 until TAX-088 records briefings. TAX-100 serves the taxpayer side. See [API_CONTRACTS.md](../../docs/API_CONTRACTS.md).
+
+`getWorkspaceSession` (TAX-146, ADR-044) tells the Vati Workspace app shell who is signed in, the tenant, the officer's roles, and which workspace apps and views the server permits. Navigation is built from it; it never grants access, and every operation still enforces its own rules. An app the officer may use but that is not connected yet (the native investigation and explore screens until TAX-106) is listed as `unavailable` with reason `not_connected`. Apps and views the officer may not use are absent. The fixture server answers it for the `X-Vati-Fixture-Role` officer: Cases for everyone, Reports and the management and integrity views for the supervisor only, no Admin.
 
 ## Fixture server
 

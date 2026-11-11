@@ -258,6 +258,7 @@ describe('page structure and navigation', () => {
 
   it('the workspace header names the product, marks the current app and shows fixture mode slimly', async () => {
     const w = mount(WorkspaceHeader, {
+      global: { stubs },
       props: {
         fixture: true,
         apps: [

@@ -62,6 +62,14 @@ export const routes: RouteRecordRaw[] = [
     meta: { section: 'integrity', title: 'Integrity review' },
   },
   {
+    // TAX-146: a workspace app whose native screens are not connected yet.
+    path: '/apps/:app',
+    name: 'native-app',
+    component: () => import('./views/NativeAppView.vue'),
+    props: true,
+    meta: { section: 'none', title: 'Not connected' },
+  },
+  {
     path: '/showcase',
     name: 'showcase',
     component: () => import('./views/ShowcaseView.vue'),

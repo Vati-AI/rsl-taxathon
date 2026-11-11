@@ -49,8 +49,12 @@ export interface NavSection {
 
 export interface AppLink {
   label: string;
-  href: string;
+  /** An in-app route, or `href` for another app. */
+  to?: RouteLocationRaw;
+  href?: string;
   current?: boolean;
+  /** Visible marker for an app the officer may use but that is not connected yet. */
+  unavailable?: string;
 }
 
 export interface CommandItem {
