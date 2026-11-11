@@ -18,7 +18,6 @@ from vati_tax.rsl_referrals import rules
 
 APP = pathlib.Path(__file__).resolve().parents[1]
 REPO = APP.parents[2]
-FIXTURE = REPO / "integration" / "rsl_sources" / "fixtures" / "audit_referrals.json"
 if str(REPO) not in sys.path:
     sys.path.append(str(REPO))
 contracts: Any = None
@@ -26,8 +25,14 @@ fixture_source: Any = None
 try:
     contracts = importlib.import_module("integration.rsl_sources.contracts")
     fixture_source = importlib.import_module("integration.rsl_sources.fixture_source")
-except ImportError:  # pragma: no cover - inside the bench the repository is not on the path
+except ImportError:  # pragma: no cover - integration/ is not on the path
     pass
+# Next to the adapter, wherever integration/ is mounted (repository or bench vati_shared).
+FIXTURE = (
+    pathlib.Path(fixture_source.__file__).parent / "fixtures" / "audit_referrals.json"
+    if fixture_source is not None
+    else REPO / "integration" / "rsl_sources" / "fixtures" / "audit_referrals.json"
+)
 
 TIN_A = "510000006"
 TIN_B = "510000014"
