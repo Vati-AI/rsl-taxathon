@@ -13,7 +13,7 @@
   ],
   "claimed_by": "claude-code-20261111-friendly-newton",
   "branch": "claude/friendly-newton-iwhm4u",
-  "pr": "https://github.com/Vati-AI/rsl-taxathon/pull/293",
+  "pr": "https://github.com/Vati-AI/rsl-taxathon/pull/294",
   "scope": "Rebuild Overview as a workspace home of action items (overdue, awaiting evidence, awaiting approval, failed processing) and the case queue and taxpayer profile as toolbar-plus-table pages with saved views and counts in the sidebar, display options, export of the visible columns and pagination",
   "inputs": [
     "PROJECT.md",
@@ -83,6 +83,10 @@
     {
       "at": "2026-11-11",
       "text": "IN_REVIEW in https://github.com/Vati-AI/rsl-taxathon/pull/293, shared with TAX-139, TAX-150 and TAX-148 (one open PR per branch). Contract change: optional Case.attention (integration/api/README.md)."
+    },
+    {
+      "at": "2026-11-11",
+      "text": "#293 merged while TAX-147 was in progress; TAX-147 moved to its own PR https://github.com/Vati-AI/rsl-taxathon/pull/294 (IN_REVIEW). The Frappe /api/v1 service (TAX-090) does not send Case.attention yet, so there the Awaiting approval and Overdue views show 'not available' rather than a count."
     }
   ],
   "sequence": 18
