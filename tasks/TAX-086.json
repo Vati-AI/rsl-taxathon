@@ -5,7 +5,7 @@
   "owner": "Keletso",
   "area": "backend",
   "phase": "pilot",
-  "status": "IN_REVIEW",
+  "status": "DONE",
   "priority": "P0",
   "depends_on": [
     "TAX-030",
@@ -38,8 +38,8 @@
       "done": true
     },
     {
-      "text": "Findings and briefings store the TAX-096 analysis provenance; officer feedback on a finding (accepted/modified/rejected with reason) is stored append-only with the actor and is readable by the TAX-070 feedback loop",
-      "done": false
+      "text": "Findings store the TAX-096 analysis provenance; officer feedback on a finding (accepted/modified/rejected with reason) is stored append-only with the actor and is readable by the TAX-070 feedback loop. (Briefing provenance storage moved to TAX-088 criterion 3 on 2026-11-11, ADR-045.)",
+      "done": true
     },
     {
       "text": "Record relevant tests and evidence, update task status and open a PR",
@@ -64,7 +64,7 @@
     },
     {
       "criterion": 3,
-      "text": "langgraph_run findings require a valid TAX-096 AnalysisProvenance (rules.validate_provenance, checked against contract.py on every example provenance and 19 mutations plus each missing required field); rule and officer findings refuse provenance. Vati Finding Feedback stores accepted/modified/rejected with reason_code, reason (>=10 chars for modified/rejected), modified_explanation (modified only), the session user and role (an actor in the body is a 400), previous_feedback_id for the same officer, a FindingSnapshot of the judged finding and changes_finding false; edits and deletes are refused. engine/store.feedback_for_review returns each item with its TAX-070 provenance entry, which ai/workflows/outcome_feedback._component parses (test_case_findings). NOT YET DONE: no briefing record exists, so briefing provenance is not stored yet; the criterion stays open until one is added. Observed in the same unit, integration and bench runs as criteria 1-2."
+      "text": "langgraph_run findings require a valid TAX-096 AnalysisProvenance (rules.validate_provenance, checked against contract.py on every example provenance and 19 mutations plus each missing required field); rule and officer findings refuse provenance. Vati Finding Feedback stores accepted/modified/rejected with reason_code, reason (>=10 chars for modified/rejected), modified_explanation (modified only), the session user and role (an actor in the body is a 400), previous_feedback_id for the same officer, a FindingSnapshot of the judged finding and changes_finding false; edits and deletes are refused. engine/store.feedback_for_review returns each item with its TAX-070 provenance entry, which ai/workflows/outcome_feedback._component parses (test_case_findings). Briefing provenance storage was moved to TAX-088 on 2026-11-11 (ADR-045), because no briefing record exists until TAX-088 writes briefings. Observed in the same unit, integration and bench runs as criteria 1-2."
     },
     {
       "criterion": 4,
@@ -91,6 +91,10 @@
     {
       "at": "2026-11-06",
       "text": "IN_REVIEW in PR #278. Criterion 3 stays open: findings provenance and feedback are done, briefing provenance storage is not built; DONE waits for that (TAX-088 writes briefings)."
+    },
+    {
+      "at": "2026-11-11T12:40:52.160533+00:00",
+      "text": "2026-11-11 (ADR-045): the briefing-provenance part of criterion 3 moved to TAX-088 (new criterion 3), because briefings are first written by TAX-088 and TAX-088 depends on this task. The remaining criterion 3 (findings provenance and officer feedback) was already evidenced in PR #278, which is merged (2026-11-06T13:01:04Z). DONE."
     }
   ],
   "sequence": 1

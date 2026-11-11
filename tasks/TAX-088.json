@@ -41,6 +41,10 @@
       "done": false
     },
     {
+      "text": "Briefings the runtime writes store the TAX-096 analysis provenance, append-only and tenant- and case-scoped like TAX-086 findings, and are readable per case (moved from TAX-086 criterion 3 on 2026-11-11, ADR-045)",
+      "done": false
+    },
+    {
       "text": "Record relevant tests and evidence, update task status and open a PR",
       "done": false
     }
@@ -73,6 +77,10 @@
     {
       "at": "2026-11-11T12:27:49.740246+00:00",
       "text": "2026-11-11 (ADR-045): Keletso keeps this task in the AI and new UI lane. No task in this lane depends on an open task in the other lane."
+    },
+    {
+      "at": "2026-11-11T12:40:52.160533+00:00",
+      "text": "2026-11-11 (ADR-045): criterion 3 added, moved from TAX-086 criterion 3: briefing provenance storage. The old criterion 3 (tests, evidence, PR) is now criterion 4."
     }
   ],
   "sequence": 33
