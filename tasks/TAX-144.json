@@ -5,7 +5,7 @@
   "owner": "Keletso",
   "area": "tests/frontend",
   "phase": "pilot",
-  "status": "IN_REVIEW",
+  "status": "DONE",
   "priority": "P0",
   "depends_on": [
     "TAX-023"
@@ -70,6 +70,10 @@
     {
       "at": "2026-11-08",
       "text": "Added 2026-11-08 from ADR-044 (one Vati Workspace identity and design system v2) after the user's UI review against Cloudflare's dashboard and Zoho Workplace."
+    },
+    {
+      "at": "2026-11-11T12:34:58.096187+00:00",
+      "text": "DONE: implementation PR #284 verified merged on main (470b870); all acceptance criteria and evidence recorded (ADR-038, ADR-045 precondition)."
     }
   ],
   "sequence": 13
