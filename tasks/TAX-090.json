@@ -2,7 +2,7 @@
   "id": "TAX-090",
   "kind": "task",
   "title": "Vati /api/v1 service in Frappe for the auditor app",
-  "owner": "Keletso",
+  "owner": "Gupta",
   "area": "backend",
   "phase": "pilot",
   "status": "BACKLOG",
@@ -57,6 +57,10 @@
     {
       "at": "2026-11-05T10:07:38.336884+00:00",
       "text": "2026-11-05 (ADR-031): also serve briefing and finding feedback once the TAX-096 contract lands."
+    },
+    {
+      "at": "2026-11-11T12:27:49.740246+00:00",
+      "text": "2026-11-11 (ADR-045): owner changed from Keletso to Gupta; RSL integration lane. No task in this lane depends on an open task in the other lane."
     }
   ],
   "sequence": 2

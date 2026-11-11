@@ -84,8 +84,8 @@
       "text": "IN_REVIEW in PR #283."
     },
     {
-      "at": "2026-11-11",
-      "text": "Verified PR #283 merged into main as f720925; all acceptance criteria satisfied with evidence. Recorded DONE (ADR-038)."
+      "at": "2026-11-11T12:34:58.096187+00:00",
+      "text": "DONE: implementation PR #283 verified merged on main (f720925); all acceptance criteria and evidence recorded (ADR-038, ADR-045 precondition)."
     }
   ],
   "sequence": 12

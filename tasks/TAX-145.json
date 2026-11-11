@@ -73,6 +73,10 @@
       "text": "Added 2026-11-08 from ADR-044 (one Vati Workspace identity and design system v2) after the user's UI review against Cloudflare's dashboard and Zoho Workplace."
     },
     {
+      "at": "2026-11-11T12:27:49.740246+00:00",
+      "text": "2026-11-11 (ADR-045): Keletso keeps this task in the AI and new UI lane. No task in this lane depends on an open task in the other lane."
+    },
+    {
       "at": "2026-11-11",
       "text": "Claimed by claude-code-20261111-friendly-newton on the session's designated branch claude/friendly-newton-iwhm4u."
     }
