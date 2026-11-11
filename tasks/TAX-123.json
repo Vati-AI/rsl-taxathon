@@ -5,7 +5,7 @@
   "owner": "Gupta",
   "area": "integration",
   "phase": "pilot",
-  "status": "IN_PROGRESS",
+  "status": "IN_REVIEW",
   "priority": "P1",
   "depends_on": [
     "TAX-111",
@@ -13,7 +13,7 @@
   ],
   "claimed_by": "claude-opus-5-5-gupta",
   "branch": "task/TAX-123",
-  "pr": null,
+  "pr": "https://github.com/Vati-AI/rsl-taxathon/pull/292",
   "scope": "Add a TAX-111-style assumed contract for audit referrals from RSL's risk-based audit system on PSRM (case reference, TIN, risk sets and scores owned by RSL, selection reason) and open a Vati investigation linked to that RSL case",
   "inputs": [
     "PROJECT.md",
@@ -72,6 +72,10 @@
     {
       "at": "2026-11-11T15:16:20.907392+00:00",
       "text": "Claimed by claude-opus-5-5-gupta"
+    },
+    {
+      "at": "2026-11-11T18:21:14.438890+00:00",
+      "text": "PR opened with local verification (ADR-038)"
     }
   ],
   "sequence": 22
