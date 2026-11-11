@@ -49,6 +49,9 @@
       "ai/tools/persistent_credit_policy.json": "c577137af4c085e46f9ad456784b2696164c515847fb2d9060daca5879e74a8d"
     }
   },
-  "test_run": null,
+  "test_run": {
+    "at": "2026-11-11T18:28:43+00:00",
+    "results_sha256": "c5dc6375e9a9aa564c0d479d4fce77262e85f22c0f62cb399d614028fe671e78"
+  },
   "disclosure": "The generator change, the answer key and the review were written by the same AI coding agent. Thresholds were set on debugging seeds 777 and 778 before sealing; only the dataset and answer-key hashes were committed before the development run; the rules were frozen before the single test run."
 }

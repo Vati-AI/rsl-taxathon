@@ -1,0 +1,382 @@
+{
+  "synthetic": true,
+  "task": "TAX-139",
+  "run_at": "2026-11-11T18:28:43+00:00",
+  "seed": 20261111,
+  "rules_fingerprint": "75847baf190c253114f725829fb16c85693b5e738513101e30dc045aecd7e27d",
+  "dataset_sha256": "3e5c4c4f7ab0a86c1d6909a2f7c96a20a94ea572e9c8b4db8e2fd66a2a4b609e",
+  "regenerated_from_seed_matches_seal": true,
+  "persistent_credit": {
+    "flagged_by_group": {
+      "exporter": {
+        "count": 0,
+        "of": 92,
+        "rate": 0.0
+      },
+      "capex_lookalike": {
+        "count": 0,
+        "of": 15,
+        "rate": 0.0
+      },
+      "other_clean": {
+        "count": 0,
+        "of": 44,
+        "rate": 0.0
+      },
+      "other_issue": {
+        "count": 0,
+        "of": 33,
+        "rate": 0.0
+      },
+      "planted": {
+        "count": 16,
+        "of": 16,
+        "rate": 1.0
+      }
+    },
+    "naive_persistence_rule_by_group": {
+      "exporter": {
+        "count": 92,
+        "of": 92,
+        "rate": 1.0
+      },
+      "capex_lookalike": {
+        "count": 15,
+        "of": 15,
+        "rate": 1.0
+      },
+      "other_clean": {
+        "count": 20,
+        "of": 44,
+        "rate": 0.4545
+      },
+      "other_issue": {
+        "count": 29,
+        "of": 33,
+        "rate": 0.8788
+      },
+      "planted": {
+        "count": 16,
+        "of": 16,
+        "rate": 1.0
+      }
+    },
+    "ablation_flagged_by_group": {
+      "without_zero_rated_sales": {
+        "exporter": {
+          "count": 92,
+          "of": 92,
+          "rate": 1.0
+        },
+        "capex_lookalike": {
+          "count": 1,
+          "of": 15,
+          "rate": 0.0667
+        },
+        "other_clean": {
+          "count": 7,
+          "of": 44,
+          "rate": 0.1591
+        },
+        "other_issue": {
+          "count": 25,
+          "of": 33,
+          "rate": 0.7576
+        },
+        "planted": {
+          "count": 16,
+          "of": 16,
+          "rate": 1.0
+        }
+      },
+      "without_import_vat_paid_at_border": {
+        "exporter": {
+          "count": 23,
+          "of": 92,
+          "rate": 0.25
+        },
+        "capex_lookalike": {
+          "count": 6,
+          "of": 15,
+          "rate": 0.4
+        },
+        "other_clean": {
+          "count": 15,
+          "of": 44,
+          "rate": 0.3409
+        },
+        "other_issue": {
+          "count": 15,
+          "of": 33,
+          "rate": 0.4545
+        },
+        "planted": {
+          "count": 16,
+          "of": 16,
+          "rate": 1.0
+        }
+      },
+      "without_capital_spending": {
+        "exporter": {
+          "count": 0,
+          "of": 92,
+          "rate": 0.0
+        },
+        "capex_lookalike": {
+          "count": 15,
+          "of": 15,
+          "rate": 1.0
+        },
+        "other_clean": {
+          "count": 0,
+          "of": 44,
+          "rate": 0.0
+        },
+        "other_issue": {
+          "count": 0,
+          "of": 33,
+          "rate": 0.0
+        },
+        "planted": {
+          "count": 16,
+          "of": 16,
+          "rate": 1.0
+        }
+      }
+    },
+    "explanation_used_for_non_planted_persistent_credits": {
+      "zero_rated_sales": 156,
+      "import_vat_paid_at_border": 60,
+      "capital_spending": 15
+    },
+    "every_credit_period_records_all_tests": true,
+    "amounts": {
+      "planted_suppressed_output_vat": "46853552.53",
+      "unexplained_credit_computed_for_planted": "30949429.08"
+    },
+    "lanes": {
+      "exporter_policy_fast_claims_fast": {
+        "count": 1727,
+        "of": 1819,
+        "rate": 0.9494
+      },
+      "planted_claims_not_fast": {
+        "count": 353,
+        "of": 353,
+        "rate": 1.0
+      }
+    },
+    "findings_eligible_for_assessment": false
+  },
+  "assurance_system": {
+    "detection_by_issue": {
+      "fake_invoices": {
+        "detected": {
+          "count": 5,
+          "of": 5,
+          "rate": 1.0
+        },
+        "false_positive": {
+          "count": 0,
+          "of": 195,
+          "rate": 0.0
+        }
+      },
+      "untaxed_imported_services": {
+        "detected": {
+          "count": 7,
+          "of": 8,
+          "rate": 0.875
+        },
+        "false_positive": {
+          "count": 4,
+          "of": 192,
+          "rate": 0.0208
+        }
+      },
+      "disguised_employment": {
+        "detected": {
+          "count": 5,
+          "of": 8,
+          "rate": 0.625
+        },
+        "false_positive": {
+          "count": 1,
+          "of": 192,
+          "rate": 0.0052
+        }
+      },
+      "related_party_loss": {
+        "detected": {
+          "count": 9,
+          "of": 9,
+          "rate": 1.0
+        },
+        "false_positive": {
+          "count": 2,
+          "of": 191,
+          "rate": 0.0105
+        }
+      },
+      "policy_gap": {
+        "detected": {
+          "count": 8,
+          "of": 8,
+          "rate": 1.0
+        },
+        "false_positive": {
+          "count": 0,
+          "of": 192,
+          "rate": 0.0
+        }
+      },
+      "persistent_credit": {
+        "detected": {
+          "count": 16,
+          "of": 16,
+          "rate": 1.0
+        },
+        "false_positive": {
+          "count": 0,
+          "of": 184,
+          "rate": 0.0
+        }
+      }
+    },
+    "detection_overall": {
+      "planted_issue_instances": {
+        "count": 50,
+        "of": 54,
+        "rate": 0.9259
+      },
+      "taxpayers_with_any_issue_flagged": {
+        "count": 47,
+        "of": 49,
+        "rate": 0.9592
+      },
+      "mixed_taxpayers_both_found": {
+        "count": 3,
+        "of": 5,
+        "rate": 0.6
+      }
+    },
+    "false_positive_overall": {
+      "clean_taxpayers_flagged": {
+        "count": 7,
+        "of": 151,
+        "rate": 0.0464
+      }
+    },
+    "lanes": {
+      "accuracy": {
+        "count": 3927,
+        "of": 4051,
+        "rate": 0.9694
+      },
+      "confusion_truth_vs_system": {
+        "fast->fast": 1921,
+        "fast->standard": 98,
+        "investigation->investigation": 24,
+        "investigation->standard": 6,
+        "standard->fast": 20,
+        "standard->standard": 1982
+      },
+      "valid_claims_fast": {
+        "count": 1941,
+        "of": 4020,
+        "rate": 0.4828
+      },
+      "policy_fast_claims_fast": {
+        "count": 1921,
+        "of": 2019,
+        "rate": 0.9515
+      },
+      "claims_with_fake_invoices_not_fast": {
+        "count": 31,
+        "of": 31,
+        "rate": 1.0
+      },
+      "claims_with_fake_invoices_investigation": {
+        "count": 24,
+        "of": 31,
+        "rate": 0.7742
+      }
+    },
+    "legal_routes": {
+      "correct_candidate_route_or_policy_gap": {
+        "count": 57,
+        "of": 57,
+        "rate": 1.0
+      },
+      "any_finding_eligible_for_assessment": false
+    }
+  },
+  "errors": [
+    {
+      "tin": "186621189",
+      "type": "false_positive",
+      "issue": "untaxed_imported_services",
+      "reason": "Withholding was declared under a different payee reference, so it did not join to the counterparty; an officer would resolve it with one question."
+    },
+    {
+      "tin": "236002591",
+      "type": "false_positive",
+      "issue": "related_party_loss",
+      "reason": "Genuine losses with rising related-party fees but no explanation document supplied: the trigger fires and a human review is the intended outcome."
+    },
+    {
+      "tin": "362184224",
+      "type": "false_positive",
+      "issue": "related_party_loss",
+      "reason": "Genuine losses with rising related-party fees but no explanation document supplied: the trigger fires and a human review is the intended outcome."
+    },
+    {
+      "tin": "366112366",
+      "type": "miss",
+      "issue": "disguised_employment",
+      "reason": "No permit record for the individual, so presence could not be compared with the consultancy terms; no conflicting fact, no referral."
+    },
+    {
+      "tin": "530612094",
+      "type": "miss",
+      "issue": "untaxed_imported_services",
+      "reason": "Foreign fees were booked as general operating expenses, so the books do not show them as services and the three-way match did not test them."
+    },
+    {
+      "tin": "671509897",
+      "type": "false_positive",
+      "issue": "untaxed_imported_services",
+      "reason": "Withholding was declared under a different payee reference, so it did not join to the counterparty; an officer would resolve it with one question."
+    },
+    {
+      "tin": "679844881",
+      "type": "miss",
+      "issue": "disguised_employment",
+      "reason": "No permit record for the individual, so presence could not be compared with the consultancy terms; no conflicting fact, no referral."
+    },
+    {
+      "tin": "747714901",
+      "type": "miss",
+      "issue": "disguised_employment",
+      "reason": "No permit record for the individual, so presence could not be compared with the consultancy terms; no conflicting fact, no referral."
+    },
+    {
+      "tin": "777877709",
+      "type": "false_positive",
+      "issue": "untaxed_imported_services",
+      "reason": "Withholding was declared under a different payee reference, so it did not join to the counterparty; an officer would resolve it with one question."
+    },
+    {
+      "tin": "833724802",
+      "type": "false_positive",
+      "issue": "untaxed_imported_services",
+      "reason": "Withholding was declared under a different payee reference, so it did not join to the counterparty; an officer would resolve it with one question."
+    },
+    {
+      "tin": "946339989",
+      "type": "false_positive",
+      "issue": "disguised_employment",
+      "reason": "A genuine consultant stayed 183 days or more, so permit presence conflicts with the fixed-term contract and the case is referred to a specialist."
+    }
+  ]
+}
