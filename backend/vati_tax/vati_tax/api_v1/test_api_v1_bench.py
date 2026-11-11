@@ -139,6 +139,7 @@ class ApiV1BenchTests(IntegrationTestCase):
         body: Any = None,
         idem: str | None = None,
         query: dict[str, str] | None = None,
+        conformant: bool = True,
     ) -> tuple[int, dict[str, str], dict[str, Any]]:
         """One request through the whitelisted route, checked against the contract."""
         user = self.users[who] if who else "Guest"
@@ -171,6 +172,7 @@ class ApiV1BenchTests(IntegrationTestCase):
                     "name": f"live {method} {path}",
                     "operation_id": contract.match_operation(SPEC, method, path)[1]["operationId"],
                     "synthetic": True,
+                    "request_conformant": conformant,
                     "request": {
                         "method": method,
                         "path": path,
@@ -283,9 +285,10 @@ class ApiV1BenchTests(IntegrationTestCase):
         self.assertEqual((status, body["error"]["code"]), (401, "unauthenticated"))
 
     def test_refusals_are_kept_in_the_ledger(self):
-        before = frappe.db.count("Vati Audit Event", {"tenant_id": self.t1, "outcome": "denied"})
+        denied = {"tenant_id": self.t1, "action": "case.read.denied"}
+        before = frappe.db.count("Vati Audit Event", denied)
         self.call("taxpayer", "GET", "/api/v1/cases")
-        after = frappe.db.count("Vati Audit Event", {"tenant_id": self.t1, "outcome": "denied"})
+        after = frappe.db.count("Vati Audit Event", denied)
         self.assertEqual(after, before + 1)
 
     def test_taxpayer_profile_lists_open_cases(self):
@@ -356,7 +359,7 @@ class ApiV1BenchTests(IntegrationTestCase):
         )
         self.assertFalse(recorded["data"]["changes_finding"])
         actor = self.call("auditor", "POST", self.case_path(f"/findings/{finding['finding_id']}/feedback"),
-                          body={**feedback, "recorded_by": "someone"}, idem=key())  # fmt: skip
+                          body={**feedback, "recorded_by": "someone"}, idem=key(), conformant=False)  # fmt: skip
         self.assertEqual((actor[0], actor[2]["error"]["code"]), (400, "invalid_request"))
         request = {"expected_version": self.version(), "finding_ids": [finding["finding_id"]],
                    "items": [{"document_type": "contract", "description": "The signed agreement."}],

@@ -44,7 +44,9 @@ def _plural(n: int, one: str, many: str) -> str:
 
 def duration_stats(hours: list[float], excluded: int = 0) -> dict[str, Any]:
     """Median, nearest-rank 90th percentile and maximum, in hours."""
-    values = sorted(hours)
+    # An elapsed time is never negative; a record created within the same second as
+    # the summary can read a hair below zero after rounding.
+    values = sorted(max(0.0, h) for h in hours)
     if not values:
         return {
             "count": 0,
