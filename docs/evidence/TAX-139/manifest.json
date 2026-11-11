@@ -1,0 +1,33 @@
+{
+  "synthetic": true,
+  "task": "TAX-139",
+  "sealed_at": "2026-11-11T18:28:26+00:00",
+  "seed": 20261111,
+  "params_override": {
+    "persistent_credit": {
+      "planted": 24,
+      "capex_lookalikes": 24
+    }
+  },
+  "generator_version": "tax118-population-v1",
+  "generator_sha256": "7a0bde96fc69e27aebc4af57edd8beaedf521045d8662ebb58dd45c8446265cb",
+  "dataset_sha256": "3e5c4c4f7ab0a86c1d6909a2f7c96a20a94ea572e9c8b4db8e2fd66a2a4b609e",
+  "answer_key_sha256": "f56551eb55a8a1a440543eed48fe4c1b3da651008f24253486da4e5b19d6f5d7",
+  "taxpayers": 300,
+  "split": {
+    "dev": 100,
+    "test": 200
+  },
+  "groups": {
+    "exporter": 135,
+    "capex_lookalike": 24,
+    "other_clean": 63,
+    "other_issue": 54,
+    "planted": 24
+  },
+  "claims_total": 6077,
+  "rules_at_seal": "75847baf190c253114f725829fb16c85693b5e738513101e30dc045aecd7e27d",
+  "frozen": null,
+  "test_run": null,
+  "disclosure": "The generator change, the answer key and the review were written by the same AI coding agent. Thresholds were set on debugging seeds 777 and 778 before sealing; only the dataset and answer-key hashes were committed before the development run; the rules were frozen before the single test run."
+}
