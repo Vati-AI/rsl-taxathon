@@ -28,6 +28,7 @@ import json
 from collections import Counter
 from collections.abc import Callable, Iterable, Mapping
 from typing import Any
+from zoneinfo import ZoneInfo
 
 import frappe
 
@@ -73,7 +74,9 @@ WORKLOAD_GAP = (
 # --- authorisation --------------------------------------------------------------------
 
 
-def _authorise(call: Call, action: str, *, case_id: str | None = None) -> policy.TenantScope:
+def _authorise(
+    call: Call, action: str, *, case_id: str | None = None, subject_type: str = "case"
+) -> policy.TenantScope:
     """The caller's scope in the requested tenant, if it may perform ``action``.
 
     A refusal is kept in the TAX-059 ledger (``audit_store.guarded``)."""
@@ -84,7 +87,7 @@ def _authorise(call: Call, action: str, *, case_id: str | None = None) -> policy
     audit_store.guarded(
         ctx,
         attempted_action=action,
-        subject_type="case" if case_id else "tenant",
+        subject_type=subject_type,
         subject_id=case_id or scope.tenant_id,
         case_id=case_id,
         fn=lambda: policy.authorize_action(scope, action),
@@ -116,6 +119,30 @@ def translate(exc: Exception) -> ApiError | None:
     return None
 
 
+# --- time -----------------------------------------------------------------------------
+
+
+def _utc(value: Any) -> datetime.datetime | None:
+    """A Datetime the Vati stores wrote (naive UTC, e.g. ``observed_at``) as aware UTC."""
+    if not value:
+        return None
+    if isinstance(value, str):
+        value = datetime.datetime.fromisoformat(value.replace("Z", "+00:00"))
+    return value if value.tzinfo else value.replace(tzinfo=datetime.UTC)
+
+
+def _system(value: Any) -> datetime.datetime | None:
+    """A Frappe-managed timestamp (``creation``/``modified``: naive, in the site's system
+    time zone) as aware UTC."""
+    if not value:
+        return None
+    if isinstance(value, str):
+        value = datetime.datetime.fromisoformat(value)
+    if value.tzinfo is None:
+        value = value.replace(tzinfo=ZoneInfo(frappe.utils.get_system_timezone()))
+    return value.astimezone(datetime.UTC)
+
+
 # --- cases ----------------------------------------------------------------------------
 
 
@@ -139,6 +166,9 @@ def _case_rows(tenant_id: str, **filters: Any) -> list[Any]:
         },
         fields=_CASE_FIELDS,
     )
+    for row in rows:
+        row.creation = _system(row.creation)
+        row.modified = _system(row.modified)
     return rows
 
 
@@ -226,7 +256,7 @@ def project_cases(tenant_id: str, rows: list[Any]) -> list[dict[str, Any]]:
             else None
         )
         updated = max(
-            (v for v in (row.modified, sync.observed_at if sync else None) if v),
+            (v for v in (row.modified, _utc(sync.observed_at) if sync else None) if v),
             default=row.creation,
         )
         out.append(
@@ -494,16 +524,8 @@ def _current_findings(tenant_id: str) -> list[dict[str, Any]]:
     ]
 
 
-def _aware(value: Any) -> datetime.datetime | None:
-    if not value:
-        return None
-    if isinstance(value, str):
-        value = datetime.datetime.fromisoformat(value.replace("Z", "+00:00"))
-    return value if value.tzinfo else value.replace(tzinfo=datetime.UTC)
-
-
 def get_management_summary(call: Call) -> Result:
-    scope = _authorise(call, policy.LEDGER_READ)
+    scope = _authorise(call, policy.LEDGER_READ, subject_type="ledger")
     tenant = scope.tenant_id
     until = datetime.datetime.now(datetime.UTC).replace(microsecond=0)
     window = int(call.query.get("window_days") or 30)
@@ -516,7 +538,7 @@ def get_management_summary(call: Call) -> Result:
     outcomes = _closed_outcomes(tenant)
     open_cases, closed_cases = [], []
     for item in cases:
-        created = _aware(identities[item["case_id"]].creation)
+        created = identities[item["case_id"]].creation
         if item["status"] in projections.OPEN_STATUSES:
             open_cases.append({**item, "created_at": created})
         else:
@@ -525,7 +547,7 @@ def get_management_summary(call: Call) -> Result:
                 {
                     "case_id": item["case_id"],
                     "created_at": created,
-                    "closed_at": _aware(sync.observed_at) if sync else None,
+                    "closed_at": _utc(sync.observed_at) if sync else None,
                     "outcome": outcomes.get(item["case_id"]),
                 }
             )

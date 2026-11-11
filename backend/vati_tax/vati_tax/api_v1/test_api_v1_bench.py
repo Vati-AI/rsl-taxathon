@@ -229,8 +229,11 @@ class ApiV1BenchTests(IntegrationTestCase):
             findings_store.record_rule_signal(
                 tenant_id=self.t1, case_id=self.case_id, signal=signal, evidence=evidence
             )
+        frappe.set_user(self.users["auditor"])
+        clear_principal_cache()
+        views = findings_store.list_findings(tenant_id=self.t1, case_id=self.case_id) or []
         frappe.set_user("Administrator")
-        return findings_store.list_findings(tenant_id=self.t1, case_id=self.case_id) or []
+        return views
 
     # --- tests -----------------------------------------------------------------------
 

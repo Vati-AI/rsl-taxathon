@@ -18,6 +18,7 @@ Guests get ``401 unauthenticated``. Contract query parameters travel next to
 from __future__ import annotations
 
 import json
+import uuid
 from typing import Any
 
 import frappe
@@ -72,6 +73,8 @@ def _respond(result: core.ApiResponse) -> Response:
 @frappe.whitelist(allow_guest=True, methods=["GET", "POST"])
 def route(**_ignored: Any) -> Response:
     """Serve one /api/v1 contract request (see the module docstring)."""
+    savepoint = "vati_api_v1_" + uuid.uuid4().hex[:12]
+    frappe.db.savepoint(savepoint)
     result = core.handle(
         _request(),
         backend.HANDLERS,
@@ -81,6 +84,10 @@ def route(**_ignored: Any) -> Response:
     )
     if result.status >= 400:
         # Nothing a refused or failed request wrote may be committed by Frappe after
-        # this returns. Refusals the ledger must keep were committed where recorded.
-        frappe.db.rollback()
+        # this returns. Refusals the ledger must keep were committed where recorded,
+        # which also ends the savepoint; then only later writes are left to undo.
+        try:
+            frappe.db.rollback(save_point=savepoint)
+        except Exception:
+            frappe.db.rollback()
     return _respond(result)
