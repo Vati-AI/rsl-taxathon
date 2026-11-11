@@ -174,9 +174,15 @@ async function visit(page: Page, base: string, route: MatrixRoute) {
 }
 
 const syn002 = auditorCase('SYN-002');
-const CASE_TABS: MatrixRoute[] = ['evidence', 'relationships', 'findings'].map((tab) => ({
-  name: `case-${tab}`,
-  path: `/auditor/cases/${syn002.case_id}?tab=${tab}`,
+// TAX-148: each case tab has its own URL; the evidence tab is measured with a document open.
+const CASE_TABS: MatrixRoute[] = [
+  'evidence',
+  'evidence/50000000-0000-4000-8000-000000000026',
+  'relationships',
+  'findings',
+].map((tab) => ({
+  name: `case-${tab.split('/')[0]}${tab.includes('/') ? '-record' : ''}`,
+  path: `/auditor/cases/${syn002.case_id}/${tab}`,
   heading: 'SYN-002 · Synthetic Border Retail',
 }));
 

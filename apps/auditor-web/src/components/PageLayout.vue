@@ -23,7 +23,9 @@ defineProps<{
   </PageHeader>
   <div :class="['w-full px-4 py-5 sm:px-6', wide ? 'max-w-[1600px]' : 'max-w-6xl']">
     <!-- TAX-145: the shared Vati Workspace page header (apps/shared/components). -->
-    <VatiPageHeader :title="title" :description="description" />
+    <VatiPageHeader :title="title" :description="description">
+      <template v-if="$slots.status" #status><slot name="status" /></template>
+    </VatiPageHeader>
     <slot />
   </div>
 </template>

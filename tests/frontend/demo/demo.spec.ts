@@ -223,14 +223,20 @@ test('02 auditor: risk-selected case to human decision', async ({ page }) => {
     ],
   ] as const) {
     await soft(tab, async () => {
-      await page.getByRole('tab', { name: tab }).click();
+      await page
+        .getByRole('navigation', { name: 'Case sections' })
+        .getByRole('link', { name: new RegExp(`^${tab}`) })
+        .click();
       await beat(page, title, body);
     });
   }
 
   await soft('evidence record', async () => {
-    await page.getByRole('tab', { name: 'Evidence' }).click();
-    await page.getByRole('tabpanel').getByRole('link').first().click();
+    await page
+      .getByRole('navigation', { name: 'Case sections' })
+      .getByRole('link', { name: /^Evidence/ })
+      .click();
+    await page.getByRole('list', { name: 'Evidence on file' }).getByRole('link').first().click();
     await beat(
       page,
       'Evidence record',

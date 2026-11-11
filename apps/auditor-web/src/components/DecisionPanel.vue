@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, ref, shallowRef, watch } from 'vue';
 import { Alert, Button, Skeleton } from 'frappe-ui';
+import { SideDrawer } from '../../../shared/components';
 import { ApiError } from '../api/errors';
 import {
   getCaseReview,
@@ -38,7 +39,9 @@ import { errorPanel } from './errorPanel';
 
 /**
  * Officer decisions, evidence requests and specialist referrals for one case
- * (TAX-042). Every action goes through ConfirmActionDialog; nothing is sent from a
+ * (TAX-042), laid out as the case workspace Review tab (TAX-148): the decision state and
+ * evidence requests beside the suggestions and the review trail, with the propose and
+ * request forms in right-side drawers. Every action goes through ConfirmActionDialog; nothing is sent from a
  * suggestion, a click on a form button or a keyboard shortcut alone. Each
  * confirmed action has one Idempotency-Key, reused if it is retried, so a retry
  * after a lost response cannot record it twice. The case version shown when the
@@ -134,6 +137,25 @@ const resetDecision = ref(0);
 const resetEvidence = ref(0);
 let nonce = 0;
 
+// The forms open in drawers; a draft stays in its form while the drawer is open.
+// Closing a drawer discards its draft, like closing a dialog; a suggestion's prefill is
+// used once, so reopening a drawer starts from an empty form.
+/** Where focus lands when a suggestion opens a drawer: the prefilled part of the form. */
+const decisionFocus = ref<string | null>(null);
+const evidenceFocus = ref<string | null>(null);
+const decisionDrawer = ref(false);
+const evidenceDrawer = ref(false);
+watch(decisionDrawer, (open) => {
+  if (open) return;
+  decisionPrefill.value = null;
+  decisionFocus.value = null;
+});
+watch(evidenceDrawer, (open) => {
+  if (open) return;
+  evidencePrefill.value = null;
+  evidenceFocus.value = null;
+});
+
 function startFrom(finding: Finding) {
   const start = SUGGESTIONS[finding.proposed_action.type as keyof typeof SUGGESTIONS]?.start;
   if (!start) return;
@@ -143,19 +165,13 @@ function startFrom(finding: Finding) {
       findingIds: [finding.finding_id],
       nonce: ++nonce,
     };
-    focusLater('outcome-legend');
+    decisionFocus.value = 'outcome-legend';
+    decisionDrawer.value = true;
   } else {
     evidencePrefill.value = { findingIds: [finding.finding_id], nonce: ++nonce };
-    focusLater('evidence-cited');
+    evidenceFocus.value = 'evidence-cited';
+    evidenceDrawer.value = true;
   }
-}
-
-function focusLater(id: string) {
-  setTimeout(() => {
-    const el = document.getElementById(id);
-    el?.scrollIntoView?.({ block: 'start', behavior: 'smooth' });
-    el?.focus({ preventScroll: true });
-  }, 0);
 }
 
 // --- confirmation ---------------------------------------------------------------------
@@ -299,6 +315,7 @@ async function confirm() {
           'It now waits for a supervisor who did not propose it. Nothing has been sent to Investigation.',
       };
       resetDecision.value++;
+      decisionDrawer.value = false;
     } else if (a.kind === 'review') {
       const body = {
         action: a.action,
@@ -330,6 +347,7 @@ async function confirm() {
         description: `Due ${formatDate(request.due_date) ?? request.due_date}. It will be delivered through the taxpayer portal; the case status is unchanged.`,
       };
       resetEvidence.value++;
+      evidenceDrawer.value = false;
     }
     pending.value = null;
     await load();
@@ -386,7 +404,7 @@ function reloadAfterRefusal() {
             id="decision-heading"
             class="border-b border-outline-gray-1 px-4 py-3 text-lg font-semibold text-ink-gray-9"
           >
-            {{ openDecision ? 'Decision waiting for approval' : 'Propose a decision' }}
+            {{ openDecision ? 'Decision waiting for approval' : 'Decision' }}
           </h2>
           <div class="px-4 py-4">
             <OpenDecisionCard
@@ -403,15 +421,20 @@ function reloadAfterRefusal() {
             <p v-else-if="resolved" class="text-ink-gray-6">
               This case is resolved. No further decision can be proposed.
             </p>
-            <ProposeDecisionForm
-              v-else-if="allowed.includes('decision.propose')"
-              :case-status="item.status"
-              :allowed="allowed"
-              :findings="data.findings"
-              :prefill="decisionPrefill"
-              :reset-token="resetDecision"
-              @request="(draft) => open({ kind: 'propose', draft })"
-            />
+            <template v-else-if="allowed.includes('decision.propose')">
+              <p class="mb-3 text-ink-gray-6">
+                No decision has been proposed. A proposal waits for a supervisor who did not propose
+                it; nothing changes the case until then.
+              </p>
+              <Button
+                variant="solid"
+                theme="blue"
+                label="Propose a decision…"
+                icon-left="lucide-gavel"
+                aria-haspopup="dialog"
+                @click="decisionDrawer = true"
+              />
+            </template>
             <p v-else class="text-ink-gray-6">{{ PERMISSION_REASONS['decision.propose'] }}</p>
           </div>
         </section>
@@ -424,20 +447,46 @@ function reloadAfterRefusal() {
             id="evidence-request-heading"
             class="border-b border-outline-gray-1 px-4 py-3 text-lg font-semibold text-ink-gray-9"
           >
-            Request evidence from the taxpayer
+            Evidence from the taxpayer
           </h2>
           <div class="px-4 py-4">
             <p v-if="resolved" class="text-ink-gray-6">This case is resolved.</p>
-            <EvidenceRequestForm
-              v-else-if="allowed.includes('evidence_request.authorise')"
-              :findings="data.findings"
-              :prefill="evidencePrefill"
-              :reset-token="resetEvidence"
-              @request="(draft) => open({ kind: 'evidence', draft })"
-            />
+            <template v-else-if="allowed.includes('evidence_request.authorise')">
+              <p class="mb-3 text-ink-gray-6">
+                Ask the taxpayer for specific documents through the taxpayer portal. A request does
+                not change the case status.
+              </p>
+              <Button
+                label="Request evidence…"
+                icon-left="lucide-file-plus"
+                aria-haspopup="dialog"
+                @click="evidenceDrawer = true"
+              />
+            </template>
             <p v-else class="text-ink-gray-6">
               {{ PERMISSION_REASONS['evidence_request.authorise'] }}
             </p>
+          </div>
+        </section>
+        <section
+          aria-labelledby="trail-heading"
+          class="rounded-surface border border-outline-gray-1 bg-surface-base"
+        >
+          <h2
+            id="trail-heading"
+            class="border-b border-outline-gray-1 px-4 py-3 text-lg font-semibold text-ink-gray-9"
+          >
+            Review trail
+          </h2>
+          <div class="px-4 py-4">
+            <ReviewTrail :events="review.audit_events" :viewer-id="review.viewer.officer_id" />
+            <Button
+              class="mt-3"
+              label="Refresh"
+              icon-left="lucide-rotate-cw"
+              :loading="refreshing"
+              @click="load"
+            />
           </div>
         </section>
       </div>
@@ -465,29 +514,47 @@ function reloadAfterRefusal() {
             <p v-else class="text-ink-gray-5">No agent or rule suggestions for this case.</p>
           </div>
         </section>
-        <section
-          aria-labelledby="trail-heading"
-          class="rounded-surface border border-outline-gray-1 bg-surface-base"
-        >
-          <h2
-            id="trail-heading"
-            class="border-b border-outline-gray-1 px-4 py-3 text-lg font-semibold text-ink-gray-9"
-          >
-            Review trail
-          </h2>
-          <div class="px-4 py-4">
-            <ReviewTrail :events="review.audit_events" :viewer-id="review.viewer.officer_id" />
-            <Button
-              class="mt-3"
-              label="Refresh"
-              icon-left="lucide-rotate-cw"
-              :loading="refreshing"
-              @click="load"
-            />
-          </div>
-        </section>
       </div>
     </div>
+
+    <SideDrawer
+      v-model:open="decisionDrawer"
+      title="Propose a decision"
+      :initial-focus="decisionFocus"
+      description="Cite the findings and give your rationale. You confirm before anything is recorded."
+      size="lg"
+    >
+      <ProposeDecisionForm
+        v-if="!openDecision && !resolved && allowed.includes('decision.propose')"
+        :case-status="item.status"
+        :allowed="allowed"
+        :findings="data.findings"
+        :prefill="decisionPrefill"
+        :reset-token="resetDecision"
+        @request="(draft) => open({ kind: 'propose', draft })"
+      />
+      <p v-else class="text-ink-gray-6">
+        {{ proposeBlocked ?? PERMISSION_REASONS['decision.propose'] }}
+      </p>
+    </SideDrawer>
+    <SideDrawer
+      v-model:open="evidenceDrawer"
+      title="Request evidence from the taxpayer"
+      :initial-focus="evidenceFocus"
+      description="Name each document and the findings that justify it. You confirm before it is recorded."
+      size="lg"
+    >
+      <EvidenceRequestForm
+        v-if="!resolved && allowed.includes('evidence_request.authorise')"
+        :findings="data.findings"
+        :prefill="evidencePrefill"
+        :reset-token="resetEvidence"
+        @request="(draft) => open({ kind: 'evidence', draft })"
+      />
+      <p v-else class="text-ink-gray-6">
+        {{ resolved ? 'This case is resolved.' : PERMISSION_REASONS['evidence_request.authorise'] }}
+      </p>
+    </SideDrawer>
 
     <ConfirmActionDialog
       v-if="dialog"

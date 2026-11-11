@@ -28,8 +28,8 @@ onMounted(async () => {
     title="No findings yet"
     message="Findings appear here after the case has been investigated. Nothing is shown rather than guessed."
   />
-  <div v-else class="space-y-6">
-    <p class="max-w-prose text-sm text-ink-gray-5">
+  <div v-else class="grid grid-cols-[minmax(0,1fr)] gap-x-6 gap-y-6 xl:grid-cols-2">
+    <p class="max-w-prose text-sm text-ink-gray-5 xl:col-span-2">
       Findings organise what the records show. They are review material for an officer, not
       assessments, decisions or conclusions about the taxpayer.
     </p>
@@ -60,7 +60,7 @@ onMounted(async () => {
         </header>
         <div class="space-y-3 px-4 py-4">
           <p class="max-w-prose break-words text-ink-gray-8">{{ finding.explanation }}</p>
-          <dl class="grid gap-x-6 gap-y-3 sm:grid-cols-2 lg:grid-cols-4">
+          <dl class="grid gap-x-6 gap-y-3 sm:grid-cols-2">
             <div>
               <dt class="text-sm text-ink-gray-5">Unresolved amount</dt>
               <dd class="text-ink-gray-8">
@@ -116,12 +116,16 @@ onMounted(async () => {
               </li>
             </ul>
           </div>
-          <div v-if="finding.alternative_explanations.length">
-            <h4 class="text-sm font-medium text-ink-gray-7">Other possible explanations</h4>
+          <details v-if="finding.alternative_explanations.length" class="text-sm">
+            <summary
+              class="cursor-pointer font-medium text-ink-blue-link underline-offset-2 hover:underline"
+            >
+              Other possible explanations ({{ finding.alternative_explanations.length }})
+            </summary>
             <ul class="mt-1 list-disc space-y-1 pl-5 text-ink-gray-7">
               <li v-for="text in finding.alternative_explanations" :key="text">{{ text }}</li>
             </ul>
-          </div>
+          </details>
         </div>
       </article>
     </section>

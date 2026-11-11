@@ -113,20 +113,26 @@ async function walkToReview(page: Page, s: ReturnType<typeof scenario>, w: strin
   await pageReady(page, `${s.id} · ${s.name}`);
   const why = page.getByRole('region', { name: 'Why this case was selected' });
   await expect(why).toContainText('They are not findings, assessments or decisions.');
-  await expect(page.getByRole('region', { name: 'Case summary' })).toContainText(
-    lsl(s.refund_claim),
-  );
+  // TAX-148: the refund claimed sits in the case workspace's key facts.
+  await expect(page.locator('[data-kit="key-facts"]')).toContainText(lsl(s.refund_claim));
   await accessible(page);
   await shot(page, `${slug}-1-case`, w);
 
-  await page.getByRole('tab', { name: 'Evidence' }).click();
-  await expect(page.getByRole('tabpanel', { name: 'Evidence' })).toBeVisible();
+  // TAX-148: routed case tabs; each tab's content is a region named after the tab.
+  const tabs = page.getByRole('navigation', { name: 'Case sections' });
+  await tabs.getByRole('link', { name: /^Evidence/ }).click();
+  await expect(page.getByRole('region', { name: 'Evidence', exact: true })).toBeVisible();
   await page.waitForLoadState('networkidle');
   await accessible(page);
-  await shot(page, `${slug}-2-evidence`, w, page.getByRole('tabpanel', { name: 'Evidence' }));
+  await shot(
+    page,
+    `${slug}-2-evidence`,
+    w,
+    page.getByRole('region', { name: 'Evidence', exact: true }),
+  );
 
-  await page.getByRole('tab', { name: 'Findings' }).click();
-  const findings = page.getByRole('tabpanel', { name: 'Findings' });
+  await tabs.getByRole('link', { name: /^Findings/ }).click();
+  const findings = page.getByRole('region', { name: 'Findings', exact: true });
   await expect(findings).toBeVisible();
   await page.waitForLoadState('networkidle');
   await expect(findings).not.toContainText(ACCUSATION);
@@ -157,7 +163,8 @@ async function confirmIn(
   w: string,
 ) {
   await trigger.click();
-  const d = dialog(page);
+  // By name: a confirmation can open over a review drawer (TAX-148).
+  const d = page.getByRole('dialog', { name: title });
   await expect(d.getByRole('heading', { name: title })).toBeVisible();
   await accessible(page);
   await shot(page, shotName, w, d);
@@ -350,9 +357,13 @@ test.describe('five scenario routes: auditor workspace (TAX-055)', () => {
     await walkToReview(page, s, w);
 
     // The case already waits for evidence, so that outcome is unavailable, with a reason.
+    // The propose form opens in a drawer (TAX-148); Escape closes it again.
+    await page.getByRole('button', { name: 'Propose a decision…' }).click();
     await expect(
       page.getByRole('radio', { name: /^Wait for further evidence The case is already/ }),
     ).toBeDisabled();
+    await page.keyboard.press('Escape');
+    await expect(page.getByRole('dialog', { name: 'Propose a decision' })).toHaveCount(0);
 
     // Keyboard only from here: suggestion → form → dialog → confirm.
     const use = page
@@ -385,7 +396,8 @@ test.describe('five scenario routes: auditor workspace (TAX-055)', () => {
     const review = form.getByRole('button', { name: 'Review request…' });
     await review.focus();
     await page.keyboard.press('Enter');
-    const d = dialog(page);
+    // The confirmation opens over the request drawer (TAX-148): two dialogs, this one on top.
+    const d = page.getByRole('dialog', { name: 'Confirm the evidence request' });
     await expect(d.getByRole('heading', { name: 'Confirm the evidence request' })).toBeVisible();
     // Focus is inside the dialog; Escape cancels and keeps the draft.
     await expect.poll(() => d.evaluate((el) => el.contains(document.activeElement))).toBe(true);
@@ -442,7 +454,7 @@ test.describe('five scenario routes: auditor workspace (TAX-055)', () => {
     await expect(alert).toContainText('Nothing was sent to Investigation.');
     // The case is unchanged and open for a new proposal.
     await expect(caseStatus(page, 'Awaiting officer review')).toBeVisible();
-    await expect(page.getByRole('form', { name: 'Propose a decision' })).toBeVisible();
+    await expect(page.getByRole('button', { name: 'Propose a decision…' })).toBeEnabled();
     await accessible(page);
     await shot(page, 'syn-005-7-rejected', w);
   });

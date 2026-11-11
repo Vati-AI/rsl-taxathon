@@ -19,9 +19,9 @@ const empty = computed(
   () => !view.value.parties.length && !view.value.ownership.length && !view.value.payments.length,
 );
 const findingLink = (findingId: string) => ({
-  name: 'case',
+  name: 'case-findings',
   params: { caseId: props.caseId },
-  query: { tab: 'findings', finding: findingId },
+  query: { finding: findingId },
 });
 const evidenceLink = (evidenceId: string) => ({
   name: 'evidence',

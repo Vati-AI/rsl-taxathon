@@ -55,11 +55,14 @@ test.describe('navigation', () => {
       'href',
       `/auditor/cases/${CASE_2}/review`,
     );
-    await page.getByRole('tab', { name: 'Findings' }).click();
+    // TAX-148: routed case tabs, each its own URL.
+    const tabs = page.getByRole('navigation', { name: 'Case sections' });
+    await tabs.getByRole('link', { name: /^Findings/ }).click();
+    await expect(page).toHaveURL(new RegExp(`/auditor/cases/${CASE_2}/findings$`));
     await expect(page.getByText('No synthetic service agreement was supplied')).toBeVisible();
-    await page.getByRole('tab', { name: 'Evidence' }).click();
-    await expect(page.getByRole('region', { name: 'Evidence on file' })).toBeVisible();
-    await page.getByRole('tab', { name: 'Overview' }).click();
+    await tabs.getByRole('link', { name: /^Evidence/ }).click();
+    await expect(page.getByRole('list', { name: 'Evidence on file' })).toBeVisible();
+    await tabs.getByRole('link', { name: 'Summary' }).click();
     await expect(page).toHaveURL(new RegExp(`/auditor/cases/${CASE_2}$`));
 
     await page.getByRole('link', { name: 'View taxpayer profile' }).click();

@@ -41,13 +41,13 @@ function blocked(finding: Finding): string | null {
       Suggestions never act on their own. Using one only fills in a form; you write the rationale
       and confirm before anything is recorded.
     </p>
-    <ul class="space-y-4">
+    <ul class="space-y-3">
       <li
         v-for="finding in findings"
         :key="finding.finding_id"
-        class="space-y-3 border-t border-outline-gray-1 pt-4 first:border-t-0 first:pt-0"
+        class="space-y-2 border-t border-outline-gray-1 pt-3 first:border-t-0 first:pt-0"
       >
-        <FindingCard :finding="finding" heading-level="h4" />
+        <FindingCard :finding="finding" heading-level="h4" compact />
         <p class="text-sm text-ink-gray-7">
           <span class="font-medium">Suggested next step:</span>
           {{ SUGGESTIONS[finding.proposed_action.type as keyof typeof SUGGESTIONS]?.label }}

@@ -7,7 +7,12 @@ import { formatTimestamp } from '../domain/dates';
 import { FINDING_KIND_LABELS, PRODUCER_LABELS } from '../domain/review';
 import AmountText from './AmountText.vue';
 
-const props = defineProps<{ finding: Finding; headingLevel?: 'h3' | 'h4' }>();
+const props = defineProps<{
+  finding: Finding;
+  headingLevel?: 'h3' | 'h4';
+  /** Keep amounts, sources and alternatives behind a disclosure (review suggestions). */
+  compact?: boolean;
+}>();
 
 // Missing or unverified evidence is reported apart from a discrepancy (AGENTS.md).
 const KIND_THEMES: Record<Finding['kind'], 'gray' | 'blue' | 'amber' | 'red'> = {
@@ -44,30 +49,47 @@ const sources = computed(() =>
     <component :is="headingLevel ?? 'h3'" class="break-words text-ink-gray-8">
       {{ finding.explanation }}
     </component>
-    <dl class="grid gap-x-4 gap-y-1 text-sm sm:grid-cols-[auto_minmax(0,1fr)]">
-      <dt class="text-ink-gray-5">Unresolved amount</dt>
-      <dd class="text-ink-gray-7">
-        <AmountText
-          :value="finding.unresolved_amount?.amount ?? null"
-          :currency="finding.unresolved_amount?.currency ?? ''"
-        />
-      </dd>
-      <dt class="text-ink-gray-5">Evidence cited</dt>
-      <dd class="text-ink-gray-7">
-        {{ sources.length ? sources.join(', ') : 'None yet' }}
-      </dd>
-      <dt class="text-ink-gray-5">Legal route</dt>
-      <dd class="text-ink-gray-7">{{ ROUTES[finding.legal_route.status] }}</dd>
-      <dt class="text-ink-gray-5">Recorded</dt>
-      <dd class="text-ink-gray-7">{{ formatTimestamp(finding.created_at) }}</dd>
-    </dl>
-    <div v-if="finding.alternative_explanations.length" class="text-sm">
-      <p class="text-ink-gray-5">Other possible explanations</p>
-      <ul class="list-disc space-y-1 pl-5 text-ink-gray-7">
-        <li v-for="text in finding.alternative_explanations" :key="text" class="break-words">
-          {{ text }}
-        </li>
-      </ul>
-    </div>
+    <component
+      :is="compact ? 'details' : 'div'"
+      :class="compact ? 'group text-sm' : 'space-y-2'"
+      data-kit="finding-details"
+    >
+      <summary
+        v-if="compact"
+        class="cursor-pointer rounded-control text-ink-blue-link underline-offset-2 hover:underline"
+      >
+        Finding details
+      </summary>
+      <dl
+        :class="[
+          'grid gap-x-4 gap-y-1 text-sm sm:grid-cols-[auto_minmax(0,1fr)]',
+          compact && 'mt-2',
+        ]"
+      >
+        <dt class="text-ink-gray-5">Unresolved amount</dt>
+        <dd class="text-ink-gray-7">
+          <AmountText
+            :value="finding.unresolved_amount?.amount ?? null"
+            :currency="finding.unresolved_amount?.currency ?? ''"
+          />
+        </dd>
+        <dt class="text-ink-gray-5">Evidence cited</dt>
+        <dd class="text-ink-gray-7">
+          {{ sources.length ? sources.join(', ') : 'None yet' }}
+        </dd>
+        <dt class="text-ink-gray-5">Legal route</dt>
+        <dd class="text-ink-gray-7">{{ ROUTES[finding.legal_route.status] }}</dd>
+        <dt class="text-ink-gray-5">Recorded</dt>
+        <dd class="text-ink-gray-7">{{ formatTimestamp(finding.created_at) }}</dd>
+      </dl>
+      <div v-if="finding.alternative_explanations.length" class="text-sm">
+        <p class="text-ink-gray-5">Other possible explanations</p>
+        <ul class="list-disc space-y-1 pl-5 text-ink-gray-7">
+          <li v-for="text in finding.alternative_explanations" :key="text" class="break-words">
+            {{ text }}
+          </li>
+        </ul>
+      </div>
+    </component>
   </article>
 </template>

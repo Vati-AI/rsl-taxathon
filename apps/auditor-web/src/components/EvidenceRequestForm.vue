@@ -49,6 +49,8 @@ watch(
     for (const id of props.prefill.findingIds) form.cited[id] = true;
     clearErrors();
   },
+  // The form mounts inside a drawer opened by the suggestion (TAX-148).
+  { immediate: true },
 );
 watch(
   () => props.resetToken,

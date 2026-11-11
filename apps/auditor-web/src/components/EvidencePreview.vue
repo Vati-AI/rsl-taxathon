@@ -1,14 +1,15 @@
 <script setup lang="ts">
+/**
+ * Evidence preview pane (TAX-148): one stored document's record, versions and the
+ * findings that cite it, beside the evidence list in the case workspace. Document
+ * content is never shown; citations point into the stored original by fingerprint.
+ * (Formerly the TAX-041 evidence page.)
+ */
 import { computed } from 'vue';
 import { useRoute } from 'vue-router';
-import { Alert, Badge, Button, Skeleton } from 'frappe-ui';
+import { Alert, Badge } from 'frappe-ui';
 import { ProvenanceValue } from '../../../shared/components';
-import { getCaseRecords } from '../api/caseRecords';
-import { getCase } from '../api/vati';
-import PageLayout from '../components/PageLayout.vue';
-import StatePanel from '../components/StatePanel.vue';
-import { errorPanel } from '../components/errorPanel';
-import { useLoader } from '../composables/useLoader';
+import type { CaseRecords } from '../api/caseRecords';
 import { serviceLabel } from '../domain/cases';
 import { formatTimestamp } from '../domain/dates';
 import {
@@ -23,24 +24,13 @@ import {
   sourceLabel,
   versionHistory,
 } from '../domain/evidence';
+import StatePanel from './StatePanel.vue';
 
-const props = defineProps<{ caseId: string; evidenceId: string }>();
+const props = defineProps<{ caseId: string; evidenceId: string; records: CaseRecords }>();
 const route = useRoute();
 
-const { state, reload } = useLoader(
-  async (signal) => {
-    const [item, records] = await Promise.all([
-      getCase(props.caseId, fetch, signal),
-      getCaseRecords(props.caseId, fetch, signal),
-    ]);
-    return { item, records };
-  },
-  () => props.caseId,
-);
-
-const loaded = computed(() => (state.value.status === 'ready' ? state.value.data : null));
 const evidence = computed(
-  () => loaded.value?.records.evidence.find((e) => e.evidence_id === props.evidenceId) ?? null,
+  () => props.records.evidence.find((e) => e.evidence_id === props.evidenceId) ?? null,
 );
 const title = computed(() =>
   evidence.value
@@ -49,16 +39,10 @@ const title = computed(() =>
 );
 const extraction = computed(() => (evidence.value ? extractionLabel(evidence.value) : null));
 const newer = computed(() =>
-  loaded.value && evidence.value
-    ? isSuperseded(loaded.value.records.evidence, evidence.value.evidence_id)
-    : null,
+  evidence.value ? isSuperseded(props.records.evidence, evidence.value.evidence_id) : null,
 );
-const history = computed(() =>
-  loaded.value ? versionHistory(loaded.value.records.evidence, props.evidenceId) : [],
-);
-const citations = computed(() =>
-  loaded.value ? citedBy(loaded.value.records.findings, props.evidenceId) : [],
-);
+const history = computed(() => versionHistory(props.records.evidence, props.evidenceId));
+const citations = computed(() => citedBy(props.records.findings, props.evidenceId));
 
 const single = (value: unknown) => (typeof value === 'string' && value ? value : null);
 // The location an officer arrived to check, from the citation they followed.
@@ -74,11 +58,10 @@ const isRequested = (locator: { page: number | null; record: string | null }) =>
   requested.value !== null &&
   locator.page === requested.value.page &&
   locator.record === requested.value.record;
-
-const caseLink = (query: Record<string, string> = {}) => ({
-  name: 'case',
+const findingLink = (finding: string) => ({
+  name: 'case-findings',
   params: { caseId: props.caseId },
-  query,
+  query: { finding },
 });
 const frappeFile = computed(
   () => evidence.value?.service_links.find((link) => link.service === 'frappe') ?? null,
@@ -86,56 +69,30 @@ const frappeFile = computed(
 </script>
 
 <template>
-  <PageLayout
-    :title="title"
-    :breadcrumbs="[
-      // frappe-ui keys crumbs by label, so every label must stay unique, also while loading.
-      { label: 'My case queue', route: { name: 'queue' } },
-      { label: loaded ? loaded.item.display_id : 'Case', route: caseLink() },
-      { label: 'Case evidence', route: caseLink({ tab: 'evidence' }) },
-      { label: title },
-    ]"
-  >
-    <div
-      v-if="state.status === 'loading'"
-      role="status"
-      aria-label="Loading evidence"
-      class="space-y-3"
-    >
-      <Skeleton class="h-6 w-48 rounded-control" />
-      <Skeleton class="h-40 w-full rounded-surface" />
-    </div>
-    <StatePanel
-      v-else-if="state.status === 'error'"
-      v-bind="errorPanel(state.error)"
-      @retry="reload"
-    >
-      <Button label="Back to my case queue" :route="{ name: 'queue' }" />
-    </StatePanel>
-    <StatePanel
-      v-else-if="!evidence"
-      kind="not_found"
-      title="Evidence not found"
-      message="This case has no evidence with that reference. It may have been cited without being supplied."
-    >
-      <Button label="Back to the case evidence" :route="caseLink({ tab: 'evidence' })" />
-    </StatePanel>
-    <div v-else class="space-y-4">
+  <StatePanel
+    v-if="!evidence"
+    kind="not_found"
+    title="Evidence not found"
+    message="This case has no evidence with that reference. It may have been cited without being supplied."
+  />
+  <article v-else aria-labelledby="evidence-title" data-kit="evidence-preview">
+    <h2 id="evidence-title" class="mb-3 text-xl font-semibold text-ink-gray-9">{{ title }}</h2>
+    <div class="space-y-4">
       <section
         v-if="requested"
         aria-labelledby="cited-heading"
         class="rounded-surface border border-outline-gray-3 bg-surface-gray-1 px-4 py-3"
       >
-        <h2 id="cited-heading" class="font-medium text-ink-gray-9">
+        <h3 id="cited-heading" class="font-medium text-ink-gray-9">
           Cited location: {{ locatorLabel(requested) }}
-        </h2>
+        </h3>
         <p class="text-sm text-ink-gray-6">
           The finding you came from cites this location in the document below. Open the original in
           the restricted evidence store to read it there.
         </p>
         <RouterLink
           v-if="fromFinding"
-          :to="caseLink({ tab: 'findings', finding: fromFinding })"
+          :to="findingLink(fromFinding)"
           class="mt-1 inline-flex items-center gap-1 text-ink-blue-link underline-offset-2 hover:underline"
         >
           <span class="lucide-arrow-left size-4" aria-hidden="true" />
@@ -156,17 +113,17 @@ const frappeFile = computed(
         :description="`The original is stored, but nothing has been read from it (${evidence.extraction.error_code ?? 'no error code'}). This is a processing problem, not an empty document.`"
       />
 
-      <div class="grid grid-cols-[minmax(0,1fr)] gap-4 lg:grid-cols-[minmax(0,3fr)_minmax(0,2fr)]">
+      <div class="grid grid-cols-[minmax(0,1fr)] gap-4 2xl:grid-cols-[minmax(0,3fr)_minmax(0,2fr)]">
         <section
           aria-labelledby="document-heading"
           class="rounded-surface border border-outline-gray-1 bg-surface-base"
         >
-          <h2
+          <h3
             id="document-heading"
-            class="border-b border-outline-gray-1 px-4 py-3 text-lg font-semibold text-ink-gray-9"
+            class="border-b border-outline-gray-1 px-4 py-3 text-base font-semibold text-ink-gray-9"
           >
             Document record
-          </h2>
+          </h3>
           <dl class="grid gap-x-6 gap-y-3 px-4 py-4 sm:grid-cols-2">
             <div>
               <dt class="text-sm text-ink-gray-5">Document type</dt>
@@ -232,12 +189,12 @@ const frappeFile = computed(
           aria-labelledby="versions-heading"
           class="rounded-surface border border-outline-gray-1 bg-surface-base"
         >
-          <h2
+          <h3
             id="versions-heading"
-            class="border-b border-outline-gray-1 px-4 py-3 text-lg font-semibold text-ink-gray-9"
+            class="border-b border-outline-gray-1 px-4 py-3 text-base font-semibold text-ink-gray-9"
           >
             Versions
-          </h2>
+          </h3>
           <ol class="space-y-2 px-4 py-4">
             <li v-for="version in history" :key="version.evidence_id">
               <span v-if="version.evidence_id === evidence.evidence_id" class="text-ink-gray-8">
@@ -263,9 +220,9 @@ const frappeFile = computed(
       </div>
 
       <section aria-labelledby="citations-heading" class="space-y-2">
-        <h2 id="citations-heading" class="text-lg font-semibold text-ink-gray-9">
+        <h3 id="citations-heading" class="text-base font-semibold text-ink-gray-9">
           Findings citing this document ({{ citations.length }})
-        </h2>
+        </h3>
         <p v-if="!citations.length" class="text-ink-gray-5">No finding cites this document.</p>
         <ul v-else class="space-y-2">
           <li
@@ -298,14 +255,14 @@ const frappeFile = computed(
               </template>
             </p>
             <RouterLink
-              :to="caseLink({ tab: 'findings', finding: entry.finding.finding_id })"
+              :to="findingLink(entry.finding.finding_id)"
               class="mt-1 inline-flex text-sm text-ink-blue-link underline-offset-2 hover:underline"
             >
-              Open finding in the case
+              Open the finding
             </RouterLink>
           </li>
         </ul>
       </section>
     </div>
-  </PageLayout>
+  </article>
 </template>
