@@ -1,0 +1,219 @@
+{
+ "actions": [],
+ "autoname": "field:referral_id",
+ "creation": "2026-11-11 18:00:00.000000",
+ "description": "One RSL audit referral (TAX-123, ADR-047): RSL's risk-based audit system selected the taxpayer and referred the case. Holds RSL's audit case reference, the source contract and record hash, and RSL's risk sets and scores as RSL-owned inputs. One Vati case per audit case reference. Append-only. Written only by vati_tax.rsl_referrals.",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "referral_id",
+  "tenant_id",
+  "case_id",
+  "taxpayer_id",
+  "column_break_rsl",
+  "audit_case_ref",
+  "referred_on",
+  "selection_reason",
+  "period",
+  "inputs_section",
+  "rsl_inputs",
+  "source_section",
+  "contract_id",
+  "record_sha256",
+  "retrieved_at",
+  "fixture",
+  "adapter_id",
+  "created_at",
+  "referral_key"
+ ],
+ "fields": [
+  {
+   "fieldname": "referral_id",
+   "fieldtype": "Data",
+   "label": "Referral ID",
+   "set_only_once": 1,
+   "reqd": 1,
+   "unique": 1,
+   "length": 36
+  },
+  {
+   "fieldname": "tenant_id",
+   "fieldtype": "Data",
+   "label": "Tenant ID",
+   "set_only_once": 1,
+   "reqd": 1,
+   "search_index": 1,
+   "in_standard_filter": 1,
+   "length": 36
+  },
+  {
+   "fieldname": "case_id",
+   "fieldtype": "Data",
+   "label": "Case ID",
+   "set_only_once": 1,
+   "reqd": 1,
+   "search_index": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "length": 36
+  },
+  {
+   "fieldname": "taxpayer_id",
+   "fieldtype": "Data",
+   "label": "Taxpayer ID",
+   "set_only_once": 1,
+   "reqd": 1,
+   "search_index": 1,
+   "length": 36
+  },
+  {
+   "fieldname": "column_break_rsl",
+   "fieldtype": "Column Break",
+   "label": ""
+  },
+  {
+   "fieldname": "audit_case_ref",
+   "fieldtype": "Data",
+   "label": "RSL audit case reference",
+   "set_only_once": 1,
+   "reqd": 1,
+   "in_list_view": 1,
+   "search_index": 1,
+   "length": 80
+  },
+  {
+   "fieldname": "referred_on",
+   "fieldtype": "Date",
+   "label": "Referred on (RSL)",
+   "set_only_once": 1,
+   "reqd": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "selection_reason",
+   "fieldtype": "Data",
+   "label": "Selection reason (RSL code)",
+   "set_only_once": 1,
+   "reqd": 1,
+   "length": 80
+  },
+  {
+   "fieldname": "period",
+   "fieldtype": "Data",
+   "label": "VAT period under audit",
+   "set_only_once": 1,
+   "length": 7
+  },
+  {
+   "fieldname": "inputs_section",
+   "fieldtype": "Section Break",
+   "label": "RSL-owned inputs"
+  },
+  {
+   "fieldname": "rsl_inputs",
+   "fieldtype": "Long Text",
+   "label": "RSL risk sets and scores",
+   "set_only_once": 1,
+   "reqd": 1,
+   "description": "RSL's own selection inputs (owner RSL). Never a Vati score, finding or decision."
+  },
+  {
+   "fieldname": "source_section",
+   "fieldtype": "Section Break",
+   "label": "Source reference"
+  },
+  {
+   "fieldname": "contract_id",
+   "fieldtype": "Data",
+   "label": "Source contract",
+   "set_only_once": 1,
+   "reqd": 1,
+   "length": 80
+  },
+  {
+   "fieldname": "record_sha256",
+   "fieldtype": "Data",
+   "label": "RSL record SHA-256",
+   "set_only_once": 1,
+   "reqd": 1,
+   "length": 64
+  },
+  {
+   "fieldname": "retrieved_at",
+   "fieldtype": "Data",
+   "label": "Retrieved at",
+   "set_only_once": 1,
+   "reqd": 1,
+   "length": 32
+  },
+  {
+   "fieldname": "fixture",
+   "fieldtype": "Check",
+   "label": "Read from a fixture",
+   "set_only_once": 1,
+   "default": "0"
+  },
+  {
+   "fieldname": "adapter_id",
+   "fieldtype": "Data",
+   "label": "Source adapter",
+   "set_only_once": 1,
+   "length": 80
+  },
+  {
+   "fieldname": "created_at",
+   "fieldtype": "Datetime",
+   "label": "Recorded at",
+   "set_only_once": 1,
+   "reqd": 1
+  },
+  {
+   "fieldname": "referral_key",
+   "fieldtype": "Data",
+   "label": "Referral key",
+   "set_only_once": 1,
+   "reqd": 1,
+   "unique": 1,
+   "hidden": 1,
+   "length": 64
+  }
+ ],
+ "in_create": 1,
+ "index_web_pages_for_search": 0,
+ "links": [],
+ "modified": "2026-11-11 18:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Vati Tax",
+ "name": "Vati RSL Referral",
+ "naming_rule": "By fieldname",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "export": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager"
+  },
+  {
+   "read": 1,
+   "role": "Vati Auditor"
+  },
+  {
+   "read": 1,
+   "role": "Vati Specialist"
+  },
+  {
+   "read": 1,
+   "role": "Vati Supervisor"
+  },
+  {
+   "read": 1,
+   "role": "Vati Service"
+  }
+ ],
+ "search_fields": "audit_case_ref,case_id",
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "audit_case_ref"
+}

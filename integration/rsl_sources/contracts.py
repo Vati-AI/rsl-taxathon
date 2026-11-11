@@ -205,6 +205,31 @@ CONTRACTS: dict[tuple[str, str], SourceContract] = {
                 "owner": "owner_rsl",
             },
         ),
+        # TAX-123 (ADR-043 §1): a referral from RSL's risk-based audit system on PSRM. RSL
+        # selects; Vati investigates. The risk sets and their scores are RSL's own; each
+        # carries owner RSL and is never relabelled as a Vati score.
+        _c(
+            "audit_system",
+            "referral",
+            "tin",
+            "audit_case_ref",
+            {
+                "audit_case_ref": "ref",
+                "tin": "tin",
+                "referred_on": "date",
+                "selection_reason": "code",
+            },
+            # The VAT period under audit, when RSL names one.
+            optional_rules={"period": "period"},
+            lists={
+                "risk_sets": {
+                    "risk_set_id": "ref",
+                    "risk_set_version": "ref",
+                    "score": "score",
+                    "owner": "owner_rsl",
+                }
+            },
+        ),
         _c(
             "asycuda",
             "entry",
