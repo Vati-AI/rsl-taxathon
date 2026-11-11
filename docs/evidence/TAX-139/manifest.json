@@ -27,7 +27,28 @@
   },
   "claims_total": 6077,
   "rules_at_seal": "75847baf190c253114f725829fb16c85693b5e738513101e30dc045aecd7e27d",
-  "frozen": null,
+  "frozen": {
+    "at": "2026-11-11T18:28:36+00:00",
+    "fingerprint": "75847baf190c253114f725829fb16c85693b5e738513101e30dc045aecd7e27d",
+    "files": {
+      "ai/evaluation/assurance_pipeline.py": "8595e649c92e7c5a083333a28321083b00f3eacde2427a2755cc10f8387fa90f",
+      "ai/tools/idms_match.py": "b696f3889780d16810128d4edd058dead86e5071fb1c2388f6370f6ee586162a",
+      "ai/tools/source_recompute.py": "d31d231fccca0d03a5d3d9621146083c899f2dbf12c01347496e2c5714c99644",
+      "ai/tools/refund_triage.py": "da244f3de19a024d6e8311674ef824b685e304110ce4f2ca8f5e3f03982f51e9",
+      "ai/tools/refund_triage_policy.json": "540af0510222b363828fa3610fd085cfe88e91743feec4f31523170640185046",
+      "ai/tools/foreign_payments.py": "718a9149dc4b2f7b95d0243c1b69a144142637795acd6b165152ea85c5b383ec",
+      "ai/tools/related_party_signals.py": "8e47f56bf9103ae8208a73fc3fb35ec895efb032e43b32ed08f1c60e5afae1b6",
+      "ai/tools/work_arrangement.py": "f75f03d79f080250203a3d993f5868c7cad42102a4b0b8e6823d3008576eca98",
+      "ai/tools/refund_reconciliation.py": "9e15e0153c17f7cc34bcc1c796af54f2fd66e7b2674999d14fc0d61849aebf46",
+      "ai/workflows/rule_register.py": "b33b856bd5b249fc343c629b099134376b89a375c4894b637bebc50d211ed58b",
+      "ai/workflows/rule_register.candidates.json": "fba462ae304dc6bb8d4ccc5c4c9a8fa50c3450764422623614b22d5406812634",
+      "ai/workflows/policy_gap_register.json": "2e35440a66c3d930a0b93f37f7200905229d18ae1f4358212dfab525f86cbcac",
+      "integration/rsl_sources/contracts.py": "ebb505c32d988eb57f692ea0e58a764f1886b9f6c26440718607d446bc642017",
+      "integration/rsl_sources/fixture_source.py": "53d8ced62a6b6f77981414a98d9c208ef300222aa96dd9f8e6363e598057b9dc",
+      "ai/tools/persistent_credit.py": "ac46054f872406ea225cf68c918f887e701ba9f6d702e582aeec6d75f484137f",
+      "ai/tools/persistent_credit_policy.json": "c577137af4c085e46f9ad456784b2696164c515847fb2d9060daca5879e74a8d"
+    }
+  },
   "test_run": null,
   "disclosure": "The generator change, the answer key and the review were written by the same AI coding agent. Thresholds were set on debugging seeds 777 and 778 before sealing; only the dataset and answer-key hashes were committed before the development run; the rules were frozen before the single test run."
 }
