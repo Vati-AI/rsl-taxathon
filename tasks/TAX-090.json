@@ -55,11 +55,11 @@
     },
     {
       "criterion": 2,
-      "text": "Disposable verify site (frappe_dev.py verify, 2026-11-11): install and two migrations ok; test_api_v1_bench.py 12/12 OK. Every served auditor-app operation answered through api.route and passed contract.check_example; tenant scope (403 tenant_scope_denied / 404 across tenants), roles (taxpayer 403, auditor 403 on management summary/integrity), separation of duties (proposer cannot approve), idempotent replay and key reuse (422), stale version (409 with current_version), ledger-recorded refusals; no fixture fallback (X-Vati-Mode: live; briefing 404 until TAX-088); management summary computed from Frappe records and the ledger with the rules shared with the fixture server."
+      "text": "Disposable verify site (frappe_dev.py verify, 2026-11-11): install and two migrations ok; test_api_v1_bench.py 13/13 OK (rerun after merging main, which added getWorkspaceSession: also served). Every served auditor-app operation answered through api.route and passed contract.check_example; tenant scope (403 tenant_scope_denied / 404 across tenants), roles (taxpayer 403, auditor 403 on management summary/integrity), separation of duties (proposer cannot approve), idempotent replay and key reuse (422), stale version (409 with current_version), ledger-recorded refusals; no fixture fallback (X-Vati-Mode: live; briefing 404 until TAX-088); management summary computed from Frappe records and the ledger with the rules shared with the fixture server."
     },
     {
       "criterion": 3,
-      "text": "Frappe-free: test_core 26 OK; tests/contracts 72 OK (fixture server on the shared summary module); ruff, ruff format, mypy clean. Bench suite on a clean site: 570 unit OK; 220 site tests with 1 error in reminders/test_reminders_bench (also fails on main 57499b2, unrelated). Windows-only failure portal/test_presubmission path separators (pre-existing)."
+      "text": "Frappe-free: test_core 26 OK; tests/contracts 72 OK (fixture server on the shared summary module); ruff, ruff format, mypy clean. Bench suite on a clean site: 570 unit OK; site tests fail only in reminders/test_reminders_bench (the same tests fail on main 57499b2, unrelated). Windows-only failure portal/test_presubmission path separators (pre-existing)."
     }
   ],
   "notes": [
