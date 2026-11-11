@@ -5,7 +5,7 @@
   "owner": "Gupta",
   "area": "backend",
   "phase": "pilot",
-  "status": "IN_PROGRESS",
+  "status": "IN_REVIEW",
   "priority": "P0",
   "depends_on": [
     "TAX-086",
@@ -14,7 +14,7 @@
   ],
   "claimed_by": "claude-opus-5-5-gupta",
   "branch": "task/TAX-090",
-  "pr": null,
+  "pr": "https://github.com/Vati-AI/rsl-taxathon/pull/291",
   "scope": "Serve the integration/api/openapi.json operations the auditor app uses (cases, case detail, evidence, entities, findings, review state, decisions, evidence requests, taxpayer, management summary) from Frappe with real data, roles and tenant headers, plus the TAX-096 briefing and finding-feedback operations",
   "inputs": [
     "PROJECT.md",
@@ -78,6 +78,10 @@
     {
       "at": "2026-11-11T14:58:02.948727+00:00",
       "text": "Claimed by claude-opus-5-5-gupta"
+    },
+    {
+      "at": "2026-11-11T18:19:45.231930+00:00",
+      "text": "PR opened with local verification (ADR-038)"
     }
   ],
   "sequence": 2
