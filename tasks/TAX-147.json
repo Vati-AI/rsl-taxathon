@@ -1,0 +1,60 @@
+{
+  "id": "TAX-147",
+  "kind": "task",
+  "title": "Officer home, case queue and taxpayer profile on the new shell",
+  "owner": "Keletso",
+  "area": "apps/auditor-web",
+  "phase": "pilot",
+  "status": "BACKLOG",
+  "priority": "P1",
+  "depends_on": [
+    "TAX-146",
+    "TAX-040"
+  ],
+  "claimed_by": null,
+  "branch": null,
+  "pr": null,
+  "scope": "Rebuild Overview as a workspace home of action items (overdue, awaiting evidence, awaiting approval, failed processing) and the case queue and taxpayer profile as toolbar-plus-table pages with saved views and counts in the sidebar, display options, export of the visible columns and pagination",
+  "inputs": [
+    "PROJECT.md",
+    "PROJECT_SCOPE.md",
+    "docs/DESIGN_STANDARD.md",
+    "docs/decisions/ADR-044-vati-workspace-identity-and-design-v2.md",
+    "docs/decisions/ADR-004-auditor-frontend-stack.md",
+    "docs/UI_INTEGRATION_SCOPE.md",
+    "apps/auditor-web"
+  ],
+  "acceptance": [
+    {
+      "text": "The queue has one toolbar row (search, filters, display options, export, one primary action), a usage line, sortable dense table with column help, muted empty values and a row 'Open' action; filters and sort survive reload through the URL",
+      "done": false
+    },
+    {
+      "text": "Sidebar views (My cases, Awaiting evidence, Awaiting approval, Overdue) show counts from the same API used by the table; numbers are never invented",
+      "done": false
+    },
+    {
+      "text": "Overview and taxpayer profile fit the page-length budget; existing queue e2e tests still pass",
+      "done": false
+    },
+    {
+      "text": "Screenshots at 1440, 1024 and 390px with loading, empty, error and denied states, keyboard/focus and axe results, and the TAX-144 page-length result; record relevant tests and evidence, update task status and open a PR",
+      "done": false
+    }
+  ],
+  "verification": "Updated unit and Playwright tests on the fixture build",
+  "skills": [
+    "start-task",
+    "implement-change",
+    "update-project-task",
+    "finish-task"
+  ],
+  "evidence": [],
+  "notes": [
+    {
+      "at": "2026-11-08",
+      "text": "Added 2026-11-08 from ADR-044 (one Vati Workspace identity and design system v2) after the user's UI review against Cloudflare's dashboard and Zoho Workplace."
+    }
+  ],
+  "sequence": 18
+}

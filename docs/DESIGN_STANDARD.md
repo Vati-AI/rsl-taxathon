@@ -1,35 +1,182 @@
-# Frontend design standard
+# Frontend design standard (v2: Vati Workspace)
 
-User direction: both interfaces should feel like polished Frappe applications. This is an implementation and review requirement for every frontend task, not a claim that the current starter screens meet it.
+Updated 2026-11-08 by [ADR-044](decisions/ADR-044-vati-workspace-identity-and-design-v2.md),
+which replaces the 2026-11-03 "polished Frappe application" direction. The user's review was that
+both apps head in the right direction but still read as generated prototypes. This standard sets
+the target, and TAX-144 to TAX-152 deliver it. The current screens do not meet it yet.
 
-## Reference and components
+## What we take from the references, and what we do not
 
-Use the official [Frappe UI desktop and component examples](https://ui.frappe.io/) as the visual reference (reviewed 2026-11-03). Use Vue 3/TypeScript and supported Frappe UI components for custom screens per ADR-002; verify and pin the package version before adoption. Native Frappe pages should reuse framework form/list patterns. A custom portal does not inherit the Desk appearance automatically. Do not switch frameworks merely to imitate a screenshot: record the component choice in TAX-020/021 and reuse one shared visual contract.
+We take interaction and layout **patterns**, not brand assets. We do not copy logos, colours,
+illustrations, icon artwork or wording from either product. We do not switch frameworks:
+the stack stays Vue 3 + TypeScript + frappe-ui (ADR-004). Cloudflare's own React library
+(Kumo) is a reference for component behaviour only.
 
-Leseli leads the shared component showcase in TAX-020; Kananelo contributes taxpayer forms and validates the same contract in TAX-021. Both can start independently from the defaults below. Kananelo owns visual/accessibility checks in TAX-023 and subsequent UI QA (reassigned from Jane). Shared-file changes must be coordinated through a focused PR; consuming screens reuse those components and tokens.
+**Cloudflare dashboard** (screenshots supplied by the user, 2026-11-08), used for the officer
+and admin screens:
+- A quiet, neutral **app shell**:
+  - a top bar with the account/scope switcher, the current object (domain → **case**), "Ask AI"
+    → **Ask Vati**, Support and the user menu;
+  - a left sidebar of named sections that expand in place;
+  - in object context, a **"Back to …"** item at the top of the sidebar (Back to Domains →
+    **Back to cases**).
+- A **page header** with a large title, one plain sentence saying what the page is for, a status
+  chip on the right ("DNS Setup: Full" → case status) and a documentation link.
+- **Recommendations / notices** as one dismissable amber panel with a short bold headline and one
+  line of guidance, plus a numbered "Recommendations (2)" group that collapses.
+- **Table toolbar** in one row: search, Filters, Display options, Import, Export and **one** blue
+  primary action on the right.
+- A **usage line** above the table ("You have used 8 of 200 …" → "Showing 25 of 143 cases ·
+  3 overdue").
+- Dense tables with sortable headers, info icons that explain a column, a muted dash for an empty
+  value, a row-level text action ("Edit" → "Open") and a checkbox column only where bulk actions
+  exist.
+- Very few colours: grey surfaces, one blue accent, amber for warnings, red only for errors.
 
-## Visual contract
+**Zoho Workplace** (screenshots supplied by the user, 2026-11-08), used for how the workspace
+fits together:
+- One **workspace header** across every app: product mark and name, the app tabs (Mail, Cliq,
+  WorkDrive … → **Cases, Explore, Reports, Admin**), global search, notifications, settings and
+  the account avatar. Moving between apps keeps the same chrome, so the native tools feel like one
+  product.
+- A **left app rail** (Mail, Calendar, ToDo … → Cases, Requests, Tasks) beside an
+  **in-app panel** of folders and views with unread counts (Inbox 41 → **My cases 12, Awaiting
+  evidence 4, Overdue 2**). The panel can be dark while the content stays light.
+- A **list-first workspace**: rows grouped by time ("Last 7 days"), sender plus subject on two
+  lines, size and date right-aligned, and row actions shown on hover. The evidence-request inbox
+  and the case queue follow this.
+- Helpful **empty states**: one illustration slot, one sentence and the two or three actions that
+  make sense ("Create · Upload · Record").
+- One **unified settings** surface for every app.
 
-These are Vati defaults inspired by the reference, not asserted Frappe token values. Implement once in shared styles/tokens; any change must update both interfaces and the showcase.
+General guidance (secondary sources, see ADR-044):
+- Summary first, detail on demand (progressive disclosure).
+- List-detail for queues where officers work one item at a time.
+- Advanced options behind a disclosure or drawer.
+- Pagination instead of endless scrolling.
 
-- Neutral light workspace: canvas #f8fafc, white surfaces, #e2e8f0 borders, #0f172a primary text and #475569 supporting text. Restrained #1d4ed8 action accent. Verify contrast in actual rendered states.
-- System sans-serif font; 14px desktop UI, 16px taxpayer form text, 20–24px page titles, 1.5 body line height. Use a small documented type scale. Long names and numbers must remain readable.
-- Spacing scale 4, 8, 12, 16, 24, 32px; 6–8px control/surface radii; subtle dividers. Shadows only where they clarify layering, such as popovers.
-- Persistent desktop sidebar, clear active item, compact page header, title/breadcrumbs, and one visually dominant primary action. Smaller screens use accessible collapsed navigation.
-- Officer lists are task-focused tables with meaningful columns, search/filter/sort, aligned headers, right-aligned numeric values and predictable pagination. No decorative charts or invented metrics. Taxpayer pages use clearer step-by-step forms with more breathing room.
-- One outline icon family, consistent sizes, visible text labels for primary actions, accessible names for icon-only controls. Status badges use text plus colour; risk is a review signal, never a verdict.
-- No decorative gradients, glass panels, neon/glowing effects, emoji navigation, oversized hero sections, excessive rounded cards, arbitrary animations or one-off screen styling.
+## Product identity: one name, no tool names
 
-## First reviewable screens
+Everything the user sees is **Vati Workspace**. Open-source components are never named in the
+interface. The register below is the only allowed mapping. TAX-150 enforces it with a test.
 
-Before expanding the screen inventory, submit a working component showcase and representative screens in TAX-020/021: auditor case queue and case detail; taxpayer submission form and submission status. Include realistic synthetic long names, amounts, dates, missing values and error messages. These first PRs establish the visual baseline; later screens must follow it. Review can request changes before merge. Jane prepares the harness independently and captures approved screenshot baselines after the first screens are accepted.
+| Component (code, docs and logs only) | Name shown to users |
+|---|---|
+| Auditor app (Vue) | **Vati Workspace · Cases** |
+| Jube native case screens | **Vati Workspace · Investigation** |
+| OpenAleph search and network diagrams | **Vati Workspace · Explore** |
+| Frappe Desk administration | **Vati Workspace · Admin** |
+| Frappe taxpayer portal | **Vati Taxpayer Portal** |
+| Docling | Document reading |
+| yente | Name screening |
+| LangGraph / model router / Groq | Vati assistant |
+| Frappe records (submissions, decisions) | Vati records |
 
-The showcase includes buttons, form fields, validation, tabs, table/filter controls, badges, dialogs and notification patterns, with normal, hover, focus, disabled, loading and error examples. Use working synthetic flows; label fixture data clearly. An unavailable action is disabled with a reason, not a button that silently does nothing.
+- RSL systems keep RSL's own names (e-Tax, Lekuka, ASYCUDA World, Online Refunds Application,
+  RSL fraud model) because they are RSL's (TAX-138). RSL branding only with RSL's approval.
+- Provenance is still recorded. Component names stay in API fields, the audit ledger, logs,
+  Admin diagnostics and the **About · Open-source notices** page. Licences require that page
+  (TAX-150, TAX-151).
+- Native tools are themed to the same tokens, logo and product name only through their supported
+  configuration, a stylesheet or a reverse proxy. There is no source fork (ADR-034). Anything a
+  pinned version cannot rename or theme is recorded as a limitation (TAX-151).
+
+## Layout rules
+
+1. **App shell on every screen** (TAX-146):
+   - a 48–56px workspace header;
+   - a 240px sidebar, collapsible to a 56px icon rail;
+   - content up to 1280px wide, left-aligned beside the sidebar and not centred in the window.
+2. **Page header**: breadcrumb, title, one-sentence description, status chip, at most one primary
+   action and up to two secondary actions. Nothing else above the fold except notices.
+3. **Page-length budget.** At 1440×900:
+   - an operational page is at most **1.5 viewport heights**, and its main working content is
+     visible without scrolling;
+   - tables scroll inside a labelled region with a sticky header, and paginate at 25 rows by
+     default;
+   - forms longer than one viewport become steps or move into a side drawer.
+
+   TAX-144 measures this and fails a screen that breaks it. The component showcase is exempt and
+   stays out of operational navigation.
+4. **Split, don't stack.**
+   - A case is a workspace with routed tabs (Summary, Evidence, Relationships, Findings, Review).
+   - Review actions open in a right-side drawer or dialog; they do not sit as a form below the
+     page.
+   - Evidence opens in a preview pane beside the list.
+   - Management sections are tabs, not one long column.
+5. **Density.**
+   - Officer screens: 36–40px table rows and 14px text.
+   - Taxpayer screens: roomier, 16px form text and one task per step.
+
+## Visual contract (tokens: TAX-145)
+
+Starting values. TAX-145 finalises them with measured contrast. Change them once in
+`apps/shared/design/tokens.css`. Native-tool theming (TAX-151) reads the same values.
+
+- Neutral canvas `#f7f8fa`, white surfaces, `#e4e7ec` dividers, `#101828` text, `#475467`
+  supporting text.
+- One accent, Vati blue `#1d4ed8` (hover `#1e40af`), for primary actions, links and the active
+  navigation item only.
+- Status colours always come with text:
+  - info blue;
+  - success green;
+  - warning amber;
+  - danger red;
+  - neutral grey for "not available".
+
+  Risk is a review signal, never a verdict.
+- Optional dark navigation panel `#111827` with `#e5e7eb` text; content always light. Full dark
+  mode is out of scope for the pilot.
+- Type: system sans-serif, scale 12/13/14/16/20/24/30px, weights 400/500/600, tabular numerals for
+  amounts and dates.
+- Spacing: 4, 8, 12, 16, 24, 32, 48px. Radius: 6px on controls, 8px on surfaces.
+- Shadows only on overlays: menus, drawers, dialogs and the command palette.
+- One outline icon family at 16px and 20px; icon-only buttons have accessible names.
+- Banned:
+  - gradients, glass panels and glows;
+  - emoji navigation and hero sections;
+  - card grids used as page layout;
+  - text-only decorative headings ("Five pilot scenarios");
+  - developer copy in the product ("Starter workspace for …");
+  - invented metrics.
+
+## Shared components (TAX-145)
+
+Each one is built once, shown in the showcase in every state, and reused:
+- workspace header;
+- app rail and sidebar;
+- page header;
+- notice and recommendations panel;
+- table toolbar (search, filters, display options, export, primary action);
+- data table with sticky header, sort, column info, empty value, row action and pagination;
+- usage line;
+- key-facts strip;
+- tabs bound to routes;
+- right-side drawer;
+- confirmation dialog;
+- status chip;
+- empty state;
+- skeleton loading;
+- inline error with retry;
+- toast;
+- command palette (⌘K / Ctrl K) for case reference, TIN and page search.
 
 ## Visual acceptance for every UI PR
 
-Attach screenshots of the changed screens at 1440px, 1024px and 390px widths and identify the tested browser. Include loading, empty, error, success and denied-access states relevant to the change. Record keyboard navigation, visible focus, labels, readable contrast and zoom/reflow checks. Automated accessibility and screenshot comparison support this evidence; they do not replace it.
+Attach screenshots of the changed screens at 1440, 1024 and 390px widths and name the browser.
+Include loading, empty, error, success and denied-access states where they apply.
 
-No clipped text, unintended page-wide horizontal scrolling, overlapping controls or inconsistent spacing. Wide officer tables may scroll inside a labelled region; taxpayer forms must reflow. Use actionable error text that preserves entered values. Confirmations and consequential decisions must preserve existing human-approval requirements.
+Record:
+- keyboard navigation and visible focus;
+- labels and contrast;
+- zoom and reflow;
+- the TAX-144 page-length result.
 
-The implementer records visual defects with screenshots and reproduction steps and checks alignment with this standard. Functional checks alone do not satisfy visual acceptance. Subsequent UI PRs link the baseline and explain intentional deviations. Under ADR-038 a second-person visual review is optional and does not block merge or DONE.
+Automated accessibility (axe), screenshot comparison and the page-length check support this
+evidence; they do not replace it.
+
+No clipped text, page-wide horizontal scrolling, overlapping controls or inconsistent spacing.
+Errors are actionable and preserve what was entered. Consequential actions keep their
+confirmation and human-approval requirements. Fixture mode stays clearly labelled, but as a slim
+strip inside the header, not a full-width banner. Under ADR-038 a second-person visual review is
+optional and does not block merge or DONE.

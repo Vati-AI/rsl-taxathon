@@ -7,6 +7,8 @@ and access to Jube/OpenAleph; this document makes the missing integration explic
 
 ## Screens and ownership
 
+Screen layout and naming follow [DESIGN_STANDARD.md](DESIGN_STANDARD.md) v2 (ADR-044, TAX-144–152).
+
 | Audience / screen | Delivery surface | Delivery tasks |
 |---|---|---|
 | Login, expired session, denied access, logout and supported password recovery | Frappe authentication; return to an authorized destination | TAX-021, 029, 091 |
@@ -37,8 +39,10 @@ breadcrumbs. Keep the component showcase in development/design access, outside
 normal operational navigation. Taxpayers have their own submissions/requests/account
 navigation and never receive staff-tool links.
 
-From a case, “Open investigation in Jube” opens the mapped native case in a new tab.
-“Explore in OpenAleph” opens the matching authorized collection/entity/diagram.
+From a case, “Open in Investigation” opens the mapped native Jube case in a new tab.
+“Open in Explore” opens the matching authorized OpenAleph collection/entity/diagram.
+Users see Vati Workspace names only; the component names here are for builders
+(ADR-044 naming register in DESIGN_STANDARD.md, TAX-150/151).
 Evidence links open the corresponding protected document where supported. Keep the
 Vati tab available as the return path. Frappe Desk is the staff administration entry.
 Do not substitute a generic service homepage for a missing record-specific link.

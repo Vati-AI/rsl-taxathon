@@ -16,7 +16,10 @@
     "TAX-107",
     "TAX-108",
     "TAX-109",
-    "TAX-143"
+    "TAX-143",
+    "TAX-148",
+    "TAX-152",
+    "TAX-151"
   ],
   "claimed_by": null,
   "branch": null,
@@ -75,5 +78,5 @@
       "text": "ADR-043: now also depends on TAX-143 (RSL-first journey)."
     }
   ],
-  "sequence": 43
+  "sequence": 52
 }

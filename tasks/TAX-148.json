@@ -1,0 +1,61 @@
+{
+  "id": "TAX-148",
+  "kind": "task",
+  "title": "Case workspace with routed tabs, evidence preview and review drawers",
+  "owner": "Keletso",
+  "area": "apps/auditor-web",
+  "phase": "pilot",
+  "status": "BACKLOG",
+  "priority": "P0",
+  "depends_on": [
+    "TAX-146",
+    "TAX-041",
+    "TAX-042"
+  ],
+  "claimed_by": null,
+  "branch": null,
+  "pr": null,
+  "scope": "Turn the case detail, evidence and review pages into one case workspace: page header with status chip and key-facts strip, routed tabs (Summary, Evidence, Relationships, Findings, Review), evidence list with a preview pane, and review actions (propose, approve, reject, withdraw, refer, request evidence) in right-side drawers with their existing confirmation dialogs",
+  "inputs": [
+    "PROJECT.md",
+    "PROJECT_SCOPE.md",
+    "docs/DESIGN_STANDARD.md",
+    "docs/decisions/ADR-044-vati-workspace-identity-and-design-v2.md",
+    "docs/decisions/ADR-004-auditor-frontend-stack.md",
+    "docs/UI_INTEGRATION_SCOPE.md",
+    "apps/auditor-web"
+  ],
+  "acceptance": [
+    {
+      "text": "Every tab has its own URL and fits the page-length budget at 1440x900; the review page no longer stacks the decision, the evidence-request form, suggestions and the trail in one column",
+      "done": false
+    },
+    {
+      "text": "All existing review rules hold: separation of duties, confirmation before every action, disabled actions state a reason, no decision without a human; existing DecisionPanel and review e2e tests pass or are updated with the same assertions",
+      "done": false
+    },
+    {
+      "text": "Selection reasons, processing state and sources use the TAX-150 product names; RSL values keep RSL labels",
+      "done": false
+    },
+    {
+      "text": "Screenshots at 1440, 1024 and 390px with loading, empty, error and denied states, keyboard/focus and axe results, and the TAX-144 page-length result; record relevant tests and evidence, update task status and open a PR",
+      "done": false
+    }
+  ],
+  "verification": "Updated component and Playwright tests on the fixture build",
+  "skills": [
+    "start-task",
+    "implement-change",
+    "update-project-task",
+    "finish-task"
+  ],
+  "evidence": [],
+  "notes": [
+    {
+      "at": "2026-11-08",
+      "text": "Added 2026-11-08 from ADR-044 (one Vati Workspace identity and design system v2) after the user's UI review against Cloudflare's dashboard and Zoho Workplace."
+    }
+  ],
+  "sequence": 17
+}
