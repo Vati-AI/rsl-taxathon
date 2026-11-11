@@ -5,14 +5,14 @@
   "owner": "Keletso",
   "area": "apps/auditor-web",
   "phase": "pilot",
-  "status": "BACKLOG",
+  "status": "IN_PROGRESS",
   "priority": "P0",
   "depends_on": [
     "TAX-145",
     "TAX-021"
   ],
-  "claimed_by": null,
-  "branch": null,
+  "claimed_by": "claude-code-20261111-friendly-newton",
+  "branch": "claude/friendly-newton-iwhm4u",
   "pr": null,
   "scope": "One workspace header (product mark, app tabs Cases / Investigation / Explore / Reports / Admin as permitted, global search and command palette, notifications, help, user menu with tenant and sign-out), a collapsible sidebar with views and counts, a 'Back to cases' item in case context, breadcrumbs, and fixture mode as a slim header strip; a simpler variant for the taxpayer portal",
   "inputs": [
@@ -58,6 +58,10 @@
     {
       "at": "2026-11-11T12:27:49.740246+00:00",
       "text": "2026-11-11 (ADR-045): Keletso keeps this task in the AI and new UI lane. No task in this lane depends on an open task in the other lane."
+    },
+    {
+      "at": "2026-11-11",
+      "text": "Claimed by claude-code-20261111-friendly-newton on the session's designated branch claude/friendly-newton-iwhm4u."
     }
   ],
   "sequence": 15

@@ -53,7 +53,7 @@ const open = defineModel<boolean>('open', { default: false });
             <span aria-hidden="true" class="lucide-x size-4" />
           </DialogClose>
         </header>
-        <div class="min-h-0 flex-1 overflow-y-auto px-5 py-4" data-scroll-region>
+        <div class="relative min-h-0 flex-1 overflow-y-auto px-5 py-4" data-scroll-region>
           <slot />
         </div>
         <footer

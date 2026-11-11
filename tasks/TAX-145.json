@@ -5,7 +5,7 @@
   "owner": "Keletso",
   "area": "apps/auditor-web",
   "phase": "pilot",
-  "status": "IN_REVIEW",
+  "status": "DONE",
   "priority": "P0",
   "depends_on": [
     "TAX-144",
@@ -83,6 +83,10 @@
     {
       "at": "2026-11-11",
       "text": "IN_REVIEW in PR #288."
+    },
+    {
+      "at": "2026-11-11",
+      "text": "DONE: implementation PR #288 verified merged on main (57499b2); all acceptance criteria and evidence recorded (ADR-038, ADR-045)."
     }
   ],
   "sequence": 14

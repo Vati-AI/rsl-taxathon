@@ -25,9 +25,35 @@
     { "name": "taxpayers" },
     { "name": "management" },
     { "name": "briefings" },
-    { "name": "taxpayer-assistance" }
+    { "name": "taxpayer-assistance" },
+    { "name": "session" }
   ],
   "paths": {
+    "/api/v1/session": {
+      "get": {
+        "operationId": "getWorkspaceSession",
+        "tags": ["session"],
+        "summary": "Read who is signed in and which Vati Workspace apps and views they may use.",
+        "description": "TAX-146 (ADR-044). The signed-in officer, the selected tenant and the officer's roles in it, and the workspace apps and views the server permits. The app shell builds its tabs and sidebar from this, so navigation follows the server-side access scope; the server still enforces every operation on its own. An app the officer may use but that is not connected yet (the native investigation and explore screens until TAX-106) is listed as unavailable with a reason, never as a working link. Apps and views the officer may not use are absent.",
+        "parameters": [
+          { "$ref": "#/components/parameters/TenantHeader" },
+          { "$ref": "#/components/parameters/CorrelationIdHeader" }
+        ],
+        "responses": {
+          "200": {
+            "description": "Workspace session.",
+            "headers": { "X-Correlation-ID": { "$ref": "#/components/headers/CorrelationId" } },
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/WorkspaceSessionEnvelope" } } }
+          },
+          "400": { "$ref": "#/components/responses/BadRequest" },
+          "401": { "$ref": "#/components/responses/Unauthenticated" },
+          "403": { "$ref": "#/components/responses/Forbidden" },
+          "404": { "$ref": "#/components/responses/NotFound" },
+          "429": { "$ref": "#/components/responses/RateLimited" },
+          "503": { "$ref": "#/components/responses/DependencyUnavailable" }
+        }
+      }
+    },
     "/api/v1/cases": {
       "get": {
         "operationId": "listCases",
@@ -2097,6 +2123,56 @@
           },
           "synthetic": {
             "type": "boolean"
+          }
+        }
+      },
+      "WorkspaceSessionEnvelope": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["data"],
+        "properties": { "data": { "$ref": "#/components/schemas/WorkspaceSession" } }
+      },
+      "WorkspaceSession": {
+        "type": "object",
+        "description": "The signed-in officer's scope for the app shell (TAX-146). Navigation only: it never grants access by itself.",
+        "additionalProperties": false,
+        "required": ["tenant_id", "tenant_name", "officer_id", "display_name", "roles", "apps", "views", "synthetic"],
+        "properties": {
+          "officer_id": { "$ref": "#/components/schemas/Uuid" },
+          "display_name": { "type": "string", "minLength": 1, "maxLength": 120 },
+          "roles": {
+            "type": "array",
+            "minItems": 1,
+            "items": { "type": "string", "enum": ["auditor", "specialist", "supervisor", "administrator"] }
+          },
+          "tenant_id": { "$ref": "#/components/schemas/Uuid" },
+          "tenant_name": { "type": "string", "minLength": 1, "maxLength": 120 },
+          "apps": {
+            "type": "array",
+            "description": "Workspace apps this officer may use, in display order. Absent means not permitted.",
+            "items": { "$ref": "#/components/schemas/WorkspaceApp" }
+          },
+          "views": {
+            "type": "array",
+            "description": "Views inside the Cases and Reports apps this officer may open.",
+            "items": { "type": "string", "enum": ["overview", "case_queue", "management", "integrity"] }
+          },
+          "synthetic": { "type": "boolean" }
+        }
+      },
+      "WorkspaceApp": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["key", "availability", "reason"],
+        "properties": {
+          "key": { "type": "string", "enum": ["cases", "investigation", "explore", "reports", "admin"] },
+          "availability": { "type": "string", "enum": ["available", "unavailable"] },
+          "reason": {
+            "anyOf": [
+              { "type": "string", "enum": ["not_connected", "dependency_unavailable"] },
+              { "type": "null" }
+            ],
+            "description": "Why an app is unavailable; null when available."
           }
         }
       },

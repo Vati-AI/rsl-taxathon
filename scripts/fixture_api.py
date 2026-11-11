@@ -450,6 +450,37 @@ def _get_taxpayer(data: dict[str, Any], taxpayer_id: str) -> Response | str:
     return 200, {}, {"data": {**record, "open_cases": open_cases}}
 
 
+# TAX-146: what the app shell may show. Names are synthetic; the native investigation and
+# explore screens are permitted for officers but not connected until TAX-106.
+FIXTURE_TENANT_NAME = "Synthetic fixture tenant"
+NOT_CONNECTED_APPS = ("investigation", "explore")
+
+
+def workspace_session(tenant_id: str, acting: dict[str, Any]) -> dict[str, Any]:
+    """The fixture officer's workspace scope (getWorkspaceSession)."""
+    roles = list(acting["roles"])
+    supervisor = "supervisor" in roles
+    apps: list[dict[str, Any]] = [{"key": "cases", "availability": "available", "reason": None}]
+    apps += [
+        {"key": key, "availability": "unavailable", "reason": "not_connected"}
+        for key in NOT_CONNECTED_APPS
+    ]
+    views = ["overview", "case_queue"]
+    if supervisor:
+        apps.append({"key": "reports", "availability": "available", "reason": None})
+        views += ["management", "integrity"]
+    return {
+        "tenant_id": tenant_id,
+        "tenant_name": FIXTURE_TENANT_NAME,
+        "officer_id": acting["officer_id"],
+        "display_name": f"Synthetic {roles[0]}",
+        "roles": roles,
+        "apps": apps,
+        "views": views,
+        "synthetic": True,
+    }
+
+
 def handle(
     method: str,
     path: str,
@@ -522,6 +553,13 @@ def _dispatch(
         days = int(query.get("window_days", "30"))
         summary = management_summary(data, mgmt, days, viewer=acting)
         result = summary if isinstance(summary, str) else (200, {}, {"data": summary})
+    elif op_id == "getWorkspaceSession":
+        # TAX-146: the same acting officer as the review operations (X-Vati-Fixture-Role).
+        role = headers.get(fixture_review.ROLE_HEADER) or "auditor"
+        acting = review.review["principals"].get(role)
+        if acting is None:
+            return _error("invalid_request", correlation)
+        result = (200, {}, {"data": workspace_session(data["principal"]["tenant_id"], acting)})
     elif op_id == "getIntegrityReview":
         # TAX-077: same acting officer and supervisor-only rule as the summary.
         role = headers.get(fixture_review.ROLE_HEADER) or "auditor"

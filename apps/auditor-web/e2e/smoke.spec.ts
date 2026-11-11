@@ -16,11 +16,17 @@ const rows = (page: Page) => page.getByRole('row');
 const asOtherTenant = (route: Route) =>
   route.continue({ headers: { ...route.request().headers(), 'x-vati-tenant-id': OTHER_TENANT } });
 
+async function openShowcaseFromHelp(page: Page) {
+  await page.getByRole('button', { name: 'Help' }).click();
+  await page.getByRole('link', { name: 'Design reference (component showcase)' }).click();
+}
+
 test.describe('navigation', () => {
   test('overview, assigned queue, case, taxpayer profile and showcase', async ({ page }) => {
     await page.goto('/auditor/');
     await expect(page.getByRole('heading', { level: 1, name: 'Overview' })).toBeVisible();
-    await expect(page.getByText('Fixture mode.')).toBeVisible();
+    // TAX-146: fixture mode is a slim strip in the workspace header.
+    await expect(page.locator('[data-kit="fixture-strip"]')).toHaveText('Synthetic data');
     await expect(page.getByText('7 assigned to you')).toBeVisible();
 
     await nav(page).getByRole('link', { name: 'My case queue' }).click();
@@ -68,7 +74,9 @@ test.describe('navigation', () => {
 
     await page.goBack();
     await expect(page).toHaveURL(new RegExp(`/auditor/cases/${CASE_2}$`));
-    await nav(page).getByRole('link', { name: 'Component showcase' }).click();
+    // TAX-146: the showcase is a design reference under Help, not operational navigation.
+    await expect(nav(page).getByRole('link', { name: 'Component showcase' })).toHaveCount(0);
+    await openShowcaseFromHelp(page);
     await expect(page.getByRole('heading', { level: 1, name: 'Component showcase' })).toBeVisible();
   });
 
@@ -255,7 +263,7 @@ test.describe('states', () => {
     await page.goto('/auditor/');
     await expect(page.getByRole('heading', { level: 1, name: 'Overview' })).toBeVisible();
     await page.route('**/assets/ShowcaseView-*.js', (route) => route.abort('connectionreset'));
-    await nav(page).getByRole('link', { name: 'Component showcase' }).click();
+    await openShowcaseFromHelp(page);
     const alert = page.getByRole('alert').filter({ hasText: 'This page could not be loaded' });
     await expect(alert).toBeVisible();
     await page.unroute('**/assets/ShowcaseView-*.js');
