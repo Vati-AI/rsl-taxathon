@@ -15,5 +15,10 @@ const usedFrappeContent = frappeContent.filter(
 
 export default {
   presets: [vatiPreset],
-  content: [...usedFrappeContent, glob('index.html'), glob('src/**/*.{vue,ts}')],
+  content: [
+    ...usedFrappeContent,
+    glob('index.html'),
+    glob('src/**/*.{vue,ts}'),
+    glob('../shared/components/**/*.{vue,ts}'),
+  ],
 } satisfies Config;

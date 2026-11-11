@@ -18,6 +18,7 @@ import {
 import { CASE_STATUSES, type Case, type CaseStatus, type RefundLane } from '../api/vati';
 import CaseStatusBadge from '../components/CaseStatusBadge.vue';
 import CaseTable from '../components/CaseTable.vue';
+import KitShowcase from '../components/KitShowcase.vue';
 import PageLayout from '../components/PageLayout.vue';
 import StatePanel from '../components/StatePanel.vue';
 import { queuePage, type SortDirection, type SortKey } from '../domain/cases';
@@ -148,6 +149,7 @@ function showLoading() {
     :breadcrumbs="[{ label: 'Component showcase' }]"
   >
     <div class="space-y-6">
+      <KitShowcase />
       <section aria-labelledby="sc-buttons" class="showcase-section">
         <h2 id="sc-buttons" class="showcase-heading">Buttons</h2>
         <p class="showcase-note">

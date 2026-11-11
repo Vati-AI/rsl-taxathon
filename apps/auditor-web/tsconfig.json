@@ -10,6 +10,8 @@
     "e2e/**/*.ts",
     "*.ts",
     "*.mts",
-    "../shared/design/*.ts"
+    "../shared/design/*.ts",
+    "../shared/components/**/*.ts",
+    "../shared/components/**/*.vue"
   ]
 }

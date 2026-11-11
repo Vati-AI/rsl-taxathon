@@ -110,7 +110,7 @@ interface. The register below is the only allowed mapping. TAX-150 enforces it w
 
 ## Visual contract (tokens: TAX-145)
 
-Starting values. TAX-145 finalises them with measured contrast. Change them once in
+Final values since TAX-145, with measured contrast: `python3 scripts/check_contrast.py` checks every text/background pair the kit uses (`apps/shared/design/contrast-pairs.json`), and `dev.py check` runs it. The components are in `apps/shared/components` ([README](../apps/shared/components/README.md)). Change them once in
 `apps/shared/design/tokens.css`. Native-tool theming (TAX-151) reads the same values.
 
 - Neutral canvas `#f7f8fa`, white surfaces, `#e4e7ec` dividers, `#101828` text, `#475467`

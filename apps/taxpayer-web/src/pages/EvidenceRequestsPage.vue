@@ -4,6 +4,7 @@ import { Alert, Badge, Button, LoadingText } from 'frappe-ui';
 import { onMounted, ref } from 'vue';
 import { RouterLink } from 'vue-router';
 import PortalHeader from '../components/PortalHeader.vue';
+import { EmptyState } from '../../../shared/components';
 import { fetchEvidenceRequests, PortalError } from '../lib/api';
 import { formatDate } from '../lib/format';
 import { requestedTypeLabel, requestStatusDisplay } from '../lib/responses';
@@ -59,15 +60,12 @@ onMounted(load);
       </template>
     </Alert>
 
-    <div
+    <EmptyState
       v-else-if="items.length === 0"
-      class="rounded-lg border border-outline-gray-2 p-8 text-center"
-    >
-      <h2 class="text-lg font-semibold text-ink-gray-9">No evidence requests</h2>
-      <p class="mt-1 text-ink-gray-6">
-        If an officer needs more documents from you, the request will appear here.
-      </p>
-    </div>
+      title="No evidence requests"
+      message="If an officer needs more documents from you, the request will appear here."
+      icon="lucide-inbox"
+    />
 
     <ul
       v-else

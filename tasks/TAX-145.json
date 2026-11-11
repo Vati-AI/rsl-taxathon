@@ -5,14 +5,14 @@
   "owner": "Keletso",
   "area": "apps/auditor-web",
   "phase": "pilot",
-  "status": "BACKLOG",
+  "status": "IN_PROGRESS",
   "priority": "P0",
   "depends_on": [
     "TAX-144",
     "TAX-020"
   ],
-  "claimed_by": null,
-  "branch": null,
+  "claimed_by": "claude-code-20261111-friendly-newton",
+  "branch": "claude/friendly-newton-iwhm4u",
   "pr": null,
   "scope": "Replace the shared tokens with the v2 contract and build the shared components once (header, app rail and sidebar, page header, notices, table toolbar, data table, usage line, key-facts strip, routed tabs, drawer, dialog, status chip, empty state, skeleton, toast, command palette) on frappe-ui, used by both apps",
   "inputs": [
@@ -27,19 +27,19 @@
   "acceptance": [
     {
       "text": "apps/shared/design tokens implement the v2 colour, type, spacing, radius and status values with measured WCAG AA contrast for every text/background pair used",
-      "done": false
+      "done": true
     },
     {
       "text": "Each shared component exists once, is used by both apps where relevant and appears in the rebuilt showcase in normal, hover, focus, disabled, loading, empty and error states",
-      "done": false
+      "done": true
     },
     {
       "text": "No Cloudflare or Zoho logo, colour, illustration or copy is used; patterns only (ADR-044); the stack stays Vue 3 + frappe-ui",
-      "done": false
+      "done": true
     },
     {
       "text": "Screenshots at 1440, 1024 and 390px with loading, empty, error and denied states, keyboard/focus and axe results, and the TAX-144 page-length result; record relevant tests and evidence, update task status and open a PR",
-      "done": false
+      "done": true
     }
   ],
   "verification": "Component tests, showcase screenshots and axe",
@@ -49,11 +49,32 @@
     "update-project-task",
     "finish-task"
   ],
-  "evidence": [],
+  "evidence": [
+    {
+      "criterion": 1,
+      "text": "apps/shared/design/tokens.css implements the v2 contract from DESIGN_STANDARD.md: neutral canvas #f7f8fa, surfaces, #e4e7ec dividers, #101828 text, #475467 supporting text; one accent #1d4ed8 (hover #1e40af); info/success/warning/danger/neutral text, background and border triples; optional dark navigation panel #111827/#e5e7eb; type scale 12/13/14/16/20/24/30 and weights 400/500/600; spacing 4-48px; radii 6/8px; overlay-only shadow; shell dimensions. Contrast is measured: scripts/check_contrast.py resolves the tokens and checks all 24 text/background and UI pairs the kit uses (apps/shared/design/contrast-pairs.json); all pass WCAG AA, lowest text pair 5.4:1 (success). tests/tooling/test_contrast.py (run by dev.py check) fails if any pair drops below 4.5:1 (text) or 3:1 (UI). Table in docs/evidence/TAX-145/README.md."
+    },
+    {
+      "criterion": 2,
+      "text": "apps/shared/components holds each component once: WorkspaceHeader, AppSidebar (rail and dark variants), PageHeader, NoticePanel (recommendations), TableToolbar, DataTable (sticky header, sort with aria-sort, column info, empty dash, row action, 25-row pagination, loading/empty/error), UsageLine, KeyFacts, RoutedTabs, SideDrawer, ConfirmDialog, StatusChip, EmptyState, SkeletonBlock, InlineError, notify() toast, CommandPalette (Ctrl K / Cmd K). Both apps compile them (shared paths in each tsconfig and Tailwind content). Used in both apps: the auditor PageLayout and the taxpayer PortalHeader render the shared PageHeader; the taxpayer evidence-request and My cases empty states use EmptyState. The showcase (KitShowcase.vue) shows every component with disabled, loading, empty and error states; hover and focus are shown by use and in the keyboard screenshot. Behaviour tests: apps/auditor-web/src/components/kit.test.ts (sorting, empty values last, pagination, named row action, states, notice collapse/dismiss, sidebar rail, header, drawer dialog, palette keyboard)."
+    },
+    {
+      "criterion": 3,
+      "text": "No Cloudflare or Zoho logo, colour, illustration, icon artwork or copy: grep for cloudflare|zoho|kumo over apps/shared, apps/auditor-web/src and apps/taxpayer-web/src finds 0 matches; colours come only from tokens.css. The stack stays Vue 3 + frappe-ui; reka-ui 2.11.0, the primitive library frappe-ui 1.1.0 already installs, is now declared explicitly for the drawer, popover and palette dialogs (one-line package-lock change, no new download)."
+    },
+    {
+      "criterion": 4,
+      "text": "Screenshots at 1440, 1024 and 390 (Chromium) in docs/evidence/TAX-145: the whole kit, table keyboard focus, drawer, confirmation dialog, command palette, taxpayer empty state and denied state. tests/frontend/kit.spec.ts (19 passed at three widths): axe clean on the showcase and with each overlay open, no page-wide horizontal scroll, drawer focus trap/Escape/focus return, sort by keyboard, palette by keyboard. TAX-144 page length at 1440x900: My cases 1.0, Evidence requests 1.0 (budget 1.5); showcase 6.17, exempt. Also run: npm run check (lint, format, both typechecks, auditor vitest 129, taxpayer vitest 77, both builds) passed; dev.py check passed; ruff check, ruff format (touched files) and mypy passed; tests/frontend auditor, taxpayer, layout, responses, claim and reminders specs passed at three widths; apps/auditor-web e2e 66 passed (including showcase axe and 320px reflow)."
+    }
+  ],
   "notes": [
     {
       "at": "2026-11-08",
       "text": "Added 2026-11-08 from ADR-044 (one Vati Workspace identity and design system v2) after the user's UI review against Cloudflare's dashboard and Zoho Workplace."
+    },
+    {
+      "at": "2026-11-11",
+      "text": "Claimed by claude-code-20261111-friendly-newton on the session's designated branch claude/friendly-newton-iwhm4u."
     }
   ],
   "sequence": 14

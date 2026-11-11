@@ -5,7 +5,7 @@
   "owner": "Keletso",
   "area": "apps/taxpayer-web",
   "phase": "pilot",
-  "status": "IN_REVIEW",
+  "status": "DONE",
   "priority": "P0",
   "depends_on": [
     "TAX-122",
@@ -82,6 +82,10 @@
     {
       "at": "2026-11-08",
       "text": "IN_REVIEW in PR #283."
+    },
+    {
+      "at": "2026-11-11",
+      "text": "Verified PR #283 merged into main as f720925; all acceptance criteria satisfied with evidence. Recorded DONE (ADR-038)."
     }
   ],
   "sequence": 12

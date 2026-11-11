@@ -1,53 +1,103 @@
 /*
- * Vati shared visual contract (docs/DESIGN_STANDARD.md, ADR-004).
+ * Vati shared visual contract, v2 (docs/DESIGN_STANDARD.md, ADR-044; TAX-145).
  *
- * Vati defaults inspired by Frappe UI, not asserted Frappe token values. Both
- * custom frontends import this file after the Tailwind layers. It defines the
- * --vati-* tokens and maps them onto the frappe-ui 1.1.0 semantic variables
- * (surface/ink/outline) so library components and app screens share one look.
- * Change a value here once; the auditor app, taxpayer app and showcase follow.
+ * Vati Workspace tokens for both custom frontends (ADR-004). Both apps import this file
+ * after the Tailwind layers. It defines the --vati-* tokens and maps them onto the
+ * frappe-ui 1.1.0 semantic variables (surface/ink/outline), so library components and
+ * app screens share one look. Change a value here once; the auditor app, taxpayer app,
+ * shared components and showcase follow. Native-tool theming (TAX-151) reads the same
+ * values.
+ *
+ * Contrast is measured, not asserted: every text/background pair the shared components
+ * use is listed in contrast-pairs.json, and scripts/check_contrast.py (run by
+ * `python3 scripts/dev.py check`) fails if one drops below WCAG AA.
  */
 :root {
-  /* Colour */
-  --vati-canvas: #f8fafc;
+  /* Neutral surfaces and text */
+  --vati-canvas: #f7f8fa;
   --vati-surface: #ffffff;
-  --vati-border: #e2e8f0;
-  --vati-border-strong: #cbd5e1;
-  --vati-text: #0f172a;
-  --vati-text-muted: #475569;
+  --vati-surface-subtle: #f2f4f7;
+  --vati-border: #e4e7ec;
+  --vati-border-strong: #d0d5dd;
+  --vati-text: #101828;
+  --vati-text-muted: #475467;
+
+  /* One accent: primary actions, links and the active navigation item only */
   --vati-accent: #1d4ed8;
   --vati-accent-hover: #1e40af;
   --vati-accent-active: #1e3a8a;
-  --vati-fixture-bg: #fef3c7;
-  --vati-fixture-text: #78350f;
+  --vati-accent-subtle: #eff6ff;
 
-  /* Typography: small documented scale */
+  /* Status: always shown with text. Risk is a review signal, never a verdict. */
+  --vati-info-bg: #eff6ff;
+  --vati-info-border: #bfdbfe;
+  --vati-info-text: #1e40af;
+  --vati-success-bg: #ecfdf3;
+  --vati-success-border: #abefc6;
+  --vati-success-text: #067647;
+  --vati-warning-bg: #fffaeb;
+  --vati-warning-border: #fedf89;
+  --vati-warning-text: #93370d;
+  --vati-danger-bg: #fef3f2;
+  --vati-danger-border: #fecdca;
+  --vati-danger-text: #b42318;
+  --vati-neutral-bg: #f2f4f7;
+  --vati-neutral-border: #e4e7ec;
+  --vati-neutral-text: #344054;
+
+  /* Fixture mode: a slim strip inside the header, never a full-width banner */
+  --vati-fixture-bg: var(--vati-warning-bg);
+  --vati-fixture-text: var(--vati-warning-text);
+
+  /* Optional dark navigation panel; content stays light */
+  --vati-nav-bg: #111827;
+  --vati-nav-text: #e5e7eb;
+  --vati-nav-text-muted: #9ca3af;
+  --vati-nav-active-bg: #1f2937;
+
+  /* Typography: system sans-serif, scale 12/13/14/16/20/24/30, weights 400/500/600 */
   --vati-font-family:
     system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --vati-text-xs: 12px;
+  --vati-text-small: 13px;
   --vati-text-ui: 14px;
   --vati-text-form: 16px;
-  --vati-text-small: 13px;
   --vati-text-title: 20px;
   --vati-text-title-lg: 24px;
+  --vati-text-display: 30px;
+  --vati-weight-regular: 400;
+  --vati-weight-medium: 500;
+  --vati-weight-semibold: 600;
   --vati-line-height: 1.5;
 
-  /* Spacing scale: 4, 8, 12, 16, 24, 32px */
+  /* Spacing scale: 4, 8, 12, 16, 24, 32, 48px */
   --vati-space-1: 4px;
   --vati-space-2: 8px;
   --vati-space-3: 12px;
   --vati-space-4: 16px;
   --vati-space-5: 24px;
   --vati-space-6: 32px;
+  --vati-space-7: 48px;
 
   /* Radii: controls 6px, surfaces 8px */
   --vati-radius-control: 6px;
   --vati-radius-surface: 8px;
 
+  /* Shadows only on overlays: menus, drawers, dialogs and the command palette */
+  --vati-shadow-overlay: 0 12px 32px rgb(16 24 40 / 14%), 0 2px 6px rgb(16 24 40 / 8%);
+
+  /* Shell dimensions (TAX-146) */
+  --vati-header-height: 52px;
+  --vati-sidebar-width: 240px;
+  --vati-rail-width: 56px;
+  --vati-content-max: 1280px;
+  --vati-table-row: 40px;
+
   /* frappe-ui semantic variable mapping */
   --ink-gray-8: var(--vati-text);
   --ink-gray-9: var(--vati-text);
-  --ink-gray-7: #1e293b;
-  --ink-gray-6: #334155;
+  --ink-gray-7: #1d2939;
+  --ink-gray-6: #344054;
   --ink-gray-5: var(--vati-text-muted);
   --outline-gray-1: var(--vati-border);
   --outline-gray-2: var(--vati-border-strong);
@@ -92,6 +142,24 @@ html {
 
 .vati-skip-link:focus {
   top: var(--vati-space-2);
+}
+
+/* Visually hidden, still read by assistive technology. */
+.vati-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Amounts and dates line up in tables. */
+.vati-tabular {
+  font-variant-numeric: tabular-nums;
 }
 
 @media (prefers-reduced-motion: reduce) {

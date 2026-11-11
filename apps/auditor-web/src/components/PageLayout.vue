@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { Breadcrumbs, PageHeader } from 'frappe-ui';
+import { PageHeader as VatiPageHeader } from '../../../shared/components';
 import type { RouteLocationRaw } from 'vue-router';
 
 defineProps<{
@@ -21,10 +22,8 @@ defineProps<{
     </div>
   </PageHeader>
   <div :class="['w-full px-4 py-5 sm:px-6', wide ? 'max-w-[1600px]' : 'max-w-6xl']">
-    <header class="mb-5">
-      <h1 class="break-words text-2xl font-semibold leading-tight text-ink-gray-9">{{ title }}</h1>
-      <p v-if="description" class="mt-1 max-w-3xl text-base text-ink-gray-5">{{ description }}</p>
-    </header>
+    <!-- TAX-145: the shared Vati Workspace page header (apps/shared/components). -->
+    <VatiPageHeader :title="title" :description="description" />
     <slot />
   </div>
 </template>
