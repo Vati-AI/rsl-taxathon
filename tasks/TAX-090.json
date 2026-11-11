@@ -76,6 +76,10 @@
       "text": "2026-11-11 (ADR-045): owner changed from Keletso to Gupta; RSL integration lane. No task in this lane depends on an open task in the other lane."
     },
     {
+      "at": "2026-11-11",
+      "text": "TAX-146 added getWorkspaceSession (GET /api/v1/session) to the contract and the fixture server, for the Vati Workspace app shell. The Frappe /api/v1 service built here must serve it too, from the TAX-029 memberships (see integration/api/README.md)."
+    },
+    {
       "at": "2026-11-11T14:58:02.948727+00:00",
       "text": "Claimed by claude-opus-5-5-gupta"
     },

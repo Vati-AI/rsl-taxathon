@@ -329,3 +329,40 @@ def case_review(state: Mapping[str, Any]) -> dict[str, Any]:
 def officer_roles(roles: Iterable[str]) -> list[str]:
     held = set(roles)
     return [r for r in OFFICER_ROLES if r in held]
+
+
+# TAX-146 workspace apps: the native investigation and explore screens are permitted for
+# officers but not connected until TAX-106, so they are listed as unavailable.
+NOT_CONNECTED_APPS = ("investigation", "explore")
+
+
+def workspace_session(
+    *, tenant_id: str, tenant_name: str, user: str, display_name: str, roles: Iterable[str],
+    synthetic: bool,
+) -> dict[str, Any] | None:  # fmt: skip
+    """Contract ``WorkspaceSession`` (getWorkspaceSession), or None for a non-officer.
+
+    The same navigation rules as the fixture server: Cases for every officer, Reports with
+    the management and integrity views for supervisors only, no Admin app."""
+    held = officer_roles(roles)
+    if not held:
+        return None
+    apps: list[dict[str, Any]] = [{"key": "cases", "availability": "available", "reason": None}]
+    apps += [
+        {"key": key, "availability": "unavailable", "reason": "not_connected"}
+        for key in NOT_CONNECTED_APPS
+    ]
+    views = ["overview", "case_queue"]
+    if "supervisor" in held:
+        apps.append({"key": "reports", "availability": "available", "reason": None})
+        views += ["management", "integrity"]
+    return {
+        "tenant_id": tenant_id,
+        "tenant_name": (tenant_name or "Tenant with no name on record")[:120],
+        "officer_id": officer_id(user),
+        "display_name": (display_name or user)[:120],
+        "roles": held,
+        "apps": apps,
+        "views": views,
+        "synthetic": synthetic,
+    }

@@ -9,8 +9,10 @@ import {
 import { AUDITOR } from './support/env';
 import { AUDITOR_ROUTES, auditorCase } from './support/matrix';
 import { mockAuditorAccess } from './support/sessions';
+import { sidebar } from './support/shell';
 
-const nav = (page: Page) => page.getByRole('navigation', { name: 'Auditor workspace' });
+// The sidebar, or the Menu drawer below 1024px (TAX-146).
+const nav = (page: Page) => sidebar(page, 'Auditor workspace');
 const syn002 = auditorCase('SYN-002');
 
 test.describe('auditor workspace', () => {
@@ -20,15 +22,17 @@ test.describe('auditor workspace', () => {
     await mockAuditorAccess(page, 'officer');
     await page.goto(AUDITOR + '/auditor/');
     await pageReady(page, 'Overview');
-    await expect(page.getByText('Fixture mode.')).toBeVisible();
+    // TAX-146: fixture mode is a slim strip in the header.
+    await expect(page.locator('[data-kit="fixture-strip"]')).toHaveText('Synthetic data');
 
-    await nav(page).getByRole('link', { name: 'My case queue' }).click();
+    await (await nav(page)).getByRole('link', { name: 'My case queue' }).click();
     await expect(page).toHaveURL(/\/auditor\/cases$/);
     await pageReady(page, 'My case queue');
-    await expect(nav(page).getByRole('link', { name: 'My case queue' })).toHaveAttribute(
+    await expect((await nav(page)).getByRole('link', { name: 'My case queue' })).toHaveAttribute(
       'aria-current',
       'page',
     );
+    await page.keyboard.press('Escape'); // closes the Menu drawer below 1024px; no-op above
 
     await page.getByRole('link', { name: 'SYN-002' }).click();
     await expect(page).toHaveURL(new RegExp(`/auditor/cases/${syn002.case_id}$`));
@@ -74,7 +78,7 @@ test.describe('auditor workspace', () => {
     await page.keyboard.press('Enter');
     await expect(page.locator('#main-content')).toBeFocused();
 
-    const link = nav(page).getByRole('link', { name: 'My case queue' });
+    const link = (await nav(page)).getByRole('link', { name: 'My case queue' });
     await page.keyboard.press('Shift+Tab');
     await tabUntilFocused(page, link);
     expect(await hasVisibleFocus(link)).toBe(true);

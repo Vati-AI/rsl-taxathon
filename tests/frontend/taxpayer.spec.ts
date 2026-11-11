@@ -9,7 +9,8 @@ import {
 } from './support/checks';
 import { DECLARATION, fillDetails, toReview, upload } from './support/claim-flow';
 import { TAXPAYER } from './support/env';
-import { isMobile, TAXPAYER_ROUTES } from './support/matrix';
+import { TAXPAYER_ROUTES } from './support/matrix';
+import { sidebar } from './support/shell';
 import {
   mockTaxpayerSession,
   OTHER_TAXPAYER_SUBMISSION_ID,
@@ -29,14 +30,13 @@ const own = PORTAL_SUBMISSIONS[0] as {
 const OPEN_REQUEST = '45000000-0000-4000-8000-000000000001';
 
 // The desktop sidebar and the mobile bottom bar share this accessible name.
-const nav = (page: Page) => page.getByRole('navigation', { name: 'Taxpayer portal' });
-const newLabel = (project: string) =>
-  isMobile(project) ? 'Simulator' : 'Online Refunds simulator';
+// The sidebar, or the Menu drawer below 1024px (TAX-146).
+const nav = (page: Page) => sidebar(page, 'Taxpayer portal');
 
 test.describe('taxpayer portal', () => {
   test('positive navigation: evidence requests → my cases → case → breadcrumb → simulator → account', async ({
     page,
-  }, testInfo) => {
+  }) => {
     await mockTaxpayerSession(page, 'taxpayer');
     // TAX-125: the portal opens on evidence requests, first in the navigation.
     await page.goto(TAXPAYER + '/taxpayer/');
@@ -44,14 +44,13 @@ test.describe('taxpayer portal', () => {
     await pageReady(page, 'Evidence requests');
     // The current bottom-bar item is a button in frappe-ui (it scrolls to top), so take
     // the first item in document order, link or button.
-    const items = nav(page).getByRole('link').or(nav(page).getByRole('button'));
-    await expect(items.first()).toHaveAccessibleName(
-      isMobile(testInfo.project.name) ? 'Requests' : 'Evidence requests',
-    );
+    const menu = await nav(page);
+    const items = menu.getByRole('link').or(menu.getByRole('button'));
+    await expect(items.first()).toHaveAccessibleName('Evidence requests');
     // TAX-092: the server says the data is live, so the fixture notice is not shown.
-    await expect(page.getByText('Synthetic fixture data')).toHaveCount(0);
+    await expect(page.locator('[data-kit="fixture-strip"]')).toHaveCount(0);
 
-    await nav(page).getByRole('link', { name: 'My cases' }).click();
+    await menu.getByRole('link', { name: 'My cases' }).click();
     await expect(page).toHaveURL(/\/taxpayer\/submissions$/);
     await pageReady(page, 'My cases');
     await expect(page.getByRole('list', { name: 'My cases' }).getByRole('listitem')).toHaveCount(
@@ -69,15 +68,13 @@ test.describe('taxpayer portal', () => {
     await expect(page).toHaveURL(/\/taxpayer\/submissions$/);
     await pageReady(page, 'My cases');
 
-    await nav(page)
-      .getByRole('link', { name: newLabel(testInfo.project.name) })
-      .click();
+    await (await nav(page)).getByRole('link', { name: 'Online Refunds simulator' }).click();
     await expect(page).toHaveURL(/\/taxpayer\/submissions\/new$/);
     await pageReady(page, 'Online Refunds simulator');
 
-    await nav(page).getByRole('link', { name: 'Account' }).click();
+    await (await nav(page)).getByRole('link', { name: 'Account' }).click();
     await pageReady(page, 'Account');
-    await expect(page.getByText(SYNTHETIC_TAXPAYER.user)).toBeVisible();
+    await expect(page.getByRole('main').getByText(SYNTHETIC_TAXPAYER.user)).toBeVisible();
   });
 
   test('a case filed with RSL shows RSL reference, status and source, and no internal detail', async ({
@@ -114,7 +111,10 @@ test.describe('taxpayer portal', () => {
     const mock = await mockTaxpayerSession(page, 'taxpayer', { simulatorEnabled: false });
     await page.goto(TAXPAYER + '/taxpayer/requests');
     await pageReady(page, 'Evidence requests');
-    await expect(nav(page).getByRole('link', { name: /simulator/i })).toHaveCount(0);
+    const menu = await nav(page);
+    await expect(menu.getByRole('link', { name: 'Evidence requests' })).toBeVisible();
+    await expect(menu.getByRole('link', { name: /simulator/i })).toHaveCount(0);
+    await page.keyboard.press('Escape');
     await expect(page.getByText('Fixture tools')).toHaveCount(0);
     await page.goto(TAXPAYER + '/taxpayer/submissions/new');
     await pageReady(page, 'Page not found');
@@ -206,11 +206,11 @@ test.describe('taxpayer portal', () => {
     // <main> is not itself focusable here; the skip link moves the sequential
     // focus start, so the next Tab must land inside the main region.
     await page.keyboard.press('Tab');
-    expect(await page.evaluate(() => Boolean(document.activeElement?.closest('main#main')))).toBe(
-      true,
-    );
+    expect(
+      await page.evaluate(() => Boolean(document.activeElement?.closest('main#main-content'))),
+    ).toBe(true);
 
-    const account = nav(page).getByRole('link', { name: 'Account' });
+    const account = (await nav(page)).getByRole('link', { name: 'Account' });
     await tabUntilFocused(page, account, 40);
     expect(await hasVisibleFocus(account)).toBe(true);
     await page.keyboard.press('Enter');
@@ -265,20 +265,19 @@ test.describe('live submissions (TAX-092)', () => {
   test('the fixture notice appears only when the server labels its data as fixture', async ({
     page,
   }, testInfo) => {
-    const desktop = !isMobile(testInfo.project.name);
+    // TAX-146: fixture mode is a slim "Synthetic data" strip in the header.
+    const strip = page.locator('[data-kit="fixture-strip"]');
     await mockTaxpayerSession(page, 'taxpayer');
     await page.goto(TAXPAYER + '/taxpayer/submissions');
     await pageReady(page, 'My cases');
-    await expect(page.getByText('Synthetic fixture data')).toHaveCount(0);
-    if (desktop) await expect(nav(page).getByText('Live data')).toBeVisible();
+    await expect(strip).toHaveCount(0);
     await shot092(page, 'list-live', testInfo.project.name);
 
     const fixture = await mockTaxpayerSession(page, 'taxpayer', { dataMode: 'fixture' });
     await page.reload();
     await pageReady(page, 'My cases');
     expect(fixture.dataMode).toBe('fixture');
-    await expect(page.getByText('Synthetic fixture data')).toBeVisible();
-    if (desktop) await expect(nav(page).getByText('Synthetic fixture')).toBeVisible();
+    await expect(strip).toHaveText('Synthetic data');
     expect(await seriousAxeViolations(page)).toEqual([]);
     await shot092(page, 'list-fixture-mode', testInfo.project.name);
   });
@@ -301,7 +300,7 @@ test.describe('live submissions (TAX-092)', () => {
       .first()
       .textContent())!.trim();
 
-    await nav(page).getByRole('link', { name: 'My cases', exact: true }).click();
+    await (await nav(page)).getByRole('link', { name: 'My cases', exact: true }).click();
     await pageReady(page, 'My cases');
     const items = page.getByRole('list', { name: 'My cases' }).getByRole('listitem');
     await expect(items).toHaveCount(PORTAL_SUBMISSIONS.length + 1);

@@ -53,9 +53,14 @@ async function audit(proxy: ProxyUser, where: string) {
   if (overflow > 0) proxy.friction(`${where} scrolls sideways by ${overflow}px`);
 }
 
-/** The visible portal navigation: the sidebar, or the bottom bar below 768px. */
+/** The visible portal navigation: the sidebar, or the Menu drawer below 1024px (TAX-146). */
 const portalNav = (page: Page) =>
   page.getByRole('navigation', { name: 'Taxpayer portal' }).filter({ visible: true });
+
+/** Below 1024px the navigation is behind the header's Menu button: one more action. */
+async function openMenu(proxy: ProxyUser, page: Page, mobile: boolean) {
+  if (mobile) await proxy.click(page.getByRole('button', { name: 'Menu', exact: true }), 'Menu');
+}
 
 test.describe('taxpayer onboarding (TAX-082)', () => {
   test('first-time taxpayer, pointer', async ({ page }, testInfo) => {
@@ -85,6 +90,7 @@ test.describe('taxpayer onboarding (TAX-082)', () => {
           );
         }
         await shot(page, 'taxpayer-1-landing', w);
+        await openMenu(proxy, page, mobile);
         await proxy.click(nav.getByRole('link', { name: 'My cases' }), 'nav: My cases');
         await pageReady(page, 'My cases');
         await proxy.click(
@@ -97,8 +103,9 @@ test.describe('taxpayer onboarding (TAX-082)', () => {
     );
 
     await proxy.run('answer-request', 'Answer the evidence request an officer sent', async () => {
+      await openMenu(proxy, page, mobile);
       await proxy.click(
-        nav.getByRole('link', { name: mobile ? 'Requests' : 'Evidence requests' }),
+        nav.getByRole('link', { name: 'Evidence requests' }),
         'nav: Evidence requests',
       );
       await pageReady(page, 'Evidence requests');
@@ -138,8 +145,9 @@ test.describe('taxpayer onboarding (TAX-082)', () => {
     });
 
     await proxy.run('send-claim', 'Send a VAT refund claim with one invoice', async () => {
+      await openMenu(proxy, page, mobile);
       await proxy.click(
-        nav.getByRole('link', { name: mobile ? 'Simulator' : 'Online Refunds simulator' }),
+        nav.getByRole('link', { name: 'Online Refunds simulator' }),
         'nav: Online Refunds simulator',
       );
       await pageReady(page, 'Online Refunds simulator');
@@ -192,6 +200,7 @@ test.describe('taxpayer onboarding (TAX-082)', () => {
     });
 
     await proxy.run('find-new-claim', 'Find the claim I just sent in my submissions', async () => {
+      await openMenu(proxy, page, mobile);
       await proxy.click(nav.getByRole('link', { name: 'My cases' }), 'nav: My cases');
       await pageReady(page, 'My cases');
       const first = page.getByRole('list', { name: 'My cases' }).getByRole('link').first();
@@ -200,6 +209,7 @@ test.describe('taxpayer onboarding (TAX-082)', () => {
     });
 
     await proxy.run('find-logout', 'Find my account details and how to log out', async () => {
+      await openMenu(proxy, page, mobile);
       await proxy.click(nav.getByRole('link', { name: 'Account' }), 'nav: Account');
       await pageReady(page, 'Account');
       await expect(page.getByRole('main').getByRole('button', { name: 'Log out' })).toBeVisible();
@@ -244,9 +254,15 @@ test.describe('taxpayer onboarding (TAX-082)', () => {
     );
 
     await proxy.run('answer-request', 'Answer an evidence request without a mouse', async () => {
-      const link = nav.getByRole('link', { name: mobile ? 'Requests' : 'Evidence requests' });
-      // The bottom bar follows the page content, so walk backwards to it on mobile.
-      await proxy.tabTo(link, 'nav: Evidence requests', { backwards: mobile });
+      // Below 1024px the navigation opens from the header's Menu button (TAX-146).
+      if (mobile) {
+        await proxy.tabTo(page.getByRole('button', { name: 'Menu', exact: true }), 'Menu', {
+          backwards: true,
+        });
+        await proxy.press('Enter');
+      }
+      const link = nav.getByRole('link', { name: 'Evidence requests' });
+      await proxy.tabTo(link, 'nav: Evidence requests');
       await proxy.press('Enter');
       await pageReady(page, 'Evidence requests');
       await proxy.tabTo(

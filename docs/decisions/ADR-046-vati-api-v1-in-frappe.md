@@ -41,7 +41,7 @@ Decision:
    duties, idempotency and stale-version rules. The fixture-only `X-Vati-Fixture-Role` header is
    ignored. A refused or failed request rolls back anything it wrote. Refusals the ledger must
    keep are committed where they are recorded.
-4. **Served operations** (`api_v1/operations.py`): `listCases`, `getCase`, `getTaxpayer`,
+4. **Served operations** (`api_v1/operations.py`): `getWorkspaceSession` (TAX-146: the app shell's navigation, built from the user's TAX-029 memberships with the same rules as the fixture server; non-officers get 403), `listCases`, `getCase`, `getTaxpayer`,
    `listEvidence`, `listEntities`, `listFindings`, `recordFindingFeedback`, `getCaseReview`,
    `proposeDecision`, `reviewDecision`, `requestEvidence`, `getCaseBriefing`,
    `getManagementSummary` and `getIntegrityReview`. These are the auditor app's calls. Other

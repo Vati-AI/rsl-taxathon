@@ -115,9 +115,10 @@ test.describe('Vati Workspace kit (TAX-145)', () => {
     await expect(page.getByText('Evidence request sent')).toBeVisible();
   });
 
-  test('command palette opens with Ctrl K and chooses by keyboard', async ({ page }, testInfo) => {
+  test('command palette filters and chooses by keyboard', async ({ page }, testInfo) => {
+    // The shell owns Ctrl K (TAX-146, shell.spec.ts); this example opens from its button.
     await openShowcase(page);
-    await page.keyboard.press('Control+k');
+    await kit(page).getByRole('button', { name: 'Open example search' }).click();
     const box = page.getByRole('combobox', { name: 'Search case reference, TIN or page' });
     await expect(box).toBeFocused();
     await box.fill('400000202');

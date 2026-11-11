@@ -536,6 +536,35 @@ class ProjectionTests(unittest.TestCase):
         self.assertEqual(item["authorised_by"], core.officer_id("auditor@example.test"))
 
 
+class WorkspaceSessionTests(unittest.TestCase):
+    def session(self, roles):
+        return projections.workspace_session(
+            tenant_id=TENANT, tenant_name="Synthetic tenant", user="officer@example.test",
+            display_name="Synthetic Officer", roles=roles, synthetic=True,
+        )  # fmt: skip
+
+    def test_supervisors_get_reports_and_officers_do_not(self):
+        auditor = self.session({"auditor"})
+        supervisor = self.session({"supervisor", "auditor"})
+        for body in (auditor, supervisor):
+            self.assertEqual(valid(body, "WorkspaceSession"), [])
+        self.assertEqual(auditor["views"], ["overview", "case_queue"])
+        self.assertNotIn("reports", [a["key"] for a in auditor["apps"]])
+        self.assertEqual(supervisor["roles"], ["auditor", "supervisor"])
+        self.assertIn("integrity", supervisor["views"])
+        unavailable = {
+            a["key"]: a["reason"] for a in supervisor["apps"] if a["availability"] != "available"
+        }
+        self.assertEqual(
+            unavailable, {"investigation": "not_connected", "explore": "not_connected"}
+        )
+        self.assertNotIn("admin", [a["key"] for a in supervisor["apps"]])
+
+    def test_non_officers_get_no_workspace(self):
+        self.assertIsNone(self.session({"taxpayer"}))
+        self.assertIsNone(self.session({"service"}))
+
+
 class ManagementTests(unittest.TestCase):
     def test_live_summary_with_no_ledger_lists_the_gap(self):
         until = NOW

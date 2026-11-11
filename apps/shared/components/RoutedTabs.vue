@@ -17,7 +17,7 @@ function isCurrent(tab: RoutedTab): boolean {
 
 <template>
   <nav data-kit="routed-tabs" :aria-label="label" class="mb-5 border-b border-vati-border">
-    <ul class="-mb-px flex gap-1 overflow-x-auto">
+    <ul class="relative -mb-px flex gap-1 overflow-x-auto">
       <li v-for="tab in tabs" :key="tab.label" class="shrink-0">
         <RouterLink
           :to="tab.to"

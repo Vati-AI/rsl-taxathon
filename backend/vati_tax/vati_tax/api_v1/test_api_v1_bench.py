@@ -391,6 +391,18 @@ class ApiV1BenchTests(IntegrationTestCase):
         status, _, denied = self.call("auditor", "GET", "/api/v1/management/integrity")
         self.assertEqual((status, denied["error"]["code"]), (403, "forbidden"))
 
+    def test_workspace_session_follows_the_memberships(self):
+        status, _, auditor = self.call("auditor", "GET", "/api/v1/session")
+        self.assertEqual(status, 200, auditor)
+        self.assertEqual(auditor["data"]["roles"], ["auditor"])
+        self.assertEqual(auditor["data"]["officer_id"], officer_id(self.users["auditor"]))
+        self.assertEqual(auditor["data"]["tenant_name"], "Synthetic API tenant one")
+        self.assertNotIn("management", auditor["data"]["views"])
+        _, _, supervisor = self.call("supervisor", "GET", "/api/v1/session")
+        self.assertIn("reports", [a["key"] for a in supervisor["data"]["apps"]])
+        status, _, body = self.call("taxpayer", "GET", "/api/v1/session")
+        self.assertEqual((status, body["error"]["code"]), (403, "forbidden"))
+
     def test_unserved_operations_are_not_found(self):
         status, _, body = self.call(
             "auditor", "POST", self.case_path("/investigate"), idem=key(),

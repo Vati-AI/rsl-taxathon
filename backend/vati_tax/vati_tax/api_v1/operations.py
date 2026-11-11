@@ -13,6 +13,7 @@ from __future__ import annotations
 
 SERVED = frozenset(
     {
+        "getWorkspaceSession",
         "listCases",
         "getCase",
         "getTaxpayer",

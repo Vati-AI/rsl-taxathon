@@ -18,7 +18,8 @@ import {
 } from './support/claim-flow';
 import { AUDITOR, TAXPAYER } from './support/env';
 import { startFixtureApi, useFixtureApi } from './support/fixture-api';
-import { auditorCase, isMobile } from './support/matrix';
+import { auditorCase } from './support/matrix';
+import { sidebar } from './support/shell';
 import { mockTaxpayerSession, OPEN_REQUEST_ID } from './support/sessions';
 
 // TAX-055 end-to-end regression: the five synthetic scenario routes
@@ -446,20 +447,17 @@ test.describe('taxpayer journey (TAX-055)', () => {
     // Two portal flows in one test; allow for the dev server under parallel load.
     test.slow();
     const w = width(testInfo.project.name);
-    const mobile = isMobile(testInfo.project.name);
     const s = scenario('SYN-001');
     const mock = await mockTaxpayerSession(page, 'taxpayer');
-    // The sidebar on wider screens, the bottom bar (shorter labels) below 768px.
-    const nav = page.getByRole('navigation', { name: 'Taxpayer portal' }).filter({ visible: true });
+    // The sidebar from 1024px, the Menu drawer below (TAX-146).
+    const nav = () => sidebar(page, 'Taxpayer portal');
 
     await page.goto(TAXPAYER + '/taxpayer/submissions');
     await pageReady(page, 'My cases');
     await accessible(page);
     await shot(page, 'taxpayer-1-submissions', w);
 
-    await nav
-      .getByRole('link', { name: mobile ? 'Simulator' : 'Online Refunds simulator' })
-      .click();
+    await (await nav()).getByRole('link', { name: 'Online Refunds simulator' }).click();
     await pageReady(page, 'Online Refunds simulator');
     await fillDetails(page, {
       claimed: s.refund_claim,
@@ -517,7 +515,7 @@ test.describe('taxpayer journey (TAX-055)', () => {
     expect(mock.claims.size).toBe(1);
 
     // Evidence requests through the portal navigation (bottom bar below 768px).
-    await nav.getByRole('link', { name: mobile ? 'Requests' : 'Evidence requests' }).click();
+    await (await nav()).getByRole('link', { name: 'Evidence requests' }).click();
     await pageReady(page, 'Evidence requests');
     await expect(page.getByText(ACCUSATION)).toHaveCount(0);
     await page.goto(TAXPAYER + `/taxpayer/requests/${OPEN_REQUEST_ID}`);

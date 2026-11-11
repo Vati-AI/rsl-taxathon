@@ -5,15 +5,15 @@
   "owner": "Keletso",
   "area": "apps/auditor-web",
   "phase": "pilot",
-  "status": "BACKLOG",
+  "status": "IN_REVIEW",
   "priority": "P0",
   "depends_on": [
     "TAX-145",
     "TAX-021"
   ],
-  "claimed_by": null,
-  "branch": null,
-  "pr": null,
+  "claimed_by": "claude-code-20261111-friendly-newton",
+  "branch": "claude/friendly-newton-iwhm4u",
+  "pr": "https://github.com/Vati-AI/rsl-taxathon/pull/289",
   "scope": "One workspace header (product mark, app tabs Cases / Investigation / Explore / Reports / Admin as permitted, global search and command palette, notifications, help, user menu with tenant and sign-out), a collapsible sidebar with views and counts, a 'Back to cases' item in case context, breadcrumbs, and fixture mode as a slim header strip; a simpler variant for the taxpayer portal",
   "inputs": [
     "PROJECT.md",
@@ -27,19 +27,19 @@
   "acceptance": [
     {
       "text": "Both apps render inside the shell on every route; the sidebar collapses to an icon rail and to an accessible drawer below 1024px; content is left-aligned beside the sidebar up to 1280px",
-      "done": false
+      "done": true
     },
     {
       "text": "App tabs and sidebar items appear only when the server-side access scope permits them; native-tool tabs show an honest unavailable state until TAX-106 supplies verified destinations",
-      "done": false
+      "done": true
     },
     {
       "text": "The command palette finds pages, case references and TINs the user may see, by keyboard alone; the component showcase leaves operational navigation",
-      "done": false
+      "done": true
     },
     {
       "text": "Screenshots at 1440, 1024 and 390px with loading, empty, error and denied states, keyboard/focus and axe results, and the TAX-144 page-length result; record relevant tests and evidence, update task status and open a PR",
-      "done": false
+      "done": true
     }
   ],
   "verification": "Component and Playwright tests on the fixture build",
@@ -49,7 +49,24 @@
     "update-project-task",
     "finish-task"
   ],
-  "evidence": [],
+  "evidence": [
+    {
+      "criterion": 1,
+      "text": "Both apps render inside apps/shared/components/WorkspaceShell.vue on every route (shell.spec 'every route renders inside the shell' iterates all AUDITOR_ROUTES and TAXPAYER_ROUTES at 1440/1024/390). From 1024px a 240px sidebar collapses to a 56px icon rail (width polled at 56, data-collapsed, remembered across reload via localStorage); below 1024px a header Menu button opens a modal reka-ui drawer (focus stays inside, Escape returns focus to Menu, links close it, axe clean). Content is capped at 1280px and starts at the sidebar's right edge (measured). The taxpayer portal uses the simpler variant (no app tabs or search; the drawer replaces the former bottom bar)."
+    },
+    {
+      "criterion": 2,
+      "text": "New contract operation getWorkspaceSession (GET /api/v1/session; openapi.json, example 48, tests/contracts/test_workspace_session.py) returns the officer, tenant, roles and the permitted apps and views; the fixture server derives them from the X-Vati-Fixture-Role principal. apps/auditor-web/src/domain/workspace.ts builds tabs, sidebar sections, Back to cases and palette items only from the session (unit tests in workspace.test.ts). An auditor gets Cases, Investigation and Explore; a supervisor also Reports and the Management/Integrity views; nothing for Admin. Investigation and Explore are listed as unavailable (not_connected): the tab carries a marker and screen-reader text, and leads to NativeAppView, 'Investigation is not connected yet', until TAX-106 supplies verified destinations. Another tenant's scope shows no navigation (denied state). TAX-090's Frappe /api/v1 must serve the endpoint too (note recorded on TAX-090)."
+    },
+    {
+      "criterion": 3,
+      "text": "Ctrl K / Cmd K or the header search opens the shell palette over the officer's permitted pages, the cases in their own queue (listAssignedCases) and those cases' taxpayers with server-masked TINs (searchable by the last digits). shell.spec: '4102' finds Synthetic Border Retail and Enter opens the taxpayer; 'SYN-004' opens the case; 'Management' offers nothing to an auditor; Escape closes; all by keyboard. The component showcase left operational navigation (smoke.spec asserts no sidebar link) and is reached from Help > Design reference."
+    },
+    {
+      "criterion": 4,
+      "text": "Screenshots at 1440, 1024 and 390 in docs/evidence/TAX-146 (overview, not connected, supervisor, rail, drawer, palette, loading, error, denied; taxpayer requests, account menu, loading, denied) with README. TAX-144 page length at 1440x900: 1.0 for Overview, My case queue, taxpayer profile, taxpayer My cases, Evidence requests and Account. Local checks: npm run check passed (lint, format, typechecks, auditor vitest 135, taxpayer vitest 77, builds); dev.py check, contract tests, ruff, mypy and validate passed. Playwright tests/frontend (all specs except the separately configured demo, three widths) 264 passed; earlier full runs had one SYN-004 failure under three-width load that did not reproduce in 21 isolated repeats, a full 1440 run (91 passed) or the final run. apps/auditor-web e2e 66 passed, including showcase axe and 320px reflow (a 30px header overflow at 320px was fixed). Found and fixed: screen-reader text in scrollable kit regions (table, sidebar, tabs, drawer, main) could widen the page; those regions are now positioning contexts."
+    }
+  ],
   "notes": [
     {
       "at": "2026-11-08",
@@ -58,6 +75,14 @@
     {
       "at": "2026-11-11T12:27:49.740246+00:00",
       "text": "2026-11-11 (ADR-045): Keletso keeps this task in the AI and new UI lane. No task in this lane depends on an open task in the other lane."
+    },
+    {
+      "at": "2026-11-11",
+      "text": "Claimed by claude-code-20261111-friendly-newton on the session's designated branch claude/friendly-newton-iwhm4u."
+    },
+    {
+      "at": "2026-11-11",
+      "text": "IN_REVIEW in PR #289."
     }
   ],
   "sequence": 15

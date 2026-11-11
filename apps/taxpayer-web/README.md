@@ -1,5 +1,14 @@
 # taxpayer-frontend
 
+## Vati Workspace shell (TAX-146)
+
+The portal runs inside the shared Vati Workspace shell (`apps/shared/components/WorkspaceShell.vue`)
+in its simpler variant: the "Vati Taxpayer Portal" header (no app tabs, no search), the
+fixture strip when the data is synthetic, and an account menu with Log out. The sidebar
+lists Evidence requests, My cases and Account (and the Online Refunds simulator under
+"Fixture tools" where enabled). It collapses to an icon rail; below 1024px it opens as a
+drawer from the header's Menu button, replacing the former bottom bar.
+
 ## Evidence first (TAX-125, ADR-043)
 
 Taxpayers file refund claims in RSL's Online Refunds Application. This portal is where they
@@ -39,8 +48,8 @@ the browser (`vati_tax.portal.submissions` is an allowlist).
 
 Every read says where its data comes from (`mode`). The portal accepts `live`,
 or `fixture` only when it is also labelled `synthetic: true`, and refuses
-anything else. The "Synthetic fixture data" notice and the "Synthetic fixture"
-sidebar label appear only for fixture data; live data is labelled "Live data".
+anything else. Since TAX-146 fixture data is labelled by a slim "Synthetic data"
+strip in the header; live data has no strip.
 
 ## VAT refund claim (TAX-043; the Online Refunds simulator since TAX-125)
 

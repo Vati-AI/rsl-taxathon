@@ -594,7 +594,30 @@ def get_integrity_review(call: Call) -> Result:
     return Result({"data": body})
 
 
+def get_workspace_session(call: Call) -> Result:
+    """The app shell's navigation scope (TAX-146) from the user's TAX-029 memberships.
+
+    Navigation only: every operation still enforces its own rules. A signed-in user with
+    no officer role in the tenant (a taxpayer or a service identity) gets 403."""
+    scope = permissions.resolve_scope(call.tenant_id)
+    tenant_name = frappe.db.get_value("Vati Tenant", scope.tenant_id, "tenant_name") or ""
+    display_name = frappe.db.get_value("User", scope.user, "full_name") or ""
+    body = projections.workspace_session(
+        tenant_id=scope.tenant_id,
+        tenant_name=tenant_name,
+        user=scope.user,
+        display_name=display_name,
+        roles=scope.roles,
+        # Every tenant in this prototype holds synthetic data only (AGENTS.md).
+        synthetic=True,
+    )
+    if body is None:
+        raise ApiError("forbidden", "The workspace is for officers.")
+    return Result({"data": body})
+
+
 HANDLERS: dict[str, Handler] = {
+    "getWorkspaceSession": get_workspace_session,
     "listCases": list_cases,
     "getCase": get_case,
     "getTaxpayer": get_taxpayer,
