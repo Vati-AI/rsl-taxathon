@@ -5,7 +5,7 @@
   "owner": "Keletso",
   "area": "ai",
   "phase": "pilot",
-  "status": "BACKLOG",
+  "status": "IN_REVIEW",
   "priority": "P0",
   "depends_on": [
     "TAX-048",
@@ -13,9 +13,9 @@
     "TAX-118",
     "TAX-121"
   ],
-  "claimed_by": null,
-  "branch": null,
-  "pr": null,
+  "claimed_by": "claude-code-20261111-friendly-newton",
+  "branch": "claude/friendly-newton-iwhm4u",
+  "pr": "https://github.com/Vati-AI/rsl-taxathon/pull/293",
   "scope": "Cover Challenge 2's persistent VAT credit positions: detect credits that persist across periods, test structural explanations first (zero-rated exports, capital spending), add a seventh synthetic scenario and plant it in a new benchmark seed",
   "inputs": [
     "PROJECT.md",
@@ -31,19 +31,19 @@
   "acceptance": [
     {
       "text": "A multi-period check flags persistent credits only after structural explanations are tested and recorded",
-      "done": false
+      "done": true
     },
     {
       "text": "A seventh synthetic scenario with expected outcome; a legitimate structural credit stays in the fast lane",
-      "done": false
+      "done": true
     },
     {
       "text": "Measured on a new sealed seed with false positives reported",
-      "done": false
+      "done": true
     },
     {
       "text": "Record relevant tests and evidence, update task status and open a PR",
-      "done": false
+      "done": true
     }
   ],
   "verification": "Scenario tests and benchmark results",
@@ -53,7 +53,24 @@
     "update-project-task",
     "finish-task"
   ],
-  "evidence": [],
+  "evidence": [
+    {
+      "criterion": 1,
+      "text": "ai/tools/persistent_credit.py (policy persistent_credit_policy.json) reviews the declared e-Tax VAT returns period by period: credit = input VAT claimed - output VAT; for every credit period it runs and records, in policy order, zero-rated sales x rate (the return), import VAT on ASYCUDA entries in the period (RSL customs record; not_tested when ASYCUDA is unavailable) and VAT on purchases booked to asset accounts (taxpayer's books, marked books_only with an officer asset check), each with amount explained, remainder, basis and evidence IDs. A credit is persistent at 6+ periods and half the window; persistent_vat_credit_unexplained is raised only when the unexplained remainder above M1,000 also persists (6+ periods, half the window), with the periods, the total and the questions for the taxpayer; decision is always null. assess_taxpayer (tax139-pipeline-v2) runs it, makes the finding a taxpayer-level open item (claims leave the fast lane with the reason shown) and routes it to unverified candidates CAND-RECORDS and CAND-REFUNDS, never eligible for assessment. The live path (vati_tax.assurance.rules) records it as refund_reconciliation / missing_evidence with request_evidence and human approval; the persistent_credit check degrades without ASYCUDA. Tests: tests/ai/test_persistent_credit.py (19, run by dev.py check; includes the live-path finding body validated by FindingInput), backend assurance test_rules (19 OK), tests/ai/test_assurance_live.py OK."
+    },
+    {
+      "criterion": 2,
+      "text": "Seventh scenario data/synthetic/tax139_syn007.json (SYN-007), three synthetic taxpayers over 12 monthly returns, run end to end through assess_taxpayer: an exporter whose credit in all 12 periods is explained by zero-rated sales, no finding, last claim in the fast lane with nothing disputed; an equipment programme whose 8 credit periods are explained by capital spending, no finding, asset check asked, claim standard (not an exporter); declared standard-rated sales falling to 55% from month four, 9 unexplained periods, finding persistent_vat_credit_unexplained routed to CAND-RECORDS and CAND-REFUNDS, claim standard with the finding as the reason."
+    },
+    {
+      "criterion": 3,
+      "text": "Sealed on new seed 20261111 (docs/evidence/TAX-139: manifest, dev_summary, results.json, errors.csv, RESULTS.md, README.md), each protocol step its own commit; thresholds were set on debugging seeds 777/778 before sealing and the development split needed no tuning. Test split (200 taxpayers): planted persistent credits found 16/16; false positives 0/184 (exporters 0/92, capital-spending look-alikes 0/15, other clean 0/44, other planted issues 0/33), against a naive credit-in-half-the-periods rule flagging 100%, 100%, 45.5% and 87.9%. Ablation: dropping zero-rated, customs or capital tests flags 100% of exporters, 25% of exporters and 34% of other clean, or 100% of capital look-alikes respectively. Exporters' policy-fast claims fast 94.9% (the rest held by other checks' open items and RSL scores, not by this review); planted taxpayers' claims out of the fast lane 353/353. The TAX-118 seal still regenerates byte-for-byte (tested). Limits in README: one strong planted pattern; false explanations (fake exports, fictitious assets) not detected; same agent wrote generator, key and review."
+    },
+    {
+      "criterion": 4,
+      "text": "Recorded in this task with tests (tests/ai/test_persistent_credit.py, dev.py check, quality checks on changed files, backend assurance rules tests), evidence under docs/evidence/TAX-139, status IN_REVIEW with the PR link."
+    }
+  ],
   "notes": [
     {
       "at": "2026-11-07",
@@ -62,6 +79,18 @@
     {
       "at": "2026-11-11T12:27:49.740246+00:00",
       "text": "2026-11-11 (ADR-045): Keletso keeps this task in the AI and new UI lane. No task in this lane depends on an open task in the other lane."
+    },
+    {
+      "at": "2026-11-11",
+      "text": "Claimed by claude-code-20261111-friendly-newton on the session's designated branch claude/friendly-newton-iwhm4u."
+    },
+    {
+      "at": "2026-11-11",
+      "text": "Pipeline version moves to tax139-pipeline-v2 and the TAX-118 rule fingerprint changes (assurance_live reports rules_match_frozen_tax118 informationally); the TAX-118 sealed population is unchanged. scripts/make_demo_narration.py fails ruff format on main already; not touched here."
+    },
+    {
+      "at": "2026-11-11",
+      "text": "IN_REVIEW in https://github.com/Vati-AI/rsl-taxathon/pull/293."
     }
   ],
   "sequence": 24

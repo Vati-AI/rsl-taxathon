@@ -1,0 +1,241 @@
+{
+  "run_at": "2026-11-11T18:28:29+00:00",
+  "rules": "75847baf190c253114f725829fb16c85693b5e738513101e30dc045aecd7e27d",
+  "persistent_credit": {
+    "flagged_by_group": {
+      "exporter": {
+        "count": 0,
+        "of": 43,
+        "rate": 0.0
+      },
+      "capex_lookalike": {
+        "count": 0,
+        "of": 9,
+        "rate": 0.0
+      },
+      "other_clean": {
+        "count": 0,
+        "of": 19,
+        "rate": 0.0
+      },
+      "other_issue": {
+        "count": 0,
+        "of": 21,
+        "rate": 0.0
+      },
+      "planted": {
+        "count": 8,
+        "of": 8,
+        "rate": 1.0
+      }
+    },
+    "naive_persistence_rule_by_group": {
+      "exporter": {
+        "count": 43,
+        "of": 43,
+        "rate": 1.0
+      },
+      "capex_lookalike": {
+        "count": 9,
+        "of": 9,
+        "rate": 1.0
+      },
+      "other_clean": {
+        "count": 8,
+        "of": 19,
+        "rate": 0.4211
+      },
+      "other_issue": {
+        "count": 20,
+        "of": 21,
+        "rate": 0.9524
+      },
+      "planted": {
+        "count": 8,
+        "of": 8,
+        "rate": 1.0
+      }
+    },
+    "ablation_flagged_by_group": {
+      "without_zero_rated_sales": {
+        "exporter": {
+          "count": 43,
+          "of": 43,
+          "rate": 1.0
+        },
+        "capex_lookalike": {
+          "count": 3,
+          "of": 9,
+          "rate": 0.3333
+        },
+        "other_clean": {
+          "count": 5,
+          "of": 19,
+          "rate": 0.2632
+        },
+        "other_issue": {
+          "count": 18,
+          "of": 21,
+          "rate": 0.8571
+        },
+        "planted": {
+          "count": 8,
+          "of": 8,
+          "rate": 1.0
+        }
+      },
+      "without_import_vat_paid_at_border": {
+        "exporter": {
+          "count": 12,
+          "of": 43,
+          "rate": 0.2791
+        },
+        "capex_lookalike": {
+          "count": 3,
+          "of": 9,
+          "rate": 0.3333
+        },
+        "other_clean": {
+          "count": 2,
+          "of": 19,
+          "rate": 0.1053
+        },
+        "other_issue": {
+          "count": 10,
+          "of": 21,
+          "rate": 0.4762
+        },
+        "planted": {
+          "count": 8,
+          "of": 8,
+          "rate": 1.0
+        }
+      },
+      "without_capital_spending": {
+        "exporter": {
+          "count": 0,
+          "of": 43,
+          "rate": 0.0
+        },
+        "capex_lookalike": {
+          "count": 8,
+          "of": 9,
+          "rate": 0.8889
+        },
+        "other_clean": {
+          "count": 0,
+          "of": 19,
+          "rate": 0.0
+        },
+        "other_issue": {
+          "count": 0,
+          "of": 21,
+          "rate": 0.0
+        },
+        "planted": {
+          "count": 8,
+          "of": 8,
+          "rate": 1.0
+        }
+      }
+    },
+    "explanation_used_for_non_planted_persistent_credits": {
+      "zero_rated_sales": 80,
+      "import_vat_paid_at_border": 27,
+      "capital_spending": 9
+    },
+    "every_credit_period_records_all_tests": true,
+    "amounts": {
+      "planted_suppressed_output_vat": "22444042.48",
+      "unexplained_credit_computed_for_planted": "15476215.75"
+    },
+    "lanes": {
+      "exporter_policy_fast_claims_fast": {
+        "count": 812,
+        "of": 844,
+        "rate": 0.9621
+      },
+      "planted_claims_not_fast": {
+        "count": 167,
+        "of": 167,
+        "rate": 1.0
+      }
+    },
+    "findings_eligible_for_assessment": false
+  },
+  "detection_by_issue": {
+    "fake_invoices": {
+      "detected": {
+        "count": 3,
+        "of": 7,
+        "rate": 0.4286
+      },
+      "false_positive": {
+        "count": 0,
+        "of": 93,
+        "rate": 0.0
+      }
+    },
+    "untaxed_imported_services": {
+      "detected": {
+        "count": 4,
+        "of": 4,
+        "rate": 1.0
+      },
+      "false_positive": {
+        "count": 0,
+        "of": 96,
+        "rate": 0.0
+      }
+    },
+    "disguised_employment": {
+      "detected": {
+        "count": 6,
+        "of": 7,
+        "rate": 0.8571
+      },
+      "false_positive": {
+        "count": 0,
+        "of": 93,
+        "rate": 0.0
+      }
+    },
+    "related_party_loss": {
+      "detected": {
+        "count": 4,
+        "of": 4,
+        "rate": 1.0
+      },
+      "false_positive": {
+        "count": 1,
+        "of": 96,
+        "rate": 0.0104
+      }
+    },
+    "policy_gap": {
+      "detected": {
+        "count": 2,
+        "of": 2,
+        "rate": 1.0
+      },
+      "false_positive": {
+        "count": 0,
+        "of": 98,
+        "rate": 0.0
+      }
+    },
+    "persistent_credit": {
+      "detected": {
+        "count": 8,
+        "of": 8,
+        "rate": 1.0
+      },
+      "false_positive": {
+        "count": 0,
+        "of": 92,
+        "rate": 0.0
+      }
+    }
+  },
+  "errors": []
+}

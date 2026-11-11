@@ -77,6 +77,14 @@ interface. The register below is the only allowed mapping. TAX-150 enforces it w
 - Provenance is still recorded. Component names stay in API fields, the audit ledger, logs,
   Admin diagnostics and the **About · Open-source notices** page. Licences require that page
   (TAX-150, TAX-151).
+- In running text, a register name is used as a plain noun: "Nothing is sent to
+  Investigation", "Recorded in Vati records", "Document reading". A service's own record
+  identifier or version string (for example an extractor version) is provenance: it is shown
+  verbatim in a `ProvenanceValue`, with the register name as its label.
+- **Enforcement (TAX-150):** `npm run check` runs `scripts/check_naming.mjs` over both apps'
+  templates and strings and fails on any component name. The browser check
+  (`tests/frontend/layout.spec.ts`) fails on any rendered name outside a
+  `data-component-names-allowed` region (the notices page and `ProvenanceValue`).
 - Native tools are themed to the same tokens, logo and product name only through their supported
   configuration, a stylesheet or a reverse proxy. There is no source fork (ADR-034). Anything a
   pinned version cannot rename or theme is recorded as a limitation (TAX-151).

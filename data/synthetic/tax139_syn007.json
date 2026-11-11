@@ -1,0 +1,3151 @@
+{
+ "synthetic": true,
+ "case_id": "SYN-007",
+ "notice": "Synthetic TAX-139 fixture: invented TINs, names and amounts at a synthetic 15% VAT rate; not real taxpayers, returns or Lesotho law.",
+ "scenario": "Persistent VAT credit positions: a legitimate exporter, a capital-spending programme and an unexplained persistent credit, over twelve monthly returns",
+ "world": {
+  "synthetic": true,
+  "generator_version": "tax139-syn007-v1",
+  "tenant_id": "SYN-TENANT-RSL",
+  "retrieved_at": "2026-10-25T08:00:00Z",
+  "periods": [
+   "2025-10",
+   "2025-11",
+   "2025-12",
+   "2026-01",
+   "2026-02",
+   "2026-03",
+   "2026-04",
+   "2026-05",
+   "2026-06",
+   "2026-07",
+   "2026-08",
+   "2026-09"
+  ],
+  "rates_assumed": {
+   "vat": "0.15",
+   "wht": "0.10",
+   "wht_treaty": "0.05"
+  },
+  "materiality": {
+   "absolute": "50000.00"
+  },
+  "lekuka_coverage": "1.00",
+  "records": {
+   "etax.vat_return": [
+    {
+     "return_id": "VAT-510000071-2025-10",
+     "tin": "510000071",
+     "period": "2025-10",
+     "standard_rated_sales": "400000.00",
+     "zero_rated_sales": "600000.00",
+     "exempt_sales": "0.00",
+     "output_vat": "60000.00",
+     "input_vat_claimed": "105000.00",
+     "imported_services_vat_declared": "0.00",
+     "refund_claim": "45000.00",
+     "filed_on": "2025-11-19"
+    },
+    {
+     "return_id": "VAT-510000071-2025-11",
+     "tin": "510000071",
+     "period": "2025-11",
+     "standard_rated_sales": "400000.00",
+     "zero_rated_sales": "600000.00",
+     "exempt_sales": "0.00",
+     "output_vat": "60000.00",
+     "input_vat_claimed": "105000.00",
+     "imported_services_vat_declared": "0.00",
+     "refund_claim": "45000.00",
+     "filed_on": "2025-12-19"
+    },
+    {
+     "return_id": "VAT-510000071-2025-12",
+     "tin": "510000071",
+     "period": "2025-12",
+     "standard_rated_sales": "400000.00",
+     "zero_rated_sales": "600000.00",
+     "exempt_sales": "0.00",
+     "output_vat": "60000.00",
+     "input_vat_claimed": "105000.00",
+     "imported_services_vat_declared": "0.00",
+     "refund_claim": "45000.00",
+     "filed_on": "2026-01-19"
+    },
+    {
+     "return_id": "VAT-510000071-2026-01",
+     "tin": "510000071",
+     "period": "2026-01",
+     "standard_rated_sales": "400000.00",
+     "zero_rated_sales": "600000.00",
+     "exempt_sales": "0.00",
+     "output_vat": "60000.00",
+     "input_vat_claimed": "105000.00",
+     "imported_services_vat_declared": "0.00",
+     "refund_claim": "45000.00",
+     "filed_on": "2026-02-19"
+    },
+    {
+     "return_id": "VAT-510000071-2026-02",
+     "tin": "510000071",
+     "period": "2026-02",
+     "standard_rated_sales": "400000.00",
+     "zero_rated_sales": "600000.00",
+     "exempt_sales": "0.00",
+     "output_vat": "60000.00",
+     "input_vat_claimed": "105000.00",
+     "imported_services_vat_declared": "0.00",
+     "refund_claim": "45000.00",
+     "filed_on": "2026-03-19"
+    },
+    {
+     "return_id": "VAT-510000071-2026-03",
+     "tin": "510000071",
+     "period": "2026-03",
+     "standard_rated_sales": "400000.00",
+     "zero_rated_sales": "600000.00",
+     "exempt_sales": "0.00",
+     "output_vat": "60000.00",
+     "input_vat_claimed": "105000.00",
+     "imported_services_vat_declared": "0.00",
+     "refund_claim": "45000.00",
+     "filed_on": "2026-04-19"
+    },
+    {
+     "return_id": "VAT-510000071-2026-04",
+     "tin": "510000071",
+     "period": "2026-04",
+     "standard_rated_sales": "400000.00",
+     "zero_rated_sales": "600000.00",
+     "exempt_sales": "0.00",
+     "output_vat": "60000.00",
+     "input_vat_claimed": "105000.00",
+     "imported_services_vat_declared": "0.00",
+     "refund_claim": "45000.00",
+     "filed_on": "2026-05-19"
+    },
+    {
+     "return_id": "VAT-510000071-2026-05",
+     "tin": "510000071",
+     "period": "2026-05",
+     "standard_rated_sales": "400000.00",
+     "zero_rated_sales": "600000.00",
+     "exempt_sales": "0.00",
+     "output_vat": "60000.00",
+     "input_vat_claimed": "105000.00",
+     "imported_services_vat_declared": "0.00",
+     "refund_claim": "45000.00",
+     "filed_on": "2026-06-19"
+    },
+    {
+     "return_id": "VAT-510000071-2026-06",
+     "tin": "510000071",
+     "period": "2026-06",
+     "standard_rated_sales": "400000.00",
+     "zero_rated_sales": "600000.00",
+     "exempt_sales": "0.00",
+     "output_vat": "60000.00",
+     "input_vat_claimed": "105000.00",
+     "imported_services_vat_declared": "0.00",
+     "refund_claim": "45000.00",
+     "filed_on": "2026-07-19"
+    },
+    {
+     "return_id": "VAT-510000071-2026-07",
+     "tin": "510000071",
+     "period": "2026-07",
+     "standard_rated_sales": "400000.00",
+     "zero_rated_sales": "600000.00",
+     "exempt_sales": "0.00",
+     "output_vat": "60000.00",
+     "input_vat_claimed": "105000.00",
+     "imported_services_vat_declared": "0.00",
+     "refund_claim": "45000.00",
+     "filed_on": "2026-08-19"
+    },
+    {
+     "return_id": "VAT-510000071-2026-08",
+     "tin": "510000071",
+     "period": "2026-08",
+     "standard_rated_sales": "400000.00",
+     "zero_rated_sales": "600000.00",
+     "exempt_sales": "0.00",
+     "output_vat": "60000.00",
+     "input_vat_claimed": "105000.00",
+     "imported_services_vat_declared": "0.00",
+     "refund_claim": "45000.00",
+     "filed_on": "2026-09-19"
+    },
+    {
+     "return_id": "VAT-510000071-2026-09",
+     "tin": "510000071",
+     "period": "2026-09",
+     "standard_rated_sales": "400000.00",
+     "zero_rated_sales": "600000.00",
+     "exempt_sales": "0.00",
+     "output_vat": "60000.00",
+     "input_vat_claimed": "105000.00",
+     "imported_services_vat_declared": "0.00",
+     "refund_claim": "45000.00",
+     "filed_on": "2026-10-19"
+    },
+    {
+     "return_id": "VAT-510000072-2025-10",
+     "tin": "510000072",
+     "period": "2025-10",
+     "standard_rated_sales": "950000.00",
+     "zero_rated_sales": "0.00",
+     "exempt_sales": "0.00",
+     "output_vat": "142500.00",
+     "input_vat_claimed": "114000.00",
+     "imported_services_vat_declared": "0.00",
+     "refund_claim": "0.00",
+     "filed_on": "2025-11-19"
+    },
+    {
+     "return_id": "VAT-510000072-2025-11",
+     "tin": "510000072",
+     "period": "2025-11",
+     "standard_rated_sales": "950000.00",
+     "zero_rated_sales": "0.00",
+     "exempt_sales": "0.00",
+     "output_vat": "142500.00",
+     "input_vat_claimed": "114000.00",
+     "imported_services_vat_declared": "0.00",
+     "refund_claim": "0.00",
+     "filed_on": "2025-12-19"
+    },
+    {
+     "return_id": "VAT-510000072-2025-12",
+     "tin": "510000072",
+     "period": "2025-12",
+     "standard_rated_sales": "950000.00",
+     "zero_rated_sales": "0.00",
+     "exempt_sales": "0.00",
+     "output_vat": "142500.00",
+     "input_vat_claimed": "114000.00",
+     "imported_services_vat_declared": "0.00",
+     "refund_claim": "0.00",
+     "filed_on": "2026-01-19"
+    },
+    {
+     "return_id": "VAT-510000072-2026-01",
+     "tin": "510000072",
+     "period": "2026-01",
+     "standard_rated_sales": "950000.00",
+     "zero_rated_sales": "0.00",
+     "exempt_sales": "0.00",
+     "output_vat": "142500.00",
+     "input_vat_claimed": "114000.00",
+     "imported_services_vat_declared": "0.00",
+     "refund_claim": "0.00",
+     "filed_on": "2026-02-19"
+    },
+    {
+     "return_id": "VAT-510000072-2026-02",
+     "tin": "510000072",
+     "period": "2026-02",
+     "standard_rated_sales": "950000.00",
+     "zero_rated_sales": "0.00",
+     "exempt_sales": "0.00",
+     "output_vat": "142500.00",
+     "input_vat_claimed": "249000.00",
+     "imported_services_vat_declared": "0.00",
+     "refund_claim": "106500.00",
+     "filed_on": "2026-03-19"
+    },
+    {
+     "return_id": "VAT-510000072-2026-03",
+     "tin": "510000072",
+     "period": "2026-03",
+     "standard_rated_sales": "950000.00",
+     "zero_rated_sales": "0.00",
+     "exempt_sales": "0.00",
+     "output_vat": "142500.00",
+     "input_vat_claimed": "249000.00",
+     "imported_services_vat_declared": "0.00",
+     "refund_claim": "106500.00",
+     "filed_on": "2026-04-19"
+    },
+    {
+     "return_id": "VAT-510000072-2026-04",
+     "tin": "510000072",
+     "period": "2026-04",
+     "standard_rated_sales": "950000.00",
+     "zero_rated_sales": "0.00",
+     "exempt_sales": "0.00",
+     "output_vat": "142500.00",
+     "input_vat_claimed": "249000.00",
+     "imported_services_vat_declared": "0.00",
+     "refund_claim": "106500.00",
+     "filed_on": "2026-05-19"
+    },
+    {
+     "return_id": "VAT-510000072-2026-05",
+     "tin": "510000072",
+     "period": "2026-05",
+     "standard_rated_sales": "950000.00",
+     "zero_rated_sales": "0.00",
+     "exempt_sales": "0.00",
+     "output_vat": "142500.00",
+     "input_vat_claimed": "249000.00",
+     "imported_services_vat_declared": "0.00",
+     "refund_claim": "106500.00",
+     "filed_on": "2026-06-19"
+    },
+    {
+     "return_id": "VAT-510000072-2026-06",
+     "tin": "510000072",
+     "period": "2026-06",
+     "standard_rated_sales": "950000.00",
+     "zero_rated_sales": "0.00",
+     "exempt_sales": "0.00",
+     "output_vat": "142500.00",
+     "input_vat_claimed": "249000.00",
+     "imported_services_vat_declared": "0.00",
+     "refund_claim": "106500.00",
+     "filed_on": "2026-07-19"
+    },
+    {
+     "return_id": "VAT-510000072-2026-07",
+     "tin": "510000072",
+     "period": "2026-07",
+     "standard_rated_sales": "950000.00",
+     "zero_rated_sales": "0.00",
+     "exempt_sales": "0.00",
+     "output_vat": "142500.00",
+     "input_vat_claimed": "249000.00",
+     "imported_services_vat_declared": "0.00",
+     "refund_claim": "106500.00",
+     "filed_on": "2026-08-19"
+    },
+    {
+     "return_id": "VAT-510000072-2026-08",
+     "tin": "510000072",
+     "period": "2026-08",
+     "standard_rated_sales": "950000.00",
+     "zero_rated_sales": "0.00",
+     "exempt_sales": "0.00",
+     "output_vat": "142500.00",
+     "input_vat_claimed": "249000.00",
+     "imported_services_vat_declared": "0.00",
+     "refund_claim": "106500.00",
+     "filed_on": "2026-09-19"
+    },
+    {
+     "return_id": "VAT-510000072-2026-09",
+     "tin": "510000072",
+     "period": "2026-09",
+     "standard_rated_sales": "950000.00",
+     "zero_rated_sales": "0.00",
+     "exempt_sales": "0.00",
+     "output_vat": "142500.00",
+     "input_vat_claimed": "249000.00",
+     "imported_services_vat_declared": "0.00",
+     "refund_claim": "106500.00",
+     "filed_on": "2026-10-19"
+    },
+    {
+     "return_id": "VAT-510000073-2025-10",
+     "tin": "510000073",
+     "period": "2025-10",
+     "standard_rated_sales": "950000.00",
+     "zero_rated_sales": "0.00",
+     "exempt_sales": "0.00",
+     "output_vat": "142500.00",
+     "input_vat_claimed": "120000.00",
+     "imported_services_vat_declared": "0.00",
+     "refund_claim": "0.00",
+     "filed_on": "2025-11-19"
+    },
+    {
+     "return_id": "VAT-510000073-2025-11",
+     "tin": "510000073",
+     "period": "2025-11",
+     "standard_rated_sales": "950000.00",
+     "zero_rated_sales": "0.00",
+     "exempt_sales": "0.00",
+     "output_vat": "142500.00",
+     "input_vat_claimed": "120000.00",
+     "imported_services_vat_declared": "0.00",
+     "refund_claim": "0.00",
+     "filed_on": "2025-12-19"
+    },
+    {
+     "return_id": "VAT-510000073-2025-12",
+     "tin": "510000073",
+     "period": "2025-12",
+     "standard_rated_sales": "950000.00",
+     "zero_rated_sales": "0.00",
+     "exempt_sales": "0.00",
+     "output_vat": "142500.00",
+     "input_vat_claimed": "120000.00",
+     "imported_services_vat_declared": "0.00",
+     "refund_claim": "0.00",
+     "filed_on": "2026-01-19"
+    },
+    {
+     "return_id": "VAT-510000073-2026-01",
+     "tin": "510000073",
+     "period": "2026-01",
+     "standard_rated_sales": "522500.00",
+     "zero_rated_sales": "0.00",
+     "exempt_sales": "0.00",
+     "output_vat": "78375.00",
+     "input_vat_claimed": "120000.00",
+     "imported_services_vat_declared": "0.00",
+     "refund_claim": "41625.00",
+     "filed_on": "2026-02-19"
+    },
+    {
+     "return_id": "VAT-510000073-2026-02",
+     "tin": "510000073",
+     "period": "2026-02",
+     "standard_rated_sales": "522500.00",
+     "zero_rated_sales": "0.00",
+     "exempt_sales": "0.00",
+     "output_vat": "78375.00",
+     "input_vat_claimed": "120000.00",
+     "imported_services_vat_declared": "0.00",
+     "refund_claim": "41625.00",
+     "filed_on": "2026-03-19"
+    },
+    {
+     "return_id": "VAT-510000073-2026-03",
+     "tin": "510000073",
+     "period": "2026-03",
+     "standard_rated_sales": "522500.00",
+     "zero_rated_sales": "0.00",
+     "exempt_sales": "0.00",
+     "output_vat": "78375.00",
+     "input_vat_claimed": "120000.00",
+     "imported_services_vat_declared": "0.00",
+     "refund_claim": "41625.00",
+     "filed_on": "2026-04-19"
+    },
+    {
+     "return_id": "VAT-510000073-2026-04",
+     "tin": "510000073",
+     "period": "2026-04",
+     "standard_rated_sales": "522500.00",
+     "zero_rated_sales": "0.00",
+     "exempt_sales": "0.00",
+     "output_vat": "78375.00",
+     "input_vat_claimed": "120000.00",
+     "imported_services_vat_declared": "0.00",
+     "refund_claim": "41625.00",
+     "filed_on": "2026-05-19"
+    },
+    {
+     "return_id": "VAT-510000073-2026-05",
+     "tin": "510000073",
+     "period": "2026-05",
+     "standard_rated_sales": "522500.00",
+     "zero_rated_sales": "0.00",
+     "exempt_sales": "0.00",
+     "output_vat": "78375.00",
+     "input_vat_claimed": "120000.00",
+     "imported_services_vat_declared": "0.00",
+     "refund_claim": "41625.00",
+     "filed_on": "2026-06-19"
+    },
+    {
+     "return_id": "VAT-510000073-2026-06",
+     "tin": "510000073",
+     "period": "2026-06",
+     "standard_rated_sales": "522500.00",
+     "zero_rated_sales": "0.00",
+     "exempt_sales": "0.00",
+     "output_vat": "78375.00",
+     "input_vat_claimed": "120000.00",
+     "imported_services_vat_declared": "0.00",
+     "refund_claim": "41625.00",
+     "filed_on": "2026-07-19"
+    },
+    {
+     "return_id": "VAT-510000073-2026-07",
+     "tin": "510000073",
+     "period": "2026-07",
+     "standard_rated_sales": "522500.00",
+     "zero_rated_sales": "0.00",
+     "exempt_sales": "0.00",
+     "output_vat": "78375.00",
+     "input_vat_claimed": "120000.00",
+     "imported_services_vat_declared": "0.00",
+     "refund_claim": "41625.00",
+     "filed_on": "2026-08-19"
+    },
+    {
+     "return_id": "VAT-510000073-2026-08",
+     "tin": "510000073",
+     "period": "2026-08",
+     "standard_rated_sales": "522500.00",
+     "zero_rated_sales": "0.00",
+     "exempt_sales": "0.00",
+     "output_vat": "78375.00",
+     "input_vat_claimed": "120000.00",
+     "imported_services_vat_declared": "0.00",
+     "refund_claim": "41625.00",
+     "filed_on": "2026-09-19"
+    },
+    {
+     "return_id": "VAT-510000073-2026-09",
+     "tin": "510000073",
+     "period": "2026-09",
+     "standard_rated_sales": "522500.00",
+     "zero_rated_sales": "0.00",
+     "exempt_sales": "0.00",
+     "output_vat": "78375.00",
+     "input_vat_claimed": "120000.00",
+     "imported_services_vat_declared": "0.00",
+     "refund_claim": "41625.00",
+     "filed_on": "2026-10-19"
+    }
+   ],
+   "etax.wht_return": [],
+   "etax.cit_return": [],
+   "etax.paye_roster": [],
+   "idms.invoice": [
+    {
+     "idms_id": "IDMS-INV-0001-202510-7101-510000071",
+     "invoice_number": "INV-0001-202510-7101",
+     "supplier_tin": "530000001",
+     "buyer_tin": "510000071",
+     "issue_date": "2025-10-10",
+     "net_amount": "700000.00",
+     "vat_amount": "105000.00",
+     "supplier_output_declared": true
+    },
+    {
+     "idms_id": "IDMS-INV-0001-202511-7102-510000071",
+     "invoice_number": "INV-0001-202511-7102",
+     "supplier_tin": "530000001",
+     "buyer_tin": "510000071",
+     "issue_date": "2025-11-10",
+     "net_amount": "700000.00",
+     "vat_amount": "105000.00",
+     "supplier_output_declared": true
+    },
+    {
+     "idms_id": "IDMS-INV-0001-202512-7103-510000071",
+     "invoice_number": "INV-0001-202512-7103",
+     "supplier_tin": "530000001",
+     "buyer_tin": "510000071",
+     "issue_date": "2025-12-10",
+     "net_amount": "700000.00",
+     "vat_amount": "105000.00",
+     "supplier_output_declared": true
+    },
+    {
+     "idms_id": "IDMS-INV-0001-202601-7104-510000071",
+     "invoice_number": "INV-0001-202601-7104",
+     "supplier_tin": "530000001",
+     "buyer_tin": "510000071",
+     "issue_date": "2026-01-10",
+     "net_amount": "700000.00",
+     "vat_amount": "105000.00",
+     "supplier_output_declared": true
+    },
+    {
+     "idms_id": "IDMS-INV-0001-202602-7105-510000071",
+     "invoice_number": "INV-0001-202602-7105",
+     "supplier_tin": "530000001",
+     "buyer_tin": "510000071",
+     "issue_date": "2026-02-10",
+     "net_amount": "700000.00",
+     "vat_amount": "105000.00",
+     "supplier_output_declared": true
+    },
+    {
+     "idms_id": "IDMS-INV-0001-202603-7106-510000071",
+     "invoice_number": "INV-0001-202603-7106",
+     "supplier_tin": "530000001",
+     "buyer_tin": "510000071",
+     "issue_date": "2026-03-10",
+     "net_amount": "700000.00",
+     "vat_amount": "105000.00",
+     "supplier_output_declared": true
+    },
+    {
+     "idms_id": "IDMS-INV-0001-202604-7107-510000071",
+     "invoice_number": "INV-0001-202604-7107",
+     "supplier_tin": "530000001",
+     "buyer_tin": "510000071",
+     "issue_date": "2026-04-10",
+     "net_amount": "700000.00",
+     "vat_amount": "105000.00",
+     "supplier_output_declared": true
+    },
+    {
+     "idms_id": "IDMS-INV-0001-202605-7108-510000071",
+     "invoice_number": "INV-0001-202605-7108",
+     "supplier_tin": "530000001",
+     "buyer_tin": "510000071",
+     "issue_date": "2026-05-10",
+     "net_amount": "700000.00",
+     "vat_amount": "105000.00",
+     "supplier_output_declared": true
+    },
+    {
+     "idms_id": "IDMS-INV-0001-202606-7109-510000071",
+     "invoice_number": "INV-0001-202606-7109",
+     "supplier_tin": "530000001",
+     "buyer_tin": "510000071",
+     "issue_date": "2026-06-10",
+     "net_amount": "700000.00",
+     "vat_amount": "105000.00",
+     "supplier_output_declared": true
+    },
+    {
+     "idms_id": "IDMS-INV-0001-202607-7110-510000071",
+     "invoice_number": "INV-0001-202607-7110",
+     "supplier_tin": "530000001",
+     "buyer_tin": "510000071",
+     "issue_date": "2026-07-10",
+     "net_amount": "700000.00",
+     "vat_amount": "105000.00",
+     "supplier_output_declared": true
+    },
+    {
+     "idms_id": "IDMS-INV-0001-202608-7111-510000071",
+     "invoice_number": "INV-0001-202608-7111",
+     "supplier_tin": "530000001",
+     "buyer_tin": "510000071",
+     "issue_date": "2026-08-10",
+     "net_amount": "700000.00",
+     "vat_amount": "105000.00",
+     "supplier_output_declared": true
+    },
+    {
+     "idms_id": "IDMS-INV-0001-202609-7112-510000071",
+     "invoice_number": "INV-0001-202609-7112",
+     "supplier_tin": "530000001",
+     "buyer_tin": "510000071",
+     "issue_date": "2026-09-10",
+     "net_amount": "700000.00",
+     "vat_amount": "105000.00",
+     "supplier_output_declared": true
+    },
+    {
+     "idms_id": "IDMS-INV-0001-202510-7201-510000072",
+     "invoice_number": "INV-0001-202510-7201",
+     "supplier_tin": "530000001",
+     "buyer_tin": "510000072",
+     "issue_date": "2025-10-10",
+     "net_amount": "760000.00",
+     "vat_amount": "114000.00",
+     "supplier_output_declared": true
+    },
+    {
+     "idms_id": "IDMS-INV-0001-202511-7202-510000072",
+     "invoice_number": "INV-0001-202511-7202",
+     "supplier_tin": "530000001",
+     "buyer_tin": "510000072",
+     "issue_date": "2025-11-10",
+     "net_amount": "760000.00",
+     "vat_amount": "114000.00",
+     "supplier_output_declared": true
+    },
+    {
+     "idms_id": "IDMS-INV-0001-202512-7203-510000072",
+     "invoice_number": "INV-0001-202512-7203",
+     "supplier_tin": "530000001",
+     "buyer_tin": "510000072",
+     "issue_date": "2025-12-10",
+     "net_amount": "760000.00",
+     "vat_amount": "114000.00",
+     "supplier_output_declared": true
+    },
+    {
+     "idms_id": "IDMS-INV-0001-202601-7204-510000072",
+     "invoice_number": "INV-0001-202601-7204",
+     "supplier_tin": "530000001",
+     "buyer_tin": "510000072",
+     "issue_date": "2026-01-10",
+     "net_amount": "760000.00",
+     "vat_amount": "114000.00",
+     "supplier_output_declared": true
+    },
+    {
+     "idms_id": "IDMS-INV-0001-202602-7205-510000072",
+     "invoice_number": "INV-0001-202602-7205",
+     "supplier_tin": "530000001",
+     "buyer_tin": "510000072",
+     "issue_date": "2026-02-10",
+     "net_amount": "760000.00",
+     "vat_amount": "114000.00",
+     "supplier_output_declared": true
+    },
+    {
+     "idms_id": "IDMS-INV-0002-202602-7206-510000072",
+     "invoice_number": "INV-0002-202602-7206",
+     "supplier_tin": "530000002",
+     "buyer_tin": "510000072",
+     "issue_date": "2026-02-10",
+     "net_amount": "900000.00",
+     "vat_amount": "135000.00",
+     "supplier_output_declared": true
+    },
+    {
+     "idms_id": "IDMS-INV-0001-202603-7207-510000072",
+     "invoice_number": "INV-0001-202603-7207",
+     "supplier_tin": "530000001",
+     "buyer_tin": "510000072",
+     "issue_date": "2026-03-10",
+     "net_amount": "760000.00",
+     "vat_amount": "114000.00",
+     "supplier_output_declared": true
+    },
+    {
+     "idms_id": "IDMS-INV-0002-202603-7208-510000072",
+     "invoice_number": "INV-0002-202603-7208",
+     "supplier_tin": "530000002",
+     "buyer_tin": "510000072",
+     "issue_date": "2026-03-10",
+     "net_amount": "900000.00",
+     "vat_amount": "135000.00",
+     "supplier_output_declared": true
+    },
+    {
+     "idms_id": "IDMS-INV-0001-202604-7209-510000072",
+     "invoice_number": "INV-0001-202604-7209",
+     "supplier_tin": "530000001",
+     "buyer_tin": "510000072",
+     "issue_date": "2026-04-10",
+     "net_amount": "760000.00",
+     "vat_amount": "114000.00",
+     "supplier_output_declared": true
+    },
+    {
+     "idms_id": "IDMS-INV-0002-202604-7210-510000072",
+     "invoice_number": "INV-0002-202604-7210",
+     "supplier_tin": "530000002",
+     "buyer_tin": "510000072",
+     "issue_date": "2026-04-10",
+     "net_amount": "900000.00",
+     "vat_amount": "135000.00",
+     "supplier_output_declared": true
+    },
+    {
+     "idms_id": "IDMS-INV-0001-202605-7211-510000072",
+     "invoice_number": "INV-0001-202605-7211",
+     "supplier_tin": "530000001",
+     "buyer_tin": "510000072",
+     "issue_date": "2026-05-10",
+     "net_amount": "760000.00",
+     "vat_amount": "114000.00",
+     "supplier_output_declared": true
+    },
+    {
+     "idms_id": "IDMS-INV-0002-202605-7212-510000072",
+     "invoice_number": "INV-0002-202605-7212",
+     "supplier_tin": "530000002",
+     "buyer_tin": "510000072",
+     "issue_date": "2026-05-10",
+     "net_amount": "900000.00",
+     "vat_amount": "135000.00",
+     "supplier_output_declared": true
+    },
+    {
+     "idms_id": "IDMS-INV-0001-202606-7213-510000072",
+     "invoice_number": "INV-0001-202606-7213",
+     "supplier_tin": "530000001",
+     "buyer_tin": "510000072",
+     "issue_date": "2026-06-10",
+     "net_amount": "760000.00",
+     "vat_amount": "114000.00",
+     "supplier_output_declared": true
+    },
+    {
+     "idms_id": "IDMS-INV-0002-202606-7214-510000072",
+     "invoice_number": "INV-0002-202606-7214",
+     "supplier_tin": "530000002",
+     "buyer_tin": "510000072",
+     "issue_date": "2026-06-10",
+     "net_amount": "900000.00",
+     "vat_amount": "135000.00",
+     "supplier_output_declared": true
+    },
+    {
+     "idms_id": "IDMS-INV-0001-202607-7215-510000072",
+     "invoice_number": "INV-0001-202607-7215",
+     "supplier_tin": "530000001",
+     "buyer_tin": "510000072",
+     "issue_date": "2026-07-10",
+     "net_amount": "760000.00",
+     "vat_amount": "114000.00",
+     "supplier_output_declared": true
+    },
+    {
+     "idms_id": "IDMS-INV-0002-202607-7216-510000072",
+     "invoice_number": "INV-0002-202607-7216",
+     "supplier_tin": "530000002",
+     "buyer_tin": "510000072",
+     "issue_date": "2026-07-10",
+     "net_amount": "900000.00",
+     "vat_amount": "135000.00",
+     "supplier_output_declared": true
+    },
+    {
+     "idms_id": "IDMS-INV-0001-202608-7217-510000072",
+     "invoice_number": "INV-0001-202608-7217",
+     "supplier_tin": "530000001",
+     "buyer_tin": "510000072",
+     "issue_date": "2026-08-10",
+     "net_amount": "760000.00",
+     "vat_amount": "114000.00",
+     "supplier_output_declared": true
+    },
+    {
+     "idms_id": "IDMS-INV-0002-202608-7218-510000072",
+     "invoice_number": "INV-0002-202608-7218",
+     "supplier_tin": "530000002",
+     "buyer_tin": "510000072",
+     "issue_date": "2026-08-10",
+     "net_amount": "900000.00",
+     "vat_amount": "135000.00",
+     "supplier_output_declared": true
+    },
+    {
+     "idms_id": "IDMS-INV-0001-202609-7219-510000072",
+     "invoice_number": "INV-0001-202609-7219",
+     "supplier_tin": "530000001",
+     "buyer_tin": "510000072",
+     "issue_date": "2026-09-10",
+     "net_amount": "760000.00",
+     "vat_amount": "114000.00",
+     "supplier_output_declared": true
+    },
+    {
+     "idms_id": "IDMS-INV-0002-202609-7220-510000072",
+     "invoice_number": "INV-0002-202609-7220",
+     "supplier_tin": "530000002",
+     "buyer_tin": "510000072",
+     "issue_date": "2026-09-10",
+     "net_amount": "900000.00",
+     "vat_amount": "135000.00",
+     "supplier_output_declared": true
+    },
+    {
+     "idms_id": "IDMS-INV-0001-202510-7301-510000073",
+     "invoice_number": "INV-0001-202510-7301",
+     "supplier_tin": "530000001",
+     "buyer_tin": "510000073",
+     "issue_date": "2025-10-10",
+     "net_amount": "800000.00",
+     "vat_amount": "120000.00",
+     "supplier_output_declared": true
+    },
+    {
+     "idms_id": "IDMS-INV-0001-202511-7302-510000073",
+     "invoice_number": "INV-0001-202511-7302",
+     "supplier_tin": "530000001",
+     "buyer_tin": "510000073",
+     "issue_date": "2025-11-10",
+     "net_amount": "800000.00",
+     "vat_amount": "120000.00",
+     "supplier_output_declared": true
+    },
+    {
+     "idms_id": "IDMS-INV-0001-202512-7303-510000073",
+     "invoice_number": "INV-0001-202512-7303",
+     "supplier_tin": "530000001",
+     "buyer_tin": "510000073",
+     "issue_date": "2025-12-10",
+     "net_amount": "800000.00",
+     "vat_amount": "120000.00",
+     "supplier_output_declared": true
+    },
+    {
+     "idms_id": "IDMS-INV-0001-202601-7304-510000073",
+     "invoice_number": "INV-0001-202601-7304",
+     "supplier_tin": "530000001",
+     "buyer_tin": "510000073",
+     "issue_date": "2026-01-10",
+     "net_amount": "800000.00",
+     "vat_amount": "120000.00",
+     "supplier_output_declared": true
+    },
+    {
+     "idms_id": "IDMS-INV-0001-202602-7305-510000073",
+     "invoice_number": "INV-0001-202602-7305",
+     "supplier_tin": "530000001",
+     "buyer_tin": "510000073",
+     "issue_date": "2026-02-10",
+     "net_amount": "800000.00",
+     "vat_amount": "120000.00",
+     "supplier_output_declared": true
+    },
+    {
+     "idms_id": "IDMS-INV-0001-202603-7306-510000073",
+     "invoice_number": "INV-0001-202603-7306",
+     "supplier_tin": "530000001",
+     "buyer_tin": "510000073",
+     "issue_date": "2026-03-10",
+     "net_amount": "800000.00",
+     "vat_amount": "120000.00",
+     "supplier_output_declared": true
+    },
+    {
+     "idms_id": "IDMS-INV-0001-202604-7307-510000073",
+     "invoice_number": "INV-0001-202604-7307",
+     "supplier_tin": "530000001",
+     "buyer_tin": "510000073",
+     "issue_date": "2026-04-10",
+     "net_amount": "800000.00",
+     "vat_amount": "120000.00",
+     "supplier_output_declared": true
+    },
+    {
+     "idms_id": "IDMS-INV-0001-202605-7308-510000073",
+     "invoice_number": "INV-0001-202605-7308",
+     "supplier_tin": "530000001",
+     "buyer_tin": "510000073",
+     "issue_date": "2026-05-10",
+     "net_amount": "800000.00",
+     "vat_amount": "120000.00",
+     "supplier_output_declared": true
+    },
+    {
+     "idms_id": "IDMS-INV-0001-202606-7309-510000073",
+     "invoice_number": "INV-0001-202606-7309",
+     "supplier_tin": "530000001",
+     "buyer_tin": "510000073",
+     "issue_date": "2026-06-10",
+     "net_amount": "800000.00",
+     "vat_amount": "120000.00",
+     "supplier_output_declared": true
+    },
+    {
+     "idms_id": "IDMS-INV-0001-202607-7310-510000073",
+     "invoice_number": "INV-0001-202607-7310",
+     "supplier_tin": "530000001",
+     "buyer_tin": "510000073",
+     "issue_date": "2026-07-10",
+     "net_amount": "800000.00",
+     "vat_amount": "120000.00",
+     "supplier_output_declared": true
+    },
+    {
+     "idms_id": "IDMS-INV-0001-202608-7311-510000073",
+     "invoice_number": "INV-0001-202608-7311",
+     "supplier_tin": "530000001",
+     "buyer_tin": "510000073",
+     "issue_date": "2026-08-10",
+     "net_amount": "800000.00",
+     "vat_amount": "120000.00",
+     "supplier_output_declared": true
+    },
+    {
+     "idms_id": "IDMS-INV-0001-202609-7312-510000073",
+     "invoice_number": "INV-0001-202609-7312",
+     "supplier_tin": "530000001",
+     "buyer_tin": "510000073",
+     "issue_date": "2026-09-10",
+     "net_amount": "800000.00",
+     "vat_amount": "120000.00",
+     "supplier_output_declared": true
+    }
+   ],
+   "online_refunds.claim": [
+    {
+     "claim_id": "ORA-510000071-001",
+     "tin": "510000071",
+     "period": "2026-09",
+     "return_id": "VAT-510000071-2026-09",
+     "claimed_amount": "45000.00",
+     "submitted_on": "2026-10-22",
+     "uploaded_documents": [],
+     "lines": [
+      {
+       "line_id": "ORA-510000071-001-L01",
+       "kind": "domestic",
+       "supplier_ref": "530000001",
+       "invoice_number": "INV-0001-202609-7112",
+       "invoice_date": "2026-09-10",
+       "net_amount": "700000.00",
+       "vat_amount": "105000.00"
+      }
+     ]
+    },
+    {
+     "claim_id": "ORA-510000072-001",
+     "tin": "510000072",
+     "period": "2026-09",
+     "return_id": "VAT-510000072-2026-09",
+     "claimed_amount": "106500.00",
+     "submitted_on": "2026-10-22",
+     "uploaded_documents": [],
+     "lines": [
+      {
+       "line_id": "ORA-510000072-001-L01",
+       "kind": "domestic",
+       "supplier_ref": "530000001",
+       "invoice_number": "INV-0001-202609-7219",
+       "invoice_date": "2026-09-10",
+       "net_amount": "760000.00",
+       "vat_amount": "114000.00"
+      },
+      {
+       "line_id": "ORA-510000072-001-L02",
+       "kind": "domestic",
+       "supplier_ref": "530000002",
+       "invoice_number": "INV-0002-202609-7220",
+       "invoice_date": "2026-09-10",
+       "net_amount": "900000.00",
+       "vat_amount": "135000.00"
+      }
+     ]
+    },
+    {
+     "claim_id": "ORA-510000073-001",
+     "tin": "510000073",
+     "period": "2026-09",
+     "return_id": "VAT-510000073-2026-09",
+     "claimed_amount": "41625.00",
+     "submitted_on": "2026-10-22",
+     "uploaded_documents": [],
+     "lines": [
+      {
+       "line_id": "ORA-510000073-001-L01",
+       "kind": "domestic",
+       "supplier_ref": "530000001",
+       "invoice_number": "INV-0001-202609-7312",
+       "invoice_date": "2026-09-10",
+       "net_amount": "800000.00",
+       "vat_amount": "120000.00"
+      }
+     ]
+    }
+   ],
+   "rsl_fraud_model.score": [
+    {
+     "claim_id": "ORA-510000071-001",
+     "tin": "510000071",
+     "score": "0.1200",
+     "model_id": "RSL-REFUND-FRAUD-STANDIN",
+     "model_version": "fixture-1",
+     "owner": "RSL"
+    },
+    {
+     "claim_id": "ORA-510000072-001",
+     "tin": "510000072",
+     "score": "0.1200",
+     "model_id": "RSL-REFUND-FRAUD-STANDIN",
+     "model_version": "fixture-1",
+     "owner": "RSL"
+    },
+    {
+     "claim_id": "ORA-510000073-001",
+     "tin": "510000073",
+     "score": "0.1200",
+     "model_id": "RSL-REFUND-FRAUD-STANDIN",
+     "model_version": "fixture-1",
+     "owner": "RSL"
+    }
+   ],
+   "asycuda.entry": [],
+   "registry.entity": [
+    {
+     "entity_id": "ENT-530000001",
+     "tin": "530000001",
+     "country": "ls",
+     "kind": "company",
+     "vat_registered": true
+    },
+    {
+     "entity_id": "ENT-530000002",
+     "tin": "530000002",
+     "country": "ls",
+     "kind": "company",
+     "vat_registered": true
+    },
+    {
+     "entity_id": "ENT-530000003",
+     "tin": "530000003",
+     "country": "ls",
+     "kind": "company",
+     "vat_registered": true
+    },
+    {
+     "entity_id": "ENT-510000071",
+     "tin": "510000071",
+     "country": "ls",
+     "kind": "company",
+     "vat_registered": true
+    },
+    {
+     "entity_id": "ENT-510000072",
+     "tin": "510000072",
+     "country": "ls",
+     "kind": "company",
+     "vat_registered": true
+    },
+    {
+     "entity_id": "ENT-510000073",
+     "tin": "510000073",
+     "country": "ls",
+     "kind": "company",
+     "vat_registered": true
+    }
+   ],
+   "central_bank.cross_border_payment": [],
+   "idms.supplier_integration": [
+    {
+     "supplier_tin": "530000001",
+     "integrated": true
+    },
+    {
+     "supplier_tin": "530000002",
+     "integrated": true
+    },
+    {
+     "supplier_tin": "530000003",
+     "integrated": true
+    }
+   ]
+  },
+  "submissions": {
+   "510000071": {
+    "tin": "510000071",
+    "saft": {
+     "header": {
+      "tin": "510000071",
+      "company_name": "Synthetic Maluti Exporters",
+      "currency": "LSL",
+      "period_start": "2025-10",
+      "period_end": "2026-09"
+     },
+     "suppliers": [
+      {
+       "supplier_ref": "530000001",
+       "name": "Synthetic Supplier A",
+       "country": "ls",
+       "resident": true
+      },
+      {
+       "supplier_ref": "530000002",
+       "name": "Synthetic Supplier B",
+       "country": "ls",
+       "resident": true
+      }
+     ],
+     "sales_summary": [
+      {
+       "period": "2025-10",
+       "tax_code": "STD",
+       "net": "400000.00",
+       "vat": "60000.00"
+      },
+      {
+       "period": "2025-10",
+       "tax_code": "ZERO",
+       "net": "600000.00",
+       "vat": "0.00"
+      },
+      {
+       "period": "2025-10",
+       "tax_code": "EXEMPT",
+       "net": "0.00",
+       "vat": "0.00"
+      },
+      {
+       "period": "2025-11",
+       "tax_code": "STD",
+       "net": "400000.00",
+       "vat": "60000.00"
+      },
+      {
+       "period": "2025-11",
+       "tax_code": "ZERO",
+       "net": "600000.00",
+       "vat": "0.00"
+      },
+      {
+       "period": "2025-11",
+       "tax_code": "EXEMPT",
+       "net": "0.00",
+       "vat": "0.00"
+      },
+      {
+       "period": "2025-12",
+       "tax_code": "STD",
+       "net": "400000.00",
+       "vat": "60000.00"
+      },
+      {
+       "period": "2025-12",
+       "tax_code": "ZERO",
+       "net": "600000.00",
+       "vat": "0.00"
+      },
+      {
+       "period": "2025-12",
+       "tax_code": "EXEMPT",
+       "net": "0.00",
+       "vat": "0.00"
+      },
+      {
+       "period": "2026-01",
+       "tax_code": "STD",
+       "net": "400000.00",
+       "vat": "60000.00"
+      },
+      {
+       "period": "2026-01",
+       "tax_code": "ZERO",
+       "net": "600000.00",
+       "vat": "0.00"
+      },
+      {
+       "period": "2026-01",
+       "tax_code": "EXEMPT",
+       "net": "0.00",
+       "vat": "0.00"
+      },
+      {
+       "period": "2026-02",
+       "tax_code": "STD",
+       "net": "400000.00",
+       "vat": "60000.00"
+      },
+      {
+       "period": "2026-02",
+       "tax_code": "ZERO",
+       "net": "600000.00",
+       "vat": "0.00"
+      },
+      {
+       "period": "2026-02",
+       "tax_code": "EXEMPT",
+       "net": "0.00",
+       "vat": "0.00"
+      },
+      {
+       "period": "2026-03",
+       "tax_code": "STD",
+       "net": "400000.00",
+       "vat": "60000.00"
+      },
+      {
+       "period": "2026-03",
+       "tax_code": "ZERO",
+       "net": "600000.00",
+       "vat": "0.00"
+      },
+      {
+       "period": "2026-03",
+       "tax_code": "EXEMPT",
+       "net": "0.00",
+       "vat": "0.00"
+      },
+      {
+       "period": "2026-04",
+       "tax_code": "STD",
+       "net": "400000.00",
+       "vat": "60000.00"
+      },
+      {
+       "period": "2026-04",
+       "tax_code": "ZERO",
+       "net": "600000.00",
+       "vat": "0.00"
+      },
+      {
+       "period": "2026-04",
+       "tax_code": "EXEMPT",
+       "net": "0.00",
+       "vat": "0.00"
+      },
+      {
+       "period": "2026-05",
+       "tax_code": "STD",
+       "net": "400000.00",
+       "vat": "60000.00"
+      },
+      {
+       "period": "2026-05",
+       "tax_code": "ZERO",
+       "net": "600000.00",
+       "vat": "0.00"
+      },
+      {
+       "period": "2026-05",
+       "tax_code": "EXEMPT",
+       "net": "0.00",
+       "vat": "0.00"
+      },
+      {
+       "period": "2026-06",
+       "tax_code": "STD",
+       "net": "400000.00",
+       "vat": "60000.00"
+      },
+      {
+       "period": "2026-06",
+       "tax_code": "ZERO",
+       "net": "600000.00",
+       "vat": "0.00"
+      },
+      {
+       "period": "2026-06",
+       "tax_code": "EXEMPT",
+       "net": "0.00",
+       "vat": "0.00"
+      },
+      {
+       "period": "2026-07",
+       "tax_code": "STD",
+       "net": "400000.00",
+       "vat": "60000.00"
+      },
+      {
+       "period": "2026-07",
+       "tax_code": "ZERO",
+       "net": "600000.00",
+       "vat": "0.00"
+      },
+      {
+       "period": "2026-07",
+       "tax_code": "EXEMPT",
+       "net": "0.00",
+       "vat": "0.00"
+      },
+      {
+       "period": "2026-08",
+       "tax_code": "STD",
+       "net": "400000.00",
+       "vat": "60000.00"
+      },
+      {
+       "period": "2026-08",
+       "tax_code": "ZERO",
+       "net": "600000.00",
+       "vat": "0.00"
+      },
+      {
+       "period": "2026-08",
+       "tax_code": "EXEMPT",
+       "net": "0.00",
+       "vat": "0.00"
+      },
+      {
+       "period": "2026-09",
+       "tax_code": "STD",
+       "net": "400000.00",
+       "vat": "60000.00"
+      },
+      {
+       "period": "2026-09",
+       "tax_code": "ZERO",
+       "net": "600000.00",
+       "vat": "0.00"
+      },
+      {
+       "period": "2026-09",
+       "tax_code": "EXEMPT",
+       "net": "0.00",
+       "vat": "0.00"
+      }
+     ],
+     "supplier_invoices": [
+      {
+       "entry_id": "SI-510000071-00001",
+       "period": "2025-10",
+       "supplier_ref": "530000001",
+       "invoice_number": "INV-0001-202510-7101",
+       "invoice_date": "2025-10-10",
+       "net": "700000.00",
+       "vat": "105000.00",
+       "tax_code": "STD",
+       "account": "5000"
+      },
+      {
+       "entry_id": "SI-510000071-00002",
+       "period": "2025-11",
+       "supplier_ref": "530000001",
+       "invoice_number": "INV-0001-202511-7102",
+       "invoice_date": "2025-11-10",
+       "net": "700000.00",
+       "vat": "105000.00",
+       "tax_code": "STD",
+       "account": "5000"
+      },
+      {
+       "entry_id": "SI-510000071-00003",
+       "period": "2025-12",
+       "supplier_ref": "530000001",
+       "invoice_number": "INV-0001-202512-7103",
+       "invoice_date": "2025-12-10",
+       "net": "700000.00",
+       "vat": "105000.00",
+       "tax_code": "STD",
+       "account": "5000"
+      },
+      {
+       "entry_id": "SI-510000071-00004",
+       "period": "2026-01",
+       "supplier_ref": "530000001",
+       "invoice_number": "INV-0001-202601-7104",
+       "invoice_date": "2026-01-10",
+       "net": "700000.00",
+       "vat": "105000.00",
+       "tax_code": "STD",
+       "account": "5000"
+      },
+      {
+       "entry_id": "SI-510000071-00005",
+       "period": "2026-02",
+       "supplier_ref": "530000001",
+       "invoice_number": "INV-0001-202602-7105",
+       "invoice_date": "2026-02-10",
+       "net": "700000.00",
+       "vat": "105000.00",
+       "tax_code": "STD",
+       "account": "5000"
+      },
+      {
+       "entry_id": "SI-510000071-00006",
+       "period": "2026-03",
+       "supplier_ref": "530000001",
+       "invoice_number": "INV-0001-202603-7106",
+       "invoice_date": "2026-03-10",
+       "net": "700000.00",
+       "vat": "105000.00",
+       "tax_code": "STD",
+       "account": "5000"
+      },
+      {
+       "entry_id": "SI-510000071-00007",
+       "period": "2026-04",
+       "supplier_ref": "530000001",
+       "invoice_number": "INV-0001-202604-7107",
+       "invoice_date": "2026-04-10",
+       "net": "700000.00",
+       "vat": "105000.00",
+       "tax_code": "STD",
+       "account": "5000"
+      },
+      {
+       "entry_id": "SI-510000071-00008",
+       "period": "2026-05",
+       "supplier_ref": "530000001",
+       "invoice_number": "INV-0001-202605-7108",
+       "invoice_date": "2026-05-10",
+       "net": "700000.00",
+       "vat": "105000.00",
+       "tax_code": "STD",
+       "account": "5000"
+      },
+      {
+       "entry_id": "SI-510000071-00009",
+       "period": "2026-06",
+       "supplier_ref": "530000001",
+       "invoice_number": "INV-0001-202606-7109",
+       "invoice_date": "2026-06-10",
+       "net": "700000.00",
+       "vat": "105000.00",
+       "tax_code": "STD",
+       "account": "5000"
+      },
+      {
+       "entry_id": "SI-510000071-00010",
+       "period": "2026-07",
+       "supplier_ref": "530000001",
+       "invoice_number": "INV-0001-202607-7110",
+       "invoice_date": "2026-07-10",
+       "net": "700000.00",
+       "vat": "105000.00",
+       "tax_code": "STD",
+       "account": "5000"
+      },
+      {
+       "entry_id": "SI-510000071-00011",
+       "period": "2026-08",
+       "supplier_ref": "530000001",
+       "invoice_number": "INV-0001-202608-7111",
+       "invoice_date": "2026-08-10",
+       "net": "700000.00",
+       "vat": "105000.00",
+       "tax_code": "STD",
+       "account": "5000"
+      },
+      {
+       "entry_id": "SI-510000071-00012",
+       "period": "2026-09",
+       "supplier_ref": "530000001",
+       "invoice_number": "INV-0001-202609-7112",
+       "invoice_date": "2026-09-10",
+       "net": "700000.00",
+       "vat": "105000.00",
+       "tax_code": "STD",
+       "account": "5000"
+      }
+     ],
+     "journals": [
+      {
+       "journal_id": "JNL-510000071-2025-10",
+       "period": "2025-10",
+       "lines": [
+        {
+         "account": "1400",
+         "debit": "105000.00",
+         "credit": "0.00"
+        },
+        {
+         "account": "2400",
+         "debit": "0.00",
+         "credit": "60000.00"
+        },
+        {
+         "account": "2100",
+         "debit": "60000.00",
+         "credit": "105000.00"
+        }
+       ]
+      },
+      {
+       "journal_id": "JNL-510000071-2025-11",
+       "period": "2025-11",
+       "lines": [
+        {
+         "account": "1400",
+         "debit": "105000.00",
+         "credit": "0.00"
+        },
+        {
+         "account": "2400",
+         "debit": "0.00",
+         "credit": "60000.00"
+        },
+        {
+         "account": "2100",
+         "debit": "60000.00",
+         "credit": "105000.00"
+        }
+       ]
+      },
+      {
+       "journal_id": "JNL-510000071-2025-12",
+       "period": "2025-12",
+       "lines": [
+        {
+         "account": "1400",
+         "debit": "105000.00",
+         "credit": "0.00"
+        },
+        {
+         "account": "2400",
+         "debit": "0.00",
+         "credit": "60000.00"
+        },
+        {
+         "account": "2100",
+         "debit": "60000.00",
+         "credit": "105000.00"
+        }
+       ]
+      },
+      {
+       "journal_id": "JNL-510000071-2026-01",
+       "period": "2026-01",
+       "lines": [
+        {
+         "account": "1400",
+         "debit": "105000.00",
+         "credit": "0.00"
+        },
+        {
+         "account": "2400",
+         "debit": "0.00",
+         "credit": "60000.00"
+        },
+        {
+         "account": "2100",
+         "debit": "60000.00",
+         "credit": "105000.00"
+        }
+       ]
+      },
+      {
+       "journal_id": "JNL-510000071-2026-02",
+       "period": "2026-02",
+       "lines": [
+        {
+         "account": "1400",
+         "debit": "105000.00",
+         "credit": "0.00"
+        },
+        {
+         "account": "2400",
+         "debit": "0.00",
+         "credit": "60000.00"
+        },
+        {
+         "account": "2100",
+         "debit": "60000.00",
+         "credit": "105000.00"
+        }
+       ]
+      },
+      {
+       "journal_id": "JNL-510000071-2026-03",
+       "period": "2026-03",
+       "lines": [
+        {
+         "account": "1400",
+         "debit": "105000.00",
+         "credit": "0.00"
+        },
+        {
+         "account": "2400",
+         "debit": "0.00",
+         "credit": "60000.00"
+        },
+        {
+         "account": "2100",
+         "debit": "60000.00",
+         "credit": "105000.00"
+        }
+       ]
+      },
+      {
+       "journal_id": "JNL-510000071-2026-04",
+       "period": "2026-04",
+       "lines": [
+        {
+         "account": "1400",
+         "debit": "105000.00",
+         "credit": "0.00"
+        },
+        {
+         "account": "2400",
+         "debit": "0.00",
+         "credit": "60000.00"
+        },
+        {
+         "account": "2100",
+         "debit": "60000.00",
+         "credit": "105000.00"
+        }
+       ]
+      },
+      {
+       "journal_id": "JNL-510000071-2026-05",
+       "period": "2026-05",
+       "lines": [
+        {
+         "account": "1400",
+         "debit": "105000.00",
+         "credit": "0.00"
+        },
+        {
+         "account": "2400",
+         "debit": "0.00",
+         "credit": "60000.00"
+        },
+        {
+         "account": "2100",
+         "debit": "60000.00",
+         "credit": "105000.00"
+        }
+       ]
+      },
+      {
+       "journal_id": "JNL-510000071-2026-06",
+       "period": "2026-06",
+       "lines": [
+        {
+         "account": "1400",
+         "debit": "105000.00",
+         "credit": "0.00"
+        },
+        {
+         "account": "2400",
+         "debit": "0.00",
+         "credit": "60000.00"
+        },
+        {
+         "account": "2100",
+         "debit": "60000.00",
+         "credit": "105000.00"
+        }
+       ]
+      },
+      {
+       "journal_id": "JNL-510000071-2026-07",
+       "period": "2026-07",
+       "lines": [
+        {
+         "account": "1400",
+         "debit": "105000.00",
+         "credit": "0.00"
+        },
+        {
+         "account": "2400",
+         "debit": "0.00",
+         "credit": "60000.00"
+        },
+        {
+         "account": "2100",
+         "debit": "60000.00",
+         "credit": "105000.00"
+        }
+       ]
+      },
+      {
+       "journal_id": "JNL-510000071-2026-08",
+       "period": "2026-08",
+       "lines": [
+        {
+         "account": "1400",
+         "debit": "105000.00",
+         "credit": "0.00"
+        },
+        {
+         "account": "2400",
+         "debit": "0.00",
+         "credit": "60000.00"
+        },
+        {
+         "account": "2100",
+         "debit": "60000.00",
+         "credit": "105000.00"
+        }
+       ]
+      },
+      {
+       "journal_id": "JNL-510000071-2026-09",
+       "period": "2026-09",
+       "lines": [
+        {
+         "account": "1400",
+         "debit": "105000.00",
+         "credit": "0.00"
+        },
+        {
+         "account": "2400",
+         "debit": "0.00",
+         "credit": "60000.00"
+        },
+        {
+         "account": "2100",
+         "debit": "60000.00",
+         "credit": "105000.00"
+        }
+       ]
+      }
+     ]
+    },
+    "foreign_payments_csv": null,
+    "agreements": [],
+    "documents": {},
+    "residence_certificates": [],
+    "loss_explanations": []
+   },
+   "510000072": {
+    "tin": "510000072",
+    "saft": {
+     "header": {
+      "tin": "510000072",
+      "company_name": "Synthetic Senqu Bottling",
+      "currency": "LSL",
+      "period_start": "2025-10",
+      "period_end": "2026-09"
+     },
+     "suppliers": [
+      {
+       "supplier_ref": "530000001",
+       "name": "Synthetic Supplier A",
+       "country": "ls",
+       "resident": true
+      },
+      {
+       "supplier_ref": "530000002",
+       "name": "Synthetic Supplier B",
+       "country": "ls",
+       "resident": true
+      }
+     ],
+     "sales_summary": [
+      {
+       "period": "2025-10",
+       "tax_code": "STD",
+       "net": "950000.00",
+       "vat": "142500.00"
+      },
+      {
+       "period": "2025-10",
+       "tax_code": "ZERO",
+       "net": "0.00",
+       "vat": "0.00"
+      },
+      {
+       "period": "2025-10",
+       "tax_code": "EXEMPT",
+       "net": "0.00",
+       "vat": "0.00"
+      },
+      {
+       "period": "2025-11",
+       "tax_code": "STD",
+       "net": "950000.00",
+       "vat": "142500.00"
+      },
+      {
+       "period": "2025-11",
+       "tax_code": "ZERO",
+       "net": "0.00",
+       "vat": "0.00"
+      },
+      {
+       "period": "2025-11",
+       "tax_code": "EXEMPT",
+       "net": "0.00",
+       "vat": "0.00"
+      },
+      {
+       "period": "2025-12",
+       "tax_code": "STD",
+       "net": "950000.00",
+       "vat": "142500.00"
+      },
+      {
+       "period": "2025-12",
+       "tax_code": "ZERO",
+       "net": "0.00",
+       "vat": "0.00"
+      },
+      {
+       "period": "2025-12",
+       "tax_code": "EXEMPT",
+       "net": "0.00",
+       "vat": "0.00"
+      },
+      {
+       "period": "2026-01",
+       "tax_code": "STD",
+       "net": "950000.00",
+       "vat": "142500.00"
+      },
+      {
+       "period": "2026-01",
+       "tax_code": "ZERO",
+       "net": "0.00",
+       "vat": "0.00"
+      },
+      {
+       "period": "2026-01",
+       "tax_code": "EXEMPT",
+       "net": "0.00",
+       "vat": "0.00"
+      },
+      {
+       "period": "2026-02",
+       "tax_code": "STD",
+       "net": "950000.00",
+       "vat": "142500.00"
+      },
+      {
+       "period": "2026-02",
+       "tax_code": "ZERO",
+       "net": "0.00",
+       "vat": "0.00"
+      },
+      {
+       "period": "2026-02",
+       "tax_code": "EXEMPT",
+       "net": "0.00",
+       "vat": "0.00"
+      },
+      {
+       "period": "2026-03",
+       "tax_code": "STD",
+       "net": "950000.00",
+       "vat": "142500.00"
+      },
+      {
+       "period": "2026-03",
+       "tax_code": "ZERO",
+       "net": "0.00",
+       "vat": "0.00"
+      },
+      {
+       "period": "2026-03",
+       "tax_code": "EXEMPT",
+       "net": "0.00",
+       "vat": "0.00"
+      },
+      {
+       "period": "2026-04",
+       "tax_code": "STD",
+       "net": "950000.00",
+       "vat": "142500.00"
+      },
+      {
+       "period": "2026-04",
+       "tax_code": "ZERO",
+       "net": "0.00",
+       "vat": "0.00"
+      },
+      {
+       "period": "2026-04",
+       "tax_code": "EXEMPT",
+       "net": "0.00",
+       "vat": "0.00"
+      },
+      {
+       "period": "2026-05",
+       "tax_code": "STD",
+       "net": "950000.00",
+       "vat": "142500.00"
+      },
+      {
+       "period": "2026-05",
+       "tax_code": "ZERO",
+       "net": "0.00",
+       "vat": "0.00"
+      },
+      {
+       "period": "2026-05",
+       "tax_code": "EXEMPT",
+       "net": "0.00",
+       "vat": "0.00"
+      },
+      {
+       "period": "2026-06",
+       "tax_code": "STD",
+       "net": "950000.00",
+       "vat": "142500.00"
+      },
+      {
+       "period": "2026-06",
+       "tax_code": "ZERO",
+       "net": "0.00",
+       "vat": "0.00"
+      },
+      {
+       "period": "2026-06",
+       "tax_code": "EXEMPT",
+       "net": "0.00",
+       "vat": "0.00"
+      },
+      {
+       "period": "2026-07",
+       "tax_code": "STD",
+       "net": "950000.00",
+       "vat": "142500.00"
+      },
+      {
+       "period": "2026-07",
+       "tax_code": "ZERO",
+       "net": "0.00",
+       "vat": "0.00"
+      },
+      {
+       "period": "2026-07",
+       "tax_code": "EXEMPT",
+       "net": "0.00",
+       "vat": "0.00"
+      },
+      {
+       "period": "2026-08",
+       "tax_code": "STD",
+       "net": "950000.00",
+       "vat": "142500.00"
+      },
+      {
+       "period": "2026-08",
+       "tax_code": "ZERO",
+       "net": "0.00",
+       "vat": "0.00"
+      },
+      {
+       "period": "2026-08",
+       "tax_code": "EXEMPT",
+       "net": "0.00",
+       "vat": "0.00"
+      },
+      {
+       "period": "2026-09",
+       "tax_code": "STD",
+       "net": "950000.00",
+       "vat": "142500.00"
+      },
+      {
+       "period": "2026-09",
+       "tax_code": "ZERO",
+       "net": "0.00",
+       "vat": "0.00"
+      },
+      {
+       "period": "2026-09",
+       "tax_code": "EXEMPT",
+       "net": "0.00",
+       "vat": "0.00"
+      }
+     ],
+     "supplier_invoices": [
+      {
+       "entry_id": "SI-510000072-00001",
+       "period": "2025-10",
+       "supplier_ref": "530000001",
+       "invoice_number": "INV-0001-202510-7201",
+       "invoice_date": "2025-10-10",
+       "net": "760000.00",
+       "vat": "114000.00",
+       "tax_code": "STD",
+       "account": "5000"
+      },
+      {
+       "entry_id": "SI-510000072-00002",
+       "period": "2025-11",
+       "supplier_ref": "530000001",
+       "invoice_number": "INV-0001-202511-7202",
+       "invoice_date": "2025-11-10",
+       "net": "760000.00",
+       "vat": "114000.00",
+       "tax_code": "STD",
+       "account": "5000"
+      },
+      {
+       "entry_id": "SI-510000072-00003",
+       "period": "2025-12",
+       "supplier_ref": "530000001",
+       "invoice_number": "INV-0001-202512-7203",
+       "invoice_date": "2025-12-10",
+       "net": "760000.00",
+       "vat": "114000.00",
+       "tax_code": "STD",
+       "account": "5000"
+      },
+      {
+       "entry_id": "SI-510000072-00004",
+       "period": "2026-01",
+       "supplier_ref": "530000001",
+       "invoice_number": "INV-0001-202601-7204",
+       "invoice_date": "2026-01-10",
+       "net": "760000.00",
+       "vat": "114000.00",
+       "tax_code": "STD",
+       "account": "5000"
+      },
+      {
+       "entry_id": "SI-510000072-00005",
+       "period": "2026-02",
+       "supplier_ref": "530000001",
+       "invoice_number": "INV-0001-202602-7205",
+       "invoice_date": "2026-02-10",
+       "net": "760000.00",
+       "vat": "114000.00",
+       "tax_code": "STD",
+       "account": "5000"
+      },
+      {
+       "entry_id": "SI-510000072-00006",
+       "period": "2026-02",
+       "supplier_ref": "530000002",
+       "invoice_number": "INV-0002-202602-7206",
+       "invoice_date": "2026-02-10",
+       "net": "900000.00",
+       "vat": "135000.00",
+       "tax_code": "STD",
+       "account": "1600"
+      },
+      {
+       "entry_id": "SI-510000072-00007",
+       "period": "2026-03",
+       "supplier_ref": "530000001",
+       "invoice_number": "INV-0001-202603-7207",
+       "invoice_date": "2026-03-10",
+       "net": "760000.00",
+       "vat": "114000.00",
+       "tax_code": "STD",
+       "account": "5000"
+      },
+      {
+       "entry_id": "SI-510000072-00008",
+       "period": "2026-03",
+       "supplier_ref": "530000002",
+       "invoice_number": "INV-0002-202603-7208",
+       "invoice_date": "2026-03-10",
+       "net": "900000.00",
+       "vat": "135000.00",
+       "tax_code": "STD",
+       "account": "1600"
+      },
+      {
+       "entry_id": "SI-510000072-00009",
+       "period": "2026-04",
+       "supplier_ref": "530000001",
+       "invoice_number": "INV-0001-202604-7209",
+       "invoice_date": "2026-04-10",
+       "net": "760000.00",
+       "vat": "114000.00",
+       "tax_code": "STD",
+       "account": "5000"
+      },
+      {
+       "entry_id": "SI-510000072-00010",
+       "period": "2026-04",
+       "supplier_ref": "530000002",
+       "invoice_number": "INV-0002-202604-7210",
+       "invoice_date": "2026-04-10",
+       "net": "900000.00",
+       "vat": "135000.00",
+       "tax_code": "STD",
+       "account": "1600"
+      },
+      {
+       "entry_id": "SI-510000072-00011",
+       "period": "2026-05",
+       "supplier_ref": "530000001",
+       "invoice_number": "INV-0001-202605-7211",
+       "invoice_date": "2026-05-10",
+       "net": "760000.00",
+       "vat": "114000.00",
+       "tax_code": "STD",
+       "account": "5000"
+      },
+      {
+       "entry_id": "SI-510000072-00012",
+       "period": "2026-05",
+       "supplier_ref": "530000002",
+       "invoice_number": "INV-0002-202605-7212",
+       "invoice_date": "2026-05-10",
+       "net": "900000.00",
+       "vat": "135000.00",
+       "tax_code": "STD",
+       "account": "1600"
+      },
+      {
+       "entry_id": "SI-510000072-00013",
+       "period": "2026-06",
+       "supplier_ref": "530000001",
+       "invoice_number": "INV-0001-202606-7213",
+       "invoice_date": "2026-06-10",
+       "net": "760000.00",
+       "vat": "114000.00",
+       "tax_code": "STD",
+       "account": "5000"
+      },
+      {
+       "entry_id": "SI-510000072-00014",
+       "period": "2026-06",
+       "supplier_ref": "530000002",
+       "invoice_number": "INV-0002-202606-7214",
+       "invoice_date": "2026-06-10",
+       "net": "900000.00",
+       "vat": "135000.00",
+       "tax_code": "STD",
+       "account": "1600"
+      },
+      {
+       "entry_id": "SI-510000072-00015",
+       "period": "2026-07",
+       "supplier_ref": "530000001",
+       "invoice_number": "INV-0001-202607-7215",
+       "invoice_date": "2026-07-10",
+       "net": "760000.00",
+       "vat": "114000.00",
+       "tax_code": "STD",
+       "account": "5000"
+      },
+      {
+       "entry_id": "SI-510000072-00016",
+       "period": "2026-07",
+       "supplier_ref": "530000002",
+       "invoice_number": "INV-0002-202607-7216",
+       "invoice_date": "2026-07-10",
+       "net": "900000.00",
+       "vat": "135000.00",
+       "tax_code": "STD",
+       "account": "1600"
+      },
+      {
+       "entry_id": "SI-510000072-00017",
+       "period": "2026-08",
+       "supplier_ref": "530000001",
+       "invoice_number": "INV-0001-202608-7217",
+       "invoice_date": "2026-08-10",
+       "net": "760000.00",
+       "vat": "114000.00",
+       "tax_code": "STD",
+       "account": "5000"
+      },
+      {
+       "entry_id": "SI-510000072-00018",
+       "period": "2026-08",
+       "supplier_ref": "530000002",
+       "invoice_number": "INV-0002-202608-7218",
+       "invoice_date": "2026-08-10",
+       "net": "900000.00",
+       "vat": "135000.00",
+       "tax_code": "STD",
+       "account": "1600"
+      },
+      {
+       "entry_id": "SI-510000072-00019",
+       "period": "2026-09",
+       "supplier_ref": "530000001",
+       "invoice_number": "INV-0001-202609-7219",
+       "invoice_date": "2026-09-10",
+       "net": "760000.00",
+       "vat": "114000.00",
+       "tax_code": "STD",
+       "account": "5000"
+      },
+      {
+       "entry_id": "SI-510000072-00020",
+       "period": "2026-09",
+       "supplier_ref": "530000002",
+       "invoice_number": "INV-0002-202609-7220",
+       "invoice_date": "2026-09-10",
+       "net": "900000.00",
+       "vat": "135000.00",
+       "tax_code": "STD",
+       "account": "1600"
+      }
+     ],
+     "journals": [
+      {
+       "journal_id": "JNL-510000072-2025-10",
+       "period": "2025-10",
+       "lines": [
+        {
+         "account": "1400",
+         "debit": "114000.00",
+         "credit": "0.00"
+        },
+        {
+         "account": "2400",
+         "debit": "0.00",
+         "credit": "142500.00"
+        },
+        {
+         "account": "2100",
+         "debit": "142500.00",
+         "credit": "114000.00"
+        }
+       ]
+      },
+      {
+       "journal_id": "JNL-510000072-2025-11",
+       "period": "2025-11",
+       "lines": [
+        {
+         "account": "1400",
+         "debit": "114000.00",
+         "credit": "0.00"
+        },
+        {
+         "account": "2400",
+         "debit": "0.00",
+         "credit": "142500.00"
+        },
+        {
+         "account": "2100",
+         "debit": "142500.00",
+         "credit": "114000.00"
+        }
+       ]
+      },
+      {
+       "journal_id": "JNL-510000072-2025-12",
+       "period": "2025-12",
+       "lines": [
+        {
+         "account": "1400",
+         "debit": "114000.00",
+         "credit": "0.00"
+        },
+        {
+         "account": "2400",
+         "debit": "0.00",
+         "credit": "142500.00"
+        },
+        {
+         "account": "2100",
+         "debit": "142500.00",
+         "credit": "114000.00"
+        }
+       ]
+      },
+      {
+       "journal_id": "JNL-510000072-2026-01",
+       "period": "2026-01",
+       "lines": [
+        {
+         "account": "1400",
+         "debit": "114000.00",
+         "credit": "0.00"
+        },
+        {
+         "account": "2400",
+         "debit": "0.00",
+         "credit": "142500.00"
+        },
+        {
+         "account": "2100",
+         "debit": "142500.00",
+         "credit": "114000.00"
+        }
+       ]
+      },
+      {
+       "journal_id": "JNL-510000072-2026-02",
+       "period": "2026-02",
+       "lines": [
+        {
+         "account": "1400",
+         "debit": "249000.00",
+         "credit": "0.00"
+        },
+        {
+         "account": "2400",
+         "debit": "0.00",
+         "credit": "142500.00"
+        },
+        {
+         "account": "2100",
+         "debit": "142500.00",
+         "credit": "249000.00"
+        }
+       ]
+      },
+      {
+       "journal_id": "JNL-510000072-2026-03",
+       "period": "2026-03",
+       "lines": [
+        {
+         "account": "1400",
+         "debit": "249000.00",
+         "credit": "0.00"
+        },
+        {
+         "account": "2400",
+         "debit": "0.00",
+         "credit": "142500.00"
+        },
+        {
+         "account": "2100",
+         "debit": "142500.00",
+         "credit": "249000.00"
+        }
+       ]
+      },
+      {
+       "journal_id": "JNL-510000072-2026-04",
+       "period": "2026-04",
+       "lines": [
+        {
+         "account": "1400",
+         "debit": "249000.00",
+         "credit": "0.00"
+        },
+        {
+         "account": "2400",
+         "debit": "0.00",
+         "credit": "142500.00"
+        },
+        {
+         "account": "2100",
+         "debit": "142500.00",
+         "credit": "249000.00"
+        }
+       ]
+      },
+      {
+       "journal_id": "JNL-510000072-2026-05",
+       "period": "2026-05",
+       "lines": [
+        {
+         "account": "1400",
+         "debit": "249000.00",
+         "credit": "0.00"
+        },
+        {
+         "account": "2400",
+         "debit": "0.00",
+         "credit": "142500.00"
+        },
+        {
+         "account": "2100",
+         "debit": "142500.00",
+         "credit": "249000.00"
+        }
+       ]
+      },
+      {
+       "journal_id": "JNL-510000072-2026-06",
+       "period": "2026-06",
+       "lines": [
+        {
+         "account": "1400",
+         "debit": "249000.00",
+         "credit": "0.00"
+        },
+        {
+         "account": "2400",
+         "debit": "0.00",
+         "credit": "142500.00"
+        },
+        {
+         "account": "2100",
+         "debit": "142500.00",
+         "credit": "249000.00"
+        }
+       ]
+      },
+      {
+       "journal_id": "JNL-510000072-2026-07",
+       "period": "2026-07",
+       "lines": [
+        {
+         "account": "1400",
+         "debit": "249000.00",
+         "credit": "0.00"
+        },
+        {
+         "account": "2400",
+         "debit": "0.00",
+         "credit": "142500.00"
+        },
+        {
+         "account": "2100",
+         "debit": "142500.00",
+         "credit": "249000.00"
+        }
+       ]
+      },
+      {
+       "journal_id": "JNL-510000072-2026-08",
+       "period": "2026-08",
+       "lines": [
+        {
+         "account": "1400",
+         "debit": "249000.00",
+         "credit": "0.00"
+        },
+        {
+         "account": "2400",
+         "debit": "0.00",
+         "credit": "142500.00"
+        },
+        {
+         "account": "2100",
+         "debit": "142500.00",
+         "credit": "249000.00"
+        }
+       ]
+      },
+      {
+       "journal_id": "JNL-510000072-2026-09",
+       "period": "2026-09",
+       "lines": [
+        {
+         "account": "1400",
+         "debit": "249000.00",
+         "credit": "0.00"
+        },
+        {
+         "account": "2400",
+         "debit": "0.00",
+         "credit": "142500.00"
+        },
+        {
+         "account": "2100",
+         "debit": "142500.00",
+         "credit": "249000.00"
+        }
+       ]
+      }
+     ]
+    },
+    "foreign_payments_csv": null,
+    "agreements": [],
+    "documents": {},
+    "residence_certificates": [],
+    "loss_explanations": []
+   },
+   "510000073": {
+    "tin": "510000073",
+    "saft": {
+     "header": {
+      "tin": "510000073",
+      "company_name": "Synthetic Thaba Wholesale",
+      "currency": "LSL",
+      "period_start": "2025-10",
+      "period_end": "2026-09"
+     },
+     "suppliers": [
+      {
+       "supplier_ref": "530000001",
+       "name": "Synthetic Supplier A",
+       "country": "ls",
+       "resident": true
+      },
+      {
+       "supplier_ref": "530000002",
+       "name": "Synthetic Supplier B",
+       "country": "ls",
+       "resident": true
+      }
+     ],
+     "sales_summary": [
+      {
+       "period": "2025-10",
+       "tax_code": "STD",
+       "net": "950000.00",
+       "vat": "142500.00"
+      },
+      {
+       "period": "2025-10",
+       "tax_code": "ZERO",
+       "net": "0.00",
+       "vat": "0.00"
+      },
+      {
+       "period": "2025-10",
+       "tax_code": "EXEMPT",
+       "net": "0.00",
+       "vat": "0.00"
+      },
+      {
+       "period": "2025-11",
+       "tax_code": "STD",
+       "net": "950000.00",
+       "vat": "142500.00"
+      },
+      {
+       "period": "2025-11",
+       "tax_code": "ZERO",
+       "net": "0.00",
+       "vat": "0.00"
+      },
+      {
+       "period": "2025-11",
+       "tax_code": "EXEMPT",
+       "net": "0.00",
+       "vat": "0.00"
+      },
+      {
+       "period": "2025-12",
+       "tax_code": "STD",
+       "net": "950000.00",
+       "vat": "142500.00"
+      },
+      {
+       "period": "2025-12",
+       "tax_code": "ZERO",
+       "net": "0.00",
+       "vat": "0.00"
+      },
+      {
+       "period": "2025-12",
+       "tax_code": "EXEMPT",
+       "net": "0.00",
+       "vat": "0.00"
+      },
+      {
+       "period": "2026-01",
+       "tax_code": "STD",
+       "net": "522500.00",
+       "vat": "78375.00"
+      },
+      {
+       "period": "2026-01",
+       "tax_code": "ZERO",
+       "net": "0.00",
+       "vat": "0.00"
+      },
+      {
+       "period": "2026-01",
+       "tax_code": "EXEMPT",
+       "net": "0.00",
+       "vat": "0.00"
+      },
+      {
+       "period": "2026-02",
+       "tax_code": "STD",
+       "net": "522500.00",
+       "vat": "78375.00"
+      },
+      {
+       "period": "2026-02",
+       "tax_code": "ZERO",
+       "net": "0.00",
+       "vat": "0.00"
+      },
+      {
+       "period": "2026-02",
+       "tax_code": "EXEMPT",
+       "net": "0.00",
+       "vat": "0.00"
+      },
+      {
+       "period": "2026-03",
+       "tax_code": "STD",
+       "net": "522500.00",
+       "vat": "78375.00"
+      },
+      {
+       "period": "2026-03",
+       "tax_code": "ZERO",
+       "net": "0.00",
+       "vat": "0.00"
+      },
+      {
+       "period": "2026-03",
+       "tax_code": "EXEMPT",
+       "net": "0.00",
+       "vat": "0.00"
+      },
+      {
+       "period": "2026-04",
+       "tax_code": "STD",
+       "net": "522500.00",
+       "vat": "78375.00"
+      },
+      {
+       "period": "2026-04",
+       "tax_code": "ZERO",
+       "net": "0.00",
+       "vat": "0.00"
+      },
+      {
+       "period": "2026-04",
+       "tax_code": "EXEMPT",
+       "net": "0.00",
+       "vat": "0.00"
+      },
+      {
+       "period": "2026-05",
+       "tax_code": "STD",
+       "net": "522500.00",
+       "vat": "78375.00"
+      },
+      {
+       "period": "2026-05",
+       "tax_code": "ZERO",
+       "net": "0.00",
+       "vat": "0.00"
+      },
+      {
+       "period": "2026-05",
+       "tax_code": "EXEMPT",
+       "net": "0.00",
+       "vat": "0.00"
+      },
+      {
+       "period": "2026-06",
+       "tax_code": "STD",
+       "net": "522500.00",
+       "vat": "78375.00"
+      },
+      {
+       "period": "2026-06",
+       "tax_code": "ZERO",
+       "net": "0.00",
+       "vat": "0.00"
+      },
+      {
+       "period": "2026-06",
+       "tax_code": "EXEMPT",
+       "net": "0.00",
+       "vat": "0.00"
+      },
+      {
+       "period": "2026-07",
+       "tax_code": "STD",
+       "net": "522500.00",
+       "vat": "78375.00"
+      },
+      {
+       "period": "2026-07",
+       "tax_code": "ZERO",
+       "net": "0.00",
+       "vat": "0.00"
+      },
+      {
+       "period": "2026-07",
+       "tax_code": "EXEMPT",
+       "net": "0.00",
+       "vat": "0.00"
+      },
+      {
+       "period": "2026-08",
+       "tax_code": "STD",
+       "net": "522500.00",
+       "vat": "78375.00"
+      },
+      {
+       "period": "2026-08",
+       "tax_code": "ZERO",
+       "net": "0.00",
+       "vat": "0.00"
+      },
+      {
+       "period": "2026-08",
+       "tax_code": "EXEMPT",
+       "net": "0.00",
+       "vat": "0.00"
+      },
+      {
+       "period": "2026-09",
+       "tax_code": "STD",
+       "net": "522500.00",
+       "vat": "78375.00"
+      },
+      {
+       "period": "2026-09",
+       "tax_code": "ZERO",
+       "net": "0.00",
+       "vat": "0.00"
+      },
+      {
+       "period": "2026-09",
+       "tax_code": "EXEMPT",
+       "net": "0.00",
+       "vat": "0.00"
+      }
+     ],
+     "supplier_invoices": [
+      {
+       "entry_id": "SI-510000073-00001",
+       "period": "2025-10",
+       "supplier_ref": "530000001",
+       "invoice_number": "INV-0001-202510-7301",
+       "invoice_date": "2025-10-10",
+       "net": "800000.00",
+       "vat": "120000.00",
+       "tax_code": "STD",
+       "account": "5000"
+      },
+      {
+       "entry_id": "SI-510000073-00002",
+       "period": "2025-11",
+       "supplier_ref": "530000001",
+       "invoice_number": "INV-0001-202511-7302",
+       "invoice_date": "2025-11-10",
+       "net": "800000.00",
+       "vat": "120000.00",
+       "tax_code": "STD",
+       "account": "5000"
+      },
+      {
+       "entry_id": "SI-510000073-00003",
+       "period": "2025-12",
+       "supplier_ref": "530000001",
+       "invoice_number": "INV-0001-202512-7303",
+       "invoice_date": "2025-12-10",
+       "net": "800000.00",
+       "vat": "120000.00",
+       "tax_code": "STD",
+       "account": "5000"
+      },
+      {
+       "entry_id": "SI-510000073-00004",
+       "period": "2026-01",
+       "supplier_ref": "530000001",
+       "invoice_number": "INV-0001-202601-7304",
+       "invoice_date": "2026-01-10",
+       "net": "800000.00",
+       "vat": "120000.00",
+       "tax_code": "STD",
+       "account": "5000"
+      },
+      {
+       "entry_id": "SI-510000073-00005",
+       "period": "2026-02",
+       "supplier_ref": "530000001",
+       "invoice_number": "INV-0001-202602-7305",
+       "invoice_date": "2026-02-10",
+       "net": "800000.00",
+       "vat": "120000.00",
+       "tax_code": "STD",
+       "account": "5000"
+      },
+      {
+       "entry_id": "SI-510000073-00006",
+       "period": "2026-03",
+       "supplier_ref": "530000001",
+       "invoice_number": "INV-0001-202603-7306",
+       "invoice_date": "2026-03-10",
+       "net": "800000.00",
+       "vat": "120000.00",
+       "tax_code": "STD",
+       "account": "5000"
+      },
+      {
+       "entry_id": "SI-510000073-00007",
+       "period": "2026-04",
+       "supplier_ref": "530000001",
+       "invoice_number": "INV-0001-202604-7307",
+       "invoice_date": "2026-04-10",
+       "net": "800000.00",
+       "vat": "120000.00",
+       "tax_code": "STD",
+       "account": "5000"
+      },
+      {
+       "entry_id": "SI-510000073-00008",
+       "period": "2026-05",
+       "supplier_ref": "530000001",
+       "invoice_number": "INV-0001-202605-7308",
+       "invoice_date": "2026-05-10",
+       "net": "800000.00",
+       "vat": "120000.00",
+       "tax_code": "STD",
+       "account": "5000"
+      },
+      {
+       "entry_id": "SI-510000073-00009",
+       "period": "2026-06",
+       "supplier_ref": "530000001",
+       "invoice_number": "INV-0001-202606-7309",
+       "invoice_date": "2026-06-10",
+       "net": "800000.00",
+       "vat": "120000.00",
+       "tax_code": "STD",
+       "account": "5000"
+      },
+      {
+       "entry_id": "SI-510000073-00010",
+       "period": "2026-07",
+       "supplier_ref": "530000001",
+       "invoice_number": "INV-0001-202607-7310",
+       "invoice_date": "2026-07-10",
+       "net": "800000.00",
+       "vat": "120000.00",
+       "tax_code": "STD",
+       "account": "5000"
+      },
+      {
+       "entry_id": "SI-510000073-00011",
+       "period": "2026-08",
+       "supplier_ref": "530000001",
+       "invoice_number": "INV-0001-202608-7311",
+       "invoice_date": "2026-08-10",
+       "net": "800000.00",
+       "vat": "120000.00",
+       "tax_code": "STD",
+       "account": "5000"
+      },
+      {
+       "entry_id": "SI-510000073-00012",
+       "period": "2026-09",
+       "supplier_ref": "530000001",
+       "invoice_number": "INV-0001-202609-7312",
+       "invoice_date": "2026-09-10",
+       "net": "800000.00",
+       "vat": "120000.00",
+       "tax_code": "STD",
+       "account": "5000"
+      }
+     ],
+     "journals": [
+      {
+       "journal_id": "JNL-510000073-2025-10",
+       "period": "2025-10",
+       "lines": [
+        {
+         "account": "1400",
+         "debit": "120000.00",
+         "credit": "0.00"
+        },
+        {
+         "account": "2400",
+         "debit": "0.00",
+         "credit": "142500.00"
+        },
+        {
+         "account": "2100",
+         "debit": "142500.00",
+         "credit": "120000.00"
+        }
+       ]
+      },
+      {
+       "journal_id": "JNL-510000073-2025-11",
+       "period": "2025-11",
+       "lines": [
+        {
+         "account": "1400",
+         "debit": "120000.00",
+         "credit": "0.00"
+        },
+        {
+         "account": "2400",
+         "debit": "0.00",
+         "credit": "142500.00"
+        },
+        {
+         "account": "2100",
+         "debit": "142500.00",
+         "credit": "120000.00"
+        }
+       ]
+      },
+      {
+       "journal_id": "JNL-510000073-2025-12",
+       "period": "2025-12",
+       "lines": [
+        {
+         "account": "1400",
+         "debit": "120000.00",
+         "credit": "0.00"
+        },
+        {
+         "account": "2400",
+         "debit": "0.00",
+         "credit": "142500.00"
+        },
+        {
+         "account": "2100",
+         "debit": "142500.00",
+         "credit": "120000.00"
+        }
+       ]
+      },
+      {
+       "journal_id": "JNL-510000073-2026-01",
+       "period": "2026-01",
+       "lines": [
+        {
+         "account": "1400",
+         "debit": "120000.00",
+         "credit": "0.00"
+        },
+        {
+         "account": "2400",
+         "debit": "0.00",
+         "credit": "78375.00"
+        },
+        {
+         "account": "2100",
+         "debit": "78375.00",
+         "credit": "120000.00"
+        }
+       ]
+      },
+      {
+       "journal_id": "JNL-510000073-2026-02",
+       "period": "2026-02",
+       "lines": [
+        {
+         "account": "1400",
+         "debit": "120000.00",
+         "credit": "0.00"
+        },
+        {
+         "account": "2400",
+         "debit": "0.00",
+         "credit": "78375.00"
+        },
+        {
+         "account": "2100",
+         "debit": "78375.00",
+         "credit": "120000.00"
+        }
+       ]
+      },
+      {
+       "journal_id": "JNL-510000073-2026-03",
+       "period": "2026-03",
+       "lines": [
+        {
+         "account": "1400",
+         "debit": "120000.00",
+         "credit": "0.00"
+        },
+        {
+         "account": "2400",
+         "debit": "0.00",
+         "credit": "78375.00"
+        },
+        {
+         "account": "2100",
+         "debit": "78375.00",
+         "credit": "120000.00"
+        }
+       ]
+      },
+      {
+       "journal_id": "JNL-510000073-2026-04",
+       "period": "2026-04",
+       "lines": [
+        {
+         "account": "1400",
+         "debit": "120000.00",
+         "credit": "0.00"
+        },
+        {
+         "account": "2400",
+         "debit": "0.00",
+         "credit": "78375.00"
+        },
+        {
+         "account": "2100",
+         "debit": "78375.00",
+         "credit": "120000.00"
+        }
+       ]
+      },
+      {
+       "journal_id": "JNL-510000073-2026-05",
+       "period": "2026-05",
+       "lines": [
+        {
+         "account": "1400",
+         "debit": "120000.00",
+         "credit": "0.00"
+        },
+        {
+         "account": "2400",
+         "debit": "0.00",
+         "credit": "78375.00"
+        },
+        {
+         "account": "2100",
+         "debit": "78375.00",
+         "credit": "120000.00"
+        }
+       ]
+      },
+      {
+       "journal_id": "JNL-510000073-2026-06",
+       "period": "2026-06",
+       "lines": [
+        {
+         "account": "1400",
+         "debit": "120000.00",
+         "credit": "0.00"
+        },
+        {
+         "account": "2400",
+         "debit": "0.00",
+         "credit": "78375.00"
+        },
+        {
+         "account": "2100",
+         "debit": "78375.00",
+         "credit": "120000.00"
+        }
+       ]
+      },
+      {
+       "journal_id": "JNL-510000073-2026-07",
+       "period": "2026-07",
+       "lines": [
+        {
+         "account": "1400",
+         "debit": "120000.00",
+         "credit": "0.00"
+        },
+        {
+         "account": "2400",
+         "debit": "0.00",
+         "credit": "78375.00"
+        },
+        {
+         "account": "2100",
+         "debit": "78375.00",
+         "credit": "120000.00"
+        }
+       ]
+      },
+      {
+       "journal_id": "JNL-510000073-2026-08",
+       "period": "2026-08",
+       "lines": [
+        {
+         "account": "1400",
+         "debit": "120000.00",
+         "credit": "0.00"
+        },
+        {
+         "account": "2400",
+         "debit": "0.00",
+         "credit": "78375.00"
+        },
+        {
+         "account": "2100",
+         "debit": "78375.00",
+         "credit": "120000.00"
+        }
+       ]
+      },
+      {
+       "journal_id": "JNL-510000073-2026-09",
+       "period": "2026-09",
+       "lines": [
+        {
+         "account": "1400",
+         "debit": "120000.00",
+         "credit": "0.00"
+        },
+        {
+         "account": "2400",
+         "debit": "0.00",
+         "credit": "78375.00"
+        },
+        {
+         "account": "2100",
+         "debit": "78375.00",
+         "credit": "120000.00"
+        }
+       ]
+      }
+     ]
+    },
+    "foreign_payments_csv": null,
+    "agreements": [],
+    "documents": {},
+    "residence_certificates": [],
+    "loss_explanations": []
+   }
+  },
+  "taxpayers": [
+   "510000071",
+   "510000072",
+   "510000073"
+  ]
+ },
+ "expected": {
+  "510000071": {
+   "label": "Exporter: structural credit from zero-rated sales",
+   "review_status": "explained",
+   "explained_by": [
+    "zero_rated_sales"
+   ],
+   "finding": null,
+   "claim_lane": "fast"
+  },
+  "510000072": {
+   "label": "Capital-spending programme: credits while equipment is bought",
+   "review_status": "explained",
+   "explained_by": [
+    "capital_spending"
+   ],
+   "finding": null,
+   "claim_lane": "standard",
+   "officer_check": "verify_assets"
+  },
+  "510000073": {
+   "label": "Unexplained persistent credit: declared standard-rated sales fall from the fourth month",
+   "review_status": "unexplained",
+   "explained_by": [],
+   "finding": "persistent_vat_credit_unexplained",
+   "claim_lane": "standard",
+   "expected_routes": [
+    "CAND-RECORDS",
+    "CAND-REFUNDS"
+   ]
+  }
+ },
+ "expected_non_findings": [
+  "510000071",
+  "510000072"
+ ]
+}

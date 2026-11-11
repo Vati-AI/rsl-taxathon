@@ -9,6 +9,10 @@ submission. It never receives the answer key. It runs, in order:
    ``ForeignPaymentAdapter``);
 3. BP6 related-party triggers and the TAX-051 work-arrangement fact structuring
    (existing tool, unchanged), with facts mapped from agreements and permit days;
+   then the TAX-139 persistent VAT credit review, which tests structural explanations
+   (zero-rated sales, import VAT paid at the border, capital spending) period by period
+   before it raises anything, and whose finding keeps the taxpayer's claims out of the
+   fast lane;
 4. TAX-116 rule-register routing of every finding code;
 5. per refund claim, the TAX-112 IDMS/ASYCUDA line match and the TAX-114 lane.
 
@@ -33,6 +37,7 @@ from channel_adapters import ForeignPaymentAdapter  # noqa: E402
 
 from ai.tools.foreign_payments import three_way_match  # noqa: E402
 from ai.tools.idms_match import match_claim_lines, transpositions  # noqa: E402
+from ai.tools.persistent_credit import review_persistent_credit  # noqa: E402
 from ai.tools.refund_triage import load_policy, triage_claim  # noqa: E402
 from ai.tools.related_party_signals import related_party_signals  # noqa: E402
 from ai.tools.source_recompute import account_category, match_lines_to_books, recompute  # noqa: E402
@@ -40,7 +45,7 @@ from ai.tools.work_arrangement import review_work_arrangement  # noqa: E402
 from ai.workflows.rule_register import RuleRegister, load_rule_register  # noqa: E402
 from integration.rsl_sources.fixture_source import FixtureRslSources  # noqa: E402
 
-PIPELINE_VERSION = "tax118-pipeline-v1"
+PIPELINE_VERSION = "tax139-pipeline-v2"
 CONTINUOUS_PRESENCE_DAYS = 183
 AUTHENTICITY_QUESTIONS = frozenset({"provide_invoice_absent_from_idms"})
 
@@ -180,7 +185,8 @@ def assess_taxpayer(
     idms = read("idms", "invoice")
     scores_env = read("rsl_fraud_model", "score")
     scores = {s["claim_id"]: s for s in scores_env["records"]}
-    asycuda = read("asycuda", "entry")["records"]
+    asycuda_env = read("asycuda", "entry")
+    asycuda = asycuda_env["records"]
     wht = [
         dict(line, period=r["period"])
         for r in read("etax", "wht_return")["records"]
@@ -222,6 +228,15 @@ def assess_taxpayer(
         review_work_arrangement(work_record) if work_record else {"referrals": []}
     )
 
+    # 3b. Persistent VAT credit positions (TAX-139): explanations first, then persistence.
+    credit = review_persistent_credit(
+        vat_returns=returns,
+        vat_rate=rates["vat"],
+        saft=sub["saft"],
+        asycuda_entries=asycuda,
+        customs_available=asycuda_env["status"] == "ok",
+    )
+
     # 5. Claims: line match and lane.
     domestic_refs = {
         str(line["supplier_ref"])
@@ -241,11 +256,15 @@ def assess_taxpayer(
     registered = set(registry["matches"])
     integrated = {t for t, r in integration["matches"].items() if r.get("integrated") is True}
 
-    taxpayer_flags = [{"code": f["code"]} for f in three["flags"]] + [
-        {"code": f["code"]}
-        for f in rp["findings"]
-        if f["code"] == "related_party_fees_with_persistent_losses"
-    ]
+    taxpayer_flags = (
+        [{"code": f["code"]} for f in three["flags"]]
+        + [
+            {"code": f["code"]}
+            for f in rp["findings"]
+            if f["code"] == "related_party_fees_with_persistent_losses"
+        ]
+        + [{"code": f["code"]} for f in credit["findings"]]
+    )
     claim_results = []
     authenticity = False
     for claim in claims:
@@ -308,6 +327,8 @@ def assess_taxpayer(
             else "related_party_loss"
         )
         findings.append({"code": f["code"], "issue": issue, "reason": f["reason"]})
+    for f in credit["findings"]:
+        findings.append({"code": f["code"], "issue": "persistent_credit", "reason": f["reason"]})
     if work["referrals"]:
         findings.append(
             {
@@ -331,6 +352,7 @@ def assess_taxpayer(
             )
         ),
         "untaxed_imported_services": three["total_gap"]["amount"],
+        "persistent_credit": credit["totals"]["unexplained"] if credit["findings"] else "0.00",
     }
     elapsed = time.perf_counter() - started
     return {
@@ -343,6 +365,7 @@ def assess_taxpayer(
         "three_way": three,
         "related_party": rp,
         "work_arrangement": work,
+        "persistent_credit": credit,
         "flagged_amounts": flagged_amounts,
         "inputs_status": {
             "idms": idms["status"],

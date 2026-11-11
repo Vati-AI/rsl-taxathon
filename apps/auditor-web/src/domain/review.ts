@@ -122,20 +122,20 @@ export function syncText(decision: Decision): { text: string; tone: 'gray' | 'gr
   const sync = decision.jube_sync;
   if (sync.state === 'synced')
     return {
-      text: `Applied in Jube: case is now ${statusLabel(sync.status_after ?? decision.target_status)}.`,
+      text: `Applied in Investigation: case is now ${statusLabel(sync.status_after ?? decision.target_status)}.`,
       tone: 'green',
     };
   if (sync.state === 'failed')
     return {
-      text: `Not applied in Jube (${sync.error_code ?? 'unknown error'}). ${
+      text: `Not applied in Investigation (${sync.error_code ?? 'unknown error'}). ${
         sync.retryable
           ? 'A supervisor can retry.'
           : 'Propose a new decision after reviewing the case.'
       }`,
       tone: 'red',
     };
-  if (sync.state === 'pending') return { text: 'Sending to Jube…', tone: 'gray' };
-  return { text: 'Nothing is sent to Jube until a supervisor approves.', tone: 'gray' };
+  if (sync.state === 'pending') return { text: 'Sending to Investigation…', tone: 'gray' };
+  return { text: 'Nothing is sent to Investigation until a supervisor approves.', tone: 'gray' };
 }
 
 export interface Refusal {
@@ -158,7 +158,7 @@ const REASONS: Record<string, Refusal> = {
     next: 'reload',
   },
   case_state_changed: {
-    title: 'The case status changed in Jube',
+    title: 'The case status changed in Investigation',
     message:
       'The status you reviewed is no longer current, so this action was not taken. Reload and review again.',
     next: 'reload',
@@ -306,8 +306,8 @@ export const EVENT_LABELS: Record<string, string> = {
   'decision.approved': 'Decision approved',
   'decision.rejected': 'Decision rejected',
   'decision.withdrawn': 'Proposal withdrawn',
-  'decision.executed': 'Applied in Jube',
-  'decision.execution_failed': 'Jube update failed',
+  'decision.executed': 'Applied in Investigation',
+  'decision.execution_failed': 'Investigation update failed',
   'evidence_request.recorded': 'Evidence request recorded',
   'draft.recorded': 'Agent draft recorded',
 };

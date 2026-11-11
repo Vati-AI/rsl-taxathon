@@ -80,7 +80,7 @@ describe('SelectionReasons', () => {
     expect(compact.text()).toContain('+1 more reason');
     const full = mount(SelectionReasons, { props: { reasons: row.selection_reasons } });
     expect(full.findAll('li')).toHaveLength(2);
-    expect(full.text()).toContain('Signal from Case management (Jube)');
+    expect(full.text()).toContain('Signal from Investigation');
   });
 
   it('says when risk evaluation has not run instead of showing nothing', () => {
@@ -102,7 +102,7 @@ describe('ProcessingIndicator', () => {
       ],
     });
     expect(mount(ProcessingIndicator, { props: { item: failed } }).text()).toBe(
-      'Document extraction (Docling) timed out',
+      'Document reading timed out',
     );
     expect(mount(ProcessingIndicator, { props: { item: makeCase(1) } }).text()).toBe('Up to date');
   });

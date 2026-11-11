@@ -390,12 +390,21 @@ test.describe('officer onboarding (TAX-082)', () => {
     );
 
     await proxy.run('read-evidence', 'Open the evidence behind the case', async () => {
-      await proxy.click(page.getByRole('tab', { name: 'Evidence' }), 'tab: Evidence');
-      const panel = page.getByRole('tabpanel', { name: 'Evidence' });
+      await proxy.click(
+        page
+          .getByRole('navigation', { name: 'Case sections' })
+          .getByRole('link', { name: /^Evidence/ }),
+        'tab: Evidence',
+      );
+      const panel = page.getByRole('region', { name: 'Evidence', exact: true });
       await expect(panel).toBeVisible();
       await page.waitForLoadState('networkidle');
-      await proxy.click(panel.getByRole('link').first(), 'first evidence item');
-      await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
+      await proxy.click(
+        panel.getByRole('list', { name: 'Evidence on file' }).getByRole('link').first(),
+        'first evidence item',
+      );
+      // TAX-148: the record opens in the preview pane beside the list.
+      await expect(page.locator('[data-kit="evidence-preview"] h2').first()).toBeVisible();
       await page.waitForLoadState('networkidle');
       const original = page
         .getByRole('link', { name: /(open|view|download).*(original|document)/i })
@@ -408,8 +417,10 @@ test.describe('officer onboarding (TAX-082)', () => {
       await audit(proxy, 'evidence item');
       await shot(page, 'auditor-3-evidence', w);
       await proxy.click(
-        page.getByRole('link', { name: /^SYN-002/ }).first(),
-        'breadcrumb: back to case',
+        page
+          .getByRole('navigation', { name: 'Case sections' })
+          .getByRole('link', { name: 'Summary' }),
+        'tab: Summary',
       );
       await pageReady(page, /^SYN-002 · /);
     });
@@ -628,8 +639,10 @@ test.describe('officer onboarding (TAX-082)', () => {
     await proxy.run('approve', 'Approve the decision', async () => {
       await proxy.click(page.getByRole('button', { name: 'Approve…' }), 'Approve…');
       await proxy.click(
-        page.getByRole('dialog').getByRole('button', { name: 'Approve and apply in Jube' }),
-        'Approve and apply in Jube',
+        page
+          .getByRole('dialog')
+          .getByRole('button', { name: 'Approve and apply in Investigation' }),
+        'Approve and apply in Investigation',
       );
       await expect(page.getByRole('status').filter({ hasText: 'Decision approved' })).toBeVisible();
     });

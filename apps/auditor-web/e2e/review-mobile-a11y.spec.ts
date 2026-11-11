@@ -2,7 +2,7 @@ import { expect, test } from '@playwright/test';
 
 // At 390px the review page keeps every control named and keyboard reachable: no
 // collapsed breadcrumb menu (an unnamed button in frappe-ui) is rendered.
-test('the review page has no unnamed buttons at 390px and its header links work by keyboard', async ({
+test('the review page has no unnamed buttons at 390px and its case tabs work by keyboard', async ({
   page,
 }) => {
   await page.setViewportSize({ width: 390, height: 844 });
@@ -16,7 +16,10 @@ test('the review page has no unnamed buttons at 390px and its header links work 
       .map((b) => b.outerHTML.slice(0, 80)),
   );
   expect(unnamed).toEqual([]);
-  const back = page.getByRole('link', { name: 'Back to case' });
+  // TAX-148: the case tabs replace the old "Back to case" button.
+  const back = page
+    .getByRole('navigation', { name: 'Case sections' })
+    .getByRole('link', { name: 'Summary' });
   await back.focus();
   await expect(back).toBeFocused();
   await page.keyboard.press('Enter');

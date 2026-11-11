@@ -55,11 +55,14 @@ test.describe('navigation', () => {
       'href',
       `/auditor/cases/${CASE_2}/review`,
     );
-    await page.getByRole('tab', { name: 'Findings' }).click();
+    // TAX-148: routed case tabs, each its own URL.
+    const tabs = page.getByRole('navigation', { name: 'Case sections' });
+    await tabs.getByRole('link', { name: /^Findings/ }).click();
+    await expect(page).toHaveURL(new RegExp(`/auditor/cases/${CASE_2}/findings$`));
     await expect(page.getByText('No synthetic service agreement was supplied')).toBeVisible();
-    await page.getByRole('tab', { name: 'Evidence' }).click();
-    await expect(page.getByRole('region', { name: 'Evidence on file' })).toBeVisible();
-    await page.getByRole('tab', { name: 'Overview' }).click();
+    await tabs.getByRole('link', { name: /^Evidence/ }).click();
+    await expect(page.getByRole('list', { name: 'Evidence on file' })).toBeVisible();
+    await tabs.getByRole('link', { name: 'Summary' }).click();
     await expect(page).toHaveURL(new RegExp(`/auditor/cases/${CASE_2}$`));
 
     await page.getByRole('link', { name: 'View taxpayer profile' }).click();
@@ -119,7 +122,7 @@ test.describe('processing states', () => {
     await alert.getByRole('link', { name: 'View failed cases' }).click();
     await expect(page).toHaveURL(/status=FAILED_PROCESSING/);
     await expect(rows(page)).toHaveCount(2);
-    await expect(rows(page).nth(1)).toContainText('Document extraction (Docling) timed out');
+    await expect(rows(page).nth(1)).toContainText('Document reading timed out');
     await expect(rows(page).nth(1)).toContainText('Not evaluated yet');
 
     await page.getByRole('link', { name: 'SYN-006' }).click();
@@ -134,7 +137,7 @@ test.describe('processing states', () => {
 
   test('a case still validating shows what it is waiting for', async ({ page }) => {
     await page.goto('/auditor/cases?status=VALIDATING');
-    await expect(rows(page).nth(1)).toContainText('Waiting for Case management (Jube)');
+    await expect(rows(page).nth(1)).toContainText('Waiting for Investigation');
   });
 });
 

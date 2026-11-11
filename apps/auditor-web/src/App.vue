@@ -179,6 +179,7 @@ function reloadPage() {
 
       <template #account>
         <HeaderMenu
+          v-slot="{ close }"
           :label="session?.display_name ?? 'Account'"
           icon="lucide-circle-user"
           show-label
@@ -197,6 +198,13 @@ function reloadPage() {
             Sign out is available once Vati Workspace sign-in is connected. This build has no
             sign-in session.
           </p>
+          <RouterLink
+            :to="{ name: 'notices' }"
+            class="mt-2 inline-block text-sm font-medium text-vati-accent underline"
+            @click="close()"
+          >
+            About · Open-source notices
+          </RouterLink>
         </HeaderMenu>
       </template>
 

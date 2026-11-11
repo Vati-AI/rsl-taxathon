@@ -2,10 +2,21 @@ import { createRouter, createWebHistory, type RouteRecordRaw } from 'vue-router'
 
 declare module 'vue-router' {
   interface RouteMeta {
-    section: 'overview' | 'cases' | 'management' | 'integrity' | 'showcase' | 'none';
-    title: string;
+    /** Optional on a nested route: the parent's meta is merged in (TAX-148 case tabs). */
+    section?: 'overview' | 'cases' | 'management' | 'integrity' | 'showcase' | 'none';
+    title?: string;
+    /** Case tab that shows one kind of case records (relationships or findings). */
+    records?: 'relationships' | 'findings';
   }
 }
+
+/** Case tabs addressed by `?tab=` before TAX-148, and the route each one is now. */
+const LEGACY_TABS: Record<string, string> = {
+  overview: 'case',
+  evidence: 'case-evidence',
+  relationships: 'case-relationships',
+  findings: 'case-findings',
+};
 
 export const routes: RouteRecordRaw[] = [
   {
@@ -21,25 +32,58 @@ export const routes: RouteRecordRaw[] = [
     meta: { section: 'cases', title: 'My case queue' },
   },
   {
+    // TAX-148: one case workspace. The parent loads the case and its records once and
+    // shows the header, key facts and routed tabs; each tab is its own URL.
     path: '/cases/:caseId',
-    name: 'case',
-    component: () => import('./views/CaseDetailView.vue'),
+    component: () => import('./views/CaseWorkspaceView.vue'),
     props: true,
-    meta: { section: 'cases', title: 'Case' },
-  },
-  {
-    path: '/cases/:caseId/evidence/:evidenceId',
-    name: 'evidence',
-    component: () => import('./views/EvidenceView.vue'),
-    props: true,
-    meta: { section: 'cases', title: 'Evidence' },
-  },
-  {
-    path: '/cases/:caseId/review',
-    name: 'case-review',
-    component: () => import('./views/CaseReviewView.vue'),
-    props: true,
-    meta: { section: 'cases', title: 'Review and decide' },
+    meta: { section: 'cases' },
+    children: [
+      {
+        path: '',
+        name: 'case',
+        component: () => import('./views/case/CaseSummaryTab.vue'),
+        meta: { title: 'Case' },
+        // Links from before TAX-148 named the tab in the query (?tab=evidence).
+        beforeEnter: (to) => {
+          const tab = typeof to.query.tab === 'string' ? LEGACY_TABS[to.query.tab] : undefined;
+          if (!tab) return true;
+          const { tab: _tab, ...query } = to.query;
+          void _tab;
+          return { name: tab, params: to.params, query, replace: true };
+        },
+      },
+      {
+        path: 'evidence',
+        name: 'case-evidence',
+        component: () => import('./views/case/CaseEvidenceTab.vue'),
+        meta: { title: 'Evidence' },
+      },
+      {
+        path: 'evidence/:evidenceId',
+        name: 'evidence',
+        component: () => import('./views/case/CaseEvidenceTab.vue'),
+        meta: { title: 'Evidence' },
+      },
+      {
+        path: 'relationships',
+        name: 'case-relationships',
+        component: () => import('./views/case/CaseRecordsTab.vue'),
+        meta: { title: 'Relationships', records: 'relationships' },
+      },
+      {
+        path: 'findings',
+        name: 'case-findings',
+        component: () => import('./views/case/CaseRecordsTab.vue'),
+        meta: { title: 'Findings', records: 'findings' },
+      },
+      {
+        path: 'review',
+        name: 'case-review',
+        component: () => import('./views/case/CaseReviewTab.vue'),
+        meta: { title: 'Review and decide' },
+      },
+    ],
   },
   {
     path: '/taxpayers/:taxpayerId',
@@ -70,6 +114,12 @@ export const routes: RouteRecordRaw[] = [
     meta: { section: 'none', title: 'Not connected' },
   },
   {
+    path: '/about/notices',
+    name: 'notices',
+    component: () => import('./views/NoticesView.vue'),
+    meta: { section: 'none', title: 'Open-source notices' },
+  },
+  {
     path: '/showcase',
     name: 'showcase',
     component: () => import('./views/ShowcaseView.vue'),
@@ -89,5 +139,5 @@ export const router = createRouter({
 });
 
 router.afterEach((to) => {
-  document.title = `${to.meta.title} · Vati AI auditor workspace`;
+  document.title = `${to.meta.title ?? 'Vati Workspace'} · Vati Workspace · Cases`;
 });

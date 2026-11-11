@@ -13,14 +13,17 @@ through `src/api/review.ts`, and the supervisor-only `getManagementSummary`
 
 Screens: overview (assigned cases by status, failed-processing alert), my case
 queue (search, status and refund-lane filters, sorting, pagination, selection
-reasons and processing state), case detail (selection reasons, taxpayer
-summary, per-service processing; evidence, relationships and findings tabs),
-evidence record (`/auditor/cases/{id}/evidence/{evidenceId}`: SHA-256, version
-history, extraction state, the cited page or record and the findings citing it),
-review and decide (`/auditor/cases/{id}/review`: propose a decision, approve,
-reject or withdraw, refer to a specialist, request evidence, agent suggestions
-and the review trail; every action is confirmed in a dialog first), taxpayer
-profile, management dashboard (`/auditor/management`, supervisors only:
+reasons and processing state), the case workspace (TAX-148: one header with
+the status chip and key facts, and routed tabs, each its own URL: Summary
+`/auditor/cases/{id}` with selection reasons, taxpayer and per-service
+processing; Evidence `/auditor/cases/{id}/evidence` with the documents beside a
+preview pane, `/evidence/{evidenceId}` opening one: SHA-256, version history,
+extraction state, the cited page or record and the findings citing it;
+Relationships `/relationships`; Findings `/findings`; Review `/review`: the
+decision state, evidence requests, agent suggestions and the review trail, with
+the propose and request-evidence forms in right-side drawers and every action
+confirmed in a dialog first; links from before TAX-148 with `?tab=` redirect),
+taxpayer profile, management dashboard (`/auditor/management`, supervisors only:
 workload, elapsed time, unresolved evidence, closures with no further action,
 legal-route coverage and audit ledger assurance), integrity review
 (`/auditor/management/integrity`, supervisors only: policy exposure by policy

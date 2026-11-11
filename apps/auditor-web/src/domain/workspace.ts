@@ -21,13 +21,23 @@ export const APP_LABELS: Record<AppKey, string> = {
 export const NATIVE_APPS = ['investigation', 'explore', 'admin'] as const;
 export type NativeApp = (typeof NATIVE_APPS)[number];
 
+/** The case workspace tabs (TAX-148). */
+export const CASE_TABS = [
+  'case',
+  'case-evidence',
+  'evidence',
+  'case-relationships',
+  'case-findings',
+  'case-review',
+];
+
 /** Route names that belong to each app, to mark the current tab. */
 const APP_ROUTES: Record<'cases' | 'reports', string[]> = {
-  cases: ['overview', 'queue', 'case', 'evidence', 'case-review', 'taxpayer'],
+  cases: ['overview', 'queue', ...CASE_TABS, 'taxpayer'],
   reports: ['management', 'integrity'],
 };
 /** Route names that are "inside a case": the sidebar offers "Back to cases". */
-const CASE_CONTEXT = ['case', 'evidence', 'case-review', 'taxpayer'];
+const CASE_CONTEXT = [...CASE_TABS, 'taxpayer'];
 
 function has(session: WorkspaceSession, view: WorkspaceSession['views'][number]) {
   return session.views.includes(view);

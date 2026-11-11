@@ -6,7 +6,7 @@
  */
 import { Alert, Button, FrappeUIProvider, LoadingText } from 'frappe-ui';
 import { computed, ref } from 'vue';
-import { RouterView, useRoute } from 'vue-router';
+import { RouterLink, RouterView, useRoute } from 'vue-router';
 import { HeaderMenu, WorkspaceShell, type NavSection } from '../../shared/components';
 import { logout, sessionState, simulatorEnabled } from './lib/session';
 
@@ -68,7 +68,7 @@ function retry() {
       storage-key="vati.taxpayer.sidebar"
     >
       <template v-if="state.status === 'ready'" #account>
-        <HeaderMenu :label="fullName" icon="lucide-circle-user" show-label>
+        <HeaderMenu v-slot="{ close }" :label="fullName" icon="lucide-circle-user" show-label>
           <p class="font-semibold">{{ fullName }}</p>
           <p class="break-words text-sm text-vati-muted">{{ user }}</p>
           <Button
@@ -78,6 +78,13 @@ function retry() {
             :loading="loggingOut"
             @click="onLogout"
           />
+          <RouterLink
+            :to="{ name: 'notices' }"
+            class="mt-3 inline-block text-sm font-medium text-vati-accent underline"
+            @click="close()"
+          >
+            About · Open-source notices
+          </RouterLink>
         </HeaderMenu>
       </template>
 
@@ -104,6 +111,17 @@ function retry() {
         </div>
 
         <RouterView v-else />
+
+        <footer
+          class="mt-10 border-t border-vati-border pt-4 text-sm text-vati-muted"
+          aria-label="Portal information"
+        >
+          <span>Vati Taxpayer Portal</span>
+          <span aria-hidden="true"> · </span>
+          <RouterLink :to="{ name: 'notices' }" class="text-vati-accent underline">
+            Open-source notices
+          </RouterLink>
+        </footer>
       </div>
     </WorkspaceShell>
   </FrappeUIProvider>

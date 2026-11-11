@@ -205,6 +205,9 @@ def check():
         # TAX-112-118 assurance checks (pure Python) and the benchmark self-check.
         ["python3", "-m", "unittest", "discover", "-s", "tests/ai", "-p", "test_assurance*.py"],
         ["python3", "-m", "ai.evaluation.assurance_benchmark", "--check"],
+        # TAX-139 persistent VAT credit review, SYN-007 and its benchmark self-check.
+        ["python3", "-m", "unittest", "discover", "-s", "tests/ai", "-p", "test_persistent*.py"],
+        ["python3", "-m", "ai.evaluation.persistent_credit_benchmark", "--check"],
         # TAX-068 institutional knowledge retrieval (pure Python).
         ["python3", "-m", "unittest", "discover", "-s", "tests/ai", "-p", "test_institutional*.py"],
         # TAX-071 EOI draft packages (pure Python; no transmission capability).

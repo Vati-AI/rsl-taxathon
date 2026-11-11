@@ -16,16 +16,26 @@ import {
   DialogTitle,
 } from 'reka-ui';
 
-withDefaults(
+const props = withDefaults(
   defineProps<{
     title: string;
     description?: string;
     /** Width on wider screens. */
     size?: 'md' | 'lg';
+    /** id of the element to focus when the drawer opens (default: the first control). */
+    initialFocus?: string | null;
   }>(),
-  { description: undefined, size: 'md' },
+  { description: undefined, size: 'md', initialFocus: null },
 );
 const open = defineModel<boolean>('open', { default: false });
+
+function onOpenAutoFocus(event: Event) {
+  if (!props.initialFocus) return;
+  const target = document.getElementById(props.initialFocus);
+  if (!target) return;
+  event.preventDefault();
+  target.focus();
+}
 </script>
 
 <template>
@@ -34,6 +44,7 @@ const open = defineModel<boolean>('open', { default: false });
       <DialogOverlay class="fixed inset-0 z-40 bg-black/30" />
       <DialogContent
         data-kit="drawer"
+        @open-auto-focus="onOpenAutoFocus"
         :class="[
           'fixed inset-y-0 right-0 z-50 flex w-full flex-col bg-vati-surface shadow-overlay focus:outline-none',
           size === 'lg' ? 'sm:w-[640px]' : 'sm:w-[480px]',

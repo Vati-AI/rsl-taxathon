@@ -430,7 +430,7 @@ def check_fresh_proposal(proposed_at: datetime.datetime, now: datetime.datetime)
 def check_case_unchanged(status_at_proposal: str, current_status: str) -> None:
     if status_at_proposal != current_status:
         raise VersionConflict(
-            "The case status changed in Jube after this decision was proposed.",
+            "The case status changed in Investigation after this decision was proposed.",
             "decision_id",
             "case_state_changed",
         )

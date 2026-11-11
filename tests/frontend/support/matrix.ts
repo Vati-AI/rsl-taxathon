@@ -66,6 +66,8 @@ export const AUDITOR_ROUTES: MatrixRoute[] = [
   // TAX-077: supervisors only; the harness's default auditor sees the denied state.
   { name: 'integrity', path: '/auditor/management/integrity', heading: 'Integrity review' },
   { name: 'showcase', path: '/auditor/showcase', heading: 'Component showcase' },
+  // TAX-150: About · Open-source notices (component names allowed in its region).
+  { name: 'notices', path: '/auditor/about/notices', heading: 'Open-source notices' },
   { name: 'not-found', path: '/auditor/no-such-page', heading: 'Page not found' },
 ];
 
@@ -91,6 +93,7 @@ export const TAXPAYER_ROUTES: MatrixRoute[] = [
     heading: 'Evidence request',
   },
   { name: 'account', path: '/taxpayer/account', heading: 'Account' },
+  { name: 'notices', path: '/taxpayer/about/notices', heading: 'Open-source notices' },
   { name: 'not-found', path: '/taxpayer/no-such-page', heading: 'Page not found' },
 ];
 

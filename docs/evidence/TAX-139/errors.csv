@@ -1,0 +1,12 @@
+tin,type,issue,reason
+186621189,false_positive,untaxed_imported_services,"Withholding was declared under a different payee reference, so it did not join to the counterparty; an officer would resolve it with one question."
+236002591,false_positive,related_party_loss,Genuine losses with rising related-party fees but no explanation document supplied: the trigger fires and a human review is the intended outcome.
+362184224,false_positive,related_party_loss,Genuine losses with rising related-party fees but no explanation document supplied: the trigger fires and a human review is the intended outcome.
+366112366,miss,disguised_employment,"No permit record for the individual, so presence could not be compared with the consultancy terms; no conflicting fact, no referral."
+530612094,miss,untaxed_imported_services,"Foreign fees were booked as general operating expenses, so the books do not show them as services and the three-way match did not test them."
+671509897,false_positive,untaxed_imported_services,"Withholding was declared under a different payee reference, so it did not join to the counterparty; an officer would resolve it with one question."
+679844881,miss,disguised_employment,"No permit record for the individual, so presence could not be compared with the consultancy terms; no conflicting fact, no referral."
+747714901,miss,disguised_employment,"No permit record for the individual, so presence could not be compared with the consultancy terms; no conflicting fact, no referral."
+777877709,false_positive,untaxed_imported_services,"Withholding was declared under a different payee reference, so it did not join to the counterparty; an officer would resolve it with one question."
+833724802,false_positive,untaxed_imported_services,"Withholding was declared under a different payee reference, so it did not join to the counterparty; an officer would resolve it with one question."
+946339989,false_positive,disguised_employment,"A genuine consultant stayed 183 days or more, so permit presence conflicts with the fixed-term contract and the case is referred to a specialist."

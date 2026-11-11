@@ -30,12 +30,12 @@ const TAXPAYER_TYPES: Record<TaxpayerType, string> = {
 };
 
 const SERVICES: Record<string, string> = {
-  frappe: 'Taxpayer portal (Frappe)',
-  jube: 'Case management (Jube)',
-  docling: 'Document extraction (Docling)',
-  openaleph: 'Evidence index (OpenAleph)',
-  yente: 'Entity matching (yente)',
-  langgraph: 'Investigation workflow (LangGraph)',
+  frappe: 'Vati records',
+  jube: 'Investigation',
+  docling: 'Document reading',
+  openaleph: 'Explore',
+  yente: 'Name screening',
+  langgraph: 'Vati assistant',
 };
 
 const SYNC_ERRORS: Record<string, string> = {

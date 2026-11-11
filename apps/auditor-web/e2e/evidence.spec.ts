@@ -15,9 +15,15 @@ const ACCUSING = /fraud|guilt|evasion|evade|suspicious|offence|wrongdoing|abuse/
 const asOtherTenant = (route: Route) =>
   route.continue({ headers: { ...route.request().headers(), 'x-vati-tenant-id': OTHER_TENANT } });
 
+// TAX-148: the case sections are routed tabs (links with a count) in the case workspace.
+const caseTab = (page: Page, name: string) =>
+  page
+    .getByRole('navigation', { name: 'Case sections' })
+    .getByRole('link', { name: new RegExp(`^${name}`) });
+
 async function openTab(page: Page, name: 'Evidence' | 'Relationships' | 'Findings') {
   await page.goto(`/auditor/cases/${CASE_2}`);
-  await page.getByRole('tab', { name }).click();
+  await caseTab(page, name).click();
 }
 
 async function expectAccessible(page: Page) {
@@ -33,7 +39,7 @@ async function expectAccessible(page: Page) {
 test.describe('finding to source', () => {
   test('a cited page opens the stored document record and leads back', async ({ page }) => {
     await openTab(page, 'Findings');
-    await expect(page).toHaveURL(/tab=findings/);
+    await expect(page).toHaveURL(new RegExp(`/cases/${CASE_2}/findings$`));
     const conflict = page.getByRole('article', { name: 'Records disagree: Related party' });
     await expect(conflict).toContainText('60% in the company register extract');
     await conflict.getByRole('link', { name: 'Financial statement v1 · Page 3' }).click();
@@ -41,16 +47,18 @@ test.describe('finding to source', () => {
     await expect(page).toHaveURL(
       new RegExp(`/cases/${CASE_2}/evidence/${ANNUAL_RETURN}\\?page=3&finding=`),
     );
+    // The document opens in the evidence preview pane of the case workspace (TAX-148).
     await expect(
-      page.getByRole('heading', { level: 1, name: 'Financial statement v1' }),
+      page.getByRole('heading', { level: 2, name: 'Financial statement v1' }),
     ).toBeVisible();
+    await expect(caseTab(page, 'Evidence')).toHaveAttribute('aria-current', 'page');
     await expect(page.getByRole('heading', { name: 'Cited location: Page 3' })).toBeVisible();
     await expect(page.getByText('2f'.repeat(32))).toBeVisible();
     await expect(page.getByText('Page 3 (the location you followed)')).toBeVisible();
     await expect(page.getByText('Document content is never shown')).toBeVisible();
 
     await page.getByRole('link', { name: 'Back to the finding' }).click();
-    await expect(page).toHaveURL(new RegExp(`tab=findings&finding=${OWNERSHIP_FINDING}`));
+    await expect(page).toHaveURL(new RegExp(`/findings\\?finding=${OWNERSHIP_FINDING}$`));
     await expect(page.locator(`#finding-${OWNERSHIP_FINDING}`)).toBeFocused();
   });
 
@@ -101,7 +109,7 @@ test.describe('relationships', () => {
     const payments = page.getByRole('region', { name: 'Payment records' });
     await expect(payments.getByText('Record not on file')).toHaveCount(1);
     await payments.getByRole('link', { name: 'Invoice v2' }).click();
-    await expect(page.getByRole('heading', { level: 1, name: 'Invoice v2' })).toBeVisible();
+    await expect(page.getByRole('heading', { level: 2, name: 'Invoice v2' })).toBeVisible();
     await expectAccessible(page);
   });
 });
@@ -109,21 +117,29 @@ test.describe('relationships', () => {
 test.describe('evidence viewer', () => {
   test('superseded versions and failed extraction are explicit', async ({ page }) => {
     await openTab(page, 'Evidence');
-    const table = page.getByRole('region', { name: 'Evidence on file' });
-    await expect(table.getByText('Replaced by v2')).toBeVisible();
-    await expect(table.getByText('Extraction failed')).toBeVisible();
+    const list = page.getByRole('list', { name: 'Evidence on file' });
+    await expect(list.getByText(/replaced by v2/)).toBeVisible();
+    await expect(list.getByText('Extraction failed')).toBeVisible();
+    await expect(page.getByText('Choose a document to see its record')).toBeVisible();
     await page.goto(`/auditor/cases/${CASE_2}/evidence/${OLD_SCAN}`);
     await expect(page.getByText('A newer version of this document exists')).toBeVisible();
     await expect(page.getByText('Text could not be extracted from this document')).toBeVisible();
-    await page.getByRole('link', { name: 'v2' }).click();
-    await expect(page.getByRole('heading', { level: 1, name: 'Invoice v2' })).toBeVisible();
+    // The open document is marked current in the list beside the preview.
+    await expect(list.locator('a[aria-current="page"]')).toHaveText(/Invoice v1/);
+    await page
+      .getByRole('region', { name: 'Evidence preview' })
+      .getByRole('link', { name: 'v2', exact: true })
+      .click();
+    await expect(page.getByRole('heading', { level: 2, name: 'Invoice v2' })).toBeVisible();
     await expectAccessible(page);
   });
 
   test('empty, unknown and denied states', async ({ page }) => {
     await page.goto(`/auditor/cases/${CASE_7}?tab=findings`);
     await expect(page.getByText('No findings yet')).toBeVisible();
-    await page.getByRole('tab', { name: 'Evidence' }).click();
+    // A link from before TAX-148 (?tab=findings) lands on the Findings tab.
+    await expect(page).toHaveURL(new RegExp(`/cases/${CASE_7}/findings$`));
+    await caseTab(page, 'Evidence').click();
     await expect(page.getByText('No evidence on file')).toBeVisible();
 
     await page.goto(`/auditor/cases/${CASE_2}/evidence/50000000-0000-4000-8000-000000000099`);
@@ -145,7 +161,9 @@ test.describe('accessibility', () => {
   for (const [tab, region] of Object.entries(loaded)) {
     test(`no serious or critical axe violations on the ${tab} tab`, async ({ page }) => {
       await page.goto(`/auditor/cases/${CASE_2}?tab=${tab}`);
-      if (region) await expect(page.getByRole('region', { name: region })).toBeVisible();
+      if (tab === 'evidence')
+        await expect(page.getByRole('list', { name: 'Evidence on file' })).toBeVisible();
+      else if (region) await expect(page.getByRole('region', { name: region })).toBeVisible();
       else await expect(page.getByRole('heading', { name: 'Records disagree (1)' })).toBeVisible();
       await expectAccessible(page);
     });

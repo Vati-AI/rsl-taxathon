@@ -60,7 +60,7 @@ describe('processingState', () => {
     });
     expect(processingState(item)).toMatchObject({
       kind: 'failed',
-      text: 'Document extraction (Docling) timed out',
+      text: 'Document reading timed out',
     });
   });
 
@@ -83,7 +83,7 @@ describe('processingState', () => {
     });
     expect(processingState(pending)).toMatchObject({
       kind: 'pending',
-      text: 'Waiting for Case management (Jube)',
+      text: 'Waiting for Investigation',
     });
     expect(processingState(makeCase(1, { status: 'VALIDATING', service_links: [] })).kind).toBe(
       'pending',

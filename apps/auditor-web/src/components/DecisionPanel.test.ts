@@ -1,4 +1,4 @@
-import { flushPromises, mount, type VueWrapper } from '@vue/test-utils';
+import { DOMWrapper, flushPromises, mount, type VueWrapper } from '@vue/test-utils';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { makeCase } from '../testing/makeCase';
 import DecisionPanel from './DecisionPanel.vue';
@@ -138,25 +138,42 @@ async function mountPanel(item = ITEM) {
 }
 
 const posts = () => calls.filter((c) => c.init?.method === 'POST');
+/** The forms open in a drawer portalled to the body (TAX-148), so query the document. */
+const find = (selector: string) => {
+  const el = document.body.querySelector(selector);
+  if (!el) throw new Error(`No element matches ${selector}`);
+  return new DOMWrapper(el);
+};
+async function openDrawer(label: string) {
+  button(label)!.click();
+  await flushPromises();
+}
 const button = (label: string) =>
   [...document.body.querySelectorAll('button')].find((b) => b.textContent?.trim() === label);
 
-async function fillReferral(panel: VueWrapper) {
-  await panel.get('input[value="refer_to_specialist"]').setValue(true);
-  await panel.get('textarea').setValue('A specialist should review the worker classification.');
-  await panel.get('input[type="checkbox"]').setValue(true);
-  await panel.get('form[aria-label="Propose a decision"]').trigger('submit');
+async function fillReferral() {
+  await openDrawer('Propose a decision…');
+  await find('input[value="refer_to_specialist"]').setValue(true);
+  await find('[data-kit="drawer"] textarea').setValue(
+    'A specialist should review the worker classification.',
+  );
+  await find('[data-kit="drawer"] input[type="checkbox"]').setValue(true);
+  await find('form[aria-label="Propose a decision"]').trigger('submit');
   await flushPromises();
 }
 
 describe('DecisionPanel', () => {
   it('fills the form from a suggestion without sending anything', async () => {
-    const panel = await mountPanel();
+    await mountPanel();
     button('Use as a starting point')!.click();
     await flushPromises();
-    expect(
-      (panel.get('input[value="refer_to_specialist"]').element as HTMLInputElement).checked,
-    ).toBe(true);
+    // The suggestion opens the propose drawer with the outcome filled in.
+    expect(document.body.querySelector('[data-kit="drawer"]')?.textContent).toContain(
+      'Propose a decision',
+    );
+    expect((find('input[value="refer_to_specialist"]').element as HTMLInputElement).checked).toBe(
+      true,
+    );
     expect(posts()).toHaveLength(0);
   });
 
@@ -166,7 +183,7 @@ describe('DecisionPanel', () => {
       [201, { data: decision(ME) }],
     ];
     const panel = await mountPanel();
-    await fillReferral(panel);
+    await fillReferral();
     expect(document.body.textContent).toContain('Confirm the proposed decision');
     expect(posts()).toHaveLength(0);
 
@@ -194,15 +211,17 @@ describe('DecisionPanel', () => {
 
   it('refuses a stale view, offers a reload and keeps the officer text', async () => {
     server.posts = [[409, errorBody('version_conflict', 'stale_case_version')]];
-    const panel = await mountPanel();
-    await fillReferral(panel);
+    await mountPanel();
+    await fillReferral();
     button('Propose decision')!.click();
     await flushPromises();
     expect(document.body.textContent).toContain('This case changed while you were reviewing it');
     expect(button('Reload case')).toBeTruthy();
     button('Back to the form')!.click();
     await flushPromises();
-    expect((panel.get('textarea').element as HTMLTextAreaElement).value).toContain('specialist');
+    expect((find('[data-kit="drawer"] textarea').element as HTMLTextAreaElement).value).toContain(
+      'specialist',
+    );
   });
 
   it('explains missing permissions instead of offering the action', async () => {
@@ -210,18 +229,22 @@ describe('DecisionPanel', () => {
     server.roles = ['specialist'];
     const panel = await mountPanel();
     expect(panel.text()).toContain('Only auditors and supervisors can authorise evidence requests');
-    const refer = panel.get('input[value="refer_to_specialist"]').element as HTMLInputElement;
+    expect(button('Request evidence…')).toBeUndefined();
+    await openDrawer('Propose a decision…');
+    const refer = find('input[value="refer_to_specialist"]').element as HTMLInputElement;
     expect(refer.disabled).toBe(true);
-    expect(panel.text()).toContain('Your role cannot refer cases to a specialist.');
+    expect(document.body.textContent).toContain('Your role cannot refer cases to a specialist.');
   });
 
   it('keeps its result when the parent refreshes the same case', async () => {
     server.posts = [[201, { data: decision(ME) }]];
     const panel = await mountPanel();
-    await fillReferral(panel);
+    await fillReferral();
     button('Propose decision')!.click();
     await flushPromises();
     expect(panel.text()).toContain('Decision proposed');
+    // The drawer closes once the proposal is recorded.
+    expect(document.body.querySelector('[data-kit="drawer"]')).toBeNull();
     const before = calls.length;
     await panel.setProps({ item: { ...ITEM, updated_at: '2026-11-04T12:00:00Z' } });
     await flushPromises();
