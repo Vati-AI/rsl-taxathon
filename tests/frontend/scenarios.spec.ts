@@ -362,6 +362,14 @@ test.describe('five scenario routes: auditor workspace (TAX-055)', () => {
     await use.focus();
     await page.keyboard.press('Enter');
     const form = page.getByRole('form', { name: 'Request evidence' });
+    // Wait for the suggestion to prefill the form (it ticks the justifying finding), so
+    // typing below is not overwritten by a prefill that lands later.
+    await expect(
+      form
+        .getByRole('group', { name: 'Findings that justify the request' })
+        .getByRole('checkbox', { checked: true })
+        .first(),
+    ).toBeVisible();
     const doc = form.getByRole('textbox', { name: /^Document 1 description/ });
     await doc.focus();
     if (!(await doc.inputValue())) {

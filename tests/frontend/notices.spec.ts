@@ -105,15 +105,31 @@ test('auditor: provenance values keep the service identifiers', async ({ page },
   await shot(page, 'auditor-case-detail', testInfo.project.name);
 });
 
-test('taxpayer: the footer offers the notices in the error and loading states', async ({
+test('taxpayer: the footer offers the notices in the loading and error states', async ({
   page,
 }, testInfo) => {
-  // A login without a taxpayer membership gets the portal's error state; the footer stays.
-  await mockTaxpayerSession(page, 'no-membership');
+  await mockTaxpayerSession(page, 'taxpayer');
+  // Loading: hold the session call, then answer it with a server error.
+  let release: () => void = () => {};
+  const held = new Promise<void>((r) => (release = r));
+  await page.route('**/vati_tax.portal.api.get_session*', async (route) => {
+    await held;
+    await route.fulfill({
+      status: 503,
+      contentType: 'application/json',
+      body: JSON.stringify({ exc_type: 'ServiceUnavailable', _server_messages: '[]' }),
+    });
+  });
   await page.goto(TAXPAYER + '/taxpayer/requests');
   const footer = page.locator('footer', { hasText: 'Vati Taxpayer Portal' });
+  await expect(page.getByText('Loading your portal…')).toBeVisible();
+  await expect(footer.getByRole('link', { name: 'Open-source notices' })).toBeVisible();
+  await shot(page, 'taxpayer-loading-footer', testInfo.project.name);
+  release();
+  await expect(page.getByRole('heading', { name: 'Taxpayer portal', level: 1 })).toBeVisible();
   await expect(footer.getByRole('link', { name: 'Open-source notices' })).toBeVisible();
   expect(await findComponentNames(page)).toEqual([]);
+  expect(await seriousAxeViolations(page)).toEqual([]);
   await shot(page, 'taxpayer-error-footer', testInfo.project.name);
 });
 

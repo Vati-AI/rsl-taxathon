@@ -5,7 +5,7 @@
   "owner": "Keletso",
   "area": "apps/auditor-web",
   "phase": "pilot",
-  "status": "IN_PROGRESS",
+  "status": "IN_REVIEW",
   "priority": "P0",
   "depends_on": [
     "TAX-146",
@@ -13,7 +13,7 @@
   ],
   "claimed_by": "claude-code-20261111-friendly-newton",
   "branch": "claude/friendly-newton-iwhm4u",
-  "pr": null,
+  "pr": "https://github.com/Vati-AI/rsl-taxathon/pull/293",
   "scope": "Apply the DESIGN_STANDARD.md naming register to every user-visible string in both apps, emails and exported documents (Vati Workspace, Investigation, Explore, Admin, Document reading, Name screening, Vati assistant), keep component names only in API fields, logs, Admin diagnostics and an About - Open-source notices page, and make the TAX-144 naming check blocking",
   "inputs": [
     "PROJECT.md",
@@ -27,19 +27,19 @@
   "acceptance": [
     {
       "text": "No banned component name appears in visible text or accessible names in either app, exports or notification templates; the TAX-144 naming check blocks in npm run check",
-      "done": false
+      "done": true
     },
     {
       "text": "An About - Open-source notices page lists each component, version and licence with links, reachable from the user menu and from the taxpayer portal footer",
-      "done": false
+      "done": true
     },
     {
       "text": "Provenance is not lost: audit ledger, API source fields and Admin diagnostics still identify the component; RSL system names are unchanged",
-      "done": false
+      "done": true
     },
     {
       "text": "Screenshots at 1440, 1024 and 390px with loading, empty, error and denied states, keyboard/focus and axe results, and the TAX-144 page-length result; record relevant tests and evidence, update task status and open a PR",
-      "done": false
+      "done": true
     }
   ],
   "verification": "Naming check, unit tests and screenshots",
@@ -49,7 +49,24 @@
     "update-project-task",
     "finish-task"
   ],
-  "evidence": [],
+  "evidence": [
+    {
+      "criterion": 1,
+      "text": "User-visible strings in both apps use the DESIGN_STANDARD.md register (Investigation, Explore, Vati records, Document reading, Name screening, Vati assistant; tab titles end in Vati Workspace · Cases and Vati Taxpayer Portal); six officer-visible backend decision messages renamed; there are no email or notification templates, and export manifests are machine data. scripts/check_naming.mjs scans Vue templates (text, static attributes, expressions) and TypeScript strings in both apps and apps/shared, with a self-test (scripts/check_naming.test.mjs); npm run check runs it first and fails on any hit (28 found and fixed). The TAX-144 browser naming baseline is empty, so layout.spec.ts fails on any name rendered outside a data-component-names-allowed region: 0 names on every auditor and taxpayer screen at 1440x900."
+    },
+    {
+      "criterion": 2,
+      "text": "About · Open-source notices (apps/shared/components/OpenSourceNotices.vue, data apps/shared/notices/components.ts) lists 5 services and 8 libraries with pinned version (from the lock files), licence (read from each upstream licence file on 2026-11-11; Jube AGPL-3.0, the rest MIT/ISC), source and licence-text links, and the Vati name each appears as, plus the hosted model service. Reachable at /auditor/about/notices from the user menu and at /taxpayer/about/notices from the new portal footer (also in loading and error states) and the account menu. tests/frontend/notices.spec.ts (18 at 1440/1024/390) and kit.test.ts cover it."
+    },
+    {
+      "criterion": 3,
+      "text": "Provenance kept: API fields, reason codes (e.g. jube_unavailable), the audit ledger and Admin diagnostics are unchanged; service record IDs and version strings (docling-serve@locked, synthetic Investigation case IDs, name-screening candidate IDs) are shown verbatim in the shared ProvenanceValue, labelled with the register name and exempt from the browser check; RSL system names unchanged."
+    },
+    {
+      "criterion": 4,
+      "text": "docs/evidence/TAX-150: screenshots at 1440/1024/390 of both notices pages, case detail with provenance values, the portal's loading and error states with the footer, and the auditor denied state; axe (no serious violations), keyboard focus and overflow checks in notices.spec.ts; page length auditor notices 1.09 and taxpayer notices 1.23 viewports (budget 1.5). npm run check passes; full Playwright 283 passed, 11 failed: 9 demo-recording harness tests need a separately started demo stack (connection refused, unrelated) and SYN-004's form-prefill race, fixed in scenarios.spec.ts (15/15 afterwards); auditor e2e 66 passed; dev.py check passes."
+    }
+  ],
   "notes": [
     {
       "at": "2026-11-08",
@@ -62,6 +79,10 @@
     {
       "at": "2026-11-11",
       "text": "Claimed by claude-code-20261111-friendly-newton on the session's designated branch claude/friendly-newton-iwhm4u."
+    },
+    {
+      "at": "2026-11-11",
+      "text": "Shares PR https://github.com/Vati-AI/rsl-taxathon/pull/293 with TAX-139: GitHub allows one open PR per branch and the session's designated branch already carried #293. Status IN_REVIEW."
     }
   ],
   "sequence": 16

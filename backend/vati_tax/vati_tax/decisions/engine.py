@@ -270,7 +270,9 @@ def _jube_status(lifecycle: CaseLifecycle, ctx: Context, case_id: str) -> str:
         if code is None and not isinstance(exc, OSError):
             raise
         raise UpstreamUnavailable(
-            "Investigation could not be reached to confirm the case status.", "case_id", "jube_unavailable"
+            "Investigation could not be reached to confirm the case status.",
+            "case_id",
+            "jube_unavailable",
         ) from None
     return str(case.status)
 
