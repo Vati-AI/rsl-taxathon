@@ -160,6 +160,7 @@ function retry() {
     <h3 class="kit-sub">Workspace header</h3>
     <div class="kit-frame">
       <WorkspaceHeader
+        apps-label="Example workspace apps"
         :apps="[
           { label: 'Cases', href: '#kit-title', current: true },
           { label: 'Explore', href: '#kit-title' },
@@ -377,7 +378,7 @@ function retry() {
       <Button label="Confirm an action" @click="confirmOpen = true" />
       <Button label="Confirm a danger action" theme="red" @click="dangerOpen = true" />
       <Button label="Show a toast" @click="notify('success', 'Evidence request sent')" />
-      <Button label="Open search (Ctrl K)" icon-left="lucide-search" @click="paletteOpen = true" />
+      <Button label="Open example search" icon-left="lucide-search" @click="paletteOpen = true" />
     </div>
     <p v-if="chosen" role="status" class="mt-2 text-vati-muted">Chose {{ chosen }} (example).</p>
     <SideDrawer
@@ -409,8 +410,10 @@ function retry() {
       confirm-label="Withdraw request"
       @confirm="dangerOpen = false"
     />
+    <!-- The shell owns Ctrl K; this example opens from its button only. -->
     <CommandPalette
       v-model:open="paletteOpen"
+      :shortcut="false"
       :items="commands"
       @select="(i) => (chosen = i.label)"
     />

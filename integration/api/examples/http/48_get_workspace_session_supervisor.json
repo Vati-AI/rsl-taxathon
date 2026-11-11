@@ -1,0 +1,39 @@
+{
+  "name": "get_workspace_session_supervisor",
+  "operation_id": "getWorkspaceSession",
+  "scenario": "SYN-001",
+  "synthetic": true,
+  "description": "A supervisor opens Vati Workspace. The shell shows the Cases and Reports apps; the native investigation and explore screens are listed as unavailable (not connected) instead of as working links (TAX-146).",
+  "request": {
+    "method": "GET",
+    "path": "/api/v1/session",
+    "headers": {
+      "Authorization": "Bearer synthetic-dev-token-not-a-secret",
+      "X-Vati-Tenant-ID": "10000000-0000-4000-8000-000000000001",
+      "X-Correlation-ID": "c0000000-0000-4000-8000-000000000146"
+    }
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "X-Correlation-ID": "c0000000-0000-4000-8000-000000000146"
+    },
+    "body": {
+      "data": {
+        "tenant_id": "10000000-0000-4000-8000-000000000001",
+        "tenant_name": "Synthetic fixture tenant",
+        "officer_id": "80000000-0000-4000-8000-000000000003",
+        "display_name": "Synthetic supervisor",
+        "roles": ["supervisor"],
+        "apps": [
+          { "key": "cases", "availability": "available", "reason": null },
+          { "key": "investigation", "availability": "unavailable", "reason": "not_connected" },
+          { "key": "explore", "availability": "unavailable", "reason": "not_connected" },
+          { "key": "reports", "availability": "available", "reason": null }
+        ],
+        "views": ["overview", "case_queue", "management", "integrity"],
+        "synthetic": true
+      }
+    }
+  }
+}

@@ -124,7 +124,7 @@ function go(to: number) {
         role="region"
         :aria-label="label"
         tabindex="0"
-        class="max-h-[640px] overflow-auto rounded-surface border border-vati-border bg-vati-surface"
+        class="relative max-h-[640px] overflow-auto rounded-surface border border-vati-border bg-vati-surface"
       >
         <table class="w-full border-collapse text-left text-[14px]">
           <caption class="vati-sr-only">

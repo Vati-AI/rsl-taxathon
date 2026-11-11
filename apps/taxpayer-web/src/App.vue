@@ -1,45 +1,49 @@
 <script setup lang="ts">
-import {
-  Alert,
-  Button,
-  DesktopShell,
-  FrappeUIProvider,
-  LoadingText,
-  MobileNav,
-  MobileNavItem,
-  MobileShell,
-  Sidebar,
-  SidebarHeader,
-  SidebarItem,
-} from 'frappe-ui';
+/**
+ * The Vati Taxpayer Portal inside the Vati Workspace shell (TAX-146), the simpler
+ * variant: no app tabs and no search, a sidebar of the taxpayer's own views (a drawer
+ * below 1024px), fixture mode as a slim strip in the header, and the account menu.
+ */
+import { Alert, Button, FrappeUIProvider, LoadingText } from 'frappe-ui';
 import { computed, ref } from 'vue';
 import { RouterView, useRoute } from 'vue-router';
-import FixtureNotice from './components/FixtureNotice.vue';
+import { HeaderMenu, WorkspaceShell, type NavSection } from '../../shared/components';
 import { logout, sessionState, simulatorEnabled } from './lib/session';
-import { useDesktop } from './lib/use-desktop';
 
-const desktop = useDesktop();
 const route = useRoute();
-// Highlight the owning section, so a case's status page keeps "My cases" active.
-const section = computed(() => {
-  if (route.name === 'submissions' || route.name === 'submission') return 'submissions';
-  if (route.name === 'new-submission') return 'new';
-  if (route.name === 'evidence-requests' || route.name === 'evidence-request') return 'requests';
-  if (route.name === 'account') return 'account';
-  return null;
-});
 const state = computed(() => sessionState.value);
 const fullName = computed(() =>
   state.value.status === 'ready' ? state.value.session.full_name : '',
 );
-// TAX-092: the server says where its data comes from; the notice is for fixture data only.
+const user = computed(() => (state.value.status === 'ready' ? state.value.session.user : ''));
+// TAX-092: the server says where its data comes from; the strip is for fixture data only.
 const fixtureMode = computed(
   () => state.value.status === 'ready' && state.value.session.mode === 'fixture',
 );
 // TAX-125: the Online Refunds simulator appears only where the site enables it.
 const simulator = computed(() => simulatorEnabled(state.value));
-const loggingOut = ref(false);
+const routeName = computed(() => (typeof route.name === 'string' ? route.name : null));
 
+const sections = computed<NavSection[]>(() => {
+  if (state.value.status !== 'ready') return [];
+  const out: NavSection[] = [
+    {
+      items: [
+        { label: 'Evidence requests', to: { name: 'evidence-requests' }, icon: 'lucide-inbox', match: ['evidence-requests', 'evidence-request'] },
+        { label: 'My cases', to: { name: 'submissions' }, icon: 'lucide-file-text', match: ['submissions', 'submission'] },
+        { label: 'Account', to: { name: 'account' }, icon: 'lucide-user', match: 'account' },
+      ],
+    },
+  ];
+  if (simulator.value)
+    out.push({
+      label: 'Fixture tools',
+      items: [{ label: 'Online Refunds simulator', to: { name: 'new-submission' }, icon: 'lucide-flask-conical', match: 'new-submission' }],
+    });
+  return out;
+}); // prettier-ignore
+
+const loggingOut = ref(false);
 async function onLogout() {
   loggingOut.value = true;
   await logout();
@@ -52,120 +56,55 @@ function retry() {
 
 <template>
   <FrappeUIProvider>
-    <a href="#main" class="vati-skip-link">Skip to main content</a>
-
-    <main
-      v-if="state.status === 'idle' || state.status === 'loading'"
-      id="main"
-      class="grid min-h-screen place-items-center"
-      role="status"
+    <WorkspaceShell
+      product="Vati Taxpayer Portal"
+      label="Taxpayer portal"
+      :home="{ name: 'evidence-requests' }"
+      :sections="sections"
+      :current="routeName"
+      :fixture="fixtureMode"
+      :search="false"
+      :nav-loading="state.status === 'idle' || state.status === 'loading'"
+      storage-key="vati.taxpayer.sidebar"
     >
-      <LoadingText text="Loading your portal…" />
-    </main>
-
-    <main
-      v-else-if="state.status === 'error'"
-      id="main"
-      class="taxpayer-page mx-auto max-w-xl p-6 pt-16"
-    >
-      <h1 class="mb-4 text-2xl font-semibold text-ink-gray-9">Taxpayer portal</h1>
-      <Alert theme="red" title="We could not open the portal" :description="state.error.message">
-        <template #actions>
-          <Button label="Try again" @click="retry" />
-        </template>
-      </Alert>
-    </main>
-
-    <DesktopShell v-else-if="desktop">
-      <template #sidebar>
-        <Sidebar :collapsible="false" aria-label="Taxpayer portal">
-          <SidebarHeader
-            title="Vati taxpayer portal"
-            :subtitle="fixtureMode ? 'Synthetic fixture' : 'Live data'"
+      <template v-if="state.status === 'ready'" #account>
+        <HeaderMenu :label="fullName" icon="lucide-circle-user" show-label>
+          <p class="font-semibold">{{ fullName }}</p>
+          <p class="break-words text-sm text-vati-muted">{{ user }}</p>
+          <Button
+            class="mt-3 w-full"
+            label="Log out"
+            icon-left="lucide-log-out"
+            :loading="loggingOut"
+            @click="onLogout"
           />
-          <div class="flex-1 overflow-y-auto">
-            <SidebarItem
-              label="Evidence requests"
-              icon="lucide-inbox"
-              :route="{ name: 'evidence-requests' }"
-              :active="section === 'requests'"
-            />
-            <SidebarItem
-              label="My cases"
-              icon="lucide-file-text"
-              :route="{ name: 'submissions' }"
-              :active="section === 'submissions'"
-            />
-            <SidebarItem
-              label="Account"
-              icon="lucide-user"
-              :route="{ name: 'account' }"
-              :active="section === 'account'"
-            />
-            <template v-if="simulator">
-              <p class="mt-4 px-2 pb-1 text-xs font-medium uppercase text-ink-gray-6">
-                Fixture tools
-              </p>
-              <SidebarItem
-                label="Online Refunds simulator"
-                icon="lucide-flask-conical"
-                :route="{ name: 'new-submission' }"
-                :active="section === 'new'"
-              />
+        </HeaderMenu>
+      </template>
+
+      <div class="taxpayer-page w-full max-w-4xl px-4 py-4 sm:px-6 sm:py-6">
+        <div
+          v-if="state.status === 'idle' || state.status === 'loading'"
+          class="grid min-h-[50vh] place-items-center"
+          role="status"
+        >
+          <LoadingText text="Loading your portal…" />
+        </div>
+
+        <div v-else-if="state.status === 'error'" class="max-w-xl pt-10">
+          <h1 class="mb-4 text-2xl font-semibold text-ink-gray-9">Taxpayer portal</h1>
+          <Alert
+            theme="red"
+            title="We could not open the portal"
+            :description="state.error.message"
+          >
+            <template #actions>
+              <Button label="Try again" @click="retry" />
             </template>
-          </div>
-          <div class="border-t border-outline-gray-1 p-3">
-            <p class="mb-2 break-words text-sm text-ink-gray-6">Signed in as {{ fullName }}</p>
-            <Button
-              label="Log out"
-              icon-left="lucide-log-out"
-              class="w-full"
-              :loading="loggingOut"
-              @click="onLogout"
-            />
-          </div>
-        </Sidebar>
-      </template>
-      <main id="main" class="taxpayer-page mx-auto w-full max-w-4xl px-6 py-6">
-        <FixtureNotice v-if="fixtureMode" />
-        <RouterView />
-      </main>
-    </DesktopShell>
+          </Alert>
+        </div>
 
-    <MobileShell v-else>
-      <main id="main" class="taxpayer-page px-4 py-4">
-        <FixtureNotice v-if="fixtureMode" />
-        <RouterView />
-      </main>
-      <template #nav>
-        <MobileNav aria-label="Taxpayer portal">
-          <MobileNavItem
-            label="Requests"
-            icon="lucide-inbox"
-            :route="{ name: 'evidence-requests' }"
-            :active="section === 'requests'"
-          />
-          <MobileNavItem
-            label="My cases"
-            icon="lucide-file-text"
-            :route="{ name: 'submissions' }"
-            :active="section === 'submissions'"
-          />
-          <MobileNavItem
-            v-if="simulator"
-            label="Simulator"
-            icon="lucide-flask-conical"
-            :route="{ name: 'new-submission' }"
-            :active="section === 'new'"
-          />
-          <MobileNavItem
-            label="Account"
-            icon="lucide-user"
-            :route="{ name: 'account' }"
-            :active="section === 'account'"
-          />
-        </MobileNav>
-      </template>
-    </MobileShell>
+        <RouterView v-else />
+      </div>
+    </WorkspaceShell>
   </FrappeUIProvider>
 </template>

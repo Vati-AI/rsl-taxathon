@@ -17,9 +17,14 @@ const props = withDefaults(
     /** "Back to cases" in object context. */
     back?: NavItem;
     dark?: boolean;
+    /** Show the collapse-to-rail button. Off inside the navigation drawer. */
+    collapsible?: boolean;
+    /** Fill the container (navigation drawer) instead of the fixed sidebar width. */
+    fill?: boolean;
   }>(),
-  { back: undefined, dark: false },
+  { back: undefined, dark: false, collapsible: true, fill: false },
 );
+const emit = defineEmits<{ navigate: [] }>();
 const collapsed = defineModel<boolean>('collapsed', { default: false });
 
 function isCurrent(item: NavItem): boolean {
@@ -35,13 +40,13 @@ function isCurrent(item: NavItem): boolean {
     :data-collapsed="collapsed"
     :class="[
       'flex h-full shrink-0 flex-col border-r py-3 transition-[width]',
-      collapsed ? 'w-vati-rail' : 'w-vati-sidebar',
+      fill ? 'w-full' : collapsed ? 'w-vati-rail' : 'w-vati-sidebar',
       dark
         ? 'border-vati-nav-active bg-vati-nav-bg text-vati-nav-text'
         : 'border-vati-border bg-vati-surface',
     ]"
   >
-    <div class="flex-1 overflow-y-auto px-2">
+    <div class="relative flex-1 overflow-y-auto px-2">
       <RouterLink
         v-if="back"
         :to="back.to"
@@ -51,6 +56,7 @@ function isCurrent(item: NavItem): boolean {
             ? 'text-vati-nav-text hover:bg-vati-nav-active'
             : 'text-vati-muted hover:bg-vati-surface-subtle hover:text-vati-text',
         ]"
+        @click="emit('navigate')"
       >
         <span aria-hidden="true" class="lucide-arrow-left size-4 shrink-0" />
         <span :class="collapsed ? 'vati-sr-only' : 'truncate'">{{ back.label }}</span>
@@ -81,6 +87,7 @@ function isCurrent(item: NavItem): boolean {
                     ? 'text-vati-nav-text hover:bg-vati-nav-active'
                     : 'text-vati-text hover:bg-vati-surface-subtle',
               ]"
+              @click="emit('navigate')"
             >
               <span aria-hidden="true" :class="[item.icon, 'size-4 shrink-0']" />
               <span :class="collapsed ? 'vati-sr-only' : 'min-w-0 flex-1 truncate'">
@@ -97,7 +104,7 @@ function isCurrent(item: NavItem): boolean {
         </ul>
       </div>
     </div>
-    <div class="px-2 pt-2">
+    <div v-if="collapsible" class="px-2 pt-2">
       <button
         type="button"
         :aria-expanded="!collapsed"
