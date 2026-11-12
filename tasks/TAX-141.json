@@ -5,7 +5,7 @@
   "owner": "Keletso",
   "area": "ai",
   "phase": "pilot",
-  "status": "IN_PROGRESS",
+  "status": "IN_REVIEW",
   "priority": "P1",
   "depends_on": [
     "TAX-115",
@@ -14,7 +14,7 @@
   ],
   "claimed_by": "claude-code-20261112-friendly-newton",
   "branch": "claude/friendly-newton-iwhm4u",
-  "pr": null,
+  "pr": "https://github.com/Vati-AI/rsl-taxathon/pull/310",
   "scope": "Close the TAX-118 miss where foreign fees booked as general expenses escape the three-way match, using the central bank cross-border payment contract",
   "inputs": [
     "PROJECT.md",
@@ -66,6 +66,10 @@
     {
       "at": "2026-11-12",
       "text": "Claimed by claude-code-20261112-friendly-newton on the session's designated branch claude/friendly-newton-iwhm4u."
+    },
+    {
+      "at": "2026-11-12",
+      "text": "IN_REVIEW in https://github.com/Vati-AI/rsl-taxathon/pull/310."
     }
   ],
   "sequence": 26
