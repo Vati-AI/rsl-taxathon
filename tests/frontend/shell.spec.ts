@@ -68,7 +68,7 @@ test.describe('auditor shell (TAX-146)', () => {
     await page.goto(AUDITOR + '/auditor/');
     await pageReady(page, 'Overview');
     const nav = await sidebar(page, 'Auditor workspace');
-    await expect(nav.getByRole('link', { name: 'My case queue' })).toBeVisible();
+    await expect(nav.getByRole('link', { name: /^My cases/ })).toBeVisible();
     await expect(nav.getByRole('link', { name: 'Management dashboard' })).toHaveCount(0);
     await expect(nav.getByRole('link', { name: 'Component showcase' })).toHaveCount(0);
     const tabs = isMobile(testInfo.project.name)
@@ -124,7 +124,7 @@ test.describe('auditor shell (TAX-146)', () => {
     await expect(rail).toHaveAttribute('data-collapsed', 'true');
     await expect.poll(async () => (await rail.boundingBox())!.width).toBe(56);
     // Item names stay available to screen readers in the rail.
-    await expect(rail.getByRole('link', { name: 'My case queue' })).toBeVisible();
+    await expect(rail.getByRole('link', { name: /^My cases/ })).toBeVisible();
     await shot(page, 'auditor-rail', testInfo.project.name);
     await page.reload();
     await pageReady(page, 'My case queue');
@@ -156,7 +156,7 @@ test.describe('auditor shell (TAX-146)', () => {
     await expect(drawer).toBeHidden();
     await expect(menu).toBeFocused();
     await menu.click();
-    await drawer.getByRole('link', { name: 'My case queue' }).click();
+    await drawer.getByRole('link', { name: /^My cases/ }).click();
     await pageReady(page, 'My case queue');
     await expect(drawer).toBeHidden();
   });

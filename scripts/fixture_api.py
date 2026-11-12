@@ -364,7 +364,9 @@ def _dispatch(
         return _error("tenant_scope_denied", correlation)
     if op_id in fixture_review.OPERATIONS:
         return review.handle(op_id, params, headers, body, data["cases"], correlation)
-    # Statuses a fixture approval changed (the Jube projection in fixture mode).
+    # Statuses a fixture approval changed (the Jube projection in fixture mode) and the
+    # TAX-147 attention fields computed from the review state.
+    review.ensure_seeded(data["cases"])
     data = {**data, "cases": [review.overlay_case(c) for c in data["cases"]]}
     result: Response | str
     if op_id == "listCases":

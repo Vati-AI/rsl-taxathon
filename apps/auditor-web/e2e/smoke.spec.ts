@@ -29,10 +29,13 @@ test.describe('navigation', () => {
     await expect(page.locator('[data-kit="fixture-strip"]')).toHaveText('Synthetic data');
     await expect(page.getByText('7 assigned to you')).toBeVisible();
 
-    await nav(page).getByRole('link', { name: 'My case queue' }).click();
+    // TAX-147: the queue's saved views are in the sidebar; "My cases" is all of them.
+    await nav(page)
+      .getByRole('link', { name: /^My cases/ })
+      .click();
     await expect(page).toHaveURL(/\/auditor\/cases$/);
     await expect(page.getByRole('heading', { level: 1, name: 'My case queue' })).toBeVisible();
-    await expect(nav(page).getByRole('link', { name: 'My case queue' })).toHaveAttribute(
+    await expect(nav(page).getByRole('link', { name: /^My cases/ })).toHaveAttribute(
       'aria-current',
       'page',
     );
@@ -117,9 +120,11 @@ test.describe('navigation', () => {
 test.describe('processing states', () => {
   test('failed processing is flagged on the overview, queue and case', async ({ page }) => {
     await page.goto('/auditor/');
-    const alert = page.getByRole('alert').filter({ hasText: 'processing failed' });
-    await expect(alert).toContainText('1 case needs attention');
-    await alert.getByRole('link', { name: 'View failed cases' }).click();
+    // TAX-147: failed processing is one of the overview's action items.
+    const item = page.locator('[data-kit="action-item"]').filter({ hasText: 'Processing failed' });
+    await expect(item.getByLabel('1 case')).toBeVisible();
+    await expect(item).toContainText('SYN-006');
+    await item.getByRole('link', { name: /^View all 1/ }).click();
     await expect(page).toHaveURL(/status=FAILED_PROCESSING/);
     await expect(rows(page)).toHaveCount(2);
     await expect(rows(page).nth(1)).toContainText('Document reading timed out');

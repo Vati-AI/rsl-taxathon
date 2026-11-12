@@ -4,6 +4,7 @@
  * server-side access scope: an app or view the session does not list never appears, and
  * an app that is permitted but not connected is shown as such, never as a working link.
  */
+import { QUEUE_VIEWS, VIEW_INFO, parseView, type QueueView } from './queue';
 import type { RouteLocationRaw } from 'vue-router';
 import type { AppLink, CommandItem, NavItem, NavSection } from '../../../shared/components';
 import type { AppKey, WorkspaceSession } from '../api/session';
@@ -69,21 +70,30 @@ export function workspaceApps(
   });
 }
 
+/** The sidebar key of the current page: queue views are told apart by `?view=`. */
+export function sidebarKey(routeName: string | null, view: unknown): string | null {
+  return routeName === 'queue' ? `queue:${parseView(view)}` : routeName;
+}
+
 export function workspaceSections(
   session: WorkspaceSession,
-  counts: { queue?: number } = {},
+  counts: Partial<Record<QueueView, number | undefined>> = {},
 ): NavSection[] {
   const cases: NavItem[] = [];
   if (has(session, 'overview'))
     cases.push({ label: 'Overview', to: { name: 'overview' }, icon: 'lucide-layout-dashboard', match: 'overview' });
   if (has(session, 'case_queue'))
-    cases.push({
-      label: 'My case queue',
-      to: { name: 'queue' },
-      icon: 'lucide-list-checks',
-      match: ['queue', ...CASE_CONTEXT],
-      count: counts.queue,
-    });
+    // TAX-147: saved views of the queue, with counts from the same case list as the table.
+    for (const view of QUEUE_VIEWS) {
+      const info = VIEW_INFO[view];
+      cases.push({
+        label: info.label,
+        to: view === 'all' ? { name: 'queue' } : { name: 'queue', query: { view } },
+        icon: info.icon,
+        match: view === 'all' ? ['queue:all', ...CASE_CONTEXT] : `queue:${view}`,
+        count: counts[view],
+      });
+    }
   const reports: NavItem[] = [];
   if (has(session, 'management'))
     reports.push({ label: 'Management dashboard', to: { name: 'management' }, icon: 'lucide-gauge', match: 'management' });
@@ -103,11 +113,6 @@ export function backToCases(
   return { label: 'Back to cases', to: { name: 'queue' }, icon: 'lucide-arrow-left', match: [] };
 }
 
-/** Cases assigned to the officer that are not resolved yet (the queue count). */
-export function openCount(cases: Case[]): number {
-  return cases.filter((c) => c.status !== 'RESOLVED').length;
-}
-
 /**
  * Palette items: the pages, cases and taxpayers this officer may see. Cases and taxpayers
  * come from the officer's own queue and the profiles of its taxpayers; TINs are masked
@@ -119,11 +124,11 @@ export function commandItems(
   taxpayers: TaxpayerProfile[],
 ): CommandItem[] {
   const pages: CommandItem[] = workspaceSections(session).flatMap((section) =>
-    section.items.map((item) => ({
-      id: `page:${String((item.to as { name: string }).name)}`,
-      label: item.label,
-      group: 'Pages',
-    })),
+    section.items.map((item) => {
+      const to = item.to as { name: string; query?: { view?: string } };
+      const view = to.query?.view;
+      return { id: view ? `view:${view}` : `page:${to.name}`, label: item.label, group: 'Pages' };
+    }),
   );
   const caseItems: CommandItem[] = cases.map((c) => ({
     id: `case:${c.case_id}`,
@@ -148,6 +153,7 @@ export function commandItems(
 export function commandTarget(item: CommandItem): RouteLocationRaw | null {
   const [kind, id] = [item.id.slice(0, item.id.indexOf(':')), item.id.slice(item.id.indexOf(':') + 1)];
   if (kind === 'page') return { name: id };
+  if (kind === 'view') return { name: 'queue', query: { view: id } };
   if (kind === 'case') return { name: 'case', params: { caseId: id } };
   if (kind === 'taxpayer') return { name: 'taxpayer', params: { taxpayerId: id } };
   return null;

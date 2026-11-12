@@ -5,7 +5,7 @@ import {
   backToCases,
   commandItems,
   commandTarget,
-  openCount,
+  sidebarKey,
   workspaceApps,
   workspaceSections,
 } from './workspace';
@@ -44,9 +44,17 @@ describe('workspace navigation (TAX-146)', () => {
 
   it('adds Reports and the supervision views only for a session that has them', () => {
     expect(workspaceSections(AUDITOR).map((s) => s.label)).toEqual(['Cases']);
-    const sections = workspaceSections(SUPERVISOR, { queue: 7 });
+    const sections = workspaceSections(SUPERVISOR, { all: 7, overdue: 1 });
     expect(sections.map((s) => s.label)).toEqual(['Cases', 'Reports']);
-    expect(sections[0].items.find((i) => i.label === 'My case queue')?.count).toBe(7);
+    // TAX-147: saved views of the queue with counts; an unknown count stays undefined.
+    expect(sections[0].items.map((i) => [i.label, i.count])).toEqual([
+      ['Overview', undefined],
+      ['My cases', 7],
+      ['Awaiting evidence', undefined],
+      ['Awaiting approval', undefined],
+      ['Overdue', 1],
+    ]);
+    expect(sections[0].items[4].to).toEqual({ name: 'queue', query: { view: 'overdue' } });
     expect(sections[1].items.map((i) => i.label)).toEqual([
       'Management dashboard',
       'Integrity review',
@@ -62,8 +70,11 @@ describe('workspace navigation (TAX-146)', () => {
     expect(backToCases({ ...AUDITOR, views: ['overview'] }, 'case')).toBeUndefined();
   });
 
-  it('counts unresolved cases for the queue', () => {
-    expect(openCount([makeCase(1), makeCase(2, { status: 'RESOLVED' })])).toBe(1);
+  it('tells queue views apart for the sidebar', () => {
+    expect(sidebarKey('queue', undefined)).toBe('queue:all');
+    expect(sidebarKey('queue', 'overdue')).toBe('queue:overdue');
+    expect(sidebarKey('queue', 'nonsense')).toBe('queue:all');
+    expect(sidebarKey('case', 'overdue')).toBe('case');
   });
 
   it('palette offers permitted pages, the officer’s cases and masked TINs', () => {
@@ -83,8 +94,15 @@ describe('workspace navigation (TAX-146)', () => {
     );
     expect(items.filter((i) => i.group === 'Pages').map((i) => i.label)).toEqual([
       'Overview',
-      'My case queue',
+      'My cases',
+      'Awaiting evidence',
+      'Awaiting approval',
+      'Overdue',
     ]);
+    expect(commandTarget(items.find((i) => i.label === 'Overdue')!)).toEqual({
+      name: 'queue',
+      query: { view: 'overdue' },
+    });
     const taxpayer = items.find((i) => i.group === 'Taxpayers')!;
     expect(taxpayer.hint).toBe('TIN ******4102');
     expect(taxpayer.keywords).toContain('4102');

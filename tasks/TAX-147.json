@@ -5,15 +5,15 @@
   "owner": "Keletso",
   "area": "apps/auditor-web",
   "phase": "pilot",
-  "status": "BACKLOG",
+  "status": "IN_REVIEW",
   "priority": "P1",
   "depends_on": [
     "TAX-146",
     "TAX-040"
   ],
-  "claimed_by": null,
-  "branch": null,
-  "pr": null,
+  "claimed_by": "claude-code-20261111-friendly-newton",
+  "branch": "claude/friendly-newton-iwhm4u",
+  "pr": "https://github.com/Vati-AI/rsl-taxathon/pull/294",
   "scope": "Rebuild Overview as a workspace home of action items (overdue, awaiting evidence, awaiting approval, failed processing) and the case queue and taxpayer profile as toolbar-plus-table pages with saved views and counts in the sidebar, display options, export of the visible columns and pagination",
   "inputs": [
     "PROJECT.md",
@@ -27,19 +27,19 @@
   "acceptance": [
     {
       "text": "The queue has one toolbar row (search, filters, display options, export, one primary action), a usage line, sortable dense table with column help, muted empty values and a row 'Open' action; filters and sort survive reload through the URL",
-      "done": false
+      "done": true
     },
     {
       "text": "Sidebar views (My cases, Awaiting evidence, Awaiting approval, Overdue) show counts from the same API used by the table; numbers are never invented",
-      "done": false
+      "done": true
     },
     {
       "text": "Overview and taxpayer profile fit the page-length budget; existing queue e2e tests still pass",
-      "done": false
+      "done": true
     },
     {
       "text": "Screenshots at 1440, 1024 and 390px with loading, empty, error and denied states, keyboard/focus and axe results, and the TAX-144 page-length result; record relevant tests and evidence, update task status and open a PR",
-      "done": false
+      "done": true
     }
   ],
   "verification": "Updated unit and Playwright tests on the fixture build",
@@ -49,7 +49,24 @@
     "update-project-task",
     "finish-task"
   ],
-  "evidence": [],
+  "evidence": [
+    {
+      "criterion": 1,
+      "text": "CaseQueueView on the TAX-145 kit: one TableToolbar row at 1440 (search, status and refund-lane filters, Display options kept in localStorage, Export CSV of exactly the visible columns, one primary action 'Open first case'), UsageLine ('Showing 7 of 7 cases · 1 overdue · 2 awaiting approval'), DataTable (dense, sortable with aria-sort, column info on Why selected/Status/Evidence due, muted dash for empty values, 'Open' row action). View, search, filters, sort and page are in the URL and survive reload (queue.spec.ts)."
+    },
+    {
+      "criterion": 2,
+      "text": "Sidebar views My cases, Awaiting evidence, Awaiting approval and Overdue count the same case list the table shows (shared useCaseList over GET /api/v1/cases). Awaiting approval and Overdue use the new optional server-computed Case.attention (contract + fixture server from review state, seeded evidence requests); without it the count is undefined and the view says it is unavailable (domain/queue.test.ts, tests/contracts/test_case_attention.py). queue.spec.ts checks every view's count equals its rows."
+    },
+    {
+      "criterion": 3,
+      "text": "Overview (action items Overdue, Awaiting approval, Awaiting evidence, Processing failed with counts, first cases and links to the views; cases by status) and taxpayer profile (key facts, open-cases toolbar and table) are 1.00 viewports at 1440x900, as is the queue. Existing queue e2e tests pass (auditor e2e 66 passed; smoke.spec updated for the 'My cases' view name and the failed-processing action item)."
+    },
+    {
+      "criterion": 4,
+      "text": "docs/evidence/TAX-147: 32 screenshots at 1440/1024/390 (each view, display options, overview, taxpayer, loading/empty/error/denied); queue.spec.ts 17 passed with axe, keyboard focus on the Open action, product names and the page-length budget; npm run check and dev.py check pass; full frontend suite 323 passed, 9 failed (demo-recording harness only)."
+    }
+  ],
   "notes": [
     {
       "at": "2026-11-08",
@@ -58,6 +75,18 @@
     {
       "at": "2026-11-11T12:27:49.740246+00:00",
       "text": "2026-11-11 (ADR-045): Keletso keeps this task in the AI and new UI lane. No task in this lane depends on an open task in the other lane."
+    },
+    {
+      "at": "2026-11-11",
+      "text": "Claimed by claude-code-20261111-friendly-newton on the session's designated branch claude/friendly-newton-iwhm4u."
+    },
+    {
+      "at": "2026-11-11",
+      "text": "IN_REVIEW in https://github.com/Vati-AI/rsl-taxathon/pull/293, shared with TAX-139, TAX-150 and TAX-148 (one open PR per branch). Contract change: optional Case.attention (integration/api/README.md)."
+    },
+    {
+      "at": "2026-11-11",
+      "text": "#293 merged while TAX-147 was in progress; TAX-147 moved to its own PR https://github.com/Vati-AI/rsl-taxathon/pull/294 (IN_REVIEW). The Frappe /api/v1 service (TAX-090) does not send Case.attention yet, so there the Awaiting approval and Overdue views show 'not available' rather than a count."
     }
   ],
   "sequence": 18

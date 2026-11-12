@@ -10,12 +10,14 @@ import { Button, FrappeUIProvider } from 'frappe-ui';
 import { HeaderMenu, InlineError, WorkspaceShell, type CommandItem } from '../../shared/components';
 import StatePanel from './components/StatePanel.vue';
 import { getWorkspaceSession, type WorkspaceSession } from './api/session';
-import { getTaxpayer, listAssignedCases, type Case, type TaxpayerProfile } from './api/vati';
+import { getTaxpayer, type TaxpayerProfile } from './api/vati';
+import { resetCaseList, useCaseList } from './composables/useCaseList';
+import { viewCounts } from './domain/queue';
 import {
   backToCases,
   commandItems,
   commandTarget,
-  openCount,
+  sidebarKey,
   workspaceApps,
   workspaceSections,
 } from './domain/workspace';
@@ -27,13 +29,17 @@ const router = useRouter();
 // --- workspace session ------------------------------------------------------------------
 const session = ref<WorkspaceSession | null>(null);
 const sessionState = ref<'loading' | 'ready' | 'error'>('loading');
-const cases = ref<Case[]>([]);
+// TAX-147: the same case list the queue table shows, so view counts match its rows.
+const caseList = useCaseList();
+const cases = computed(() =>
+  caseList.state.value.status === 'ready' ? caseList.state.value.data : [],
+);
 const taxpayers = ref<TaxpayerProfile[]>([]);
 let taxpayersLoaded = false;
 
 async function loadSession() {
   sessionState.value = 'loading';
-  cases.value = [];
+  resetCaseList();
   taxpayers.value = [];
   taxpayersLoaded = false;
   try {
@@ -44,13 +50,8 @@ async function loadSession() {
     sessionState.value = 'error';
     return;
   }
-  if (session.value.views.includes('case_queue')) {
-    try {
-      cases.value = await listAssignedCases();
-    } catch {
-      cases.value = []; // the queue page reports its own error; the count is just omitted
-    }
-  }
+  // The queue page reports a failed list itself; the counts are then just omitted.
+  if (session.value.views.includes('case_queue')) await caseList.refresh();
 }
 onMounted(loadSession);
 watch(fixtureRole, loadSession);
@@ -71,9 +72,10 @@ const apps = computed(() =>
 );
 const sections = computed(() =>
   session.value
-    ? workspaceSections(session.value, {
-        queue: cases.value.length ? openCount(cases.value) : undefined,
-      })
+    ? workspaceSections(
+        session.value,
+        caseList.state.value.status === 'ready' ? viewCounts(cases.value) : {},
+      )
     : [],
 );
 const back = computed(() =>
@@ -123,7 +125,7 @@ function reloadPage() {
       :home="{ name: 'overview' }"
       :apps="apps"
       :sections="sections"
-      :current="routeName"
+      :current="sidebarKey(routeName, route.query.view)"
       :back="back"
       :fixture="session?.synthetic ?? false"
       :commands="commands"

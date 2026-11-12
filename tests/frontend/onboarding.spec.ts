@@ -361,7 +361,7 @@ test.describe('officer onboarding (TAX-082)', () => {
           'Search',
         );
         // Like a person, read the filtered result before choosing it.
-        await expect(page.getByText('Showing 1–1 of 1 cases')).toBeVisible();
+        await expect(page.getByText('Showing 1 of 1 cases')).toBeVisible();
         await expect(page.getByRole('row').filter({ hasText: 'SYN-002' })).toContainText(
           'Synthetic Border Retail',
         );
@@ -515,7 +515,7 @@ test.describe('officer onboarding (TAX-082)', () => {
         await pageReady(page, 'My case queue');
         await proxy.tabTo(page.getByRole('searchbox', { name: 'Search' }), 'Search');
         await proxy.type('Highland Imports');
-        await expect(page.getByText('Showing 1–1 of 1 cases')).toBeVisible();
+        await expect(page.getByText('Showing 1 of 1 cases')).toBeVisible();
         await proxy.tabTo(page.getByRole('link', { name: 'SYN-004' }), 'SYN-004');
         await proxy.press('Enter');
         await pageReady(page, /^SYN-004 · /);
@@ -593,7 +593,7 @@ test.describe('officer onboarding (TAX-082)', () => {
         );
         await pageReady(page, 'My case queue');
         const links = page.getByRole('table').getByRole('link', { name: /^SYN-\d+$/ });
-        await expect(page.getByText(/Showing 1–\d+ of \d+ case/)).toBeVisible();
+        await expect(page.getByText(/Showing \d+ of \d+ case/)).toBeVisible();
         const candidates = await links.allInnerTexts();
         if (
           (await page
