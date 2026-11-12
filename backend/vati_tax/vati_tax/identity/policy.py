@@ -507,5 +507,10 @@ def refund_query_condition(
             f"where s.`submission_type` = {quote(REFUND_CLAIM)} and s.`tenant_id` in ({r})"
         )
         if mine:
-            hidden += f" and (s.`case_id` is null or s.`case_id` not in ({mine}))"
+            # The case may be linked from either side (submission or case identity).
+            hidden += (
+                f" and (s.`case_id` is null or s.`case_id` not in ({mine}))"
+                " and s.`name` not in (select ci.`submission_id` from `tabVati Case Identity` ci"
+                f" where ci.`submission_id` is not null and ci.`name` in ({mine}))"
+            )
     return f"({column} is null or {column} not in ({hidden}))"

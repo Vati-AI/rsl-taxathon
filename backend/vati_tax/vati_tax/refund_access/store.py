@@ -81,8 +81,17 @@ def submission_info(submission_id: str | None) -> tuple[str | None, bool, str | 
     )
     if not row:
         return None, False, None
-    assignee = frappe.db.get_value(ASSIGNMENT, row.case_id, "assignee") if row.case_id else None
+    case_id = row.case_id or submission_case(submission_id)
+    assignee = frappe.db.get_value(ASSIGNMENT, case_id, "assignee") if case_id else None
     return row.tenant_id, row.submission_type == policy.REFUND_CLAIM, assignee or None
+
+
+def submission_case(submission_id: str) -> str | None:
+    """The case registered for a submission (linked from the case identity)."""
+    case_id = frappe.db.get_value(SUBMISSION, submission_id, "case_id") or frappe.db.get_value(
+        CASE, {"submission_id": submission_id}, "name"
+    )
+    return str(case_id) if case_id else None
 
 
 def _scope(tenant_id: str | None) -> policy.TenantScope | None:
@@ -165,7 +174,7 @@ def require_submission(
         return
     tenant, refund, assignee = submission_info(submission_id)
     if tenant == scope.tenant_id and refund and not policy.may_read_refund_case(scope, assignee):
-        case_id = frappe.db.get_value(SUBMISSION, submission_id, "case_id") or submission_id
+        case_id = submission_case(submission_id) or submission_id
         _deny(scope, action, case_id)
 
 

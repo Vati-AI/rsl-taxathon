@@ -203,7 +203,7 @@ def _refund_permitted(doc: Any, principal: policy.Principal, ptype: str | None) 
         case_id = value
     else:
         _tenant, is_refund, assignee = refund_store.submission_info(value)
-        case_id = frappe.db.get_value(SUBMISSION, value, CASE_FIELD) if value else None
+        case_id = refund_store.submission_case(value) if value else None
     if not is_refund:
         return True
     scope = policy.resolve_tenant(principal, tenant_id)
