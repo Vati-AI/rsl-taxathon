@@ -14,7 +14,7 @@
   ],
   "claimed_by": "claude-code-20261112-friendly-newton",
   "branch": "claude/friendly-newton-iwhm4u",
-  "pr": null,
+  "pr": "https://github.com/Vati-AI/rsl-taxathon/pull/309",
   "scope": "Extend the related-party playbook to losses created by intra-group interest and financing, with the thin-capitalisation candidate route (unverified) and a loss carry-forward pattern",
   "inputs": [
     "PROJECT.md",
@@ -77,6 +77,10 @@
     {
       "at": "2026-11-12",
       "text": "Changing rule_register.candidates.json changes the TAX-118/TAX-139 frozen rule fingerprints (informational in assurance_live; sealed results not re-run). The playbook registry re-pin follows the TAX-097/TAX-110 precedent: this PR's review is the approval gate (ADR-017)."
+    },
+    {
+      "at": "2026-11-12",
+      "text": "IN_REVIEW in https://github.com/Vati-AI/rsl-taxathon/pull/309."
     }
   ],
   "sequence": 25
