@@ -228,3 +228,15 @@ Refund data is every tenant-scoped record with a `case_id` (except the audit led
 | --- | --- | --- |
 | Assign or reassign a refund case (`refund_access.api.assign_case`) | a refund-team supervisor (`case.assign`) | anyone else (recorded); not a refund case; assignee not refund-team staff of the tenant; stale `expected_version`; reason shorter than 10 characters |
 | Read the assignment (`get_case_assignment`) | staff who may see the case | anyone else (recorded) |
+
+## Gap-only evidence requests (TAX-127)
+
+`vati_tax.evidence_gaps` itemises an evidence request from the claim lines RSL cannot evidence. See [ADR-050](decisions/ADR-050-gap-only-evidence-requests.md).
+
+| Step | Who | Refused when |
+| --- | --- | --- |
+| Review a proposal (`propose_gap_request`) | auditor, specialist, supervisor (`case.read`, refund access) | taxpayer or service; outside refund access (recorded); not an Online Refunds claim; no line match yet; RSL claim unreadable; match out of date; more than 20 lines to ask |
+| Approve it (`approve_gap_request`) | auditor, supervisor (`evidence_request.authorise`, refund access) | as authorising a request (TAX-046); the proposal changed since review (409); nothing to ask |
+
+The taxpayer sees only the approved request: the lines RSL already holds, and per asked line the invoice, supplier, date, VAT and the answers `confirm`, `dispute` (with a reason) or `attach_proof` (with a document). No score, lane, finding or internal status is shown.
+
