@@ -5,7 +5,7 @@
   "owner": "Gupta",
   "area": "integration",
   "phase": "pilot",
-  "status": "BACKLOG",
+  "status": "IN_PROGRESS",
   "priority": "P1",
   "depends_on": [
     "TAX-111",
@@ -13,8 +13,8 @@
     "TAX-114",
     "TAX-046"
   ],
-  "claimed_by": null,
-  "branch": null,
+  "claimed_by": "claude-opus-5-5-gupta",
+  "branch": "task/TAX-124",
   "pr": null,
   "scope": "Define and emit assumed outbound contracts so results return to RSL: an approved findings pack for the RSL audit case, the lane recommendation and undisputed amount for the Online Refunds Application or PSRM to act on, and an evidence-requested status with a portal deep link",
   "inputs": [
@@ -61,6 +61,10 @@
     {
       "at": "2026-11-11T12:27:49.740246+00:00",
       "text": "2026-11-11 (ADR-045): owner changed from Keletso to Gupta; RSL integration lane. No task in this lane depends on an open task in the other lane."
+    },
+    {
+      "at": "2026-11-12T04:20:27.391543+00:00",
+      "text": "Claimed by claude-opus-5-5-gupta"
     }
   ],
   "sequence": 23
