@@ -5,7 +5,7 @@
   "owner": "Gupta",
   "area": "backend",
   "phase": "pilot",
-  "status": "IN_REVIEW",
+  "status": "DONE",
   "priority": "P1",
   "depends_on": [
     "TAX-029",
@@ -68,6 +68,10 @@
     {
       "at": "2026-11-12T06:23:36.206795+00:00",
       "text": "PR opened with local verification (ADR-038)"
+    },
+    {
+      "at": "2026-11-12T06:30:46.414521+00:00",
+      "text": "DONE: implementation PR #301 verified merged on main; all acceptance criteria and evidence recorded (ADR-038)."
     }
   ],
   "sequence": 27
