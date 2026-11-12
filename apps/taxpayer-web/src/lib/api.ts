@@ -9,6 +9,7 @@ import type {
   PresubmissionReview,
   PortalSession,
   RefundClaimResult,
+  ResponseReview,
   Submission,
 } from './types';
 
@@ -300,6 +301,21 @@ export async function respondToEvidenceRequest(payload: {
     throw new PortalError('unavailable', 'The portal returned data in an unexpected format.');
   }
   return result;
+}
+
+/** TAX-126: guidance on a draft response before it is sent; stores nothing, never blocks. */
+export async function reviewEvidenceResponse(payload: {
+  request_id: string;
+  items: { item_index: number; evidence_ids: string[] }[];
+}): Promise<ResponseReview> {
+  const result = await post<LiveEnvelope<ResponseReview>>(
+    'vati_tax.portal.api.review_evidence_response',
+    { ...payload },
+  );
+  if (result?.mode !== 'live' || !Array.isArray(result.data?.items)) {
+    throw new PortalError('unavailable', 'The portal returned data in an unexpected format.');
+  }
+  return result.data;
 }
 
 /** Check a draft claim before sending (TAX-044); stores nothing. */

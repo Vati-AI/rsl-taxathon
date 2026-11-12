@@ -5,7 +5,7 @@
   "owner": "Keletso",
   "area": "ai",
   "phase": "pilot",
-  "status": "BACKLOG",
+  "status": "IN_REVIEW",
   "priority": "P1",
   "depends_on": [
     "TAX-089",
@@ -13,9 +13,9 @@
     "TAX-044",
     "TAX-038"
   ],
-  "claimed_by": null,
-  "branch": null,
-  "pr": null,
+  "claimed_by": "claude-code-20261112-friendly-newton",
+  "branch": "claude/friendly-newton-iwhm4u",
+  "pr": "https://github.com/Vati-AI/rsl-taxathon/pull/311",
   "scope": "LangGraph taxpayer assistant using the fast role: submission guidance for required fields and supporting information, validation-explanation tools that turn deterministic pre-submission results (totals, missing documents, duplicate invoices, inconsistent periods) into actionable instructions, document assistance over Docling output with document references and fields flagged for taxpayer confirmation (document role only when long-context reasoning is needed), and recurring-mistake guidance from the taxpayer's own prior validation results",
   "inputs": [
     "PROJECT.md",
@@ -32,15 +32,15 @@
   "acceptance": [
     {
       "text": "The assistant runs in the taxpayer permission context with its own tool allowlist: it sees only that taxpayer's submissions, documents, validation results and taxpayer-facing requests; it cannot reach risk scores, internal notes, findings or other taxpayers (negative tests)",
-      "done": false
+      "done": true
     },
     {
       "text": "It never fabricates evidence, changes declared figures or submits; it proposes corrections the taxpayer must confirm; with mock models the 15-invoice scenario from TAX-102 identifies exactly the expected problem invoices with references and explanations",
-      "done": false
+      "done": true
     },
     {
       "text": "Record relevant tests and evidence, update task status and open a PR",
-      "done": false
+      "done": true
     }
   ],
   "verification": "It never fabricates evidence, changes declared figures or submits; it proposes corrections the taxpayer must confirm; with mock models the 15-invoice scenario from TAX-102 identifies exactly the expected problem invoices with references and explanations",
@@ -50,7 +50,20 @@
     "update-project-task",
     "finish-task"
   ],
-  "evidence": [],
+  "evidence": [
+    {
+      "criterion": 1,
+      "text": "Observed 2026-11-12: ai/agents/taxpayer_assistant.py builds a TaxpayerView per call with only the caller's own submissions, taxpayer-facing document fields (no text) and own earlier validation codes; officer-side records and other taxpayers are never copied. Data is reached only through TOOL_ALLOWLIST (read_own_submission, read_own_documents, validate_submission, compare_document_fields); other tools raise ToolNotAllowed. Negative tests in tests/ai/test_taxpayer_assistant.py: no internal or other-taxpayer canary in the view; A07 another taxpayer in the path 404 not_found; A08/A09 another taxpayer's document or submission 422 invalid_domain_input; non-taxpayer audience 403; TAX-102 hostile_resistance 159/159."
+    },
+    {
+      "criterion": 2,
+      "text": "Observed 2026-11-12 with the keyless mock fast chain: TAX-102 gate PASS for the explainValidationResults and reviewSubmissionDocuments cases (8 cases x 3 runs, 767 checks, 0 failed; new optional --operations filter), report in docs/evidence/TAX-098/gate_report.json. The 15-invoice scenario (B01/B02) flags exactly invoices 4, 7, 9, 11, 12, 14 with the expected codes, own-document references and explanations; false_positive 0/90; the two expected gross_amount fields to confirm (plus invoice 7's date difference, reported correctly). Store unchanged, nothing sent, requires_taxpayer_confirmation true everywhere, changes_declared_figures false. The model only words explanations from structured facts (never document text) and invalid output falls back to the template (tested through the router). Evidence-response drafting is TAX-099: answered 503 upstream_unavailable for now; DEFAULT_ASSISTANT_ENTRY stays unset until TAX-099 passes all 16 cases."
+    },
+    {
+      "criterion": 3,
+      "text": "Observed 2026-11-12: tests/ai/test_taxpayer_assistant.py (4 deterministic + 8 LangGraph tests); with LangGraph pytest tests/ai 484 passed, 1 skipped; agent_eval --check gate PASS; dev.py check, ruff check and mypy (now covering ai/agents) passed; evidence in docs/evidence/TAX-098."
+    }
+  ],
   "notes": [
     {
       "at": "2026-11-05T10:07:38.336884+00:00",
@@ -63,6 +76,18 @@
     {
       "at": "2026-11-11T12:27:49.740246+00:00",
       "text": "2026-11-11 (ADR-045): Keletso keeps this task in the AI and new UI lane. No task in this lane depends on an open task in the other lane."
+    },
+    {
+      "at": "2026-11-12",
+      "text": "Claimed by claude-code-20261112-friendly-newton on the session's designated branch claude/friendly-newton-iwhm4u."
+    },
+    {
+      "at": "2026-11-12",
+      "text": "Scope note: submission guidance for required fields is left to the TAX-044 form validation; serving (TAX-100), the portal UI (TAX-101) and evidence drafting (TAX-099) are separate tasks. No live model call was made."
+    },
+    {
+      "at": "2026-11-12",
+      "text": "IN_REVIEW in https://github.com/Vati-AI/rsl-taxathon/pull/311 (shares the session branch with TAX-126)."
     }
   ],
   "sequence": 54

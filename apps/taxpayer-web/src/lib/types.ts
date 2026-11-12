@@ -216,3 +216,28 @@ export interface PrefilingCheck {
   note: string;
   file_with: { name: string; url: string | null };
 }
+
+/** TAX-126: one piece of guidance on a document before a response is sent. */
+export interface ResponseCheck {
+  code:
+    | 'document_still_being_read'
+    | 'document_not_readable'
+    | 'document_partly_read'
+    | 'document_period_differs'
+    | 'document_amount_not_found'
+    | 'document_invoice_number_not_found'
+    | 'document_matches_request';
+  level: 'info' | 'attention';
+  message: string;
+  evidence_id?: string;
+  document?: string;
+  /** The TAX-078 reminder that covers the same kind of gap, if the server marked one. */
+  reminder_id: string | null;
+}
+
+/** TAX-126: `review_evidence_response`: guidance per answered item; never blocks sending. */
+export interface ResponseReview {
+  checks_version: string;
+  items: { index: number; attention: number; checks: ResponseCheck[] }[];
+  blocks_sending: false;
+}

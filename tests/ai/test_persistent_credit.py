@@ -88,7 +88,9 @@ class ReviewTests(unittest.TestCase):
         )
         self.assertEqual(out["status"], "explained")
         test = out["periods"][0]["tests"][1]
-        self.assertEqual((test["test"], test["explained"]), ("import_vat_paid_at_border", "40000.00"))
+        self.assertEqual(
+            (test["test"], test["explained"]), ("import_vat_paid_at_border", "40000.00")
+        )
         self.assertEqual(test["evidence"], [f"ASY-{PERIODS[0]}"])
 
     def test_customs_unavailable_is_recorded_as_not_tested(self) -> None:
@@ -167,9 +169,7 @@ class Syn007Tests(unittest.TestCase):
                 r = self.results[tin]
                 pc = r["persistent_credit"]
                 self.assertEqual(pc["status"], expected["review_status"])
-                used = [
-                    t for t in TESTS if Decimal(pc["totals"][f"explained_by_{t}"]) > 0
-                ]
+                used = [t for t in TESTS if Decimal(pc["totals"][f"explained_by_{t}"]) > 0]
                 self.assertEqual(used, expected["explained_by"])
                 codes = [f["code"] for f in r["findings"]]
                 if expected["finding"]:

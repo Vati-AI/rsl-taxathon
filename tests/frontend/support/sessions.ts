@@ -121,6 +121,11 @@ export interface PortalMock {
   persona: TaxpayerPersona;
   /** Evidence IDs uploaded in this browser session. */
   evidence: string[];
+  /** TAX-126: the file name each evidence ID was uploaded under (the mock's checks read it). */
+  evidenceNames: Map<string, string>;
+  /** TAX-126: how many pre-send checks ran, and whether they fail with 503. */
+  responseReviews: number;
+  responseReviewUnavailable: boolean;
   /** Claims stored by `submit_refund_claim`, by idempotency key. */
   claims: Map<string, StoredClaim>;
   /** Store the next claim, then drop the response: the client sees a lost connection. */
@@ -408,6 +413,9 @@ export async function mockTaxpayerSession(
     calls: [],
     persona,
     evidence: [],
+    evidenceNames: new Map(),
+    responseReviews: 0,
+    responseReviewUnavailable: false,
     claims: new Map(),
     dropNextSendResponse: false,
     rejectEvidenceOnSend: false,
@@ -470,6 +478,7 @@ export async function mockTaxpayerSession(
       }
       const evidenceId = randomUUID();
       mock.evidence.push(evidenceId);
+      mock.evidenceNames.set(evidenceId, filename);
       return ok(route, {
         evidence_id: evidenceId,
         document_type: /name="document_type"\r\n\r\n([^\r]*)/.exec(body)?.[1] ?? 'invoice',
@@ -623,6 +632,22 @@ export async function mockTaxpayerSession(
       }
       return ok(route, result);
     }
+    if (method === 'vati_tax.portal.api.review_evidence_response') {
+      mock.responseReviews += 1;
+      if (mock.responseReviewUnavailable) {
+        return refused(route, 'ServiceUnavailable', 503, 'Service unavailable');
+      }
+      const body = (route.request().postDataJSON() ?? {}) as {
+        request_id?: string;
+        items?: { item_index: number; evidence_ids: string[] }[];
+      };
+      const item = mock.requests.get(String(body.request_id));
+      if (!item) return refused(route, 'DoesNotExistError', 404, 'Evidence request not found.');
+      return ok(route, {
+        mode: 'live',
+        data: responseReview(mock, body.items ?? []),
+      });
+    }
     if (method === 'vati_tax.portal.api.get_correction_reminders') {
       if (mock.remindersUnavailable) {
         return refused(route, 'ServiceUnavailable', 503, 'Service unavailable');
@@ -665,4 +690,48 @@ export async function mockAuditorAccess(page: Page, persona: AuditorPersona): Pr
       headers: { ...route.request().headers(), 'x-vati-tenant-id': OTHER_TENANT_ID },
     }),
   );
+}
+
+/**
+ * TAX-126: what `review_evidence_response` (vati_tax.responses.checks) would say about
+ * the uploaded documents. The mock has no Docling, so it keys the outcome off the file
+ * name: "blurry" cannot be read, "january" has dates outside the claim period,
+ * "reading" is still being read on the first check, anything else matches. Wording is
+ * the server's.
+ */
+function responseReview(
+  mock: PortalMock,
+  answers: { item_index: number; evidence_ids: string[] }[],
+) {
+  const reminderFor = (topic: string) =>
+    mock.reminders.find((r) => r.topic === topic)?.reminder_id ?? null;
+  const items = answers
+    .filter((a) => a.evidence_ids.length)
+    .map((a) => {
+      const checks = a.evidence_ids.map((id) => {
+        const name = mock.evidenceNames.get(id) ?? 'document.pdf';
+        const base = { evidence_id: id, document: name, reminder_id: null as string | null };
+        if (name.includes('blurry')) {
+          return { ...base, code: 'document_not_readable', level: 'attention',
+            message: `We could not read any text in ${name}. Check that it is a clear, complete copy (not blank, cropped or a photo at an angle). If it is, you can still send it.` }; // prettier-ignore
+        }
+        if (name.includes('january')) {
+          return { ...base, code: 'document_period_differs', level: 'attention',
+            reminder_id: reminderFor('period_figures'),
+            message: `The dates in ${name} (14 Jan 2026, 31 Jan 2026) are not in September 2026, the period of your claim. Check that this is the document for that period.` }; // prettier-ignore
+        }
+        if (name.includes('reading') && mock.responseReviews === 1) {
+          return { ...base, code: 'document_still_being_read', level: 'info',
+            message: `${name} is still being read, so it has not been checked yet. You can send now; the officer will see the document either way.` }; // prettier-ignore
+        }
+        return { ...base, code: 'document_matches_request', level: 'info',
+          message: `${name} was read. It matches the request on the period.` }; // prettier-ignore
+      });
+      return {
+        index: a.item_index,
+        attention: checks.filter((c) => c.level === 'attention').length,
+        checks,
+      };
+    });
+  return { checks_version: 'tax126-response-checks-v1', items, blocks_sending: false };
 }

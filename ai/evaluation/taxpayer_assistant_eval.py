@@ -113,7 +113,8 @@ Store = dict[str, Any]
 Request = dict[str, Any]
 Assistant = Callable[[Request], Mapping[str, Any]]
 AssistantFactory = Callable[[Store], Assistant]
-# Set by TAX-098 (for example "ai.agents.taxpayer_assistant:make_assistant") so that
+# Set by TAX-099 to "ai.agents.taxpayer_assistant:make_assistant" once every case passes
+# (TAX-098 answers two of the three operations; see docs/evidence/TAX-098) so that
 # ``agent_eval --check`` includes the taxpayer cases without a command-line flag.
 DEFAULT_ASSISTANT_ENTRY: str | None = None
 
@@ -935,13 +936,33 @@ def run_case(
     return check_response(fx, case, request, response, before, store, run), response
 
 
+def select_cases(
+    fx: Mapping[str, Any], operations: Sequence[str] | None = None
+) -> list[dict[str, Any]]:
+    """The cases for ``operations`` (all cases when None).
+
+    TAX-098 answers explainValidationResults and reviewSubmissionDocuments;
+    draftEvidenceResponse arrives with TAX-099. Selecting by operation runs every case
+    of those operations, adversarial ones included; it changes no expected outcome.
+    """
+    if operations is None:
+        return list(fx["cases"])
+    unknown = sorted(set(operations) - set(OPERATIONS))
+    if unknown:
+        raise ValueError(f"unknown operations: {unknown}")
+    return [c for c in fx["cases"] if c["operation_id"] in operations]
+
+
 def run_all(
-    factory: AssistantFactory, fx: Mapping[str, Any] | None = None, runs: int | None = None
+    factory: AssistantFactory,
+    fx: Mapping[str, Any] | None = None,
+    runs: int | None = None,
+    operations: Sequence[str] | None = None,
 ) -> list[Check]:
     fx = fx or load_fixtures()
     runs = runs or int(fx["runs_per_scenario"])
     checks: list[Check] = []
-    for case in fx["cases"]:
+    for case in select_cases(fx, operations):
         signatures = []
         for run in range(1, runs + 1):
             items, response = run_case(fx, case, factory, run)
@@ -980,9 +1001,18 @@ def _metric(checks: Sequence[Check], metric: str, threshold: Mapping[str, float]
     }
 
 
-def build_report(checks: Sequence[Check], fx: Mapping[str, Any], assistant: str) -> dict[str, Any]:
+def build_report(
+    checks: Sequence[Check],
+    fx: Mapping[str, Any],
+    assistant: str,
+    operations: Sequence[str] | None = None,
+) -> dict[str, Any]:
     metrics = {m: _metric(checks, m, fx["thresholds"][m]) for m in METRICS}
-    known = {k["id"]: k for k in fx.get("known_failures", [])}
+    selected = select_cases(fx, operations)
+    run_ids = {c["id"] for c in selected}
+    known = {
+        k["id"]: k for k in fx.get("known_failures", []) if str(k["id"]).split("/", 2)[1] in run_ids
+    }
     failed = {c.check_id for c in checks if not c.passed}
     regressions = sorted(failed - set(known))
     stale = sorted(set(known) - failed)
@@ -998,7 +1028,8 @@ def build_report(checks: Sequence[Check], fx: Mapping[str, Any], assistant: str)
         "synthetic": True,
         "assistant": assistant,
         "runs_per_scenario": fx["runs_per_scenario"],
-        "cases": len(fx["cases"]),
+        "cases": len(selected),
+        "operations": sorted(operations) if operations is not None else "all",
         "checks": len(checks),
         "failed_checks": len(failed),
         "metrics": metrics,
@@ -1017,11 +1048,12 @@ def evaluate(
     *,
     runs: int | None = None,
     name: str = "assistant",
+    operations: Sequence[str] | None = None,
 ) -> tuple[list[Check], dict[str, Any]]:
-    """Run every case ``runs`` times against ``factory`` and build the gate report."""
+    """Run every selected case ``runs`` times against ``factory`` and build the gate report."""
     fx = fx or load_fixtures()
-    checks = run_all(factory, fx, runs)
-    return checks, build_report(checks, fx, name)
+    checks = run_all(factory, fx, runs, operations)
+    return checks, build_report(checks, fx, name, operations)
 
 
 def record_agent_eval_checks(
@@ -1073,7 +1105,12 @@ def main(argv: Sequence[str] | None = None) -> int:
     parser.add_argument("--assistant", help="module:factory to evaluate (default: self-check)")
     parser.add_argument("--check", action="store_true", help="exit non-zero unless the gate passes")
     parser.add_argument("--json", type=Path, help="write the report as JSON")
+    parser.add_argument(
+        "--operations",
+        help="comma-separated operationIds to run (default: all); TAX-098 answers two",
+    )
     args = parser.parse_args(argv)
+    operations = args.operations.split(",") if args.operations else None
     fx = load_fixtures()
     entry = args.assistant or DEFAULT_ASSISTANT_ENTRY
     if entry is None:
@@ -1086,7 +1123,7 @@ def main(argv: Sequence[str] | None = None) -> int:
                 json.dumps(result, indent=2, sort_keys=True) + "\n", encoding="utf-8"
             )
         return 1 if args.check and not result["passed"] else 0
-    _, report = evaluate(resolve_factory(entry), fx, name=entry)
+    _, report = evaluate(resolve_factory(entry), fx, name=entry, operations=operations)
     print(render_text(report))
     if args.json:
         args.json.write_text(json.dumps(report, indent=2, sort_keys=True) + "\n", encoding="utf-8")

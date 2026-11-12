@@ -707,3 +707,69 @@ def case_status(*, tenant_id: str, case_id: str) -> dict[str, Any]:
         "screenings": [dict(s) for s in screenings],
         "failing": [dict(e) for e in events if e["status"] in ("retry", "dead_letter")],
     }
+
+
+# --- TAX-126: reading a response document before it is sent -------------------------
+
+
+def request_draft_extraction(tenant_id: str, taxpayer_id: str, evidence_id: str) -> bool:
+    """Queue one Docling read of a taxpayer's own unsent document (replay-safe).
+
+    The portal's pre-send checks need the text of documents that are not yet part of a
+    case, so they cannot take the ``evidence.received`` route. The job records an
+    ordinary extraction revision; when the response is sent and the document joins the
+    case, ``handle_evidence_received`` finds that revision and does not convert again.
+    Returns whether a read was queued (False when one exists or the document is not
+    the taxpayer's own unsent upload).
+    """
+    row = frappe.db.get_value(
+        EVIDENCE,
+        {"name": evidence_id, "tenant_id": tenant_id, "taxpayer_id": taxpayer_id},
+        ["name", "case_id"],
+        as_dict=True,
+    )
+    if not row or row.case_id or frappe.db.exists(EXTRACTION, {"evidence_id": evidence_id}):
+        return False
+    frappe.enqueue(
+        "vati_tax.pipeline.store.extract_draft",
+        queue="short",
+        job_id=f"vati-draft-extraction-{evidence_id}",
+        deduplicate=True,
+        enqueue_after_commit=True,
+        tenant_id=tenant_id,
+        evidence_id=evidence_id,
+    )
+    return True
+
+
+def extract_draft(tenant_id: str, evidence_id: str) -> str | None:
+    """Background job: Docling reads one unsent document and the result is recorded.
+
+    A failure to reach Docling records nothing; the checks keep saying the document is
+    still being read, and the case pipeline reads it after the response is sent.
+    """
+    evidence = frappe.db.get_value(
+        EVIDENCE,
+        {"name": evidence_id, "tenant_id": tenant_id},
+        ["name", "tenant_id", "case_id", "document_sha256", "media_type", "file_ref"],
+        as_dict=True,
+    )
+    if not evidence or evidence.case_id or _latest_extraction(evidence_id):
+        return None
+    try:
+        content = _original(evidence)
+        with as_service():
+            adapter = docling_for(tenant_id, jobs=_Jobs(), sink=evidence_store.record_extraction)
+            outcome = adapter.extract(
+                tenant_id=tenant_id,
+                evidence_id=evidence.name,
+                document_sha256=evidence.document_sha256,
+                media_type=evidence.media_type,
+                content=content,
+                correlation_id=str(uuid.uuid4()),
+            )
+    except Exception as exc:  # noqa: BLE001 - advisory read; the case pipeline retries later
+        log("extract_draft", type(exc).__name__, tenant_id=tenant_id, evidence_id=evidence_id)
+        return None
+    log("extract_draft", outcome.status, tenant_id=tenant_id, evidence_id=evidence_id)
+    return str(outcome.status)
