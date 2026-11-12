@@ -155,6 +155,8 @@ def _bank_payments(csv_text: str | None) -> list[dict[str, Any]]:
                 "settled_amount": settled if settled is not None else str(tx.amount),
                 "counterparty_account_ref": tx.counterparty.account_ref,
                 "counterparty_country": tx.counterparty.country,
+                # TAX-141: what the taxpayer's bank says the payment was for.
+                "narration": tx.narration,
             }
         )
     return out

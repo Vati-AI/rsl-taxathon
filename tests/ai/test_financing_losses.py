@@ -107,7 +107,9 @@ class FinancingLossScenarioTests(unittest.TestCase):
     def test_thin_capitalisation_is_an_unverified_ratio_observation(self) -> None:
         review = review_related_party(RECORDS["FIN-001"])
         obs = next(
-            o for o in review["observations"] if o["code"] == "related_party_debt_above_reported_ratio"
+            o
+            for o in review["observations"]
+            if o["code"] == "related_party_debt_above_reported_ratio"
         )
         self.assertEqual(obs["highest_ratio"], "5.00")
         self.assertIn("unverified", obs["scope_note"])

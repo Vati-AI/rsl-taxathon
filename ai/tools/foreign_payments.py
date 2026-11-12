@@ -17,6 +17,15 @@ tolerance for exchange rates). Rates are **synthetic assumptions** passed in by 
 Lesotho law. The output is a reconciliation with reasons and a route recommendation, never
 a liability or a decision.
 
+**Foreign payments booked outside service accounts (TAX-141):** a payment to a
+non-resident counterparty with no service or interest booking (the fees sit in general
+expenses, so the match above never tests them) is checked against two independent
+descriptions of what was paid for: the Central Bank cross-border report's purpose, where
+the report exists and carries one, and the taxpayer's own bank narration. When either
+describes services and no withholding or imported-services VAT was declared for the payee,
+the match raises ``foreign_service_payments_outside_service_accounts``: a question for the
+taxpayer with the figures, never a conclusion. A counterparty marked exempt is not asked.
+
 **CMA caveat:** within the Common Monetary Area there are no exchange restrictions between
 banks, so payments to South Africa, Namibia or Eswatini may not appear in Central Bank
 cross-border data. Company bank statements are the primary source.
@@ -24,6 +33,8 @@ cross-border data. Company bank statements are the primary source.
 
 from __future__ import annotations
 
+import datetime
+import re
 from collections.abc import Iterable, Mapping
 from decimal import ROUND_HALF_UP, Decimal
 from typing import Any
@@ -35,6 +46,13 @@ CMA_COUNTRIES = frozenset({"za", "na", "sz"})
 SERVICE_CATEGORIES = frozenset({"management_fees", "consultancy_fees"})
 WHT_CATEGORIES = SERVICE_CATEGORIES | {"interest"}
 ZERO = Decimal("0.00")
+# TAX-141: words in a bank narration that describe a service rather than goods or a loan.
+SERVICE_NARRATION = re.compile(
+    r"\b(services?|fees?|consult\w*|management|advisory|technical|licen[cs]e\w*|royalt\w*)\b",
+    re.IGNORECASE,
+)
+CB_MATCH_DAYS = 5
+OUTSIDE_SERVICE_ACCOUNTS = "foreign_service_payments_outside_service_accounts"
 CMA_CAVEAT = (
     "Central Bank cross-border data may not show payments within the Common Monetary Area; "
     "company bank statements are the primary source."
@@ -86,6 +104,7 @@ def three_way_match(
     certificates = frozenset(residence_certificates)
     a: dict[tuple[str, str], Decimal] = {}
     a_ids: dict[tuple[str, str], list[str]] = {}
+    a_rows: dict[tuple[str, str], list[Mapping[str, Any]]] = {}
     unresolved_payments: list[str] = []
     for p in bank_payments:
         if p.get("direction") != "outflow":
@@ -97,14 +116,21 @@ def three_way_match(
         key = (ref, bucket(p["date"]))
         a[key] = a.get(key, ZERO) + parse_money(p["settled_amount"], field="payment")
         a_ids.setdefault(key, []).append("bank:" + str(p["provider_reference"]))
+        a_rows.setdefault(key, []).append(p)
     b: dict[tuple[str, str], dict[str, Decimal]] = {}
     b_ids: dict[tuple[str, str], list[str]] = {}
+    other: dict[tuple[str, str], Decimal] = {}
+    other_ids: dict[tuple[str, str], list[str]] = {}
     for row in supplier_invoices:
         ref = str(row["supplier_ref"])
         if ref not in master or master[ref].get("resident") is True:
             continue
         category = str(row.get("category"))
         if category not in WHT_CATEGORIES:
+            if row.get("tax_code") != "IMPORT":  # goods are evidenced by customs entries
+                key = (ref, bucket(row["period"]))
+                other[key] = other.get(key, ZERO) + parse_money(row["net"], field="ledger")
+                other_ids.setdefault(key, []).append("ledger:" + str(row["entry_id"]))
             continue
         key = (ref, bucket(row["period"]))
         booked_here = b.setdefault(key, {})
@@ -132,6 +158,7 @@ def three_way_match(
         (str(p.get("counterparty_country")), bucket(p["value_date"]))
         for p in (central_bank_payments or [])
     }
+    cb_reports = [p for p in (central_bank_payments or []) if p.get("direction") == "outgoing"]
 
     rows: list[dict[str, Any]] = []
     flags: list[dict[str, Any]] = []
@@ -219,9 +246,46 @@ def three_way_match(
                     ),
                 }
             )
+        if total_b == ZERO and paid > tol and supplier.get("service_exempt") is not True:
+            tested, flag = _payments_outside_service_accounts(
+                ref=ref,
+                year=year,
+                country=country,
+                payments=a_rows.get(key, []),
+                cb_reports=cb_reports,
+                other_booked=other.get(key, ZERO),
+                evidence=a_ids.get(key, []) + other_ids.get(key, []),
+                declared_wht=declared_wht,
+                rates=rates,
+                relief_with_certificate=relief and ref in certificates,
+                currency=currency,
+            )
+            explanations.extend(tested)
+            if flag is not None:
+                flags.append(flag)
+                questions.append(
+                    {
+                        "code": "explain_foreign_service_payments",
+                        "counterparty": ref,
+                        "year": year,
+                        "evidence_ids": flag["evidence_ids"],
+                    }
+                )
+    outside = [f for f in flags if f["code"] == OUTSIDE_SERVICE_ACCOUNTS]
     for year, expected in sorted(expected_vat_by_year.items()):
         declared = declared_vat.get(year, ZERO)
         gap = max(ZERO, expected - declared)
+        # Imported-services VAT declared beyond what booked services explain may already
+        # cover the payments booked elsewhere: the question asks only for the remainder.
+        surplus = max(ZERO, declared - expected)
+        for f in (f for f in outside if f["year"] == year):
+            covered = min(surplus, f.pop("_vat"))
+            surplus -= covered
+            if covered:
+                f["vat_declared_beyond_booked_services"] = money(covered, currency)
+                f["amount"] = money(
+                    parse_money(f["amount"]["amount"], field="gap") - covered, currency
+                )
         tol = max(tolerance_abs, _q(expected * tolerance_share))
         if gap > tol:
             flags.append(
@@ -237,6 +301,14 @@ def three_way_match(
                     ),
                 }
             )
+    for f in outside:
+        f.pop("_vat", None)
+    flags = [
+        f
+        for f in flags
+        if f["code"] != OUTSIDE_SERVICE_ACCOUNTS
+        or parse_money(f["amount"]["amount"], field="gap") > tolerance_abs
+    ]
     total_gap = sum((parse_money(f["amount"]["amount"], field="gap") for f in flags), ZERO)
     route = (
         "special_sectors_review"
@@ -257,4 +329,88 @@ def three_way_match(
         "cma_caveat": CMA_CAVEAT,
         "statutory_status": "unverified_pending_expert_review",
         "decision": None,
+    }
+
+
+def _date(value: object) -> datetime.date | None:
+    try:
+        return datetime.date.fromisoformat(str(value)[:10])
+    except ValueError:
+        return None
+
+
+def _payments_outside_service_accounts(
+    *,
+    ref: str,
+    year: str,
+    country: str,
+    payments: list[Mapping[str, Any]],
+    cb_reports: list[Mapping[str, Any]],
+    other_booked: Decimal,
+    evidence: list[str],
+    declared_wht: Decimal,
+    rates: Mapping[str, Decimal],
+    relief_with_certificate: bool,
+    currency: str,
+) -> tuple[list[str], dict[str, Any] | None]:
+    """TAX-141: a question when services were paid for but not booked or declared as such.
+
+    Returns the explanations tested (always recorded on the match row) and the flag, if any.
+    """
+    paid = sum((parse_money(p["settled_amount"], field="payment") for p in payments), ZERO)
+    narrated = [p for p in payments if SERVICE_NARRATION.search(str(p.get("narration") or ""))]
+    cb_ids: list[str] = []
+    cb_services = 0
+    for p in payments:
+        when = _date(p.get("date"))
+        amount = parse_money(p["settled_amount"], field="payment")
+        for report in cb_reports:
+            if str(report.get("counterparty_country")) != country:
+                continue
+            seen = _date(report.get("value_date"))
+            if when is None or seen is None or abs((seen - when).days) > CB_MATCH_DAYS:
+                continue
+            if parse_money(report["amount"], field="central_bank") != amount:
+                continue
+            cb_ids.append("cb:" + str(report["report_id"]))
+            cb_services += report.get("purpose") == "services"
+            break
+    tested = [
+        "central_bank_purpose_services" if cb_services else (
+            "central_bank_purpose_not_reported" if not cb_ids else "central_bank_purpose_other"
+        ),
+        "bank_narration_describes_services" if narrated else "bank_narration_not_services",
+    ]  # fmt: skip
+    if country in CMA_COUNTRIES and not cb_ids:
+        tested.append("cma_payment_not_in_central_bank_data")
+    if not cb_services and not narrated:
+        return tested, None  # nothing says these payments were for services
+    wht_rate = rates["wht_treaty"] if relief_with_certificate else rates["wht"]
+    wht_gap = max(ZERO, _q(paid * wht_rate) - declared_wht)
+    if declared_wht > ZERO:
+        tested.append("withholding_declared_for_payee")
+    vat = _q(paid * rates["vat"])
+    amount = wht_gap + vat
+    source = " and ".join(
+        part
+        for part, present in (
+            ("the Central Bank report", cb_services),
+            ("the bank narration", bool(narrated)),
+        )
+        if present
+    )
+    return tested, {
+        "code": OUTSIDE_SERVICE_ACCOUNTS,
+        "counterparty": ref,
+        "year": year,
+        "amount": money(amount, currency),
+        "evidence_ids": [*evidence, *cb_ids],
+        "_vat": vat,
+        "reason": (
+            f"{_fmt_m(paid)} paid to {ref} ({country.upper()}) in {year} is described as "
+            f"services by {source}, but no service cost is booked for it "
+            f"({_fmt_m(other_booked)} sits in general expenses), so its imported-services "
+            f"VAT is not in the expected figure; withholding declared {_fmt_m(declared_wht)}. "
+            "Ask the taxpayer what the payments were for before treating them as services."
+        ),
     }

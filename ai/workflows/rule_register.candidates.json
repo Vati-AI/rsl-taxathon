@@ -32,7 +32,7 @@
       "topic": "VAT on imported services",
       "instrument": "VAT Act 2001 imported-services provisions (reverse charge implementation unconfirmed)",
       "test": "Whether VAT is due on services supplied by non-residents and how it is accounted for",
-      "finding_codes": ["imported_services_vat_declared_below_expected"],
+      "finding_codes": ["imported_services_vat_declared_below_expected", "foreign_service_payments_outside_service_accounts"],
       "verification_status": "unverified"
     },
     {
@@ -40,7 +40,7 @@
       "topic": "Withholding tax on payments to non-residents",
       "instrument": "Income Tax Act 1993 withholding provisions; applicable treaty rates",
       "test": "Withholding on management fees, service fees and interest paid to non-residents, net of treaty relief supported by residence evidence",
-      "finding_codes": ["wht_declared_below_expected"],
+      "finding_codes": ["wht_declared_below_expected", "foreign_service_payments_outside_service_accounts"],
       "verification_status": "unverified"
     },
     {
