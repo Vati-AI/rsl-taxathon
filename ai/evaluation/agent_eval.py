@@ -1825,7 +1825,7 @@ def run_evaluation(
             runner.close()
     report = build_report(rec.checks, fixtures, timings)
     report[TAXPAYER_SUBJECT] = (
-        assistant_name or "not run: no taxpayer assistant registered (TAX-098)"
+        assistant_name or "not run: no taxpayer assistant registered (TAX-099 registers it)"
     )
     return rec.checks, report
 

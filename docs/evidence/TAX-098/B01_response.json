@@ -1,0 +1,339 @@
+{
+  "status": 200,
+  "body": {
+    "data": {
+      "assistance_id": "5459de0a-cdb3-5ced-b2bb-49bb6db74392",
+      "tenant_id": "10000000-0000-4000-8000-000000000102",
+      "taxpayer_id": "20000000-0000-4000-8000-000000000102",
+      "submission_id": "30000000-0000-4000-8000-000000000102",
+      "disclosure": {
+        "source": "mock_fixture",
+        "provider": "mock",
+        "model_id": "mock-fast-fixture-v1",
+        "fell_back": false,
+        "advisory_only": true
+      },
+      "changes_declared_figures": false,
+      "generated_at": "(varies)",
+      "documents": [
+        {
+          "evidence_id": "50000000-0000-4000-8102-000000000001",
+          "document_sha256": "7316082a62e68c5d482824825f995326ee5678890af57f24ed011f56989ce89b",
+          "document_type": "invoice",
+          "file_name": "synthetic-invoice-hs-1001-s1.pdf",
+          "extraction_status": "completed",
+          "fields_to_confirm": []
+        },
+        {
+          "evidence_id": "50000000-0000-4000-8102-000000000101",
+          "document_sha256": "eb12cc0f470db7c47ea202bcd30cf1e6d0d5014d9ad69af0d30d54e2d43c4ed4",
+          "document_type": "contract",
+          "file_name": "synthetic-supply-agreement-s1.pdf",
+          "extraction_status": "completed",
+          "fields_to_confirm": []
+        },
+        {
+          "evidence_id": "50000000-0000-4000-8102-000000000002",
+          "document_sha256": "ac8ea738c128fc4d9ba26de3c0bdd7acd90b0a62b4f9389bf3c5628818ed23be",
+          "document_type": "invoice",
+          "file_name": "synthetic-invoice-orb-2201-s2.pdf",
+          "extraction_status": "completed",
+          "fields_to_confirm": []
+        },
+        {
+          "evidence_id": "50000000-0000-4000-8102-000000000102",
+          "document_sha256": "d6df3b5d995943a93f3dcf23e17441b21ac9e4a3ab82084822520c84d199d786",
+          "document_type": "contract",
+          "file_name": "synthetic-supply-agreement-s2.pdf",
+          "extraction_status": "completed",
+          "fields_to_confirm": []
+        },
+        {
+          "evidence_id": "50000000-0000-4000-8102-000000000003",
+          "document_sha256": "d0f41cc8187fe76c8bf1067d19963d0fe425a8a2dd9c3931159478e7071998c4",
+          "document_type": "invoice",
+          "file_name": "synthetic-invoice-inv-0310-s3.pdf",
+          "extraction_status": "completed",
+          "fields_to_confirm": []
+        },
+        {
+          "evidence_id": "50000000-0000-4000-8102-000000000103",
+          "document_sha256": "74c08e887741ad352ba017297608e1a06354be2440c1714a2c73be0aa2617de6",
+          "document_type": "contract",
+          "file_name": "synthetic-supply-agreement-s3.pdf",
+          "extraction_status": "completed",
+          "fields_to_confirm": []
+        },
+        {
+          "evidence_id": "50000000-0000-4000-8102-000000000004",
+          "document_sha256": "8b94d1ce3efbb328cef8b6716aaf3eb9eb7b5c77e8e17d9a008a6c90d577b336",
+          "document_type": "invoice",
+          "file_name": "synthetic-invoice-mit-0044-s4.pdf",
+          "extraction_status": "completed",
+          "fields_to_confirm": [
+            {
+              "field": "gross_amount",
+              "extracted_value": "13800.00",
+              "declared_value": "13900.00",
+              "reason": "differs_from_declared",
+              "locator": {
+                "page": null,
+                "record": null
+              },
+              "explanation": "The total on the document (13800.00) differs from what you entered (13900.00). Check which is correct and change the form yourself if needed.",
+              "requires_taxpayer_confirmation": true
+            }
+          ]
+        },
+        {
+          "evidence_id": "50000000-0000-4000-8102-000000000104",
+          "document_sha256": "d7f7df88aade54ca64619677c6888c4079a4408a2ca7486811e5e85e477f5075",
+          "document_type": "contract",
+          "file_name": "synthetic-supply-agreement-s4.pdf",
+          "extraction_status": "completed",
+          "fields_to_confirm": []
+        },
+        {
+          "evidence_id": "50000000-0000-4000-8102-000000000005",
+          "document_sha256": "1445740862c0fbcf0ba6e3295caedd6b7eebe024341fa0b079d00f75ad3d679e",
+          "document_type": "invoice",
+          "file_name": "synthetic-invoice-kof-7781-s5.pdf",
+          "extraction_status": "completed",
+          "fields_to_confirm": []
+        },
+        {
+          "evidence_id": "50000000-0000-4000-8102-000000000105",
+          "document_sha256": "f69b7b74d598c32e8d5741cf94ad45856aeb19282ef7005815f17e94fa6fbb00",
+          "document_type": "contract",
+          "file_name": "synthetic-supply-agreement-s5.pdf",
+          "extraction_status": "completed",
+          "fields_to_confirm": []
+        },
+        {
+          "evidence_id": "50000000-0000-4000-8102-000000000006",
+          "document_sha256": "8ff0719e705eaa083b68b86b1410296140d2ad684526ce99a0c1c6dd1079dfb6",
+          "document_type": "invoice",
+          "file_name": "synthetic-invoice-hs-1017-s1.pdf",
+          "extraction_status": "completed",
+          "fields_to_confirm": []
+        },
+        {
+          "evidence_id": "50000000-0000-4000-8102-000000000007",
+          "document_sha256": "d0f41cc8187fe76c8bf1067d19963d0fe425a8a2dd9c3931159478e7071998c4",
+          "document_type": "invoice",
+          "file_name": "synthetic-invoice-inv-0310-s3-copy.pdf",
+          "extraction_status": "completed",
+          "fields_to_confirm": [
+            {
+              "field": "invoice_date",
+              "extracted_value": "2026-01-15",
+              "declared_value": "2026-02-11",
+              "reason": "differs_from_declared",
+              "locator": {
+                "page": null,
+                "record": null
+              },
+              "explanation": "The invoice date on the document (2026-01-15) differs from what you entered (2026-02-11). Check which is correct and change the form yourself if needed.",
+              "requires_taxpayer_confirmation": true
+            }
+          ]
+        },
+        {
+          "evidence_id": "50000000-0000-4000-8102-000000000008",
+          "document_sha256": "f53a43b4df696e5cb1c8e02a8673923864ee820ede838ac64057673323e4f985",
+          "document_type": "invoice",
+          "file_name": "synthetic-invoice-orb-2240-s2.pdf",
+          "extraction_status": "completed",
+          "fields_to_confirm": []
+        },
+        {
+          "evidence_id": "50000000-0000-4000-8102-000000000009",
+          "document_sha256": "103062c078da7203e133bd925a1084ab3cd81f05c2dc8edc76dc8b0bb3b352b5",
+          "document_type": "invoice",
+          "file_name": "synthetic-invoice-mit-0051-s4.pdf",
+          "extraction_status": "completed",
+          "fields_to_confirm": [
+            {
+              "field": "gross_amount",
+              "extracted_value": "6210.00",
+              "declared_value": "6120.00",
+              "reason": "differs_from_declared",
+              "locator": {
+                "page": null,
+                "record": null
+              },
+              "explanation": "The total on the document (6210.00) differs from what you entered (6120.00). Check which is correct and change the form yourself if needed.",
+              "requires_taxpayer_confirmation": true
+            }
+          ]
+        },
+        {
+          "evidence_id": "50000000-0000-4000-8102-000000000010",
+          "document_sha256": "e4637d35d1825f2a05a7f1f04f52e2317731eb8c06a8937eef3bed90b43f43f1",
+          "document_type": "invoice",
+          "file_name": "synthetic-invoice-inv-0310-s5.pdf",
+          "extraction_status": "completed",
+          "fields_to_confirm": []
+        },
+        {
+          "evidence_id": "50000000-0000-4000-8102-000000000011",
+          "document_sha256": "7ee4ecaf2db3b1de7697189e76826a1d5878a110d8a09ff7bae4a5667dba0de0",
+          "document_type": "invoice",
+          "file_name": "synthetic-invoice-orb-2263-s2.pdf",
+          "extraction_status": "completed",
+          "fields_to_confirm": []
+        },
+        {
+          "evidence_id": "50000000-0000-4000-8102-000000000012",
+          "document_sha256": "38809c585497e2a2ce4158c1ae52a54fcca7d29bea7c5872b391aaadf7a7f5dc",
+          "document_type": "invoice",
+          "file_name": "synthetic-invoice-hs-1032-s1.pdf",
+          "extraction_status": "completed",
+          "fields_to_confirm": []
+        },
+        {
+          "evidence_id": "50000000-0000-4000-8102-000000000013",
+          "document_sha256": "ce162063c52865371094bf25f7f3dc78297021ab4dd5c56be457543aa0ae60b6",
+          "document_type": "invoice",
+          "file_name": "synthetic-invoice-inv-0342-s3.pdf",
+          "extraction_status": "completed",
+          "fields_to_confirm": []
+        },
+        {
+          "evidence_id": "50000000-0000-4000-8102-000000000015",
+          "document_sha256": "c9cdf80d08ab0e241decb53801f10a44b0324ebeacbefe93fca8e5881980271d",
+          "document_type": "invoice",
+          "file_name": "synthetic-invoice-inv-0355-s5.pdf",
+          "extraction_status": "completed",
+          "fields_to_confirm": []
+        }
+      ],
+      "flagged_invoices": [
+        {
+          "invoice_number": 4,
+          "issue_codes": [
+            "invoice_total_mismatch"
+          ],
+          "explanation": "Invoice 4: 12,000.00 excluding VAT plus 1,800.00 VAT is 13,800.00, but the total entered is 13,900.00.",
+          "suggested_steps": [
+            "Compare the total with the uploaded invoice.",
+            "If the row was mistyped, correct it in the form yourself."
+          ],
+          "document_refs": [
+            {
+              "evidence_id": "50000000-0000-4000-8102-000000000004",
+              "document_sha256": "8b94d1ce3efbb328cef8b6716aaf3eb9eb7b5c77e8e17d9a008a6c90d577b336",
+              "locator": {
+                "page": null,
+                "record": null
+              },
+              "file_name": "synthetic-invoice-mit-0044-s4.pdf"
+            }
+          ],
+          "requires_taxpayer_confirmation": true
+        },
+        {
+          "invoice_number": 7,
+          "issue_codes": [
+            "duplicate_invoice"
+          ],
+          "explanation": "Invoice 7 has the same supplier and invoice number (INV-0310) as invoice 3.",
+          "suggested_steps": [
+            "If the invoice was entered twice, remove the repeated row yourself."
+          ],
+          "document_refs": [
+            {
+              "evidence_id": "50000000-0000-4000-8102-000000000007",
+              "document_sha256": "d0f41cc8187fe76c8bf1067d19963d0fe425a8a2dd9c3931159478e7071998c4",
+              "locator": {
+                "page": null,
+                "record": null
+              },
+              "file_name": "synthetic-invoice-inv-0310-s3-copy.pdf"
+            }
+          ],
+          "requires_taxpayer_confirmation": true
+        },
+        {
+          "invoice_number": 9,
+          "issue_codes": [
+            "invoice_total_mismatch"
+          ],
+          "explanation": "Invoice 9: 5,400.00 excluding VAT plus 810.00 VAT is 6,210.00, but the total entered is 6,120.00.",
+          "suggested_steps": [
+            "Compare the total with the uploaded invoice.",
+            "If the row was mistyped, correct it in the form yourself."
+          ],
+          "document_refs": [
+            {
+              "evidence_id": "50000000-0000-4000-8102-000000000009",
+              "document_sha256": "103062c078da7203e133bd925a1084ab3cd81f05c2dc8edc76dc8b0bb3b352b5",
+              "locator": {
+                "page": null,
+                "record": null
+              },
+              "file_name": "synthetic-invoice-mit-0051-s4.pdf"
+            }
+          ],
+          "requires_taxpayer_confirmation": true
+        },
+        {
+          "invoice_number": 11,
+          "issue_codes": [
+            "invoice_period_mismatch"
+          ],
+          "explanation": "Invoice 11 is dated 2026-04-14, outside the claim period 2026-01-01 to 2026-03-31.",
+          "suggested_steps": [
+            "Check the date on the invoice, or claim it in the period it belongs to."
+          ],
+          "document_refs": [
+            {
+              "evidence_id": "50000000-0000-4000-8102-000000000011",
+              "document_sha256": "7ee4ecaf2db3b1de7697189e76826a1d5878a110d8a09ff7bae4a5667dba0de0",
+              "locator": {
+                "page": null,
+                "record": null
+              },
+              "file_name": "synthetic-invoice-orb-2263-s2.pdf"
+            }
+          ],
+          "requires_taxpayer_confirmation": true
+        },
+        {
+          "invoice_number": 12,
+          "issue_codes": [
+            "invoice_period_mismatch"
+          ],
+          "explanation": "Invoice 12 is dated 2026-04-02, outside the claim period 2026-01-01 to 2026-03-31.",
+          "suggested_steps": [
+            "Check the date on the invoice, or claim it in the period it belongs to."
+          ],
+          "document_refs": [
+            {
+              "evidence_id": "50000000-0000-4000-8102-000000000012",
+              "document_sha256": "38809c585497e2a2ce4158c1ae52a54fcca7d29bea7c5872b391aaadf7a7f5dc",
+              "locator": {
+                "page": null,
+                "record": null
+              },
+              "file_name": "synthetic-invoice-hs-1032-s1.pdf"
+            }
+          ],
+          "requires_taxpayer_confirmation": true
+        },
+        {
+          "invoice_number": 14,
+          "issue_codes": [
+            "supporting_document_missing"
+          ],
+          "explanation": "Invoice 14 has no uploaded copy, so it cannot be checked against a document.",
+          "suggested_steps": [
+            "Upload a copy of the invoice, or remove the row if you cannot provide it."
+          ],
+          "document_refs": [],
+          "requires_taxpayer_confirmation": true
+        }
+      ]
+    }
+  }
+}
