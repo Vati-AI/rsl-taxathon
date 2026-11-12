@@ -30,15 +30,15 @@
   "acceptance": [
     {
       "text": "A proposed request lists what is already matched and itemises only unmatched lines with confirm, dispute or attach-proof answers; an officer approves it before it reaches the taxpayer",
-      "done": false
+      "done": true
     },
     {
       "text": "The request never asks for data RSL holds and never shows risk scores or officer findings",
-      "done": false
+      "done": true
     },
     {
       "text": "Record relevant tests and evidence, update task status and open a PR",
-      "done": false
+      "done": true
     }
   ],
   "verification": "Tests on TAX-118 synthetic taxpayers: requests contain only unmatched lines; approval is required",
@@ -48,7 +48,20 @@
     "update-project-task",
     "finish-task"
   ],
-  "evidence": [],
+  "evidence": [
+    {
+      "criterion": 1,
+      "text": "vati_tax.evidence_gaps (ADR-050): propose_gap_request builds, from RSL's Online Refunds claim lines and the lane proposal's TAX-112 line_match, a proposal listing already-held lines (Lekuka, ASYCUDA, Online Refunds upload) and one item per unmatched/supplier_gap line with answers confirm, dispute, attach_proof; nothing is stored. approve_gap_request (auditor/supervisor) re-checks the proposal digest and records it through the TAX-046 authorisation, writing line_items/already_held on the request. Frappe-free test on the TAX-118 synthetic taxpayers through the real TAX-112 match: items are exactly the unmatched lines, held lines the rest. Bench (disposable site): nothing reaches the portal before approval; approved request shows lines and answers; changed match needs re-review; taxpayer/service/non-refund-team auditor refused."
+    },
+    {
+      "criterion": 2,
+      "text": "Items never cover lines RSL already evidences (held lines are shown, not asked). Taxpayer-facing parts are allowlisted (check_taxpayer_safe, responses.line_details/held_lines): no score, lane, finding, officer or internal status code; tests assert none of these words or IDs appear in the proposal or the portal view, on the TAX-118 population and on the bench."
+    },
+    {
+      "criterion": 3,
+      "text": "Fresh disposable site (frappe_dev.py verify): install and two migrations ok; app tests 601 OK; bench 241 tests, failing only reminders/test_reminders_bench (pre-existing on main); evidence_gaps bench 5/5 OK. Frappe-free: evidence_gaps 8 OK, responses 12 OK, backend discovery 601 with only the pre-existing Windows path-separator failure; tests/integration and tests/contracts OK; ruff, ruff format, mypy, validate.py clean. Hosted CI does not start (org spending limit)."
+    }
+  ],
   "notes": [
     {
       "at": "2026-11-07",
