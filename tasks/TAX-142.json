@@ -5,7 +5,7 @@
   "owner": "Gupta",
   "area": "backend",
   "phase": "pilot",
-  "status": "IN_PROGRESS",
+  "status": "IN_REVIEW",
   "priority": "P1",
   "depends_on": [
     "TAX-029",
@@ -13,7 +13,7 @@
   ],
   "claimed_by": "claude-opus-5-5-gupta",
   "branch": "task/TAX-142",
-  "pr": null,
+  "pr": "https://github.com/Vati-AI/rsl-taxathon/pull/301",
   "scope": "Move refund-confidentiality access rules from later to the pilot: refund case data is visible only to assigned refund roles, with denied access tested and logged",
   "inputs": [
     "PROJECT.md",
@@ -64,6 +64,10 @@
     {
       "at": "2026-11-12T05:29:24.864875+00:00",
       "text": "Claimed by claude-opus-5-5-gupta"
+    },
+    {
+      "at": "2026-11-12T06:23:36.206795+00:00",
+      "text": "PR opened with local verification (ADR-038)"
     }
   ],
   "sequence": 27
