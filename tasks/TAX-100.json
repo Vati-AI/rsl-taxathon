@@ -5,7 +5,7 @@
   "owner": "Keletso",
   "area": "backend",
   "phase": "pilot",
-  "status": "BACKLOG",
+  "status": "IN_REVIEW",
   "priority": "P1",
   "depends_on": [
     "TAX-096",
@@ -13,9 +13,9 @@
     "TAX-031",
     "TAX-032"
   ],
-  "claimed_by": null,
-  "branch": null,
-  "pr": null,
+  "claimed_by": "claude-code-20261112-friendly-newton",
+  "branch": "claude/friendly-newton-iwhm4u",
+  "pr": "https://github.com/Vati-AI/rsl-taxathon/pull/313",
   "scope": "Serve the TAX-096 taxpayer-assistance operations from Frappe: authenticate the taxpayer session, build the assistant's permission-scoped inputs (own submissions, documents, validation results, taxpayer-facing requests), call the assistant runtime, store assistant drafts and provenance, and require explicit taxpayer confirmation before anything changes a submission or is sent to RSL",
   "inputs": [
     "PROJECT.md",
@@ -32,15 +32,15 @@
   "acceptance": [
     {
       "text": "A taxpayer can only obtain assistance for their own tenant and records; internal-only fields never leave the service (tests); confirmation is a separate, audited, idempotent step",
-      "done": false
+      "done": true
     },
     {
       "text": "Confirmed submissions and evidence responses enter the existing Frappe/Jube flow (TAX-039, TAX-045) unchanged; unconfirmed drafts never do",
-      "done": false
+      "done": true
     },
     {
       "text": "Record relevant tests and evidence, update task status and open a PR",
-      "done": false
+      "done": true
     }
   ],
   "verification": "Confirmed submissions and evidence responses enter the existing Frappe/Jube flow (TAX-039, TAX-045) unchanged; unconfirmed drafts never do",
@@ -50,7 +50,20 @@
     "update-project-task",
     "finish-task"
   ],
-  "evidence": [],
+  "evidence": [
+    {
+      "criterion": 1,
+      "text": "Observed 2026-11-12: vati_tax/assistance/service.py (Frappe-free) serves the five TAX-096 operations behind /api/v1 (backend.HANDLERS, operations.SERVED). Only a caller whose sole role in the header tenant is taxpayer (new taxpayer-only, taxpayer-owned action assistance.use) and only for its own taxpayer: staff/services/mixed roles 403 (ledger denied), another or unknown taxpayer 404, foreign submission 422 not_found, sent submission 422 submission_not_editable. The records port reads only own submissions, documents and taxpayer-facing request columns; the service re-filters. Every assistant answer is checked (status, closed schema, forbidden field names, own IDs, records unchanged) before it leaves, else 503. Confirmation is a separate, audited, idempotent step (expected_version, declaration, key replay/conflict, 409). Tests: assistance/test_service.py 17 OK; the TAX-102 gate through the service passes all 16 cases with the reference runtime and the 8 TAX-098 cases with the real assistant."
+    },
+    {
+      "criterion": 2,
+      "text": "Observed 2026-11-12: confirmation calls the unchanged TAX-045 responses.store.respond (scope, evidence ownership and reuse, idempotency, request to responded, ledger); unconfirmed drafts never reach it (test_service DraftAndConfirmTests; bench test_draft_then_confirm_enters_the_tax045_flow_once written but not run, no Frappe site in this session). No assistance operation edits or sends a submission, so the TAX-039 flow is unchanged. Drafts are stored in the new Vati Assistance Draft DocType (System Manager read only)."
+    },
+    {
+      "criterion": 3,
+      "text": "Observed 2026-11-12: dev.py check, ruff check, mypy (346 files), contract.py and tests/contracts passed; evidence in docs/evidence/TAX-100; docs/PERMISSIONS.md updated. Bench tests (3) are written but not run: Docker unavailable here; run scripts/frappe_dev.py verify."
+    }
+  ],
   "notes": [
     {
       "at": "2026-11-05T10:07:38.336884+00:00",
@@ -63,6 +76,14 @@
     {
       "at": "2026-11-11T12:27:49.740246+00:00",
       "text": "2026-11-11 (ADR-045): Keletso keeps this task in the AI and new UI lane. No task in this lane depends on an open task in the other lane."
+    },
+    {
+      "at": "2026-11-12",
+      "text": "Claimed by claude-code-20261112-friendly-newton on the session's designated branch claude/friendly-newton-iwhm4u."
+    },
+    {
+      "at": "2026-11-12",
+      "text": "IN_REVIEW in https://github.com/Vati-AI/rsl-taxathon/pull/313. Bench tests are written but not run (no Frappe site in this session)."
     }
   ],
   "sequence": 55

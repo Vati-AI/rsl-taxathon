@@ -34,6 +34,7 @@ import frappe
 
 from vati_tax.api_v1 import management, projections
 from vati_tax.api_v1.core import ApiError, Call, Handler, Result, officer_id, page
+from vati_tax.assistance import store as assistance_store
 from vati_tax.audit import service as audit_service
 from vati_tax.audit import store as audit_store
 from vati_tax.decisions import store as decisions_store
@@ -649,4 +650,26 @@ _HANDLERS: dict[str, Handler] = {
     "getManagementSummary": get_management_summary,
     "getIntegrityReview": get_integrity_review,
 }
-HANDLERS: dict[str, Handler] = {op: _refund_guarded(op, fn) for op, fn in _HANDLERS.items()}
+
+
+def _assistance(operation_id: str) -> Handler:
+    """TAX-100: the taxpayer-assistance operations (taxpayer context only, ADR-031)."""
+
+    def handler(call: Call) -> Result:
+        return assistance_store.service().handlers()[operation_id](call)
+
+    return handler
+
+
+ASSISTANCE_OPERATIONS = (
+    "explainValidationResults",
+    "reviewSubmissionDocuments",
+    "draftEvidenceResponse",
+    "getEvidenceResponseDraft",
+    "confirmEvidenceResponseDraft",
+)
+HANDLERS: dict[str, Handler] = {
+    **{op: _refund_guarded(op, fn) for op, fn in _HANDLERS.items()},
+    # No case in the path, so the refund-confidentiality gate has nothing to check.
+    **{op: _assistance(op) for op in ASSISTANCE_OPERATIONS},
+}

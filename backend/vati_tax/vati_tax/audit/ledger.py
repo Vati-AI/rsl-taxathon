@@ -49,6 +49,7 @@ SUBJECT_TYPES: Final[tuple[str, ...]] = (
     "workflow",  # TAX-065 learned workflow versions
     "challenge",  # TAX-069 objections and appeals against a decision
     "reminder",  # TAX-078 correction reminders for a taxpayer
+    "assistance",  # TAX-100 taxpayer-assistance answers, drafts and confirmations
 )
 
 # Decision and evidence-request actions (TAX-046) and their ledger category.
