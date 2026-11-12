@@ -224,6 +224,8 @@ class RslOutboundBenchTests(IntegrationTestCase):
         return decisions.FrappeRepository().case_version(self.tenant, case_id)
 
     def propose(self, case_id: str, finding_ids: list[str]) -> str:
+        # A closing decision cites at least one finding (TAX-046).
+        finding_ids = finding_ids or [self.finding(case_id)]
         self.jube.cases.setdefault(case_id, FakeCase("AWAITING_HUMAN"))
         self.as_user("auditor")
         view = decisions.propose_decision(
