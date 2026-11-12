@@ -11,6 +11,11 @@ request, case versions and keys are internal and never leave the server.
 
 A response answers every requested item exactly once, with at least one of the
 taxpayer's own documents or a short reason the document cannot be provided.
+
+TAX-127 (ADR-050): a request built from the claim's unmatched lines also carries, per
+item, the claim line and its answer options (``confirm``, ``dispute``, ``attach_proof``),
+plus the lines RSL already holds. Such an item is answered with one option: ``confirm``
+needs nothing more, ``dispute`` needs a reason and ``attach_proof`` needs a document.
 """
 
 from __future__ import annotations
@@ -55,11 +60,22 @@ class ResponseInputError(ValueError):
         self.errors = errors
 
 
+LINE_ANSWERS: Final = ("confirm", "dispute", "attach_proof")
+# The only line fields a taxpayer is shown (TAX-127).
+LINE_KEYS: Final = frozenset(
+    {"line_id", "invoice_number", "supplier_ref", "invoice_date", "vat_amount", "currency",
+     "kind", "gap"}
+)  # fmt: skip
+HELD_KEYS: Final = (LINE_KEYS - {"gap"}) | {"held_by", "held_by_label"}
+
+
 @dataclass(frozen=True)
 class RequestedItem:
     index: int
     document_type: str
     description: str
+    line: Mapping[str, Any] | None = None
+    answer_options: tuple[str, ...] = ()
 
 
 @dataclass(frozen=True)
@@ -67,13 +83,17 @@ class ItemAnswer:
     item_index: int
     evidence_ids: tuple[str, ...]
     unavailable_reason: str | None
+    answer: str | None = None
 
     def as_dict(self) -> dict[str, Any]:
-        return {
+        out: dict[str, Any] = {
             "item_index": self.item_index,
             "evidence_ids": list(self.evidence_ids),
             "unavailable_reason": self.unavailable_reason,
         }
+        if self.answer is not None:  # TAX-127 line items only; older digests unchanged
+            out["answer"] = self.answer
+        return out
 
 
 @dataclass(frozen=True)
@@ -96,20 +116,51 @@ class ResponseInput:
         return hashlib.sha256(text.encode("utf-8")).hexdigest()
 
 
-def requested_items(raw: object) -> list[RequestedItem]:
-    """The items stored on a request (JSON text); malformed entries are skipped."""
+def _json_list(raw: object) -> list[Any]:
     try:
         value = json.loads(raw) if isinstance(raw, str) else raw
     except ValueError:
         return []
-    if not isinstance(value, list):
-        return []
+    return value if isinstance(value, list) else []
+
+
+def line_details(raw: object) -> dict[int, tuple[dict[str, Any], tuple[str, ...]]]:
+    """TAX-127 per-item line and answer options (JSON text), allowlisted."""
+    out: dict[int, tuple[dict[str, Any], tuple[str, ...]]] = {}
+    for entry in _json_list(raw):
+        if not isinstance(entry, Mapping) or not isinstance(entry.get("index"), int):
+            continue
+        line = entry.get("line")
+        options = entry.get("answer_options")
+        if not isinstance(line, Mapping) or not isinstance(options, list):
+            continue
+        safe = {k: str(v) for k, v in line.items() if k in LINE_KEYS and v is not None}
+        out[entry["index"]] = (safe, tuple(o for o in options if o in LINE_ANSWERS))
+    return out
+
+
+def held_lines(raw: object) -> list[dict[str, str]]:
+    """TAX-127 lines RSL already holds (JSON text), allowlisted."""
+    return [
+        {k: str(v) for k, v in entry.items() if k in HELD_KEYS and v is not None}
+        for entry in _json_list(raw)
+        if isinstance(entry, Mapping)
+    ]
+
+
+def requested_items(raw: object, lines: object = None) -> list[RequestedItem]:
+    """The items stored on a request (JSON text); malformed entries are skipped.
+
+    ``lines`` is the request's TAX-127 ``line_items`` (None for an ordinary request).
+    """
+    details = line_details(lines) if lines else {}
     items = []
-    for index, entry in enumerate(value):
+    for index, entry in enumerate(_json_list(raw)):
         if isinstance(entry, Mapping):
             doc_type, description = entry.get("document_type"), entry.get("description")
             if isinstance(doc_type, str) and isinstance(description, str):
-                items.append(RequestedItem(index, doc_type, description))
+                line, options = details.get(index, (None, ()))
+                items.append(RequestedItem(index, doc_type, description, line, options))
     return items
 
 
@@ -152,6 +203,7 @@ def build_response(raw: Mapping[str, Any], requested: Sequence[RequestedItem]) -
         raise ResponseInputError(errors)
 
     wanted = {item.index for item in requested}
+    options = {item.index: item.answer_options for item in requested}
     answers: dict[int, ItemAnswer] = {}
     seen_evidence: set[str] = set()
     for entry in answers_raw:
@@ -206,6 +258,32 @@ def build_response(raw: Mapping[str, Any], requested: Sequence[RequestedItem]) -
             errors.append(
                 FieldError(field, "too_long", f"Keep the reason under {MAX_REASON} characters.")
             )
+        allowed = options.get(index, ())
+        choice = entry.get("answer")
+        if allowed:
+            # TAX-127 line item: one of its answer options.
+            if choice not in allowed:
+                errors.append(
+                    FieldError(
+                        field, "answer_required", "Confirm the line, dispute it, or attach proof."
+                    )
+                )
+            elif choice == "dispute" and reason is None:
+                errors.append(
+                    FieldError(field, "reason_required", "Tell us why you dispute this line.")
+                )
+            elif choice == "attach_proof" and not ids:
+                errors.append(
+                    FieldError(field, "document_required", "Attach at least one document.")
+                )
+            answer = choice if choice in allowed else None
+            answers[index] = ItemAnswer(index, tuple(ids), reason, answer)
+            continue
+        if choice is not None:
+            errors.append(
+                FieldError(field, "unknown_answer", "This item is answered with a document.")
+            )
+            continue
         if not ids and reason is None:
             errors.append(
                 FieldError(
@@ -222,7 +300,9 @@ def build_response(raw: Mapping[str, Any], requested: Sequence[RequestedItem]) -
                 FieldError(
                     f"items.{index}",
                     "answer_required",
-                    "Upload a document for this item, or explain why you cannot provide it.",
+                    "Confirm the line, dispute it, or attach proof."
+                    if options.get(index)
+                    else "Upload a document for this item, or explain why you cannot provide it.",
                 )
             )
     if len(seen_evidence) > MAX_DOCUMENTS:
@@ -257,6 +337,7 @@ def stored_answers(raw: object) -> list[dict[str, Any]]:
                     "unavailable_reason": entry.get("unavailable_reason")
                     if isinstance(entry.get("unavailable_reason"), str)
                     else None,
+                    "answer": entry.get("answer") if entry.get("answer") in LINE_ANSWERS else None,
                 }
             )
     return out
@@ -268,6 +349,18 @@ def _iso(value: object) -> str | None:
         return None
     iso = getattr(value, "isoformat", None)
     return str(iso()) if callable(iso) else str(value)
+
+
+def _item_view(item: RequestedItem) -> dict[str, Any]:
+    view: dict[str, Any] = {
+        "index": item.index,
+        "document_type": item.document_type,
+        "description": item.description,
+    }
+    if item.line is not None:
+        view["line"] = dict(item.line)
+        view["answer_options"] = list(item.answer_options)
+    return view
 
 
 def taxpayer_view(
@@ -289,12 +382,13 @@ def taxpayer_view(
         "status": status,
         "due_date": _iso(due),
         "message_to_taxpayer": request.get("message_to_taxpayer") or "",
-        "items": [
-            {"index": i.index, "document_type": i.document_type, "description": i.description}
-            for i in requested_items(request.get("items"))
-        ],
+        "items": [_item_view(i) for i in requested_items(request.get("items"),
+                                                           request.get("line_items"))],
         "response": None,
-    }
+    }  # fmt: skip
+    held = held_lines(request.get("already_held"))
+    if held:  # TAX-127: what RSL already holds and is not asking for
+        view["already_held"] = held
     if response is not None and status == "response_sent":
         names = document_names or {}
         answered = response.get("responded_at")
@@ -309,6 +403,7 @@ def taxpayer_view(
                         for e in a["evidence_ids"]
                     ],
                     "unavailable_reason": a["unavailable_reason"],
+                    **({"answer": a["answer"]} if a["answer"] else {}),
                 }
                 for a in stored_answers(response.get("items"))
             ],
