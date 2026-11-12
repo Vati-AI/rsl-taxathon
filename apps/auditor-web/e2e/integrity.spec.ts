@@ -78,7 +78,8 @@ test.describe('integrity review', () => {
   });
 
   test('the dashboard links to the review', async ({ page }) => {
-    await page.goto('/auditor/management');
+    // TAX-149: the link is in the Ledger assurance tab; Integrity is also a Reports tab.
+    await page.goto('/auditor/management/assurance');
     await page.locator('main').getByRole('link', { name: 'integrity review', exact: true }).click();
     await ready(page);
   });

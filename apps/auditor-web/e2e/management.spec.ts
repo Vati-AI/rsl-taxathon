@@ -7,6 +7,14 @@ import { expect, test, type Page, type Route } from '@playwright/test';
 const SUMMARY = /\/api\/v1\/management\/summary/;
 const nav = (page: Page) => page.getByRole('navigation', { name: 'Auditor workspace' });
 const section = (page: Page, name: string) => page.getByRole('region', { name });
+/** Open a Reports tab (TAX-149) and wait for its figures. */
+async function openTab(page: Page, name: string) {
+  await page
+    .getByRole('navigation', { name: 'Report sections' })
+    .getByRole('link', { name })
+    .click();
+  await expect(page.getByTestId('window-line')).toBeVisible();
+}
 const shots = path.resolve(__dirname, '../../../docs/evidence/TAX-060');
 const capture = Boolean(process.env.CAPTURE_SCREENSHOTS);
 
@@ -31,7 +39,8 @@ async function actAs(page: Page, role: 'auditor' | 'specialist' | 'supervisor') 
 
 async function ready(page: Page) {
   await expect(page.getByRole('heading', { level: 1, name: 'Management dashboard' })).toBeVisible();
-  await expect(page.getByRole('heading', { level: 2, name: 'Workload' })).toBeVisible();
+  // TAX-149: the dashboard is Reports tabs; every tab shows the measured window.
+  await expect(page.getByTestId('window-line')).toBeVisible();
 }
 
 async function shot(page: Page, name: string) {
@@ -71,22 +80,27 @@ test.describe('management dashboard', () => {
     await expect(officers.getByRole('row')).toHaveCount(3);
     await expect(officers.getByRole('row', { name: /Synthetic Officer A/ })).toContainText('7');
 
+    await openTab(page, 'Timeliness');
+    await expect(page).toHaveURL(/\/auditor\/management\/timeliness$/);
     const elapsed = section(page, 'Elapsed time');
     await expect(elapsed.getByRole('row', { name: /Age of open cases/ })).toContainText('25.8 h');
     await expect(elapsed.getByRole('row', { name: /Time to close/ })).toContainText(
       '1 case not measured',
     );
 
+    await openTab(page, 'Outcomes');
     const closures = page.locator('section[aria-labelledby="closures-heading"]');
     await expect(closures).toContainText('3 of 6 cases (50%)');
     await expect(closures).toContainText('1 closed case has no recorded outcome');
     const routes = page.locator('section[aria-labelledby="routes-heading"]');
     await expect(routes).toContainText('3 of 7 findings (43%)');
+    await openTab(page, 'Evidence');
     const evidence = page.locator('section[aria-labelledby="evidence-heading"]');
     await expect(evidence).toContainText('Past their due date');
 
     await expect(page.getByText('Some records could not be measured')).toBeVisible();
 
+    await openTab(page, 'Ledger assurance');
     const assurance = page.locator('section[aria-labelledby="assurance-heading"]');
     await expect(assurance).toContainText('Intact: every entry verifies');
     // Officer A's refused self-approvals are shown; the viewer's own overrides are withheld.
@@ -101,7 +115,7 @@ test.describe('management dashboard', () => {
   test('changing the window remeasures closures and keeps the choice in the URL', async ({
     page,
   }) => {
-    await page.goto('/auditor/management');
+    await page.goto('/auditor/management/outcomes');
     await ready(page);
     await page.getByRole('combobox', { name: 'Reporting window' }).click();
     await page.getByRole('option', { name: 'Last 7 days' }).click();
@@ -208,6 +222,7 @@ test.describe('management dashboard', () => {
     await ready(page);
     await expect(page.getByText('No cases to measure')).toBeVisible();
     await expect(page.getByText('No open case is assigned to an officer.')).toBeVisible();
+    await openTab(page, 'Outcomes');
     const closures = page.locator('section[aria-labelledby="closures-heading"]');
     await expect(closures.getByText('No data')).toHaveCount(2);
     await expect(page.getByText('0%')).toHaveCount(0);
@@ -224,7 +239,7 @@ test.describe('management dashboard', () => {
         };
       }),
     );
-    await page.goto('/auditor/management');
+    await page.goto('/auditor/management/assurance');
     await ready(page);
     await expect(page.getByText('Audit ledger figures are not available')).toBeVisible();
     await page.unroute(SUMMARY);

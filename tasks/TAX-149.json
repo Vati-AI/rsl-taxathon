@@ -5,15 +5,15 @@
   "owner": "Keletso",
   "area": "apps/auditor-web",
   "phase": "pilot",
-  "status": "BACKLOG",
+  "status": "IN_REVIEW",
   "priority": "P1",
   "depends_on": [
     "TAX-146",
     "TAX-060",
     "TAX-077"
   ],
-  "claimed_by": null,
-  "branch": null,
+  "claimed_by": "claude-code-20261112-friendly-newton",
+  "branch": "claude/friendly-newton-iwhm4u",
   "pr": null,
   "scope": "Move the management dashboard and integrity review under Reports with tabs (Workload, Timeliness, Evidence, Outcomes, Ledger assurance, Integrity), compact figure tiles and tables, within the page-length budget",
   "inputs": [
@@ -28,15 +28,15 @@
   "acceptance": [
     {
       "text": "The supervisor management page (1.9 screens on 2026-11-08) and integrity page each fit the budget; every figure comes from the existing summary API, with small groups still combined (ADR-036)",
-      "done": false
+      "done": true
     },
     {
       "text": "Non-supervisors still cannot reach Reports, including by direct URL",
-      "done": false
+      "done": true
     },
     {
       "text": "Screenshots at 1440, 1024 and 390px with loading, empty, error and denied states, keyboard/focus and axe results, and the TAX-144 page-length result; record relevant tests and evidence, update task status and open a PR",
-      "done": false
+      "done": true
     }
   ],
   "verification": "Updated Playwright tests on the fixture build",
@@ -46,7 +46,20 @@
     "update-project-task",
     "finish-task"
   ],
-  "evidence": [],
+  "evidence": [
+    {
+      "criterion": 1,
+      "text": "Reports page (ReportsView) with routed tabs Workload, Timeliness, Evidence, Outcomes, Ledger assurance and Integrity under one reporting window. At 1440x900 the supervisor management tabs are 1.00 viewports (was 1.94) and the supervisor integrity tab 1.44 (was 1.64); the TAX-149 entries are removed from tests/frontend/support/layout-baseline.json (now empty) and layout.spec.ts passes. Every figure comes from the unchanged getManagementSummary and getIntegrityReview; small groups stay combined (ADR-036)."
+    },
+    {
+      "criterion": 2,
+      "text": "Both APIs refuse anyone but a supervisor: auditors and specialists get 'Supervisors only' with no figures on all six tabs by direct URL and no Reports sidebar entry (reports.spec.ts; e2e management.spec and integrity.spec refusal tests pass)."
+    },
+    {
+      "criterion": 3,
+      "text": "docs/evidence/TAX-149: 30 screenshots at 1440/1024/390 (each tab, loading/empty/error/denied); reports.spec.ts 12 passed with axe, keyboard focus on the tabs, product names and the page-length budget; npm run check and dev.py check pass; auditor e2e 66 passed; full frontend suite 332 passed (9 demo-recording harness failures only; the onboarding supervisor journey now opens the Evidence tab and passes)."
+    }
+  ],
   "notes": [
     {
       "at": "2026-11-08",
@@ -55,6 +68,14 @@
     {
       "at": "2026-11-11T12:27:49.740246+00:00",
       "text": "2026-11-11 (ADR-045): Keletso keeps this task in the AI and new UI lane. No task in this lane depends on an open task in the other lane."
+    },
+    {
+      "at": "2026-11-12",
+      "text": "Claimed by claude-code-20261112-friendly-newton on the session's designated branch claude/friendly-newton-iwhm4u."
+    },
+    {
+      "at": "2026-11-12",
+      "text": "#294 merged while TAX-149 was in progress; the branch was restarted from main (834f843) with TAX-149 on top."
     }
   ],
   "sequence": 19

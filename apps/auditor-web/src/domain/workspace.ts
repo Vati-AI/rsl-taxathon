@@ -22,6 +22,15 @@ export const APP_LABELS: Record<AppKey, string> = {
 export const NATIVE_APPS = ['investigation', 'explore', 'admin'] as const;
 export type NativeApp = (typeof NATIVE_APPS)[number];
 
+/** The Reports management tabs (TAX-149). */
+export const MANAGEMENT_TABS = [
+  'management',
+  'management-timeliness',
+  'management-evidence',
+  'management-outcomes',
+  'management-assurance',
+];
+
 /** The case workspace tabs (TAX-148). */
 export const CASE_TABS = [
   'case',
@@ -35,7 +44,7 @@ export const CASE_TABS = [
 /** Route names that belong to each app, to mark the current tab. */
 const APP_ROUTES: Record<'cases' | 'reports', string[]> = {
   cases: ['overview', 'queue', ...CASE_TABS, 'taxpayer'],
-  reports: ['management', 'integrity'],
+  reports: [...MANAGEMENT_TABS, 'integrity'],
 };
 /** Route names that are "inside a case": the sidebar offers "Back to cases". */
 const CASE_CONTEXT = [...CASE_TABS, 'taxpayer'];
@@ -96,7 +105,7 @@ export function workspaceSections(
     }
   const reports: NavItem[] = [];
   if (has(session, 'management'))
-    reports.push({ label: 'Management dashboard', to: { name: 'management' }, icon: 'lucide-gauge', match: 'management' });
+    reports.push({ label: 'Management dashboard', to: { name: 'management' }, icon: 'lucide-gauge', match: MANAGEMENT_TABS });
   if (has(session, 'integrity'))
     reports.push({ label: 'Integrity review', to: { name: 'integrity' }, icon: 'lucide-shield-check', match: 'integrity' });
   const sections: NavSection[] = [];

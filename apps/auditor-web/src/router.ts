@@ -5,6 +5,8 @@ declare module 'vue-router' {
     /** Optional on a nested route: the parent's meta is merged in (TAX-148 case tabs). */
     section?: 'overview' | 'cases' | 'management' | 'integrity' | 'showcase' | 'none';
     title?: string;
+    /** Reports tab (TAX-149). */
+    report?: 'workload' | 'timeliness' | 'evidence' | 'outcomes' | 'assurance';
     /** Case tab that shows one kind of case records (relationships or findings). */
     records?: 'relationships' | 'findings';
   }
@@ -93,17 +95,49 @@ export const routes: RouteRecordRaw[] = [
     meta: { section: 'cases', title: 'Taxpayer' },
   },
   {
+    // TAX-149: Reports, the management dashboard and integrity review as routed tabs.
     path: '/management',
-    name: 'management',
-    component: () => import('./views/ManagementView.vue'),
-    meta: { section: 'management', title: 'Management dashboard' },
-  },
-  {
-    // TAX-077: restricted policy-gap and integrity aggregates (supervisors only).
-    path: '/management/integrity',
-    name: 'integrity',
-    component: () => import('./views/IntegrityView.vue'),
-    meta: { section: 'integrity', title: 'Integrity review' },
+    component: () => import('./views/ReportsView.vue'),
+    meta: { section: 'management' },
+    children: [
+      {
+        path: '',
+        name: 'management',
+        component: () => import('./views/reports/ManagementReport.vue'),
+        meta: { title: 'Reports · Workload', report: 'workload' },
+      },
+      {
+        path: 'timeliness',
+        name: 'management-timeliness',
+        component: () => import('./views/reports/ManagementReport.vue'),
+        meta: { title: 'Reports · Timeliness', report: 'timeliness' },
+      },
+      {
+        path: 'evidence',
+        name: 'management-evidence',
+        component: () => import('./views/reports/ManagementReport.vue'),
+        meta: { title: 'Reports · Evidence', report: 'evidence' },
+      },
+      {
+        path: 'outcomes',
+        name: 'management-outcomes',
+        component: () => import('./views/reports/ManagementReport.vue'),
+        meta: { title: 'Reports · Outcomes', report: 'outcomes' },
+      },
+      {
+        path: 'assurance',
+        name: 'management-assurance',
+        component: () => import('./views/reports/ManagementReport.vue'),
+        meta: { title: 'Reports · Ledger assurance', report: 'assurance' },
+      },
+      // TAX-077: restricted policy-gap and integrity aggregates (supervisors only).
+      {
+        path: 'integrity',
+        name: 'integrity',
+        component: () => import('./views/reports/IntegrityReport.vue'),
+        meta: { section: 'integrity', title: 'Integrity review' },
+      },
+    ],
   },
   {
     // TAX-146: a workspace app whose native screens are not connected yet.

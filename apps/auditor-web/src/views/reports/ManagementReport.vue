@@ -1,19 +1,16 @@
 <script setup lang="ts">
+/**
+ * Reports · management tabs (TAX-149): Workload, Timeliness, Evidence, Outcomes and
+ * Ledger assurance, one tab per route, from the existing management summary
+ * (getManagementSummary, TAX-060), loaded once by the Reports page. Figures are process
+ * measures, never the performance or conduct of any officer or taxpayer.
+ */
 import { computed } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
-import { Alert, Badge, Select } from 'frappe-ui';
-import {
-  getManagementSummary,
-  WINDOW_DAYS,
-  type DurationStats,
-  type WindowDays,
-} from '../api/management';
-import CaseStatusBadge from '../components/CaseStatusBadge.vue';
-import PageLayout from '../components/PageLayout.vue';
-import StatePanel from '../components/StatePanel.vue';
-import { errorPanel } from '../components/errorPanel';
-import { useLoader } from '../composables/useLoader';
-import { fixtureRole } from '../session';
+import { useRoute } from 'vue-router';
+import { Alert, Badge } from 'frappe-ui';
+import type { DurationStats, ManagementSummary } from '../../api/management';
+import CaseStatusBadge from '../../components/CaseStatusBadge.vue';
+import StatePanel from '../../components/StatePanel.vue';
 import {
   durationText,
   plural,
@@ -21,48 +18,18 @@ import {
   SIGNAL_TEXT,
   utcDate,
   utcDateTime,
-} from '../domain/management';
+} from '../../domain/management';
 
+defineOptions({ inheritAttrs: false });
+const props = defineProps<{ summary: ManagementSummary }>();
 const route = useRoute();
-const router = useRouter();
+const report = computed(() => route.meta.report ?? 'workload');
 
-const windowDays = computed<WindowDays>(() => {
-  const requested = Number(route.query.window);
-  return (WINDOW_DAYS as readonly number[]).includes(requested) ? (requested as WindowDays) : 30;
-});
-const windowOptions = WINDOW_DAYS.map((days) => ({
-  label: `Last ${days} days`,
-  value: String(days),
-}));
-function setWindow(value: unknown) {
-  const days = Number(value);
-  void router.replace({ query: days === 30 ? {} : { window: String(days) } });
-}
-
-// Reload when the window or the fixture "Acting as" officer changes.
-const { state, reload } = useLoader(
-  (signal) => getManagementSummary(windowDays.value, fetch, signal),
-  () => [windowDays.value, fixtureRole.value],
-);
-const summary = computed(() => (state.value.status === 'ready' ? state.value.data : null));
-const denied = computed(
-  () => state.value.status === 'error' && state.value.error.kind === 'denied',
-);
-// Unavailable gets a dashboard-specific title; malformed data keeps "could not be shown safely".
-const failurePanel = computed(() => {
-  if (state.value.status !== 'error') return null;
-  const panel = errorPanel(state.value.error);
-  return state.value.error.kind === 'unavailable'
-    ? { ...panel, title: 'Management figures are temporarily unavailable' }
-    : panel;
-});
 const nothingToMeasure = computed(
   () =>
-    summary.value !== null &&
-    summary.value.workload.open_cases === 0 &&
-    summary.value.closure_outcomes.closed_in_window === 0,
+    props.summary.workload.open_cases === 0 &&
+    props.summary.closure_outcomes.closed_in_window === 0,
 );
-
 const CASES = { one: 'case', many: 'cases' };
 const FINDINGS = { one: 'finding', many: 'findings' };
 
@@ -75,65 +42,37 @@ function durationRows(elapsed: { open_case_age: DurationStats; time_to_close: Du
 </script>
 
 <template>
-  <PageLayout
-    title="Management dashboard"
-    description="Workload and assurance figures for your tenant, measured from case, decision, evidence and audit records. They describe the process, never the performance or conduct of any officer or taxpayer."
-    :breadcrumbs="[{ label: 'Management dashboard' }]"
-  >
-    <div class="mb-4 w-full sm:w-48">
-      <Select
-        label="Reporting window"
-        :options="windowOptions"
-        :model-value="String(windowDays)"
-        :disabled="denied"
-        @update:model-value="setWindow"
-      />
-    </div>
+  <div class="space-y-4">
+    <p class="text-sm text-ink-gray-5" data-testid="window-line">
+      {{ utcDate(summary.window.since) }} to {{ utcDate(summary.window.until) }} ({{
+        summary.window.days
+      }}
+      days). Measured at {{ utcDateTime(summary.generated_at) }}. Open workload and evidence
+      requests are as of that time.
+    </p>
+
+    <Alert
+      v-if="summary.missing_data.length"
+      theme="amber"
+      title="Some records could not be measured"
+    >
+      <template #description>
+        <ul class="list-disc space-y-1 pl-5">
+          <li v-for="gap in summary.missing_data" :key="gap.metric + gap.detail">
+            {{ gap.detail }}
+          </li>
+        </ul>
+      </template>
+    </Alert>
 
     <StatePanel
-      v-if="state.status === 'loading'"
-      kind="loading"
-      title="Loading management figures…"
+      v-if="nothingToMeasure"
+      kind="empty"
+      title="No cases to measure"
+      message="There are no open cases and no cases closed in this window. Choose a longer window, or check again when cases are open."
     />
-    <StatePanel
-      v-else-if="denied && state.status === 'error'"
-      kind="denied"
-      title="Supervisors only"
-      message="The management dashboard is limited to supervisors in this tenant. No figures have been loaded. Ask a supervisor if you need them."
-      :reference="state.error.reference"
-    />
-    <StatePanel v-else-if="failurePanel" v-bind="failurePanel" @retry="reload" />
 
-    <div v-else-if="summary" class="space-y-5">
-      <p class="text-ink-gray-5" data-testid="window-line">
-        {{ utcDate(summary.window.since) }} to {{ utcDate(summary.window.until) }} ({{
-          summary.window.days
-        }}
-        days). Measured at {{ utcDateTime(summary.generated_at) }}. Open workload and evidence
-        requests are as of that time.
-      </p>
-
-      <Alert
-        v-if="summary.missing_data.length"
-        theme="amber"
-        title="Some records could not be measured"
-      >
-        <template #description>
-          <ul class="list-disc space-y-1 pl-5">
-            <li v-for="gap in summary.missing_data" :key="gap.metric + gap.detail">
-              {{ gap.detail }}
-            </li>
-          </ul>
-        </template>
-      </Alert>
-
-      <StatePanel
-        v-if="nothingToMeasure"
-        kind="empty"
-        title="No cases to measure"
-        message="There are no open cases and no cases closed in this window. Choose a longer window, or check again when cases are open."
-      />
-
+    <template v-if="report === 'workload'">
       <!-- Workload -->
       <section aria-labelledby="workload-heading" class="vati-panel">
         <h2 id="workload-heading" class="vati-panel-title">Workload</h2>
@@ -207,7 +146,8 @@ function durationRows(elapsed: { open_case_age: DurationStats; time_to_close: Du
           </div>
         </div>
       </section>
-
+    </template>
+    <template v-else-if="report === 'timeliness'">
       <!-- Elapsed time -->
       <section aria-labelledby="elapsed-heading" class="vati-panel">
         <h2 id="elapsed-heading" class="vati-panel-title">Elapsed time</h2>
@@ -243,27 +183,64 @@ function durationRows(elapsed: { open_case_age: DurationStats; time_to_close: Du
           </table>
         </div>
       </section>
-
-      <div class="grid gap-5 lg:grid-cols-2">
-        <!-- Evidence -->
-        <section aria-labelledby="evidence-heading" class="vati-panel">
-          <h2 id="evidence-heading" class="vati-panel-title">Unresolved evidence</h2>
+    </template>
+    <template v-else-if="report === 'evidence'">
+      <!-- Evidence -->
+      <section aria-labelledby="evidence-heading" class="vati-panel">
+        <h2 id="evidence-heading" class="vati-panel-title">Unresolved evidence</h2>
+        <dl class="vati-figures">
+          <div>
+            <dt>Outstanding requests</dt>
+            <dd>{{ summary.unresolved_evidence.outstanding_requests }}</dd>
+          </div>
+          <div>
+            <dt>Past their due date</dt>
+            <dd>{{ summary.unresolved_evidence.overdue_requests }}</dd>
+          </div>
+          <div>
+            <dt>Cases with outstanding requests</dt>
+            <dd>{{ summary.unresolved_evidence.cases_with_outstanding_requests }}</dd>
+          </div>
+        </dl>
+      </section>
+    </template>
+    <template v-else-if="report === 'outcomes'">
+      <div class="grid gap-4 xl:grid-cols-2">
+        <!-- Closures -->
+        <section aria-labelledby="closures-heading" class="vati-panel">
+          <h2 id="closures-heading" class="vati-panel-title">Closed cases in this window</h2>
           <dl class="vati-figures">
             <div>
-              <dt>Outstanding requests</dt>
-              <dd>{{ summary.unresolved_evidence.outstanding_requests }}</dd>
+              <dt>Closed</dt>
+              <dd>{{ summary.closure_outcomes.closed_in_window }}</dd>
             </div>
             <div>
-              <dt>Past their due date</dt>
-              <dd>{{ summary.unresolved_evidence.overdue_requests }}</dd>
+              <dt>Closed with no further action (false positives)</dt>
+              <dd>{{ ratioText(summary.closure_outcomes.no_further_action, CASES).text }}</dd>
             </div>
             <div>
-              <dt>Cases with outstanding requests</dt>
-              <dd>{{ summary.unresolved_evidence.cases_with_outstanding_requests }}</dd>
+              <dt>Closed after correction</dt>
+              <dd>{{ ratioText(summary.closure_outcomes.after_correction, CASES).text }}</dd>
             </div>
           </dl>
+          <p class="vati-note">
+            Rates are out of closed cases with a recorded decision outcome.
+            <template v-if="summary.closure_outcomes.without_recorded_outcome">
+              {{
+                plural(
+                  summary.closure_outcomes.without_recorded_outcome,
+                  'closed case has',
+                  'closed cases have',
+                )
+              }}
+              no recorded outcome and
+              {{ summary.closure_outcomes.without_recorded_outcome === 1 ? 'is' : 'are' }}
+              left out.
+            </template>
+            “No further action” means the review found nothing to correct. It measures how cases are
+            selected, not the work of any officer or taxpayer.
+          </p>
         </section>
-
         <!-- Legal routes -->
         <section aria-labelledby="routes-heading" class="vati-panel">
           <h2 id="routes-heading" class="vati-panel-title">Legal-route coverage</h2>
@@ -286,43 +263,8 @@ function durationRows(elapsed: { open_case_age: DurationStats; time_to_close: Du
           <p class="vati-note">Findings on open cases and on cases closed in this window.</p>
         </section>
       </div>
-
-      <!-- Closures -->
-      <section aria-labelledby="closures-heading" class="vati-panel">
-        <h2 id="closures-heading" class="vati-panel-title">Closed cases in this window</h2>
-        <dl class="vati-figures">
-          <div>
-            <dt>Closed</dt>
-            <dd>{{ summary.closure_outcomes.closed_in_window }}</dd>
-          </div>
-          <div>
-            <dt>Closed with no further action (false positives)</dt>
-            <dd>{{ ratioText(summary.closure_outcomes.no_further_action, CASES).text }}</dd>
-          </div>
-          <div>
-            <dt>Closed after correction</dt>
-            <dd>{{ ratioText(summary.closure_outcomes.after_correction, CASES).text }}</dd>
-          </div>
-        </dl>
-        <p class="vati-note">
-          Rates are out of closed cases with a recorded decision outcome.
-          <template v-if="summary.closure_outcomes.without_recorded_outcome">
-            {{
-              plural(
-                summary.closure_outcomes.without_recorded_outcome,
-                'closed case has',
-                'closed cases have',
-              )
-            }}
-            no recorded outcome and
-            {{ summary.closure_outcomes.without_recorded_outcome === 1 ? 'is' : 'are' }}
-            left out.
-          </template>
-          “No further action” means the review found nothing to correct. It measures how cases are
-          selected, not the work of any officer or taxpayer.
-        </p>
-      </section>
-
+    </template>
+    <template v-else>
       <!-- Assurance -->
       <section aria-labelledby="assurance-heading" class="vati-panel">
         <h2 id="assurance-heading" class="vati-panel-title">Audit ledger assurance</h2>
@@ -409,8 +351,8 @@ function durationRows(elapsed: { open_case_age: DurationStats; time_to_close: Du
           </div>
         </template>
       </section>
-    </div>
-  </PageLayout>
+    </template>
+  </div>
 </template>
 
 <style scoped>
