@@ -5,7 +5,7 @@
   "owner": "Keletso",
   "area": "apps/auditor-web",
   "phase": "pilot",
-  "status": "IN_REVIEW",
+  "status": "DONE",
   "priority": "P1",
   "depends_on": [
     "TAX-146",
@@ -87,6 +87,10 @@
     {
       "at": "2026-11-11",
       "text": "#293 merged while TAX-147 was in progress; TAX-147 moved to its own PR https://github.com/Vati-AI/rsl-taxathon/pull/294 (IN_REVIEW). The Frappe /api/v1 service (TAX-090) does not send Case.attention yet, so there the Awaiting approval and Overdue views show 'not available' rather than a count."
+    },
+    {
+      "at": "2026-11-12",
+      "text": "PR https://github.com/Vati-AI/rsl-taxathon/pull/294 merged into main on 2026-11-12 (834f843); status DONE."
     }
   ],
   "sequence": 18

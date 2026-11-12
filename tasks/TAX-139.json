@@ -5,7 +5,7 @@
   "owner": "Keletso",
   "area": "ai",
   "phase": "pilot",
-  "status": "IN_REVIEW",
+  "status": "DONE",
   "priority": "P0",
   "depends_on": [
     "TAX-048",
@@ -91,6 +91,10 @@
     {
       "at": "2026-11-11",
       "text": "IN_REVIEW in https://github.com/Vati-AI/rsl-taxathon/pull/293."
+    },
+    {
+      "at": "2026-11-12",
+      "text": "PR https://github.com/Vati-AI/rsl-taxathon/pull/293 merged into main on 2026-11-11 (b0bcb41); status DONE (recorded late: the first DONE update was lost in a branch merge)."
     }
   ],
   "sequence": 24

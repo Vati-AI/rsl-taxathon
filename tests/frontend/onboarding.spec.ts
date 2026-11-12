@@ -653,6 +653,13 @@ test.describe('officer onboarding (TAX-082)', () => {
         'nav: Management dashboard',
       );
       await pageReady(page, 'Management dashboard');
+      // TAX-149: evidence figures are on the Reports "Evidence" tab.
+      await proxy.click(
+        page
+          .getByRole('navigation', { name: 'Report sections' })
+          .getByRole('link', { name: 'Evidence' }),
+        'tab: Evidence',
+      );
       await expect(page.getByRole('main')).toContainText('Past their due date');
       await audit(proxy, 'management dashboard');
       await shot(page, 'supervisor-2-dashboard', w);

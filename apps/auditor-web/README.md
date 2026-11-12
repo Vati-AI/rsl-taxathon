@@ -28,12 +28,13 @@ Relationships `/relationships`; Findings `/findings`; Review `/review`: the
 decision state, evidence requests, agent suggestions and the review trail, with
 the propose and request-evidence forms in right-side drawers and every action
 confirmed in a dialog first; links from before TAX-148 with `?tab=` redirect),
-taxpayer profile (key facts and an open-cases table), management dashboard (`/auditor/management`, supervisors only:
-workload, elapsed time, unresolved evidence, closures with no further action,
-legal-route coverage and audit ledger assurance), integrity review
-(`/auditor/management/integrity`, supervisors only: policy exposure by policy
-area, overrides by control and review signals by kind, aggregates only with
-small groups combined; ADR-036), component showcase
+taxpayer profile (key facts and an open-cases table), Reports (TAX-149, supervisors only, also by direct URL: the management
+dashboard and integrity review as routed tabs under one reporting window:
+Workload `/auditor/management`, Timeliness `/timeliness`, Evidence
+`/evidence`, Outcomes `/outcomes` (closures and legal-route coverage), Ledger
+assurance `/assurance`, and Integrity `/auditor/management/integrity` with
+policy exposure, overrides and review signals as aggregates, small groups
+combined; ADR-036), component showcase
 (`/auditor/showcase`). Shared tokens live in `apps/shared/design`.
 
 The request tenant comes from `src/session.ts` (fixture tenant unless

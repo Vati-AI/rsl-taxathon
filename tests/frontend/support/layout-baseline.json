@@ -1,15 +1,6 @@
 {
   "_comment": "TAX-144 ratchet (tests/frontend/layout.spec.ts). Screens that broke the DESIGN_STANDARD.md v2 page-length budget or showed open-source component names when TAX-144 landed (2026-11-08, 1440x900), with the task that fixes each. Fixing tasks remove their entries; nothing may be added without an ADR-044 reason.",
-  "over_budget": {
-    "auditor/management-supervisor": {
-      "heightPx": 1743,
-      "task": "TAX-149"
-    },
-    "auditor/integrity-supervisor": {
-      "heightPx": 1479,
-      "task": "TAX-149"
-    }
-  },
+  "over_budget": {},
   "component_names": {},
   "exempt": {
     "auditor/showcase": "development-only component showcase (DESIGN_STANDARD.md); leaves operational navigation in TAX-146"

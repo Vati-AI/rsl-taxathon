@@ -5,15 +5,15 @@
   "owner": "Keletso",
   "area": "apps/taxpayer-web",
   "phase": "pilot",
-  "status": "BACKLOG",
+  "status": "IN_PROGRESS",
   "priority": "P0",
   "depends_on": [
     "TAX-146",
     "TAX-125",
     "TAX-150"
   ],
-  "claimed_by": null,
-  "branch": null,
+  "claimed_by": "claude-code-20261112-friendly-newton",
+  "branch": "claude/friendly-newton-iwhm4u",
   "pr": null,
   "scope": "Rebuild the re-centred portal (TAX-125) as an inbox: evidence requests listed like messages grouped by due date with a reading pane, responses as short steps with the TAX-126 checks, My cases with RSL's status labelled as RSL's, and account; remove starter copy, hero titles and card-grid layouts",
   "inputs": [
@@ -59,6 +59,10 @@
     {
       "at": "2026-11-11T12:27:49.740246+00:00",
       "text": "2026-11-11 (ADR-045): Keletso keeps this task in the AI and new UI lane. No task in this lane depends on an open task in the other lane."
+    },
+    {
+      "at": "2026-11-12",
+      "text": "Claimed by claude-code-20261112-friendly-newton on the session's designated branch claude/friendly-newton-iwhm4u."
     }
   ],
   "sequence": 20
