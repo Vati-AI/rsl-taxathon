@@ -19,6 +19,7 @@ import frappe
 
 from vati_tax.decisions import store
 from vati_tax.ids.canonical import MappingError
+from vati_tax.refund_access import store as refund_access
 
 
 class DecisionBadRequest(frappe.ValidationError):
@@ -92,6 +93,7 @@ def propose_decision(
     draft_id: str | None = None,
     idempotency_key: str | None = None,
 ) -> dict[str, Any]:
+    refund_access.require_case(case_id, "decision.propose")  # TAX-142
     body = {
         "outcome": outcome,
         "rationale": rationale,
@@ -115,6 +117,7 @@ def review_decision(
     reason: str | None = None,
     idempotency_key: str | None = None,
 ) -> dict[str, Any]:
+    refund_access.require_record("Vati Decision", decision_id, "decision.approve")  # TAX-142
     body = {"expected_version": frappe.utils.cint(expected_version), "reason": reason or None}
     return _call(
         store.review_decision,
@@ -127,6 +130,7 @@ def review_decision(
 
 @frappe.whitelist(methods=["POST"])
 def retry_decision(decision_id: str) -> dict[str, Any]:
+    refund_access.require_record("Vati Decision", decision_id, "decision.execute")  # TAX-142
     return _call(store.retry_decision, decision_id=decision_id)
 
 
@@ -139,6 +143,7 @@ def record_decision_draft(
     finding_ids: Any = None,
     idempotency_key: str | None = None,
 ) -> dict[str, Any]:
+    refund_access.require_case(case_id, "draft.record")  # TAX-142
     body = {
         "outcome": outcome,
         "rationale": rationale,
@@ -161,6 +166,7 @@ def request_evidence(
     idempotency_key: str | None = None,
 ) -> dict[str, Any]:
     """``requestEvidence`` (integration/api/openapi.json): record an authorised request."""
+    refund_access.require_case(case_id, "evidence_request.authorise")  # TAX-142
     body = {
         "expected_version": frappe.utils.cint(expected_version),
         "finding_ids": _json(finding_ids),
@@ -178,6 +184,7 @@ def request_evidence(
 
 @frappe.whitelist(methods=["GET"])
 def get_case_review_state(case_id: str) -> dict[str, Any]:
+    refund_access.require_case(case_id, "case.read")  # TAX-142
     try:
         return store.case_review_state(
             tenant_id=store.permissions.request_tenant_header() or "", case_id=case_id

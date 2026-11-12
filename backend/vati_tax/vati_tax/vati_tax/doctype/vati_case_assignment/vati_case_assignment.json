@@ -1,0 +1,126 @@
+{
+ "actions": [],
+ "autoname": "field:case_id",
+ "creation": "2026-11-12 14:00:00.000000",
+ "description": "Who works a case (TAX-142, ADR-049). One row per case, changed only by vati_tax.refund_access when a refund-team supervisor assigns or reassigns it; every change is versioned and sealed into the audit ledger. A refund case's data is visible only to refund-team supervisors, the assigned refund-team officer and service identities.",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "case_id",
+  "tenant_id",
+  "column_break_who",
+  "assignee",
+  "assignee_role",
+  "assigned_by",
+  "assigned_at",
+  "reason",
+  "version"
+ ],
+ "fields": [
+  {
+   "fieldname": "case_id",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Case ID",
+   "length": 36,
+   "reqd": 1,
+   "set_only_once": 1,
+   "unique": 1
+  },
+  {
+   "fieldname": "tenant_id",
+   "fieldtype": "Data",
+   "label": "Tenant ID",
+   "length": 36,
+   "reqd": 1,
+   "search_index": 1,
+   "set_only_once": 1
+  },
+  {
+   "fieldname": "column_break_who",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "assignee",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Assigned officer",
+   "options": "User",
+   "reqd": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "assignee_role",
+   "fieldtype": "Data",
+   "label": "Officer role",
+   "length": 20,
+   "reqd": 1
+  },
+  {
+   "fieldname": "assigned_by",
+   "fieldtype": "Data",
+   "label": "Assigned by",
+   "length": 140,
+   "reqd": 1
+  },
+  {
+   "fieldname": "assigned_at",
+   "fieldtype": "Datetime",
+   "label": "Assigned at (UTC)",
+   "reqd": 1
+  },
+  {
+   "fieldname": "reason",
+   "fieldtype": "Small Text",
+   "label": "Reason",
+   "reqd": 1
+  },
+  {
+   "default": "1",
+   "fieldname": "version",
+   "fieldtype": "Int",
+   "label": "Version",
+   "reqd": 1
+  }
+ ],
+ "in_create": 1,
+ "index_web_pages_for_search": 0,
+ "links": [],
+ "modified": "2026-11-12 14:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Vati Tax",
+ "name": "Vati Case Assignment",
+ "naming_rule": "By fieldname",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "export": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager"
+  },
+  {
+   "read": 1,
+   "role": "Vati Auditor"
+  },
+  {
+   "read": 1,
+   "role": "Vati Specialist"
+  },
+  {
+   "read": 1,
+   "role": "Vati Supervisor"
+  },
+  {
+   "read": 1,
+   "role": "Vati Service"
+  }
+ ],
+ "search_fields": "assignee",
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "case_id",
+ "track_changes": 1
+}

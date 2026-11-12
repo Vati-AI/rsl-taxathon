@@ -15,11 +15,13 @@ import frappe
 
 from vati_tax.identity import permissions
 from vati_tax.ids.canonical import MappingError
+from vati_tax.refund_access import store as refund_access
 from vati_tax.rsl_outbound import store
 
 
 @frappe.whitelist(methods=["GET"])
 def get_case_outbound(case_id: str) -> list[dict[str, Any]]:
+    refund_access.require_case(case_id, "case.read")  # TAX-142
     try:
         return store.case_outbound(
             tenant_id=permissions.request_tenant_header() or "", case_id=case_id

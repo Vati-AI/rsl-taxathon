@@ -24,6 +24,7 @@ import frappe
 
 from vati_tax.identity import permissions
 from vati_tax.ids.canonical import MappingError
+from vati_tax.refund_access import store as refund_access
 from vati_tax.reminders import store
 
 
@@ -57,6 +58,7 @@ def _header(name: str) -> str | None:
 def record_reminder(
     decision_id: str, topic: str, explanation: str, idempotency_key: str | None = None
 ) -> dict[str, Any]:
+    refund_access.require_record("Vati Decision", decision_id, "reminder.record")  # TAX-142
     try:
         return store.record(
             tenant_id=_tenant(),
@@ -77,6 +79,9 @@ def correct_reminder(
     topic: str | None = None,
     explanation: str | None = None,
 ) -> dict[str, Any]:
+    refund_access.require_record(
+        "Vati Correction Reminder", reminder_id, "reminder.correct"
+    )  # TAX-142
     try:
         return store.correct(
             tenant_id=_tenant(),

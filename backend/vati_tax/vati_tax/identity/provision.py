@@ -46,15 +46,25 @@ def ensure_role(user: str, role: policy.Role) -> None:
 
 
 def grant_membership(
-    user: str, tenant_id: str, role: policy.Role, taxpayer_id: str | None = None
+    user: str,
+    tenant_id: str,
+    role: policy.Role,
+    taxpayer_id: str | None = None,
+    refund_team: bool = False,
 ) -> str:
-    """Give ``user`` the Frappe role and an enabled membership (idempotent)."""
+    """Give ``user`` the Frappe role and an enabled membership (idempotent).
+
+    ``refund_team`` (TAX-142) puts a staff member on the tenant's refund team.
+    """
     _require_operator()
     ensure_role(user, role)
     existing = frappe.db.get_value(MEMBERSHIP, {"user": user, "tenant_id": tenant_id}, "name")
     if existing:
         doc = frappe.get_doc(MEMBERSHIP, existing)
-        doc.update({"vati_role": role, "taxpayer_id": taxpayer_id, "enabled": 1})
+        doc.update(
+            {"vati_role": role, "taxpayer_id": taxpayer_id, "enabled": 1,
+             "refund_team": 1 if refund_team else 0}
+        )  # fmt: skip
         doc.save()
     else:
         doc = frappe.get_doc(
@@ -64,6 +74,7 @@ def grant_membership(
                 "tenant_id": tenant_id,
                 "vati_role": role,
                 "taxpayer_id": taxpayer_id,
+                "refund_team": 1 if refund_team else 0,
             }
         ).insert()
     clear_principal_cache()
