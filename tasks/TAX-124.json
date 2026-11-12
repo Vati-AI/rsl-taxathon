@@ -5,7 +5,7 @@
   "owner": "Gupta",
   "area": "integration",
   "phase": "pilot",
-  "status": "IN_PROGRESS",
+  "status": "IN_REVIEW",
   "priority": "P1",
   "depends_on": [
     "TAX-111",
@@ -15,7 +15,7 @@
   ],
   "claimed_by": "claude-opus-5-5-gupta",
   "branch": "task/TAX-124",
-  "pr": null,
+  "pr": "https://github.com/Vati-AI/rsl-taxathon/pull/298",
   "scope": "Define and emit assumed outbound contracts so results return to RSL: an approved findings pack for the RSL audit case, the lane recommendation and undisputed amount for the Online Refunds Application or PSRM to act on, and an evidence-requested status with a portal deep link",
   "inputs": [
     "PROJECT.md",
@@ -82,6 +82,10 @@
     {
       "at": "2026-11-12T04:20:27.391543+00:00",
       "text": "Claimed by claude-opus-5-5-gupta"
+    },
+    {
+      "at": "2026-11-12T04:49:19.419011+00:00",
+      "text": "PR opened with local verification (ADR-038)"
     }
   ],
   "sequence": 23
