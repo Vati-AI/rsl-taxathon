@@ -24,6 +24,7 @@ import frappe
 from vati_tax.challenges import store
 from vati_tax.identity import permissions
 from vati_tax.ids.canonical import MappingError
+from vati_tax.refund_access import store as refund_access
 
 
 class ChallengeBadRequest(frappe.ValidationError):
@@ -71,6 +72,7 @@ def lodge_challenge(
     route_reference: str | None = None,
     idempotency_key: str | None = None,
 ) -> dict[str, Any]:
+    refund_access.require_record("Vati Decision", decision_id, "challenge.lodge")  # TAX-142
     body = {
         "stage": stage,
         "grounds": grounds,
@@ -94,6 +96,9 @@ def lodge_challenge(
 def review_challenge(
     challenge_id: str, expected_version: int | str, outcome: str, reason: str
 ) -> dict[str, Any]:
+    refund_access.require_record(
+        "Vati Decision Challenge", challenge_id, "challenge.review"
+    )  # TAX-142
     try:
         return store.review(
             tenant_id=_tenant(),
@@ -111,6 +116,7 @@ def review_challenge(
 
 @frappe.whitelist(methods=["GET"])
 def get_challenge_history(decision_id: str) -> dict[str, Any]:
+    refund_access.require_record("Vati Decision", decision_id, "challenge.read")  # TAX-142
     try:
         return store.history(tenant_id=_tenant(), decision_id=decision_id)
     except MappingError as exc:

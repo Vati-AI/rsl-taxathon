@@ -209,3 +209,22 @@ See [ADR-037](decisions/ADR-037-event-wiring-frappe-services.md).
 | `pipeline.api.case_status` | System Manager | everyone else (403); a case of another tenant (`not_found`). Returns IDs, states, counts and error codes only |
 
 Screening candidates are proposals: they are stored `unreviewed` and only an officer's TAX-037 review decision can confirm or reject one. A service identity never decides.
+
+## Refund confidentiality (TAX-142)
+
+Inside a tenant, a refund case (a case whose submission is a `refund_claim`) is visible only to the refund roles. See [ADR-049](decisions/ADR-049-refund-confidentiality.md).
+
+| Principal | Refund case data |
+| --- | --- |
+| Service identity | yes |
+| Supervisor on the refund team (`Vati Tenant Membership.refund_team`) | every refund case of the tenant; assigns them |
+| Auditor or specialist on the refund team | only refund cases assigned to them (`Vati Case Assignment`) |
+| Any other staff, including supervisors outside the refund team | no; refused and recorded |
+| Taxpayer | own records only, as before |
+
+Refund data is every tenant-scoped record with a `case_id` (except the audit ledger, outbox and bridge inbound events) plus `Vati Submission` and the records keyed by its `submission_id`. Desk list queries hide it, `has_permission` refuses it, /api/v1 omits hidden cases from `listCases` and refuses their operations, and every case-scoped endpoint passes the gate in `vati_tax.refund_access.store`. A refusal is sealed into the audit ledger as `<action>.denied` with outcome `refund_confidentiality`.
+
+| Step | Who | Refused when |
+| --- | --- | --- |
+| Assign or reassign a refund case (`refund_access.api.assign_case`) | a refund-team supervisor (`case.assign`) | anyone else (recorded); not a refund case; assignee not refund-team staff of the tenant; stale `expected_version`; reason shorter than 10 characters |
+| Read the assignment (`get_case_assignment`) | staff who may see the case | anyone else (recorded) |

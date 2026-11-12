@@ -5,15 +5,15 @@
   "owner": "Gupta",
   "area": "backend",
   "phase": "pilot",
-  "status": "BACKLOG",
+  "status": "IN_REVIEW",
   "priority": "P1",
   "depends_on": [
     "TAX-029",
     "TAX-062"
   ],
-  "claimed_by": null,
-  "branch": null,
-  "pr": null,
+  "claimed_by": "claude-opus-5-5-gupta",
+  "branch": "task/TAX-142",
+  "pr": "https://github.com/Vati-AI/rsl-taxathon/pull/301",
   "scope": "Move refund-confidentiality access rules from later to the pilot: refund case data is visible only to assigned refund roles, with denied access tested and logged",
   "inputs": [
     "PROJECT.md",
@@ -28,11 +28,11 @@
   "acceptance": [
     {
       "text": "Role and case rules restrict refund data; cross-role and cross-case access is denied and logged",
-      "done": false
+      "done": true
     },
     {
       "text": "Record relevant tests and evidence, update task status and open a PR",
-      "done": false
+      "done": true
     }
   ],
   "verification": "Permission tests",
@@ -42,7 +42,16 @@
     "update-project-task",
     "finish-task"
   ],
-  "evidence": [],
+  "evidence": [
+    {
+      "criterion": 1,
+      "text": "ADR-049: a refund case (submission_type refund_claim) is visible only to service identities, refund-team supervisors (Vati Tenant Membership.refund_team) and the refund-team auditor/specialist assigned in Vati Case Assignment (assigned only by a refund-team supervisor). Enforced in Desk (list query conditions and has_permission for every case/submission-keyed DocType), /api/v1 (all case operations gated, listCases filtered) and the case-scoped whitelisted endpoints. Each refusal is sealed into the tenant audit ledger as <action>.denied with outcome refund_confidentiality. Disposable site verify-20261112t061221: refund_access/test_refund_access_bench 6/6 OK (cross-role: plain auditor, plain supervisor, unassigned refund auditor denied; cross-case: reassignment removes access; ledger entries; Desk lists/opens; api_v1 403 and hidden from list; assignment rules); identity/test_policy 34 OK."
+    },
+    {
+      "criterion": 2,
+      "text": "Disposable site (frappe_dev.py verify): install and two migrations ok; bench suite 236 tests, failing only reminders/test_reminders_bench (pre-existing on main); bridge bench updated so a refund claim's mirror is hidden from an auditor outside the refund team (15/15 OK). Frappe-free: backend discovery 592 with only the pre-existing Windows path-separator failure in portal/test_presubmission; tests/integration and tests/contracts OK; ruff, ruff format, mypy and validate.py clean. Hosted CI does not start (org spending limit)."
+    }
+  ],
   "notes": [
     {
       "at": "2026-11-07",
@@ -51,6 +60,14 @@
     {
       "at": "2026-11-11T12:27:49.740246+00:00",
       "text": "2026-11-11 (ADR-045): owner changed from Keletso to Gupta; RSL integration lane. No task in this lane depends on an open task in the other lane."
+    },
+    {
+      "at": "2026-11-12T05:29:24.864875+00:00",
+      "text": "Claimed by claude-opus-5-5-gupta"
+    },
+    {
+      "at": "2026-11-12T06:23:36.206795+00:00",
+      "text": "PR opened with local verification (ADR-038)"
     }
   ],
   "sequence": 27

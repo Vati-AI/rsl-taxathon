@@ -22,6 +22,7 @@ from frappe import _
 from vati_tax.bridge import store
 from vati_tax.identity import permissions, policy
 from vati_tax.ids.canonical import MappingError
+from vati_tax.refund_access import store as refund_access
 
 
 class BridgeBadRequest(frappe.ValidationError):
@@ -71,6 +72,7 @@ def receive_case_status(event: Any = None) -> dict[str, Any]:
 @frappe.whitelist(methods=["GET"])
 def get_review_status(submission_id: str) -> dict[str, Any]:
     """The caller's own submission: ``review_status`` and ``review_status_at`` only."""
+    refund_access.require_submission(submission_id, "submission.read")  # TAX-142
     user = frappe.session.user
     if not user or user == "Guest":
         raise frappe.PermissionError(_("Log in to see your submission."))

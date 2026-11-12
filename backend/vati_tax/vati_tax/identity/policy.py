@@ -226,6 +226,8 @@ class Membership:
     tenant_id: str
     role: Role
     taxpayer_id: str | None = None
+    # TAX-142: a member of the tenant's refund team may work on refund cases.
+    refund_team: bool = False
 
 
 @dataclass(frozen=True)
@@ -251,6 +253,7 @@ class TenantScope:
     tenant_id: str
     roles: frozenset[Role]
     taxpayer_ids: frozenset[str]
+    refund_team: bool = False
 
 
 def validate_membership(membership: Membership) -> Membership:
@@ -264,6 +267,8 @@ def validate_membership(membership: Membership) -> Membership:
             raise InvalidMembership("A taxpayer membership needs a lower-case UUID taxpayer_id")
     elif membership.taxpayer_id:
         raise InvalidMembership("Only taxpayer memberships carry a taxpayer_id")
+    if membership.refund_team and membership.role not in STAFF_ROLES:
+        raise InvalidMembership("Only auditors, specialists and supervisors join a refund team")
     return membership
 
 
@@ -308,6 +313,7 @@ def resolve_tenant(principal: Principal, requested_tenant_id: str | None) -> Ten
         tenant_id=tenant_id,
         roles=frozenset(m.role for m in memberships),
         taxpayer_ids=frozenset(m.taxpayer_id for m in memberships if m.taxpayer_id),
+        refund_team=any(m.refund_team for m in memberships),
     )
 
 
@@ -412,3 +418,99 @@ def query_condition(
     if not clauses:
         return "1=0"
     return "(" + " or ".join(clauses) + ")"
+
+
+# --- refund confidentiality (TAX-142, ADR-049) -------------------------------------
+#
+# A refund case is a case whose submission is a refund claim. Its data is visible only
+# to the refund roles: a service identity (the pipeline), a supervisor on the tenant's
+# refund team (who assigns the work), and an auditor or specialist on the refund team
+# to whom the case is assigned. Everyone else is refused, and the refusal is recorded.
+# Taxpayers are unaffected: they only ever reach their own records.
+
+REFUND_CONFIDENTIALITY: Final = "refund_confidentiality"
+REFUND_CLAIM: Final = "refund_claim"
+
+
+def may_read_refund_case(scope: TenantScope, assignee: str | None) -> bool:
+    """Whether ``scope`` may read or act on one refund case assigned to ``assignee``."""
+    if SERVICE in scope.roles:
+        return True
+    if not scope.refund_team or not scope.roles & STAFF_ROLES:
+        return False
+    if SUPERVISOR in scope.roles:
+        return True
+    return bool(assignee) and str(assignee).lower() == scope.user.lower()
+
+
+def may_be_assigned_refund_case(membership: Membership | None) -> bool:
+    """Only refund-team staff can be given a refund case."""
+    return membership is not None and membership.role in STAFF_ROLES and membership.refund_team
+
+
+def refund_restrictions(principal: Principal) -> tuple[frozenset[str], frozenset[str]]:
+    """``(restricted, assignable)`` tenants for list queries.
+
+    ``restricted``: staff tenants where the principal does not see every refund case.
+    ``assignable``: the subset where assigned refund cases are still visible (the
+    principal is on the refund team there). Taxpayer and service memberships, and
+    refund-team supervisors, are not restricted.
+    """
+    restricted: set[str] = set()
+    assignable: set[str] = set()
+    for m in principal.memberships:
+        if m.role not in STAFF_ROLES or not is_stored_uuid(m.tenant_id):
+            continue
+        if m.role == SUPERVISOR and m.refund_team:
+            continue
+        restricted.add(m.tenant_id)
+        if m.refund_team:
+            assignable.add(m.tenant_id)
+    return frozenset(restricted), frozenset(assignable)
+
+
+def refund_query_condition(
+    principal: Principal,
+    column: str,
+    *,
+    by: Literal["case", "submission"],
+    quote: Callable[[str], str],
+) -> str:
+    """SQL condition hiding refund records the principal may not read ("" if none).
+
+    ``column`` holds a case ID (``by="case"``) or a submission ID (``by="submission"``).
+    The condition is ANDed with the tenant condition by the caller.
+    """
+    restricted, assignable = refund_restrictions(principal)
+    if not restricted:
+        return ""
+    r = ", ".join(quote(t) for t in sorted(restricted))
+    assigned = (
+        "select a.`case_id` from `tabVati Case Assignment` a where a.`assignee` = {user}{scope}"
+    )
+    if assignable:
+        a = ", ".join(quote(t) for t in sorted(assignable))
+        mine = assigned.format(user=quote(principal.user), scope=f" and a.`tenant_id` in ({a})")
+    else:
+        mine = None
+    if by == "case":
+        hidden = (
+            "select ci.`name` from `tabVati Case Identity` ci "
+            "inner join `tabVati Submission` s on s.`name` = ci.`submission_id` "
+            f"where s.`submission_type` = {quote(REFUND_CLAIM)} and ci.`tenant_id` in ({r})"
+        )
+        if mine:
+            hidden += f" and ci.`name` not in ({mine})"
+    else:
+        hidden = (
+            "select s.`name` from `tabVati Submission` s "
+            f"where s.`submission_type` = {quote(REFUND_CLAIM)} and s.`tenant_id` in ({r})"
+        )
+        if mine:
+            # The case may be linked from either side (submission or case identity).
+            hidden += (
+                f" and (s.`case_id` is null or s.`case_id` not in ({mine}))"
+                " and s.`name` not in (select ci.`submission_id` from `tabVati Case Identity` ci"
+                f" where ci.`submission_id` is not null and ci.`name` in ({mine}))"
+            )
+    return f"({column} is null or {column} not in ({hidden}))"

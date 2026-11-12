@@ -128,6 +128,7 @@ class BridgeBenchTests(IntegrationTestCase):
         frappe.set_user("Administrator")
         cls.users = {name: make_user(name) for name in ("taxpayer-a", "taxpayer-b", "auditor")}
         cls.users["auditor-other"] = make_user("auditor-other")
+        cls.users["refund-supervisor"] = make_user("refund-supervisor")
         frappe.db.commit()
 
     @classmethod
@@ -149,6 +150,9 @@ class BridgeBenchTests(IntegrationTestCase):
         grant_membership(self.users["taxpayer-b"], self.tenant, policy.TAXPAYER, self.tp_b)
         grant_membership(self.users["auditor"], self.tenant, policy.AUDITOR)
         grant_membership(self.users["auditor-other"], self.other, policy.AUDITOR)
+        # TAX-142: refund-claim cases are refund-team data.
+        grant_membership(self.users["refund-supervisor"], self.tenant, policy.SUPERVISOR,
+                         refund_team=True)  # fmt: skip
         self.users["service"] = ensure_service_identity(email("service"), [self.tenant])
         self.users["service-other"] = ensure_service_identity(email("service-o"), [self.other])
         frappe.db.commit()
@@ -435,9 +439,13 @@ class BridgeBenchTests(IntegrationTestCase):
 
     def test_staff_read_the_mirror_only_in_their_own_tenant(self):
         _, case_id = self.delivered_case()
-        self.as_user("auditor")
+        self.as_user("refund-supervisor")
         self.assertEqual(frappe.get_list("Vati Case Sync", filters={"case_id": case_id},
                                          pluck="name"), [case_id])  # fmt: skip
+        # TAX-142: a refund claim's mirror is hidden from staff outside the refund team.
+        self.as_user("auditor")
+        self.assertEqual(frappe.get_list("Vati Case Sync", filters={"case_id": case_id},
+                                         pluck="name"), [])  # fmt: skip
         self.as_user("auditor-other")
         self.assertEqual(frappe.get_list("Vati Case Sync", filters={"case_id": case_id},
                                          pluck="name"), [])  # fmt: skip

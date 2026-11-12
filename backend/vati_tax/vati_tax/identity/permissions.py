@@ -15,7 +15,7 @@ them only on documented internal paths with explicit scope checks.
 
 from __future__ import annotations
 
-from typing import Any
+from typing import Any, Literal
 
 import frappe
 from frappe import _
@@ -29,6 +29,12 @@ TENANT_FIELD = "tenant_id"
 TAXPAYER_FIELD = "taxpayer_id"
 TENANT_HEADER = "X-Vati-Tenant-ID"
 OPERATOR_ROLES = frozenset({"System Manager"})
+CASE_FIELD = "case_id"
+SUBMISSION_FIELD = "submission_id"
+SUBMISSION = "Vati Submission"
+# TAX-142 (ADR-049): records that hold no refund case data, or that must stay readable
+# for the ledger review, are not narrowed by refund confidentiality.
+REFUND_EXEMPT = frozenset({"Vati Audit Event", "Vati Outbox Event", "Vati Bridge Inbound Event"})
 
 
 class MissingTenantContext(frappe.ValidationError):
@@ -70,7 +76,7 @@ def get_principal(user: str | None = None) -> policy.Principal:
         rows = frappe.get_all(
             MEMBERSHIP,
             filters={"user": user, "enabled": 1},
-            fields=["tenant_id", "vati_role", "taxpayer_id"],
+            fields=["tenant_id", "vati_role", "taxpayer_id", "refund_team"],
             order_by="tenant_id asc",
         )
         enabled_tenants = set(
@@ -87,7 +93,11 @@ def get_principal(user: str | None = None) -> policy.Principal:
                 continue
             if policy.FRAPPE_ROLES[role] not in held:
                 continue
-            memberships.append(policy.Membership(row.tenant_id, role, row.taxpayer_id or None))
+            memberships.append(
+                policy.Membership(
+                    row.tenant_id, role, row.taxpayer_id or None, bool(row.refund_team)
+                )
+            )
     principal = policy.Principal(user=user, memberships=tuple(memberships))
     cache[user] = principal
     return principal
@@ -105,6 +115,24 @@ def scope_of(doctype: str) -> tuple[bool, bool]:
     return True, bool(meta.has_field(TAXPAYER_FIELD))
 
 
+def refund_scope_of(doctype: str) -> tuple[str, Literal["case", "submission"]] | None:
+    """``(column, by)`` naming the refund case of a ``doctype`` record, or None.
+
+    TAX-142: a record with a ``case_id`` belongs to that case; a submission record (or
+    one with a ``submission_id`` and no case) belongs to its refund claim.
+    """
+    if doctype in REFUND_EXEMPT:
+        return None
+    if doctype == SUBMISSION:
+        return "name", "submission"
+    meta = frappe.get_meta(doctype)
+    if meta.has_field(CASE_FIELD):
+        return CASE_FIELD, "case"
+    if meta.has_field(SUBMISSION_FIELD):
+        return SUBMISSION_FIELD, "submission"
+    return None
+
+
 def tenant_query_conditions(user: str | None = None, doctype: str | None = None) -> str:
     """``permission_query_conditions`` hook (``*``): narrow list queries."""
     user = user or frappe.session.user
@@ -113,12 +141,24 @@ def tenant_query_conditions(user: str | None = None, doctype: str | None = None)
     scoped, taxpayer_owned = scope_of(doctype)
     if not scoped or is_operator(user):
         return ""
-    return policy.query_condition(
-        get_principal(user),
+    principal = get_principal(user)
+    condition = policy.query_condition(
+        principal,
         f"`tab{doctype}`",
         taxpayer_owned=taxpayer_owned,
         quote=frappe.db.escape,
     )
+    refund = refund_scope_of(doctype)
+    if refund is None:
+        return condition
+    column, by = refund
+    extra = policy.refund_query_condition(
+        principal,
+        f"`tab{doctype}`.`{column}`",
+        by=by,
+        quote=frappe.db.escape,
+    )
+    return f"({condition} and {extra})" if extra else condition
 
 
 def tenant_has_permission(
@@ -134,12 +174,50 @@ def tenant_has_permission(
     scoped, taxpayer_owned = scope_of(doc.doctype)
     if not scoped or is_operator(user):
         return True
-    return policy.can_access_record(
-        get_principal(user),
+    principal = get_principal(user)
+    if not policy.can_access_record(
+        principal,
         doc.get(TENANT_FIELD),
         doc.get(TAXPAYER_FIELD) if taxpayer_owned else None,
         taxpayer_owned=taxpayer_owned,
-    )
+    ):
+        return False
+    return _refund_permitted(doc, principal, ptype)
+
+
+def _refund_permitted(doc: Any, principal: policy.Principal, ptype: str | None) -> bool:
+    """TAX-142: a refund case's records only for the refund roles; refusals are recorded."""
+    refund = refund_scope_of(doc.doctype)
+    tenant_id = doc.get(TENANT_FIELD)
+    if refund is None or not tenant_id or doc.is_new():
+        return True
+    memberships = principal.in_tenant(tenant_id)
+    if not memberships or all(m.role == policy.TAXPAYER for m in memberships):
+        return True
+    from vati_tax.refund_access import store as refund_store
+
+    column, by = refund
+    value = doc.name if column == "name" else doc.get(column)
+    if by == "case":
+        _tenant, is_refund, assignee = refund_store.case_info(value)
+        case_id = value
+    else:
+        _tenant, is_refund, assignee = refund_store.submission_info(value)
+        case_id = refund_store.submission_case(value) if value else None
+    if not is_refund:
+        return True
+    scope = policy.resolve_tenant(principal, tenant_id)
+    if policy.may_read_refund_case(scope, assignee):
+        return True
+    request = getattr(frappe.local, "request", None)
+    # A Desk read (GET) is otherwise never committed; keep the refusal. Inside a write the
+    # entry joins the request's transaction.
+    is_get = request is not None and request.method == "GET"
+    refund_store.record_denied(
+        scope, f"{doc.doctype.lower().replace(' ', '_')}.{ptype or 'read'}",
+        case_id or value or "", commit=is_get,
+    )  # fmt: skip
+    return False
 
 
 def validate_share(doc: Any, method: str | None = None) -> None:

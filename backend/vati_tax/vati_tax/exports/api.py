@@ -23,6 +23,7 @@ import frappe
 from vati_tax.exports import store
 from vati_tax.identity import permissions
 from vati_tax.ids.canonical import MappingError
+from vati_tax.refund_access import store as refund_access
 
 
 class ExportBadRequest(frappe.ValidationError):
@@ -70,6 +71,7 @@ def request_export(
     reason: str,
     idempotency_key: str | None = None,
 ) -> dict[str, Any]:
+    refund_access.require_case(case_id, "export.request")  # TAX-142
     body = {
         "case_id": case_id,
         "evidence_ids": _evidence_ids(evidence_ids),
@@ -89,6 +91,7 @@ def request_export(
 
 
 def _decide(export_id: str, expected_version: Any, approve: bool, reason: str | None) -> Any:
+    refund_access.require_record("Vati Evidence Export", export_id, "export.approve")  # TAX-142
     try:
         return store.decide_export(
             tenant_id=_tenant(),
@@ -120,6 +123,7 @@ def reject_export(export_id: str, expected_version: int | str, reason: str) -> d
 
 @frappe.whitelist(methods=["GET"])
 def get_export(export_id: str) -> dict[str, Any]:
+    refund_access.require_record("Vati Evidence Export", export_id, "export.read")  # TAX-142
     try:
         return store.get_export(tenant_id=_tenant(), export_id=export_id)
     except MappingError as exc:
@@ -128,6 +132,7 @@ def get_export(export_id: str) -> dict[str, Any]:
 
 @frappe.whitelist(methods=["GET"])
 def get_export_manifest(export_id: str) -> dict[str, Any]:
+    refund_access.require_record("Vati Evidence Export", export_id, "export.read")  # TAX-142
     try:
         return store.get_manifest(tenant_id=_tenant(), export_id=export_id)
     except MappingError as exc:

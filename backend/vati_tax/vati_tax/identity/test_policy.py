@@ -246,3 +246,94 @@ class MembershipRuleTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+# --- refund confidentiality (TAX-142, ADR-049) -------------------------------------
+
+REFUND_AUDITOR = principal("ra@example.test", p.Membership(TENANT_1, p.AUDITOR, None, True))
+REFUND_SPECIALIST = principal("rs@example.test", p.Membership(TENANT_1, p.SPECIALIST, None, True))
+REFUND_SUPERVISOR = principal("rv@example.test", p.Membership(TENANT_1, p.SUPERVISOR, None, True))
+
+
+def _quote(value: str) -> str:
+    return "'" + value.replace("'", "''") + "'"
+
+
+class RefundConfidentialityTests(unittest.TestCase):
+    def test_only_refund_roles_read_a_refund_case(self):
+        allowed = {
+            ("service", None): True,
+            ("refund supervisor", None): True,
+            ("refund supervisor", "someone@example.test"): True,
+            ("refund auditor", "ra@example.test"): True,
+            ("refund auditor", "RA@example.test"): True,
+            ("refund specialist", "rs@example.test"): True,
+            ("refund auditor", None): False,
+            ("refund auditor", "rs@example.test"): False,
+            ("refund specialist", "ra@example.test"): False,
+            ("auditor", "auditor@example.test"): False,
+            ("specialist", "specialist@example.test"): False,
+            ("supervisor", None): False,
+        }
+        who = {
+            "service": SERVICE_T1,
+            "refund supervisor": REFUND_SUPERVISOR,
+            "refund auditor": REFUND_AUDITOR,
+            "refund specialist": REFUND_SPECIALIST,
+            "auditor": AUDITOR_T1,
+            "specialist": SPECIALIST_T1,
+            "supervisor": SUPERVISOR_T1,
+        }
+        for (name, assignee), expected in allowed.items():
+            with self.subTest(who=name, assignee=assignee):
+                self.assertEqual(p.may_read_refund_case(scope(who[name]), assignee), expected)
+
+    def test_refund_team_is_carried_into_the_scope_per_tenant(self):
+        both = principal(
+            "x@example.test",
+            p.Membership(TENANT_1, p.AUDITOR, None, True),
+            p.Membership(TENANT_2, p.AUDITOR),
+        )
+        self.assertTrue(scope(both, TENANT_1).refund_team)
+        self.assertFalse(scope(both, TENANT_2).refund_team)
+        self.assertFalse(p.may_read_refund_case(scope(both, TENANT_2), "x@example.test"))
+
+    def test_only_staff_join_a_refund_team_and_can_be_assigned(self):
+        for role in (p.TAXPAYER, p.SERVICE):
+            with self.subTest(role=role):
+                with self.assertRaises(p.InvalidMembership):
+                    p.validate_membership(
+                        p.Membership(TENANT_1, role, TAXPAYER_A if role == p.TAXPAYER else None,
+                                     True)
+                    )  # fmt: skip
+        for role in sorted(p.STAFF_ROLES):
+            p.validate_membership(p.Membership(TENANT_1, role, None, True))
+            self.assertTrue(p.may_be_assigned_refund_case(p.Membership(TENANT_1, role, None, True)))
+            self.assertFalse(p.may_be_assigned_refund_case(p.Membership(TENANT_1, role)))
+        self.assertFalse(p.may_be_assigned_refund_case(None))
+        self.assertFalse(p.may_be_assigned_refund_case(p.Membership(TENANT_1, p.SERVICE)))
+
+    def test_restrictions_and_query_condition(self):
+        self.assertEqual(p.refund_restrictions(REFUND_SUPERVISOR), (frozenset(), frozenset()))
+        self.assertEqual(p.refund_restrictions(SERVICE_T1), (frozenset(), frozenset()))
+        self.assertEqual(p.refund_restrictions(TAXPAYER_A_USER), (frozenset(), frozenset()))
+        self.assertEqual(
+            p.refund_restrictions(REFUND_AUDITOR), (frozenset({TENANT_1}), frozenset({TENANT_1}))
+        )
+        self.assertEqual(p.refund_restrictions(SUPERVISOR_T1), (frozenset({TENANT_1}), frozenset()))
+        self.assertEqual(
+            p.refund_query_condition(REFUND_SUPERVISOR, "t.case_id", by="case", quote=_quote), ""
+        )
+        plain = p.refund_query_condition(SUPERVISOR_T1, "t.case_id", by="case", quote=_quote)
+        self.assertIn("t.case_id is null or t.case_id not in", plain)
+        self.assertIn("'refund_claim'", plain)
+        self.assertNotIn("Vati Case Assignment", plain)
+        mine = p.refund_query_condition(REFUND_AUDITOR, "t.case_id", by="case", quote=_quote)
+        self.assertIn("`tabVati Case Assignment`", mine)
+        self.assertIn("'ra@example.test'", mine)
+        sub = p.refund_query_condition(REFUND_AUDITOR, "t.name", by="submission", quote=_quote)
+        self.assertIn("s.`submission_type` = 'refund_claim'", sub)
+        self.assertIn("s.`case_id` is null or s.`case_id` not in", sub)
+        tricky = principal("o'hara@example.test", p.Membership(TENANT_1, p.AUDITOR, None, True))
+        self.assertIn("'o''hara@example.test'",
+                      p.refund_query_condition(tricky, "t.case_id", by="case", quote=_quote))  # fmt: skip

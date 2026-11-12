@@ -15,6 +15,7 @@ import frappe
 from vati_tax.audit import store as audit_store
 from vati_tax.evidence import rules, store
 from vati_tax.ids.canonical import MappingError
+from vati_tax.refund_access import store as refund_access
 
 
 class EvidenceRequestError(frappe.ValidationError):
@@ -45,6 +46,7 @@ def upload_evidence(
     reference_name: str | None = None,
     supersedes_evidence_id: str | None = None,
 ) -> dict[str, Any]:
+    refund_access.require_case(case_id, "evidence.register")  # TAX-142
     request = getattr(frappe.local, "request", None)
     upload = request.files.get("file") if request is not None else None
     if upload is None:
@@ -71,6 +73,7 @@ def upload_evidence(
 
 @frappe.whitelist(methods=["GET"])
 def get_evidence(evidence_id: str) -> dict[str, Any]:
+    refund_access.require_record("Vati Evidence", evidence_id, "evidence.read")  # TAX-142
     tenant_id = store.permissions.request_tenant_header() or ""
     try:
         view = store.get_evidence(tenant_id=tenant_id, evidence_id=evidence_id)

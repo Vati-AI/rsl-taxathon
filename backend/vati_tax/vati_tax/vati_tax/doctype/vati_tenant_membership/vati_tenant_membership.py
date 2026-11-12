@@ -10,7 +10,9 @@ class VatiTenantMembership(Document):
     def validate(self):
         taxpayer_id = (self.get("taxpayer_id") or "").strip() or None
         self.taxpayer_id = taxpayer_id
-        membership = policy.Membership(self.tenant_id, self.vati_role, taxpayer_id)
+        membership = policy.Membership(
+            self.tenant_id, self.vati_role, taxpayer_id, bool(self.get("refund_team"))
+        )
         try:
             policy.validate_membership(membership)
             if self.enabled:

@@ -46,6 +46,7 @@ from vati_tax.integrations import config
 from vati_tax.integrity import service as integrity_service
 from vati_tax.outbox import policy as outbox_policy
 from vati_tax.pipeline import store as pipeline_store
+from vati_tax.refund_access import store as refund_access
 
 CASE = "Vati Case Identity"
 SYNC = "Vati Case Sync"
@@ -287,7 +288,10 @@ def _case_key(item: Mapping[str, Any]) -> tuple[str, ...]:
 
 def list_cases(call: Call) -> Result:
     scope = _authorise(call, policy.CASE_READ)
-    cases = project_cases(scope.tenant_id, _case_rows(scope.tenant_id))
+    rows = _case_rows(scope.tenant_id)
+    # TAX-142: refund cases outside the caller's refund access are not listed.
+    visible = refund_access.visible_cases(scope, [r.case_id for r in rows])
+    cases = project_cases(scope.tenant_id, [r for r in rows if r.case_id in visible])
     assigned = call.query.get("assigned_to")
     if assigned == "me":
         me = officer_id(scope.user)
@@ -616,7 +620,19 @@ def get_workspace_session(call: Call) -> Result:
     return Result({"data": body})
 
 
-HANDLERS: dict[str, Handler] = {
+def _refund_guarded(operation_id: str, handler: Handler) -> Handler:
+    """TAX-142: every operation on one case first passes the refund-confidentiality gate."""
+
+    def guarded(call: Call) -> Result:
+        refund_access.require_case(
+            call.params.get("case_id"), f"api_v1.{operation_id}", call.tenant_id
+        )
+        return handler(call)
+
+    return guarded
+
+
+_HANDLERS: dict[str, Handler] = {
     "getWorkspaceSession": get_workspace_session,
     "listCases": list_cases,
     "getCase": get_case,
@@ -633,3 +649,4 @@ HANDLERS: dict[str, Handler] = {
     "getManagementSummary": get_management_summary,
     "getIntegrityReview": get_integrity_review,
 }
+HANDLERS: dict[str, Handler] = {op: _refund_guarded(op, fn) for op, fn in _HANDLERS.items()}
