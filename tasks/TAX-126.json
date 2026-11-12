@@ -5,7 +5,7 @@
   "owner": "Keletso",
   "area": "apps/taxpayer-web",
   "phase": "pilot",
-  "status": "IN_PROGRESS",
+  "status": "IN_REVIEW",
   "priority": "P1",
   "depends_on": [
     "TAX-125",
@@ -15,7 +15,7 @@
   ],
   "claimed_by": "claude-code-20261112-friendly-newton",
   "branch": "claude/friendly-newton-iwhm4u",
-  "pr": null,
+  "pr": "https://github.com/Vati-AI/rsl-taxathon/pull/311",
   "scope": "Move the TAX-044/048 checks and TAX-078 reminders onto the evidence-response page so wrong periods, unreadable files and amounts that do not match the requested item are flagged before sending",
   "inputs": [
     "PROJECT.md",
@@ -74,6 +74,10 @@
     {
       "at": "2026-11-12",
       "text": "Claimed by claude-code-20261112-friendly-newton on the session's designated branch claude/friendly-newton-iwhm4u."
+    },
+    {
+      "at": "2026-11-12",
+      "text": "IN_REVIEW in https://github.com/Vati-AI/rsl-taxathon/pull/311. Bench tests for review_evidence_response are written but not run (no Frappe site in this session)."
     }
   ],
   "sequence": 28
