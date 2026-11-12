@@ -5,7 +5,7 @@
   "owner": "Gupta",
   "area": "backend",
   "phase": "pilot",
-  "status": "BACKLOG",
+  "status": "IN_PROGRESS",
   "priority": "P1",
   "depends_on": [
     "TAX-112",
@@ -13,8 +13,8 @@
     "TAX-046",
     "TAX-125"
   ],
-  "claimed_by": null,
-  "branch": null,
+  "claimed_by": "claude-opus-5-5-gupta",
+  "branch": "task/TAX-127",
   "pr": null,
   "scope": "Propose itemised evidence requests from Lekuka/ASYCUDA mismatches and assurance findings so the taxpayer sees what RSL already holds and answers only the unmatched lines (confirm, dispute or attach proof)",
   "inputs": [
@@ -57,6 +57,10 @@
     {
       "at": "2026-11-11T12:27:49.740246+00:00",
       "text": "2026-11-11 (ADR-045): owner changed from Keletso to Gupta; RSL integration lane. No task in this lane depends on an open task in the other lane."
+    },
+    {
+      "at": "2026-11-12T06:31:25.696620+00:00",
+      "text": "Claimed by claude-opus-5-5-gupta"
     }
   ],
   "sequence": 29
