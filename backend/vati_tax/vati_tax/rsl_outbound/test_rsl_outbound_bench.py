@@ -251,7 +251,7 @@ class RslOutboundBenchTests(IntegrationTestCase):
         self.as_user("auditor")
         view = decisions.authorise_evidence_request(
             tenant_id=self.tenant, case_id=case_id, idempotency_key=idem(),
-            body={"expected_version": self.version(case_id), "finding_ids": [],
+            body={"expected_version": self.version(case_id), "finding_ids": [str(uuid.uuid4())],
                   "items": [{"document_type": "invoice", "description": "Supplier invoices."}],
                   "due_date": frappe.utils.add_days(frappe.utils.nowdate(), 14),
                   "message_to_taxpayer": "Please upload the supplier invoices."},
