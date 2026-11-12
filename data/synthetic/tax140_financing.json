@@ -1,0 +1,342 @@
+{
+ "synthetic": true,
+ "case_id": "SYN-FIN",
+ "notice": "Synthetic TAX-140 fixture: invented taxpayers, loans and figures in LSL; not real taxpayers, financial statements or Lesotho law. The thin-capitalisation ratio is the reported 3:1, unverified.",
+ "records": [
+  {
+   "case_id": "FIN-001",
+   "synthetic": true,
+   "taxpayer_id": "510000081",
+   "period": "2025",
+   "scenario": "Operating profits turned into losses by interest on a related-party loan; debt five times equity; losses carried forward",
+   "currency": "LSL",
+   "return": {
+    "id": "RET-FIN-001",
+    "output_vat": "0.00",
+    "input_vat_claimed": "0.00",
+    "refund_claim": "0.00"
+   },
+   "contracts": [
+    {
+     "id": "LOAN-FIN-001",
+     "counterparty_id": "SYN-GROUP-081",
+     "description": "Group loan",
+     "related_party": true,
+     "kind": "loan",
+     "principal": "2500000.00",
+     "annual_interest_rate": "0.12"
+    }
+   ],
+   "invoices": [],
+   "payments": [],
+   "documents": [
+    {
+     "id": "AFS-FIN-001-2023",
+     "kind": "financial_statement"
+    },
+    {
+     "id": "AFS-FIN-001-2024",
+     "kind": "financial_statement"
+    },
+    {
+     "id": "AFS-FIN-001-2025",
+     "kind": "financial_statement"
+    },
+    {
+     "id": "LCF-FIN-001-2023",
+     "kind": "loss_schedule"
+    },
+    {
+     "id": "LCF-FIN-001-2024",
+     "kind": "loss_schedule"
+    },
+    {
+     "id": "LCF-FIN-001-2025",
+     "kind": "loss_schedule"
+    }
+   ],
+   "financial_periods": [
+    {
+     "period": "2023",
+     "operating_result": "180000.00",
+     "related_party_interest": "300000.00",
+     "other_finance_cost": "20000.00",
+     "related_party_debt": "2500000.00",
+     "equity": "500000.00",
+     "evidence_ids": [
+      "AFS-FIN-001-2023"
+     ]
+    },
+    {
+     "period": "2024",
+     "operating_result": "210000.00",
+     "related_party_interest": "300000.00",
+     "other_finance_cost": "15000.00",
+     "related_party_debt": "2500000.00",
+     "equity": "500000.00",
+     "evidence_ids": [
+      "AFS-FIN-001-2024"
+     ]
+    },
+    {
+     "period": "2025",
+     "operating_result": "195000.00",
+     "related_party_interest": "300000.00",
+     "other_finance_cost": "10000.00",
+     "related_party_debt": "2500000.00",
+     "equity": "500000.00",
+     "evidence_ids": [
+      "AFS-FIN-001-2025"
+     ]
+    }
+   ],
+   "loss_carry_forward": [
+    {
+     "period": "2023",
+     "closing_balance": "140000.00",
+     "evidence_ids": [
+      "LCF-FIN-001-2023"
+     ]
+    },
+    {
+     "period": "2024",
+     "closing_balance": "245000.00",
+     "evidence_ids": [
+      "LCF-FIN-001-2024"
+     ]
+    },
+    {
+     "period": "2025",
+     "closing_balance": "360000.00",
+     "evidence_ids": [
+      "LCF-FIN-001-2025"
+     ]
+    }
+   ],
+   "expected_findings": [
+    "financing_driven_losses",
+    "related_party_debt_above_reported_ratio"
+   ],
+   "expected_non_findings": [
+    "related_party_interest_differs_from_loan_terms"
+   ]
+  },
+  {
+   "case_id": "FIN-002",
+   "synthetic": true,
+   "taxpayer_id": "510000082",
+   "period": "2025",
+   "scenario": "Trading losses with a small related-party loan; financing is not what makes the losses",
+   "currency": "LSL",
+   "return": {
+    "id": "RET-FIN-002",
+    "output_vat": "0.00",
+    "input_vat_claimed": "0.00",
+    "refund_claim": "0.00"
+   },
+   "contracts": [
+    {
+     "id": "LOAN-FIN-002",
+     "counterparty_id": "SYN-GROUP-082",
+     "description": "Group loan",
+     "related_party": true,
+     "kind": "loan",
+     "principal": "200000.00",
+     "annual_interest_rate": "0.12"
+    }
+   ],
+   "invoices": [],
+   "payments": [],
+   "documents": [
+    {
+     "id": "AFS-FIN-002-2023",
+     "kind": "financial_statement"
+    },
+    {
+     "id": "AFS-FIN-002-2024",
+     "kind": "financial_statement"
+    },
+    {
+     "id": "AFS-FIN-002-2025",
+     "kind": "financial_statement"
+    },
+    {
+     "id": "LCF-FIN-002-2023",
+     "kind": "loss_schedule"
+    },
+    {
+     "id": "LCF-FIN-002-2024",
+     "kind": "loss_schedule"
+    },
+    {
+     "id": "LCF-FIN-002-2025",
+     "kind": "loss_schedule"
+    }
+   ],
+   "financial_periods": [
+    {
+     "period": "2023",
+     "operating_result": "-250000.00",
+     "related_party_interest": "24000.00",
+     "other_finance_cost": "30000.00",
+     "related_party_debt": "200000.00",
+     "equity": "900000.00",
+     "evidence_ids": [
+      "AFS-FIN-002-2023"
+     ]
+    },
+    {
+     "period": "2024",
+     "operating_result": "-310000.00",
+     "related_party_interest": "24000.00",
+     "other_finance_cost": "30000.00",
+     "related_party_debt": "200000.00",
+     "equity": "900000.00",
+     "evidence_ids": [
+      "AFS-FIN-002-2024"
+     ]
+    },
+    {
+     "period": "2025",
+     "operating_result": "-280000.00",
+     "related_party_interest": "24000.00",
+     "other_finance_cost": "30000.00",
+     "related_party_debt": "200000.00",
+     "equity": "900000.00",
+     "evidence_ids": [
+      "AFS-FIN-002-2025"
+     ]
+    }
+   ],
+   "loss_carry_forward": [
+    {
+     "period": "2023",
+     "closing_balance": "304000.00",
+     "evidence_ids": [
+      "LCF-FIN-002-2023"
+     ]
+    },
+    {
+     "period": "2024",
+     "closing_balance": "668000.00",
+     "evidence_ids": [
+      "LCF-FIN-002-2024"
+     ]
+    },
+    {
+     "period": "2025",
+     "closing_balance": "1002000.00",
+     "evidence_ids": [
+      "LCF-FIN-002-2025"
+     ]
+    }
+   ],
+   "expected_findings": [],
+   "expected_non_findings": [
+    "financing_driven_losses",
+    "related_party_debt_above_reported_ratio"
+   ]
+  },
+  {
+   "case_id": "FIN-003",
+   "synthetic": true,
+   "taxpayer_id": "510000083",
+   "period": "2025",
+   "scenario": "Financing-driven losses from a loan documented as funding a new plant; interest charged above the loan terms",
+   "currency": "LSL",
+   "return": {
+    "id": "RET-FIN-003",
+    "output_vat": "0.00",
+    "input_vat_claimed": "0.00",
+    "refund_claim": "0.00"
+   },
+   "contracts": [
+    {
+     "id": "LOAN-FIN-003",
+     "counterparty_id": "SYN-GROUP-083",
+     "description": "Group loan for the new bottling plant",
+     "related_party": true,
+     "kind": "loan",
+     "principal": "2000000.00",
+     "annual_interest_rate": "0.10",
+     "purpose": "capital_investment",
+     "purpose_evidence_ids": [
+      "BRD-FIN-003-2023"
+     ]
+    }
+   ],
+   "invoices": [],
+   "payments": [],
+   "documents": [
+    {
+     "id": "AFS-FIN-003-2024",
+     "kind": "financial_statement"
+    },
+    {
+     "id": "AFS-FIN-003-2025",
+     "kind": "financial_statement"
+    },
+    {
+     "id": "LCF-FIN-003-2024",
+     "kind": "loss_schedule"
+    },
+    {
+     "id": "LCF-FIN-003-2025",
+     "kind": "loss_schedule"
+    },
+    {
+     "id": "BRD-FIN-003-2023",
+     "kind": "board_minutes"
+    }
+   ],
+   "financial_periods": [
+    {
+     "period": "2024",
+     "operating_result": "120000.00",
+     "related_party_interest": "260000.00",
+     "other_finance_cost": "0.00",
+     "related_party_debt": "2000000.00",
+     "equity": "800000.00",
+     "evidence_ids": [
+      "AFS-FIN-003-2024"
+     ]
+    },
+    {
+     "period": "2025",
+     "operating_result": "150000.00",
+     "related_party_interest": "260000.00",
+     "other_finance_cost": "0.00",
+     "related_party_debt": "2000000.00",
+     "equity": "800000.00",
+     "evidence_ids": [
+      "AFS-FIN-003-2025"
+     ]
+    }
+   ],
+   "loss_carry_forward": [
+    {
+     "period": "2024",
+     "closing_balance": "140000.00",
+     "evidence_ids": [
+      "LCF-FIN-003-2024"
+     ]
+    },
+    {
+     "period": "2025",
+     "closing_balance": "250000.00",
+     "evidence_ids": [
+      "LCF-FIN-003-2025"
+     ]
+    }
+   ],
+   "expected_findings": [
+    "related_party_interest_differs_from_loan_terms",
+    "loan_funded_capital_investment"
+   ],
+   "expected_non_findings": [
+    "financing_driven_losses",
+    "related_party_debt_above_reported_ratio"
+   ]
+  }
+ ]
+}

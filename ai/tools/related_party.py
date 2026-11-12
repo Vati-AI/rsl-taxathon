@@ -11,6 +11,10 @@ conclusion. Unsupported services are evidence gaps with neutral questions;
 pricing, intent and treatment are not assessed (``legal_conclusion`` is always
 ``None``).
 
+TAX-140 adds the financing review (``ai/tools/financing_losses.py``): with
+``financial_periods`` supplied it separates financing-driven from operating losses and
+tests the ordinary explanations; related-party loans are reviewed there, not as services.
+
 Optional record fields read here (absent fields are gaps, never failures):
 ``contract.relationship`` ``{"type", "evidence_ids"}``,
 ``contract.service_category``, ``contract|invoice.delivery_evidence_ids``,
@@ -23,6 +27,7 @@ import re
 from collections.abc import Mapping
 from decimal import Decimal
 
+from ai.tools.financing_losses import review_financing_losses
 from ai.tools.refund_reconciliation import (
     DEFAULT_CURRENCY,
     RefundDataError,
@@ -316,8 +321,10 @@ def review_related_party(
         by_invoice.setdefault(_text(payment, "invoice_id", field="payment"), []).append(
             (payment_id, payment)
         )
-    related = [(cid, c) for cid, c in contracts.items() if c.get("related_party") is True]
-    if len(related) > MAX_RELATED_CONTRACTS:
+    related_all = [(cid, c) for cid, c in contracts.items() if c.get("related_party") is True]
+    # TAX-140: related-party loans are reviewed as financing, not as services.
+    related = [(cid, c) for cid, c in related_all if c.get("kind") != "loan"]
+    if len(related_all) > MAX_RELATED_CONTRACTS:
         raise RefundDataError("contract_budget_exceeded", "Too many related-party contracts")
     relationships = [
         _test_contract(
@@ -385,6 +392,15 @@ def review_related_party(
             "documented_explanations": len(documented),
         }
 
+    financing = review_financing_losses(
+        review,
+        record,
+        return_id=return_id,
+        related_contracts=related_all,
+        documented_explanations=int(str(loss_review.get("documented_explanations", 0))),
+        currency=currency,
+    )
+
     codes = {
         str(entry["code"]) for entry in [*review.observations, *review.gaps, *review.discrepancies]
     }
@@ -398,6 +414,7 @@ def review_related_party(
         "review_version": REVIEW_VERSION,
         "relationships": relationships,
         "loss_review": loss_review,
+        "financing_review": financing,
         "observations": review.observations,
         "counter_evidence": review.counter_evidence,
         "evidence_gaps": review.gaps,

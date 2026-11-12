@@ -5,16 +5,16 @@
   "owner": "Keletso",
   "area": "ai",
   "phase": "pilot",
-  "status": "BACKLOG",
+  "status": "IN_REVIEW",
   "priority": "P1",
   "depends_on": [
     "TAX-049",
     "TAX-116",
     "TAX-118"
   ],
-  "claimed_by": null,
-  "branch": null,
-  "pr": null,
+  "claimed_by": "claude-code-20261112-friendly-newton",
+  "branch": "claude/friendly-newton-iwhm4u",
+  "pr": "https://github.com/Vati-AI/rsl-taxathon/pull/309",
   "scope": "Extend the related-party playbook to losses created by intra-group interest and financing, with the thin-capitalisation candidate route (unverified) and a loss carry-forward pattern",
   "inputs": [
     "PROJECT.md",
@@ -29,15 +29,15 @@
   "acceptance": [
     {
       "text": "Findings separate financing-driven losses from operating losses and test alternative explanations",
-      "done": false
+      "done": true
     },
     {
       "text": "Routes stay unverified candidates or policy gaps",
-      "done": false
+      "done": true
     },
     {
       "text": "Record relevant tests and evidence, update task status and open a PR",
-      "done": false
+      "done": true
     }
   ],
   "verification": "Playbook tests on synthetic cases",
@@ -47,7 +47,20 @@
     "update-project-task",
     "finish-task"
   ],
-  "evidence": [],
+  "evidence": [
+    {
+      "criterion": 1,
+      "text": "ai/tools/financing_losses.py (wired into review_related_party) classifies each loss period as financing-driven, mixed or operating from per-period operating result, related-party interest and other finance cost, and tests and records four alternative explanations (interest vs documented loan terms, third-party finance share, loan documented as funding capital investment, documented loss explanations). financing_driven_losses is raised only when unexplained; related_party_debt_above_reported_ratio above the reported 3:1 ratio with a scope note; a growing loss carry-forward is recorded with the related-party interest it contains. Synthetic scenarios FIN-001..003 (data/synthetic/tax140_financing.json, docs/evidence/TAX-140/scenario_results.json): financing-driven and unexplained, operating losses not attributed to financing, financing-driven but explained by capital investment with an interest discrepancy. tests/ai/test_financing_losses.py 12 OK with LangGraph."
+    },
+    {
+      "criterion": 2,
+      "text": "financing_driven_losses routes to unverified candidates CAND-RP-ALLOCATION and CAND-DEDUCTION-TEST; related_party_debt_above_reported_ratio to unverified CAND-THIN-CAP; the interest-free loan signal stays the GAP-ARMS-LENGTH policy gap; no route is eligible for assessment (playbook tests). legal_conclusion is always null."
+    },
+    {
+      "criterion": 3,
+      "text": "Recorded here with tests (test_financing_losses 12, related-party tests 21, dev.py check, ruff/format/mypy, agent_eval --check gate PASS with LangGraph after the ADR-017 registry re-pin SYN-PBR-2026.11.4), evidence in docs/evidence/TAX-140, status IN_REVIEW with the PR link."
+    }
+  ],
   "notes": [
     {
       "at": "2026-11-07",
@@ -56,6 +69,18 @@
     {
       "at": "2026-11-11T12:27:49.740246+00:00",
       "text": "2026-11-11 (ADR-045): Keletso keeps this task in the AI and new UI lane. No task in this lane depends on an open task in the other lane."
+    },
+    {
+      "at": "2026-11-12",
+      "text": "Claimed by claude-code-20261112-friendly-newton on the session's designated branch claude/friendly-newton-iwhm4u."
+    },
+    {
+      "at": "2026-11-12",
+      "text": "Changing rule_register.candidates.json changes the TAX-118/TAX-139 frozen rule fingerprints (informational in assurance_live; sealed results not re-run). The playbook registry re-pin follows the TAX-097/TAX-110 precedent: this PR's review is the approval gate (ADR-017)."
+    },
+    {
+      "at": "2026-11-12",
+      "text": "IN_REVIEW in https://github.com/Vati-AI/rsl-taxathon/pull/309."
     }
   ],
   "sequence": 25

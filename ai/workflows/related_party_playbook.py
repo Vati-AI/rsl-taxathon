@@ -18,6 +18,7 @@ from ai.workflows.fake_graph import InvestigationTool
 from ai.workflows.interpretation import ModelFactory, interpret_related_party
 from ai.workflows.record_playbook import build_review_graph, make_record_tool
 from ai.workflows.refund_lanes import RefundRecordSource
+from ai.workflows.rule_register import load_rule_register
 from ai.workflows.state import InvestigationState
 
 TOOL_NAME = "related_party_review_tool"
@@ -65,8 +66,22 @@ def propose_officer_review(review: dict[str, object]) -> dict[str, object] | Non
     code = (
         "related_party_transaction"
         if "related_party_transaction" in codes
+        else "financing_driven_losses"
+        if "financing_driven_losses" in codes
         else "consecutive_loss_periods"
     )
+    # TAX-140: financing-driven losses and thin capitalisation, each with its TAX-116
+    # route (unverified candidates or a policy gap; never eligible for assessment).
+    financing = review.get("financing_review")
+    financing_block = None
+    if isinstance(financing, dict) and financing.get("findings"):
+        register = load_rule_register()
+        financing_block = {
+            "findings": list(financing["findings"]),
+            "loss_periods": financing["loss_periods"],
+            "alternative_explanations_tested": financing["alternative_explanations_tested"],
+            "routes": {c: register.route_for(c) for c in financing["findings"]},
+        }
     return {
         "kind": "related_party_review_proposal",
         "code": code,
@@ -84,8 +99,12 @@ def propose_officer_review(review: dict[str, object]) -> dict[str, object] | Non
         "discrepancies": discrepancies,
         "evidence_questions": questions,
         "alternative_explanations": [
-            item for item in counter if item.get("code") == "documented_alternative_explanation"
+            item
+            for item in counter
+            if item.get("code")
+            in ("documented_alternative_explanation", "loan_funded_capital_investment")
         ],
+        "financing": financing_block,
         "legal_conclusion": None,
         "enforcement_conclusion": None,
         "playbook_version": PLAYBOOK_VERSION,

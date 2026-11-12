@@ -8,7 +8,7 @@
       "topic": "Related-party allocation of existing income, deductions and credits",
       "instrument": "Income Tax Act 1993, section 113, as limited by the AfriSam judgment",
       "test": "Allocation of existing gross income, deductions or credits between associates; not imputation of notional amounts under an arm's-length standard",
-      "finding_codes": ["related_party_fees_with_persistent_losses"],
+      "finding_codes": ["related_party_fees_with_persistent_losses", "financing_driven_losses"],
       "verification_status": "unverified"
     },
     {
@@ -16,7 +16,7 @@
       "topic": "Deductibility of related-party charges",
       "instrument": "Income Tax Act 1993 deduction provisions",
       "test": "Was the expense incurred in producing income, and was the service delivered and of benefit to the Lesotho entity",
-      "finding_codes": ["related_party_fees_with_persistent_losses"],
+      "finding_codes": ["related_party_fees_with_persistent_losses", "financing_driven_losses"],
       "verification_status": "unverified"
     },
     {
