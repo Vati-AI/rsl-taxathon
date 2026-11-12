@@ -5,7 +5,7 @@
   "owner": "Gupta",
   "area": "backend",
   "phase": "pilot",
-  "status": "BACKLOG",
+  "status": "IN_PROGRESS",
   "priority": "P1",
   "depends_on": [
     "TAX-044",
@@ -13,8 +13,8 @@
     "TAX-111",
     "TAX-125"
   ],
-  "claimed_by": null,
-  "branch": null,
+  "claimed_by": "claude-opus-5-5-gupta",
+  "branch": "task/TAX-129",
   "pr": null,
   "scope": "Keep preventative compliance without a Vati claim front door: a service, callable from the portal and by RSL's front door through WSO2, reads Lekuka and e-Tax data for a period, shows reconciliation issues and sends the taxpayer to the Online Refunds Application to file",
   "inputs": [
@@ -57,6 +57,10 @@
     {
       "at": "2026-11-11T12:27:49.740246+00:00",
       "text": "2026-11-11 (ADR-045): owner changed from Keletso to Gupta; RSL integration lane. No task in this lane depends on an open task in the other lane."
+    },
+    {
+      "at": "2026-11-12T06:58:05.826393+00:00",
+      "text": "Claimed by claude-opus-5-5-gupta"
     }
   ],
   "sequence": 30
