@@ -5,7 +5,7 @@
   "owner": "Gupta",
   "area": "backend",
   "phase": "pilot",
-  "status": "IN_PROGRESS",
+  "status": "IN_REVIEW",
   "priority": "P1",
   "depends_on": [
     "TAX-112",
@@ -15,7 +15,7 @@
   ],
   "claimed_by": "claude-opus-5-5-gupta",
   "branch": "task/TAX-127",
-  "pr": null,
+  "pr": "https://github.com/Vati-AI/rsl-taxathon/pull/304",
   "scope": "Propose itemised evidence requests from Lekuka/ASYCUDA mismatches and assurance findings so the taxpayer sees what RSL already holds and answers only the unmatched lines (confirm, dispute or attach proof)",
   "inputs": [
     "PROJECT.md",
@@ -74,6 +74,10 @@
     {
       "at": "2026-11-12T06:31:25.696620+00:00",
       "text": "Claimed by claude-opus-5-5-gupta"
+    },
+    {
+      "at": "2026-11-12T06:45:47.810593+00:00",
+      "text": "PR opened with local verification (ADR-038)"
     }
   ],
   "sequence": 29
