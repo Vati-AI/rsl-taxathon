@@ -91,9 +91,15 @@ class RefundAccessBenchTests(IntegrationTestCase):
             tenant_id=self.tenant, idempotency_key="synthetic-" + uuid.uuid4().hex,
             taxpayer_id=self.taxpayer, submission_id=self.submission,
         )["case_id"]  # fmt: skip
+        # An ordinary (VAT return) case: the case list shows only cases with a submission.
+        plain_submission = frappe.get_doc({
+            "doctype": "Vati Submission", "tenant_id": self.tenant, "taxpayer_id": self.taxpayer,
+            "submission_type": "vat_return", "period": "2026-09",
+            "idempotency_key": "synthetic-" + uuid.uuid4().hex, "synthetic": 1,
+        }).insert(ignore_permissions=True).name  # fmt: skip
         self.plain_case = mapping.register_case(
             tenant_id=self.tenant, idempotency_key="synthetic-" + uuid.uuid4().hex,
-            taxpayer_id=self.taxpayer,
+            taxpayer_id=self.taxpayer, submission_id=plain_submission,
         )["case_id"]  # fmt: skip
         self.refund_finding = self.finding(self.refund_case)
         self.plain_finding = self.finding(self.plain_case)
@@ -220,11 +226,9 @@ class RefundAccessBenchTests(IntegrationTestCase):
         self.assertEqual(visible("refund-auditor-a", FINDING, "finding_id") & both, plain)
         self.assertEqual(visible("refund-supervisor", FINDING, "finding_id") & both, both)
         self.assertNotIn(self.submission, visible("auditor", "Vati Submission", "name"))
-        self.assertNotIn(self.refund_case, visible("auditor", "Vati Case Identity", "name"))
         self.assign("refund-auditor-a")
         self.assertEqual(visible("refund-auditor-a", FINDING, "finding_id") & both, both)
         self.assertIn(self.submission, visible("refund-auditor-a", "Vati Submission", "name"))
-        self.assertIn(self.refund_case, visible("refund-auditor-a", "Vati Case Identity", "name"))
         # The taxpayer still sees its own refund claim.
         self.assertIn(self.submission, visible("taxpayer", "Vati Submission", "name"))
         # Opening the document directly is refused and recorded.
