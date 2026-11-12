@@ -14,7 +14,7 @@
   ],
   "claimed_by": "claude-code-20261112-friendly-newton",
   "branch": "claude/friendly-newton-iwhm4u",
-  "pr": null,
+  "pr": "https://github.com/Vati-AI/rsl-taxathon/pull/295",
   "scope": "Move the management dashboard and integrity review under Reports with tabs (Workload, Timeliness, Evidence, Outcomes, Ledger assurance, Integrity), compact figure tiles and tables, within the page-length budget",
   "inputs": [
     "PROJECT.md",
@@ -76,6 +76,10 @@
     {
       "at": "2026-11-12",
       "text": "#294 merged while TAX-149 was in progress; the branch was restarted from main (834f843) with TAX-149 on top."
+    },
+    {
+      "at": "2026-11-12",
+      "text": "IN_REVIEW in https://github.com/Vati-AI/rsl-taxathon/pull/295."
     }
   ],
   "sequence": 19
