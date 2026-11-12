@@ -5,7 +5,7 @@
   "owner": "Gupta",
   "area": "backend",
   "phase": "pilot",
-  "status": "IN_PROGRESS",
+  "status": "IN_REVIEW",
   "priority": "P1",
   "depends_on": [
     "TAX-044",
@@ -15,7 +15,7 @@
   ],
   "claimed_by": "claude-opus-5-5-gupta",
   "branch": "task/TAX-129",
-  "pr": null,
+  "pr": "https://github.com/Vati-AI/rsl-taxathon/pull/308",
   "scope": "Keep preventative compliance without a Vati claim front door: a service, callable from the portal and by RSL's front door through WSO2, reads Lekuka and e-Tax data for a period, shows reconciliation issues and sends the taxpayer to the Online Refunds Application to file",
   "inputs": [
     "PROJECT.md",
@@ -74,6 +74,10 @@
     {
       "at": "2026-11-12T06:58:05.826393+00:00",
       "text": "Claimed by claude-opus-5-5-gupta"
+    },
+    {
+      "at": "2026-11-12T07:55:49.548242+00:00",
+      "text": "PR opened with local verification (ADR-038)"
     }
   ],
   "sequence": 30
