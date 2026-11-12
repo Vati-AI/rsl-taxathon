@@ -5,7 +5,7 @@
   "owner": "Keletso",
   "area": "backend",
   "phase": "pilot",
-  "status": "IN_PROGRESS",
+  "status": "IN_REVIEW",
   "priority": "P1",
   "depends_on": [
     "TAX-096",
@@ -15,7 +15,7 @@
   ],
   "claimed_by": "claude-code-20261112-friendly-newton",
   "branch": "claude/friendly-newton-iwhm4u",
-  "pr": null,
+  "pr": "https://github.com/Vati-AI/rsl-taxathon/pull/313",
   "scope": "Serve the TAX-096 taxpayer-assistance operations from Frappe: authenticate the taxpayer session, build the assistant's permission-scoped inputs (own submissions, documents, validation results, taxpayer-facing requests), call the assistant runtime, store assistant drafts and provenance, and require explicit taxpayer confirmation before anything changes a submission or is sent to RSL",
   "inputs": [
     "PROJECT.md",
@@ -80,6 +80,10 @@
     {
       "at": "2026-11-12",
       "text": "Claimed by claude-code-20261112-friendly-newton on the session's designated branch claude/friendly-newton-iwhm4u."
+    },
+    {
+      "at": "2026-11-12",
+      "text": "IN_REVIEW in https://github.com/Vati-AI/rsl-taxathon/pull/313. Bench tests are written but not run (no Frappe site in this session)."
     }
   ],
   "sequence": 55
