@@ -5,7 +5,7 @@
   "owner": "Keletso",
   "area": "apps/taxpayer-web",
   "phase": "pilot",
-  "status": "IN_REVIEW",
+  "status": "DONE",
   "priority": "P0",
   "depends_on": [
     "TAX-146",
@@ -84,6 +84,10 @@
     {
       "at": "2026-11-12",
       "text": "IN_REVIEW in https://github.com/Vati-AI/rsl-taxathon/pull/307."
+    },
+    {
+      "at": "2026-11-12",
+      "text": "PR https://github.com/Vati-AI/rsl-taxathon/pull/307 merged into main on 2026-11-12 (3c8b6c2); status DONE."
     }
   ],
   "sequence": 20

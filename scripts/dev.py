@@ -185,6 +185,8 @@ def check():
         ["python3", "-m", "unittest", "discover", "-s", "tests/ai", "-p", "test_human*.py"],
         # TAX-049 related-party checks; playbook graph tests skip without LangGraph.
         ["python3", "-m", "unittest", "discover", "-s", "tests/ai", "-p", "test_related*.py"],
+        # TAX-140 losses from intra-group financing (deterministic; playbook tests need LangGraph).
+        ["python3", "-m", "unittest", "discover", "-s", "tests/ai", "-p", "test_financing*.py"],
         # TAX-051 work-arrangement checks; checkpoint playbook tests skip without LangGraph.
         ["python3", "-m", "unittest", "discover", "-s", "tests/ai", "-p", "test_work*.py"],
         # TAX-061 playbook registry checks skip without LangGraph and its SQLite checkpointer.

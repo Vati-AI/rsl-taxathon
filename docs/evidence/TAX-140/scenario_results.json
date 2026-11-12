@@ -1,0 +1,587 @@
+{
+  "synthetic": true,
+  "task": "TAX-140",
+  "source": "data/synthetic/tax140_financing.json",
+  "cases": {
+    "FIN-001": {
+      "scenario": "Operating profits turned into losses by interest on a related-party loan; debt five times equity; losses carried forward",
+      "financing_review": {
+        "financing_version": "tax140-financing-losses-v1",
+        "periods": [
+          {
+            "period": "2023",
+            "classification": "financing_driven",
+            "operating_result": {
+              "amount": "180000.00",
+              "currency": "LSL"
+            },
+            "related_party_interest": {
+              "amount": "300000.00",
+              "currency": "LSL"
+            },
+            "other_finance_cost": {
+              "amount": "20000.00",
+              "currency": "LSL"
+            },
+            "net_result": {
+              "amount": "-140000.00",
+              "currency": "LSL"
+            },
+            "evidence_ids": [
+              "AFS-FIN-001-2023"
+            ],
+            "debt_to_equity": "5.00",
+            "equity_not_positive": false
+          },
+          {
+            "period": "2024",
+            "classification": "financing_driven",
+            "operating_result": {
+              "amount": "210000.00",
+              "currency": "LSL"
+            },
+            "related_party_interest": {
+              "amount": "300000.00",
+              "currency": "LSL"
+            },
+            "other_finance_cost": {
+              "amount": "15000.00",
+              "currency": "LSL"
+            },
+            "net_result": {
+              "amount": "-105000.00",
+              "currency": "LSL"
+            },
+            "evidence_ids": [
+              "AFS-FIN-001-2024"
+            ],
+            "debt_to_equity": "5.00",
+            "equity_not_positive": false
+          },
+          {
+            "period": "2025",
+            "classification": "financing_driven",
+            "operating_result": {
+              "amount": "195000.00",
+              "currency": "LSL"
+            },
+            "related_party_interest": {
+              "amount": "300000.00",
+              "currency": "LSL"
+            },
+            "other_finance_cost": {
+              "amount": "10000.00",
+              "currency": "LSL"
+            },
+            "net_result": {
+              "amount": "-115000.00",
+              "currency": "LSL"
+            },
+            "evidence_ids": [
+              "AFS-FIN-001-2025"
+            ],
+            "debt_to_equity": "5.00",
+            "equity_not_positive": false
+          }
+        ],
+        "loss_periods": {
+          "financing_driven": [
+            "2023",
+            "2024",
+            "2025"
+          ],
+          "mixed": [],
+          "operating": []
+        },
+        "alternative_explanations_tested": [
+          {
+            "test": "interest_matches_documented_loan_terms",
+            "expected_annual_interest": {
+              "amount": "300000.00",
+              "currency": "LSL"
+            },
+            "periods_differing": [],
+            "result": "consistent"
+          },
+          {
+            "test": "third_party_finance_share",
+            "third_party_share": "0.05",
+            "result": "mainly_related_party"
+          },
+          {
+            "test": "loan_funded_capital_investment",
+            "result": "not_documented"
+          },
+          {
+            "test": "documented_loss_explanation",
+            "result": "not_documented"
+          }
+        ],
+        "findings": [
+          "financing_driven_losses",
+          "related_party_debt_above_reported_ratio"
+        ],
+        "legal_conclusion": null
+      },
+      "observations": [
+        {
+          "code": "financing_driven_losses",
+          "evidence_ids": [
+            "LOAN-FIN-001",
+            "AFS-FIN-001-2023",
+            "AFS-FIN-001-2024",
+            "AFS-FIN-001-2025"
+          ],
+          "periods": [
+            "2023",
+            "2024",
+            "2025"
+          ],
+          "related_party_interest_in_loss_periods": {
+            "amount": "900000.00",
+            "currency": "LSL"
+          },
+          "explained": false,
+          "carry_forward": {
+            "pattern": "growing_carry_forward",
+            "first": {
+              "period": "2023",
+              "balance": {
+                "amount": "140000.00",
+                "currency": "LSL"
+              }
+            },
+            "last": {
+              "period": "2025",
+              "balance": {
+                "amount": "360000.00",
+                "currency": "LSL"
+              }
+            },
+            "related_party_interest_in_financing_loss_periods": {
+              "amount": "360000.00",
+              "currency": "LSL"
+            },
+            "evidence_ids": [
+              "LCF-FIN-001-2023",
+              "LCF-FIN-001-2024",
+              "LCF-FIN-001-2025"
+            ]
+          }
+        },
+        {
+          "code": "related_party_debt_above_reported_ratio",
+          "evidence_ids": [
+            "LOAN-FIN-001",
+            "AFS-FIN-001-2023",
+            "AFS-FIN-001-2024",
+            "AFS-FIN-001-2025"
+          ],
+          "periods": [
+            "2023",
+            "2024",
+            "2025"
+          ],
+          "highest_ratio": "5.00",
+          "reported_ratio": "3:1",
+          "scope_note": "The ratio's scope (including whether it is limited to mining) is unverified."
+        }
+      ],
+      "discrepancies": [],
+      "counter_evidence": [],
+      "evidence_questions": [
+        {
+          "question_id": "RET-FIN-001:financing_losses",
+          "topic": "financing_losses",
+          "evidence_ids": [
+            "LOAN-FIN-001",
+            "AFS-FIN-001-2023",
+            "AFS-FIN-001-2024",
+            "AFS-FIN-001-2025"
+          ],
+          "text": "The figures show losses in 3 periods (2023 to 2025) where interest paid to a related party is the main cost turning a result into a loss. Please explain what the related-party loans were used for and provide the loan agreements and board approvals.",
+          "requested_records": [
+            "loan agreements and amendments",
+            "board or budget papers approving the borrowing",
+            "records of how the loan funds were used"
+          ]
+        }
+      ],
+      "proposal": {
+        "code": "financing_driven_losses",
+        "financing": {
+          "findings": [
+            "financing_driven_losses",
+            "related_party_debt_above_reported_ratio"
+          ],
+          "loss_periods": {
+            "financing_driven": [
+              "2023",
+              "2024",
+              "2025"
+            ],
+            "mixed": [],
+            "operating": []
+          },
+          "alternative_explanations_tested": [
+            {
+              "test": "interest_matches_documented_loan_terms",
+              "expected_annual_interest": {
+                "amount": "300000.00",
+                "currency": "LSL"
+              },
+              "periods_differing": [],
+              "result": "consistent"
+            },
+            {
+              "test": "third_party_finance_share",
+              "third_party_share": "0.05",
+              "result": "mainly_related_party"
+            },
+            {
+              "test": "loan_funded_capital_investment",
+              "result": "not_documented"
+            },
+            {
+              "test": "documented_loss_explanation",
+              "result": "not_documented"
+            }
+          ],
+          "routes": {
+            "financing_driven_losses": {
+              "finding_code": "financing_driven_losses",
+              "route_status": "candidate_unverified",
+              "candidates": [
+                {
+                  "rule_id": "CAND-RP-ALLOCATION",
+                  "instrument": "Income Tax Act 1993, section 113, as limited by the AfriSam judgment"
+                },
+                {
+                  "rule_id": "CAND-DEDUCTION-TEST",
+                  "instrument": "Income Tax Act 1993 deduction provisions"
+                }
+              ],
+              "policy_gaps": [],
+              "eligible_for_assessment": false
+            },
+            "related_party_debt_above_reported_ratio": {
+              "finding_code": "related_party_debt_above_reported_ratio",
+              "route_status": "candidate_unverified",
+              "candidates": [
+                {
+                  "rule_id": "CAND-THIN-CAP",
+                  "instrument": "Debt-to-equity provision (reported 3:1 limit; scope, including whether it is limited to mining, to confirm)"
+                }
+              ],
+              "policy_gaps": [],
+              "eligible_for_assessment": false
+            }
+          }
+        },
+        "proposed_next_step": "targeted_evidence_request",
+        "requires_officer_approval": true,
+        "decision": null,
+        "legal_conclusion": null
+      }
+    },
+    "FIN-002": {
+      "scenario": "Trading losses with a small related-party loan; financing is not what makes the losses",
+      "financing_review": {
+        "financing_version": "tax140-financing-losses-v1",
+        "periods": [
+          {
+            "period": "2023",
+            "classification": "operating",
+            "operating_result": {
+              "amount": "-250000.00",
+              "currency": "LSL"
+            },
+            "related_party_interest": {
+              "amount": "24000.00",
+              "currency": "LSL"
+            },
+            "other_finance_cost": {
+              "amount": "30000.00",
+              "currency": "LSL"
+            },
+            "net_result": {
+              "amount": "-304000.00",
+              "currency": "LSL"
+            },
+            "evidence_ids": [
+              "AFS-FIN-002-2023"
+            ],
+            "debt_to_equity": "0.22",
+            "equity_not_positive": false
+          },
+          {
+            "period": "2024",
+            "classification": "operating",
+            "operating_result": {
+              "amount": "-310000.00",
+              "currency": "LSL"
+            },
+            "related_party_interest": {
+              "amount": "24000.00",
+              "currency": "LSL"
+            },
+            "other_finance_cost": {
+              "amount": "30000.00",
+              "currency": "LSL"
+            },
+            "net_result": {
+              "amount": "-364000.00",
+              "currency": "LSL"
+            },
+            "evidence_ids": [
+              "AFS-FIN-002-2024"
+            ],
+            "debt_to_equity": "0.22",
+            "equity_not_positive": false
+          },
+          {
+            "period": "2025",
+            "classification": "operating",
+            "operating_result": {
+              "amount": "-280000.00",
+              "currency": "LSL"
+            },
+            "related_party_interest": {
+              "amount": "24000.00",
+              "currency": "LSL"
+            },
+            "other_finance_cost": {
+              "amount": "30000.00",
+              "currency": "LSL"
+            },
+            "net_result": {
+              "amount": "-334000.00",
+              "currency": "LSL"
+            },
+            "evidence_ids": [
+              "AFS-FIN-002-2025"
+            ],
+            "debt_to_equity": "0.22",
+            "equity_not_positive": false
+          }
+        ],
+        "loss_periods": {
+          "financing_driven": [],
+          "mixed": [],
+          "operating": [
+            "2023",
+            "2024",
+            "2025"
+          ]
+        },
+        "alternative_explanations_tested": [
+          {
+            "test": "interest_matches_documented_loan_terms",
+            "expected_annual_interest": {
+              "amount": "24000.00",
+              "currency": "LSL"
+            },
+            "periods_differing": [],
+            "result": "consistent"
+          },
+          {
+            "test": "third_party_finance_share",
+            "third_party_share": "0.56",
+            "result": "mainly_third_party"
+          },
+          {
+            "test": "loan_funded_capital_investment",
+            "result": "not_documented"
+          },
+          {
+            "test": "documented_loss_explanation",
+            "result": "not_documented"
+          }
+        ],
+        "findings": [],
+        "legal_conclusion": null
+      },
+      "observations": [],
+      "discrepancies": [],
+      "counter_evidence": [],
+      "evidence_questions": [],
+      "proposal": null
+    },
+    "FIN-003": {
+      "scenario": "Financing-driven losses from a loan documented as funding a new plant; interest charged above the loan terms",
+      "financing_review": {
+        "financing_version": "tax140-financing-losses-v1",
+        "periods": [
+          {
+            "period": "2024",
+            "classification": "financing_driven",
+            "operating_result": {
+              "amount": "120000.00",
+              "currency": "LSL"
+            },
+            "related_party_interest": {
+              "amount": "260000.00",
+              "currency": "LSL"
+            },
+            "other_finance_cost": {
+              "amount": "0.00",
+              "currency": "LSL"
+            },
+            "net_result": {
+              "amount": "-140000.00",
+              "currency": "LSL"
+            },
+            "evidence_ids": [
+              "AFS-FIN-003-2024"
+            ],
+            "debt_to_equity": "2.50",
+            "equity_not_positive": false
+          },
+          {
+            "period": "2025",
+            "classification": "financing_driven",
+            "operating_result": {
+              "amount": "150000.00",
+              "currency": "LSL"
+            },
+            "related_party_interest": {
+              "amount": "260000.00",
+              "currency": "LSL"
+            },
+            "other_finance_cost": {
+              "amount": "0.00",
+              "currency": "LSL"
+            },
+            "net_result": {
+              "amount": "-110000.00",
+              "currency": "LSL"
+            },
+            "evidence_ids": [
+              "AFS-FIN-003-2025"
+            ],
+            "debt_to_equity": "2.50",
+            "equity_not_positive": false
+          }
+        ],
+        "loss_periods": {
+          "financing_driven": [
+            "2024",
+            "2025"
+          ],
+          "mixed": [],
+          "operating": []
+        },
+        "alternative_explanations_tested": [
+          {
+            "test": "interest_matches_documented_loan_terms",
+            "expected_annual_interest": {
+              "amount": "200000.00",
+              "currency": "LSL"
+            },
+            "periods_differing": [
+              "2024",
+              "2025"
+            ],
+            "result": "differs"
+          },
+          {
+            "test": "third_party_finance_share",
+            "third_party_share": "0.00",
+            "result": "mainly_related_party"
+          },
+          {
+            "test": "loan_funded_capital_investment",
+            "result": "documented"
+          },
+          {
+            "test": "documented_loss_explanation",
+            "result": "not_documented"
+          }
+        ],
+        "findings": [],
+        "legal_conclusion": null
+      },
+      "observations": [
+        {
+          "code": "financing_driven_losses",
+          "evidence_ids": [
+            "LOAN-FIN-003",
+            "AFS-FIN-003-2024",
+            "AFS-FIN-003-2025"
+          ],
+          "periods": [
+            "2024",
+            "2025"
+          ],
+          "related_party_interest_in_loss_periods": {
+            "amount": "520000.00",
+            "currency": "LSL"
+          },
+          "explained": true,
+          "carry_forward": {
+            "pattern": "growing_carry_forward",
+            "first": {
+              "period": "2024",
+              "balance": {
+                "amount": "140000.00",
+                "currency": "LSL"
+              }
+            },
+            "last": {
+              "period": "2025",
+              "balance": {
+                "amount": "250000.00",
+                "currency": "LSL"
+              }
+            },
+            "related_party_interest_in_financing_loss_periods": {
+              "amount": "250000.00",
+              "currency": "LSL"
+            },
+            "evidence_ids": [
+              "LCF-FIN-003-2024",
+              "LCF-FIN-003-2025"
+            ]
+          }
+        }
+      ],
+      "discrepancies": [
+        {
+          "code": "related_party_interest_differs_from_loan_terms",
+          "evidence_ids": [
+            "LOAN-FIN-003",
+            "AFS-FIN-003-2024",
+            "AFS-FIN-003-2025"
+          ],
+          "periods": [
+            "2024",
+            "2025"
+          ],
+          "expected_annual_interest": {
+            "amount": "200000.00",
+            "currency": "LSL"
+          }
+        }
+      ],
+      "counter_evidence": [
+        {
+          "code": "loan_funded_capital_investment",
+          "evidence_ids": [
+            "LOAN-FIN-003",
+            "BRD-FIN-003-2023"
+          ],
+          "loan": "LOAN-FIN-003"
+        }
+      ],
+      "evidence_questions": [],
+      "proposal": {
+        "code": "financing_driven_losses",
+        "financing": null,
+        "proposed_next_step": "officer_review",
+        "requires_officer_approval": true,
+        "decision": null,
+        "legal_conclusion": null
+      }
+    }
+  }
+}
