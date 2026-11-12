@@ -5,7 +5,7 @@
   "owner": "Gupta",
   "area": "backend",
   "phase": "pilot",
-  "status": "BACKLOG",
+  "status": "IN_REVIEW",
   "priority": "P1",
   "depends_on": [
     "TAX-044",
@@ -13,9 +13,9 @@
     "TAX-111",
     "TAX-125"
   ],
-  "claimed_by": null,
-  "branch": null,
-  "pr": null,
+  "claimed_by": "claude-opus-5-5-gupta",
+  "branch": "task/TAX-129",
+  "pr": "https://github.com/Vati-AI/rsl-taxathon/pull/308",
   "scope": "Keep preventative compliance without a Vati claim front door: a service, callable from the portal and by RSL's front door through WSO2, reads Lekuka and e-Tax data for a period, shows reconciliation issues and sends the taxpayer to the Online Refunds Application to file",
   "inputs": [
     "PROJECT.md",
@@ -30,15 +30,15 @@
   "acceptance": [
     {
       "text": "The check reads RSL-held data instead of asking the taxpayer to type it, and returns guidance only; it never files, blocks or scores",
-      "done": false
+      "done": true
     },
     {
       "text": "A portal page shows the result and links to RSL's Online Refunds Application to file",
-      "done": false
+      "done": true
     },
     {
       "text": "Record relevant tests and evidence, update task status and open a PR",
-      "done": false
+      "done": true
     }
   ],
   "verification": "Service and browser tests on synthetic taxpayers",
@@ -48,7 +48,20 @@
     "update-project-task",
     "finish-task"
   ],
-  "evidence": [],
+  "evidence": [
+    {
+      "criterion": 1,
+      "text": "vati_tax.prefiling (ADR-051) reads the taxpayer's e-Tax VAT return, Lekuka purchase invoices and ASYCUDA entries for a period through the site's RSL source; the taxpayer only picks the period. Guidance only from fixed wording (return arithmetic via the TAX-048 adapter, input VAT above RSL records, undeclared suppliers, not-checked sources); no lane, score, pass/fail or block; nothing stored. Callers: portal.api.check_before_filing (own taxpayer) and prefiling.api.check_before_filing (RSL front door via WSO2, service identity only). prefiling/test_rules.py 6 OK incl. every period of the TAX-118 synthetic taxpayers; bench test_prefiling_bench 5/5 OK (nothing stored, own records only, unavailable source incomplete, service-only front door)."
+    },
+    {
+      "criterion": 2,
+      "text": "Portal page /taxpayer/check (Check before you file, in the sidebar): period picker, figures RSL holds, guidance and a link to RSL's Online Refunds Application; no file/submit action. tests/frontend/prefiling.spec.ts at 1440/1024/390 px (Edge): 14 passed, 1 skipped (sidebar test at phone width): figures, guidance, RSL link href, only the period sent, no decision words, error states, keyboard, axe and reflow. Screenshots in docs/evidence/TAX-129. Taxpayer and layout specs pass (two layout tests timed out only under parallel load and passed alone)."
+    },
+    {
+      "criterion": 3,
+      "text": "Fresh disposable site (frappe_dev.py verify): install and two migrations ok; app tests 608 OK; bench 246 tests with 2 failures: reminders/test_reminders_bench (pre-existing on main) and one truncated in the log; a full rerun on the kept site with the same code showed reminders plus bridge test_poller_mirrors_a_change_and_skips_unchanged_cases, which fails identically on main's code on that site (the poller takes the 50 oldest Jube-linked cases across accumulated test data). Frappe-free backend 608 with only the Windows path-separator failure; ruff, mypy, vue-tsc, eslint, prettier (changed files), vitest 77 OK, validate.py clean. Hosted CI does not start (org spending limit)."
+    }
+  ],
   "notes": [
     {
       "at": "2026-11-07",
@@ -57,6 +70,14 @@
     {
       "at": "2026-11-11T12:27:49.740246+00:00",
       "text": "2026-11-11 (ADR-045): owner changed from Keletso to Gupta; RSL integration lane. No task in this lane depends on an open task in the other lane."
+    },
+    {
+      "at": "2026-11-12T06:58:05.826393+00:00",
+      "text": "Claimed by claude-opus-5-5-gupta"
+    },
+    {
+      "at": "2026-11-12T07:55:49.548242+00:00",
+      "text": "PR opened with local verification (ADR-038)"
     }
   ],
   "sequence": 30

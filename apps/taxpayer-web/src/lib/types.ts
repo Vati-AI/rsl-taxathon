@@ -190,3 +190,29 @@ export interface CorrectionReminder {
   recorded_on: string;
   updated_on: string | null;
 }
+
+/**
+ * TAX-129 check before you file: guidance from the data RSL already holds (e-Tax return,
+ * Lekuka invoices, ASYCUDA entries). Never a decision, score or block; the claim is filed
+ * in RSL's Online Refunds Application.
+ */
+export interface PrefilingCheck {
+  check_version: string;
+  period: string;
+  status: 'no_issues_found' | 'check_these' | 'incomplete';
+  currency: string;
+  figures: Record<
+    | 'output_vat'
+    | 'input_vat_claimed'
+    | 'refund_claimed'
+    | 'lekuka_input_vat'
+    | 'asycuda_import_vat',
+    string | null
+  >;
+  counts: { lekuka_invoices: number; asycuda_entries: number };
+  prompts: { code: string; message: string }[];
+  sources: { system: string; label: string; checked: boolean }[];
+  guidance_only: true;
+  note: string;
+  file_with: { name: string; url: string | null };
+}

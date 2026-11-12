@@ -40,6 +40,13 @@ export const routes = [
     meta: { title: 'Evidence request' },
   },
   {
+    // TAX-129 (ADR-051): guidance from RSL-held data before filing in Online Refunds.
+    path: '/check',
+    name: 'check-before-filing',
+    component: () => import('./pages/CheckBeforeFilingPage.vue'),
+    meta: { title: 'Check before you file' },
+  },
+  {
     path: '/account',
     name: 'account',
     component: () => import('./pages/AccountPage.vue'),

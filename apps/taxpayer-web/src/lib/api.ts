@@ -5,6 +5,7 @@ import type {
   EvidenceView,
   DataEnvelope,
   LiveEnvelope,
+  PrefilingCheck,
   PresubmissionReview,
   PortalSession,
   RefundClaimResult,
@@ -330,4 +331,20 @@ export async function fetchCorrectionReminders(): Promise<CorrectionReminder[]> 
 export async function logout(): Promise<void> {
   // Frappe v16: POST /api/method/logout clears the session cookie.
   await call('logout');
+}
+
+/** TAX-129: check a VAT period against what RSL holds before filing; stores nothing. */
+export async function checkBeforeFiling(
+  period: string,
+  tenantId?: string,
+): Promise<PrefilingCheck> {
+  const result = await post<LiveEnvelope<PrefilingCheck>>(
+    'vati_tax.portal.api.check_before_filing',
+    { period },
+    tenantId,
+  );
+  if (result?.mode !== 'live' || !Array.isArray(result.data?.prompts)) {
+    throw new PortalError('unavailable', 'The portal returned data in an unexpected format.');
+  }
+  return result.data;
 }

@@ -179,3 +179,12 @@ def review(
     shared = _shared()
     result = shared.reconcile_refund(build_record(claimed, output_vat, input_vat, rows))
     return taxpayer_review(result, rows)
+
+
+def reconcile(record: dict[str, Any]) -> dict[str, Any]:
+    """Run the shared TAX-048 reconciliation on a ready record (TAX-129 check before filing).
+
+    The caller builds the record from RSL-held data and keeps only allowlisted codes.
+    """
+    result: dict[str, Any] = _shared().reconcile_refund(record)
+    return result

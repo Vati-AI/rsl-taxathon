@@ -47,6 +47,8 @@ from vati_tax.integrations import factories
 from vati_tax.portal import claims, presubmission
 from vati_tax.portal import rsl as portal_rsl
 from vati_tax.portal import submissions as portal_submissions
+from vati_tax.prefiling import rules as prefiling_rules
+from vati_tax.prefiling import store as prefiling_store
 from vati_tax.reminders import rules as reminder_rules
 from vati_tax.reminders import store as reminder_store
 from vati_tax.responses import rules as response_rules
@@ -688,4 +690,23 @@ def get_correction_reminders() -> dict[str, Any]:
     _user, scope = _require_taxpayer()
     data = reminder_store.taxpayer_reminders(scope)
     _log("get_correction_reminders", "listed", reminders=len(data))
+    return {**LIVE_META, "data": data}
+
+
+@frappe.whitelist()
+def check_before_filing(period: str | None = None, tenant_id: str | None = None) -> dict[str, Any]:
+    """TAX-129 (ADR-051): guidance from RSL-held data before filing in Online Refunds.
+
+    Reads the caller's own e-Tax return, Lekuka invoices and ASYCUDA entries for the
+    period; nothing is typed, stored, filed, blocked or scored.
+    """
+    _user, scope = _require_taxpayer()
+    tenant, taxpayer = _claim_owner(scope, tenant_id)
+    try:
+        data = prefiling_store.check(tenant_id=tenant, taxpayer_id=taxpayer, period=period or "")
+    except prefiling_rules.InvalidPeriod as exc:
+        _fail(422, "invalid_period", str(exc), action="check_before_filing")
+    except prefiling_store.TaxpayerNotFound:
+        _fail(422, "taxpayer_not_found", "Your taxpayer record could not be found.",
+              action="check_before_filing")  # fmt: skip
     return {**LIVE_META, "data": data}
