@@ -31,6 +31,7 @@ const sections = computed<NavSection[]>(() => {
       items: [
         { label: 'Evidence requests', to: { name: 'evidence-requests' }, icon: 'lucide-inbox', match: ['evidence-requests', 'evidence-request'] },
         { label: 'My cases', to: { name: 'submissions' }, icon: 'lucide-file-text', match: ['submissions', 'submission'] },
+        { label: 'Check before you file', to: { name: 'check-before-filing' }, icon: 'lucide-list-checks', match: 'check-before-filing' },
         { label: 'Account', to: { name: 'account' }, icon: 'lucide-user', match: 'account' },
       ],
     },
