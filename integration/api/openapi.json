@@ -3403,7 +3403,7 @@
           "correlation_id": { "$ref": "#/components/schemas/Uuid" },
           "type": {
             "type": "string",
-            "enum": ["case.registered", "case.status_projected", "evidence.received", "extraction.completed", "extraction.failed", "investigation.requested", "finding.recorded", "evidence_request.recorded", "assurance.requested"]
+            "enum": ["case.registered", "case.status_projected", "evidence.received", "extraction.completed", "extraction.failed", "investigation.requested", "finding.recorded", "evidence_request.recorded", "assurance.requested", "rsl_outbound.requested"]
           },
           "occurred_at": { "$ref": "#/components/schemas/Timestamp" },
           "idempotency_key": { "type": "string", "minLength": 16, "maxLength": 255, "pattern": "^[A-Za-z0-9:._-]+$" },

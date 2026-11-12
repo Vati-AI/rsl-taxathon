@@ -57,3 +57,8 @@ def yente_matcher(tenant_id: str) -> config.YenteMatcher:
 
 def rsl_sources(tenant_id: str) -> config.RslSourceFixture:
     return config.rsl_sources(frappe.conf, vati_tenant_id=tenant_id)
+
+
+def rsl_sinks(tenant_id: str) -> Any:
+    """TAX-124 fixture sink for outbound messages to RSL (site key ``vati_rsl_sinks``)."""
+    return config.rsl_sinks(frappe.conf, vati_tenant_id=tenant_id)

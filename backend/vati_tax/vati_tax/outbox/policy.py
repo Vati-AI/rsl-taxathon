@@ -54,6 +54,8 @@ EVENT_TYPES = (
     "evidence_request.recorded",
     # TAX-121 (ADR-042): run the TAX-112-116 assurance checks for a sent refund claim.
     "assurance.requested",
+    # TAX-124 (ADR-048): an officer-approved result goes back to an RSL system.
+    "rsl_outbound.requested",
 )
 SOURCE_SERVICES = ("jube", "frappe", "openaleph", "yente", "docling", "langgraph", "vati")
 PAYLOAD_VALUE_MAX = 255

@@ -52,6 +52,7 @@ _LABELS = {
     "openaleph": "OpenAleph",
     "yente": "yente matching",
     "rsl_sources": "RSL source fixture",
+    "rsl_sinks": "RSL outbound fixture sink",
 }
 # Same field as decisions/store.py used for jube_not_configured before TAX-085.
 _FIELDS = {"jube": "case_id", "jube_risk": "case_id"}
@@ -359,3 +360,34 @@ def rsl_sources(conf: Mapping[str, Any], *, vati_tenant_id: str) -> RslSourceFix
         _RSL_CACHE[cache_key] = loaded
     loaded.sources.unavailable = frozenset(unavailable)
     return loaded
+
+
+# --------------------------------------------------------------------------- RSL sinks
+
+# TAX-124 (ADR-048): its own key, like ``vati_rsl_sources``, so ``frappe_dev.py init``
+# leaves it in place.
+RSL_SINKS_KEY = "vati_rsl_sinks"
+
+
+def rsl_sinks(conf: Mapping[str, Any], *, vati_tenant_id: str) -> Any:
+    """The site's TAX-124 fixture sink for ``vati_tenant_id`` (site key ``vati_rsl_sinks``).
+
+    ``{"directory": "/abs/dir", "vati_tenant_id": "<uuid>", "unavailable": ["audit_system"]}``.
+    There is no live RSL endpoint: messages land in ``directory`` with fixture receipts.
+    A missing section or another tenant's section is ``ServiceNotConfigured``, so the
+    outbound item stays queued; nothing is reported as sent.
+    """
+    values = conf.get(RSL_SINKS_KEY)
+    if not isinstance(values, Mapping) or not values:
+        raise ServiceNotConfigured("rsl_sinks")
+    if values.get("vati_tenant_id") != vati_tenant_id:
+        raise ServiceNotConfigured("rsl_sinks", "rsl_sinks_tenant_mismatch")
+    directory = _text(values, "directory", "rsl_sinks")
+    unavailable = values.get("unavailable") or []
+    if not isinstance(unavailable, list) or not all(isinstance(u, str) for u in unavailable):
+        raise ServiceNotConfigured("rsl_sinks")
+    adapter = adapter_module("integration.rsl_sinks.fixture_sink", "rsl_sinks")
+    try:
+        return adapter.FixtureRslSink(directory, vati_tenant_id, unavailable=unavailable)
+    except ValueError:
+        raise ServiceNotConfigured("rsl_sinks") from None
