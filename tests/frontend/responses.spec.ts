@@ -42,7 +42,20 @@ async function openRequest(page: Page, id = OPEN_REQUEST_ID): Promise<PortalMock
   return mock;
 }
 
+// TAX-152: a response is a sequence of steps (one per item, then "Review and send").
+const steps = (page: Page) => page.getByRole('list', { name: 'Response steps' });
+async function goToStep(page: Page, name: string) {
+  await steps(page)
+    .getByRole('button', { name: new RegExp(`^${name}`) })
+    .click();
+}
+async function send(page: Page) {
+  await goToStep(page, 'Review and send');
+  await page.getByRole('button', { name: 'Send response' }).click();
+}
+
 async function uploadFor(page: Page, item: number, name: string) {
+  await goToStep(page, `Item ${item}`);
   await page.getByLabel(`Choose a file for item ${item}`).setInputFiles(pdf(name));
   await expect(
     page
@@ -54,6 +67,7 @@ async function uploadFor(page: Page, item: number, name: string) {
 }
 
 const declineItem2 = async (page: Page) => {
+  await goToStep(page, 'Item 2');
   await page.getByLabel('I cannot provide this document (item 2)').check();
   await page
     .getByLabel("Why can't you provide it? (item 2)")
@@ -68,7 +82,8 @@ test.describe('evidence request responses (TAX-045)', () => {
     await mockTaxpayerSession(page, 'taxpayer');
     await page.goto(TAXPAYER + '/taxpayer/requests');
     await pageReady(page, 'Evidence requests');
-    const list = page.getByRole('list', { name: 'Evidence requests' });
+    // TAX-152: an inbox grouped by reply-by date.
+    const list = page.getByRole('navigation', { name: 'Evidence requests' });
     await expect(list.getByRole('listitem')).toHaveCount(3);
     for (const label of ['Response needed', 'Response sent', 'No longer needed']) {
       await expect(list.getByText(label, { exact: true })).toBeVisible();
@@ -92,6 +107,7 @@ test.describe('evidence request responses (TAX-045)', () => {
     const mock = await openRequest(page);
     await uploadFor(page, 1, 'invoice-2026-09-001.pdf');
     await declineItem2(page);
+    await goToStep(page, 'Review and send');
     await page
       .getByLabel('Message to the officer (optional)')
       .fill('Synthetic: one invoice attached.');
@@ -100,7 +116,12 @@ test.describe('evidence request responses (TAX-045)', () => {
 
     await page.getByRole('button', { name: 'Send response' }).click();
     await expect(page.getByRole('heading', { name: 'Your response' })).toBeFocused();
-    await expect(page.getByText('Response sent', { exact: true }).first()).toBeVisible();
+    await expect(
+      page
+        .locator('[data-kit="request-detail"]')
+        .getByText('Response sent', { exact: true })
+        .first(),
+    ).toBeVisible();
     await expect(
       page.getByText('Not provided: Synthetic: the bank account was closed.'),
     ).toBeVisible();
@@ -123,7 +144,7 @@ test.describe('evidence request responses (TAX-045)', () => {
   }, testInfo) => {
     const w = width(testInfo.project.name);
     const mock = await openRequest(page);
-    await page.getByRole('button', { name: 'Send response' }).click();
+    await send(page);
     await expect(
       page.getByRole('alert').filter({ hasText: '2 items need an answer' }),
     ).toBeVisible();
@@ -132,9 +153,15 @@ test.describe('evidence request responses (TAX-045)', () => {
     await expect(page.getByRole('heading', { name: /^Item 1:/ })).toHaveAccessibleDescription(
       /Upload a document for this item/,
     );
+    await goToStep(page, 'Item 2');
     await page.getByLabel('I cannot provide this document (item 2)').check();
-    await page.getByRole('button', { name: 'Send response' }).click();
+    await send(page);
+    // Sending moves to the first item that still needs an answer (item 1); item 2 keeps
+    // its tick and shows its own problem when opened.
+    await expect(page.getByRole('heading', { name: /^Item 1:/ })).toBeFocused();
+    await goToStep(page, 'Item 2');
     await expect(page.getByText('Explain why you cannot provide this document.')).toBeVisible();
+    await expect(page.getByLabel('I cannot provide this document (item 2)')).toBeChecked();
     expect(mock.calls).not.toContain('vati_tax.portal.api.respond_to_evidence_request');
     await accessible(page);
     await shot(page, 'request-errors', w);
@@ -146,7 +173,7 @@ test.describe('evidence request responses (TAX-045)', () => {
     await uploadFor(page, 1, 'invoice-2026-09-001.pdf');
     await declineItem2(page);
     mock.dropNextRespondResponse = true;
-    await page.getByRole('button', { name: 'Send response' }).click();
+    await send(page);
     await expect(
       page
         .getByRole('alert')
@@ -180,7 +207,8 @@ test.describe('evidence request responses (TAX-045)', () => {
     const w = width(testInfo.project.name);
     await mockTaxpayerSession(page, 'taxpayer');
     await page.goto(TAXPAYER + `/taxpayer/requests/${OTHER_TAXPAYER_REQUEST_ID}`);
-    await pageReady(page, 'Request not found');
+    await pageReady(page, 'Evidence request');
+    await expect(page.getByRole('heading', { name: 'Request not found' })).toBeVisible();
     await expect(page.getByText('Message from the officer')).toHaveCount(0);
     await accessible(page);
     await shot(page, 'request-not-found', w);
@@ -191,7 +219,7 @@ test.describe('evidence request responses (TAX-045)', () => {
     await uploadFor(page, 1, 'invoice-2026-09-001.pdf');
     await declineItem2(page);
     mock.evidence.length = 0; // the server no longer recognises the document as the caller's own
-    await page.getByRole('button', { name: 'Send response' }).click();
+    await send(page);
     await expect(
       page.getByRole('alert').filter({ hasText: 'A document could not be found' }),
     ).toBeVisible();
@@ -202,12 +230,21 @@ test.describe('evidence request responses (TAX-045)', () => {
   test('keyboard: answer and send without a mouse', async ({ page }) => {
     await openRequest(page);
     await uploadFor(page, 1, 'invoice-2026-09-001.pdf');
+    // Steps are buttons: move to item 2 with the keyboard.
+    await steps(page)
+      .getByRole('button', { name: /^Item 2/ })
+      .focus();
+    await page.keyboard.press('Enter');
+    await expect(page.getByRole('heading', { name: /^Item 2:/ })).toBeFocused();
     const decline = page.getByLabel('I cannot provide this document (item 2)');
     await decline.focus();
     await page.keyboard.press('Space');
     await expect(decline).toBeChecked();
     await page.getByLabel("Why can't you provide it? (item 2)").focus();
     await page.keyboard.type('Synthetic: never issued.');
+    await steps(page).getByRole('button', { name: 'Review and send' }).focus();
+    await page.keyboard.press('Enter');
+    await expect(page.getByRole('heading', { name: 'Review and send' })).toBeFocused();
     await page.getByRole('button', { name: 'Send response' }).focus();
     await page.keyboard.press('Enter');
     await expect(page.getByRole('heading', { name: 'Your response' })).toBeFocused();

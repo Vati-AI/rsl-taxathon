@@ -42,7 +42,7 @@ onMounted(load);
 </script>
 
 <template>
-  <section aria-labelledby="page-title">
+  <section aria-labelledby="page-title" class="max-w-4xl">
     <PortalHeader
       title="My cases"
       description="Refund claims you filed with RSL that RSL is reviewing with you. RSL's evidence requests appear under Evidence requests."

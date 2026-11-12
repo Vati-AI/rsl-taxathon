@@ -27,17 +27,24 @@ export const routes = [
     meta: { title: 'Case status' },
   },
   {
+    // TAX-152: an inbox. The list stays beside the request that is open.
     path: '/requests',
-    name: 'evidence-requests',
     component: () => import('./pages/EvidenceRequestsPage.vue'),
-    meta: { title: 'Evidence requests' },
-  },
-  {
-    path: '/requests/:id',
-    name: 'evidence-request',
-    component: () => import('./pages/EvidenceRequestPage.vue'),
-    props: true,
-    meta: { title: 'Evidence request' },
+    children: [
+      {
+        path: '',
+        name: 'evidence-requests',
+        component: () => import('./pages/InboxPlaceholder.vue'),
+        meta: { title: 'Evidence requests' },
+      },
+      {
+        path: ':id',
+        name: 'evidence-request',
+        component: () => import('./pages/EvidenceRequestPage.vue'),
+        props: true,
+        meta: { title: 'Evidence request' },
+      },
+    ],
   },
   {
     // TAX-129 (ADR-051): guidance from RSL-held data before filing in Online Refunds.

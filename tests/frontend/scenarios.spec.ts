@@ -550,15 +550,24 @@ test.describe('taxpayer journey (TAX-055)', () => {
         .filter({ hasText: 'synthetic-agreement-2026.pdf' })
         .getByText('Uploaded', { exact: true }),
     ).toBeVisible();
+    // TAX-152: one step per requested item, then "Review and send".
+    const steps = page.getByRole('list', { name: 'Response steps' });
+    await steps.getByRole('button', { name: /^Item 2/ }).click();
     await page.getByLabel('I cannot provide this document (item 2)').check();
     await page
       .getByLabel("Why can't you provide it? (item 2)")
       .fill('Synthetic: the bank account was closed.');
     await accessible(page);
     await shot(page, 'taxpayer-6-respond', w);
+    await steps.getByRole('button', { name: 'Review and send' }).click();
     await page.getByRole('button', { name: 'Send response' }).click();
     await expect(page.getByRole('heading', { name: 'Your response' })).toBeFocused();
-    await expect(page.getByText('Response sent', { exact: true }).first()).toBeVisible();
+    await expect(
+      page
+        .locator('[data-kit="request-detail"]')
+        .getByText('Response sent', { exact: true })
+        .first(),
+    ).toBeVisible();
     await accessible(page);
     await shot(page, 'taxpayer-7-responded', w);
     expect(mock.responses.size).toBe(1);

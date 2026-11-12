@@ -89,7 +89,7 @@ function retry() {
         </HeaderMenu>
       </template>
 
-      <div class="taxpayer-page w-full max-w-4xl px-4 py-4 sm:px-6 sm:py-6">
+      <div class="taxpayer-page w-full max-w-6xl px-4 py-4 sm:px-6 sm:py-6">
         <div
           v-if="state.status === 'idle' || state.status === 'loading'"
           class="grid min-h-[50vh] place-items-center"

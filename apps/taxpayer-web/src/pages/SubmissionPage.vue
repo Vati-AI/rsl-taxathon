@@ -43,7 +43,7 @@ const stepIcon = {
 </script>
 
 <template>
-  <section>
+  <section class="max-w-4xl">
     <div v-if="loading" role="status" class="py-8">
       <LoadingText text="Loading case…" />
     </div>
