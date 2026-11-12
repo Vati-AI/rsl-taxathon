@@ -103,6 +103,9 @@ CHALLENGE_READ: Final = "challenge.read"
 REMINDER_RECORD: Final = "reminder.record"
 REMINDER_CORRECT: Final = "reminder.correct"
 REMINDER_READ: Final = "reminder.read"
+# Taxpayer assistance (TAX-100, ADR-034): a taxpayer asks the assistant about its
+# own records and confirms its own drafts. Staff and services never use it.
+ASSISTANCE_USE: Final = "assistance.use"
 
 ACTION_ROLES: Final[dict[str, frozenset[Role]]] = {
     SUBMISSION_CREATE: frozenset({TAXPAYER}),
@@ -139,6 +142,7 @@ ACTION_ROLES: Final[dict[str, frozenset[Role]]] = {
     REMINDER_RECORD: frozenset({AUDITOR, SUPERVISOR}),
     REMINDER_CORRECT: frozenset({AUDITOR, SUPERVISOR}),
     REMINDER_READ: frozenset({TAXPAYER, AUDITOR, SPECIALIST, SUPERVISOR}),
+    ASSISTANCE_USE: frozenset({TAXPAYER}),
 }
 
 # Consequential human decisions. Never granted to a service identity, even if
@@ -174,6 +178,7 @@ TAXPAYER_OWNED_ACTIONS: Final[frozenset[str]] = frozenset(
         CHALLENGE_LODGE,
         CHALLENGE_READ,
         REMINDER_READ,
+        ASSISTANCE_USE,
     }
 )
 # The approver must differ from the proposer (separation of duties).

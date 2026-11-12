@@ -1,0 +1,144 @@
+{
+ "actions": [],
+ "autoname": "field:draft_id",
+ "creation": "2026-11-12 12:00:00.000000",
+ "description": "An assistant-drafted answer to one of a taxpayer's evidence requests (TAX-100). Nothing is sent until the taxpayer confirms it through vati_tax.assistance; written only by vati_tax.assistance.store.",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "draft_id",
+  "tenant_id",
+  "taxpayer_id",
+  "request_id",
+  "status",
+  "version",
+  "data",
+  "disclosure",
+  "confirmation",
+  "registration_key",
+  "idempotency_key",
+  "request_digest",
+  "confirm_key",
+  "confirm_digest"
+ ],
+ "fields": [
+  {
+   "fieldname": "draft_id",
+   "fieldtype": "Data",
+   "label": "Draft ID",
+   "length": 36,
+   "reqd": 1,
+   "unique": 1,
+   "set_only_once": 1
+  },
+  {
+   "fieldname": "tenant_id",
+   "fieldtype": "Data",
+   "label": "Tenant ID",
+   "length": 36,
+   "reqd": 1,
+   "set_only_once": 1
+  },
+  {
+   "fieldname": "taxpayer_id",
+   "fieldtype": "Data",
+   "label": "Taxpayer ID",
+   "length": 36,
+   "reqd": 1,
+   "set_only_once": 1
+  },
+  {
+   "fieldname": "request_id",
+   "fieldtype": "Data",
+   "label": "Evidence request ID",
+   "length": 36,
+   "reqd": 1,
+   "set_only_once": 1
+  },
+  {
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "label": "Status",
+   "options": "draft\nconfirmed",
+   "reqd": 1,
+   "default": "draft"
+  },
+  {
+   "fieldname": "version",
+   "fieldtype": "Int",
+   "label": "Version",
+   "reqd": 1,
+   "default": "1"
+  },
+  {
+   "fieldname": "data",
+   "fieldtype": "Long Text",
+   "label": "Draft (taxpayer-facing JSON)",
+   "reqd": 1,
+   "description": "The taxpayer-facing TaxpayerFacingEvidenceResponseDraft as the assistant produced it."
+  },
+  {
+   "fieldname": "disclosure",
+   "fieldtype": "Long Text",
+   "label": "Disclosure (JSON)",
+   "description": "The AiDisclosure of the model or template that drafted it."
+  },
+  {
+   "fieldname": "confirmation",
+   "fieldtype": "Long Text",
+   "label": "Confirmation (JSON)",
+   "description": "The taxpayer's confirmed answers and the TAX-045 evidence response ID."
+  },
+  {
+   "fieldname": "registration_key",
+   "fieldtype": "Data",
+   "label": "Registration key",
+   "read_only": 1,
+   "unique": 1
+  },
+  {
+   "fieldname": "idempotency_key",
+   "fieldtype": "Data",
+   "label": "Idempotency key",
+   "read_only": 1
+  },
+  {
+   "fieldname": "request_digest",
+   "fieldtype": "Data",
+   "label": "Request digest",
+   "read_only": 1
+  },
+  {
+   "fieldname": "confirm_key",
+   "fieldtype": "Data",
+   "label": "Confirmation key",
+   "read_only": 1
+  },
+  {
+   "fieldname": "confirm_digest",
+   "fieldtype": "Data",
+   "label": "Confirmation digest",
+   "read_only": 1
+  }
+ ],
+ "in_create": 1,
+ "index_web_pages_for_search": 0,
+ "links": [],
+ "modified": "2026-11-12 12:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Vati Tax",
+ "name": "Vati Assistance Draft",
+ "naming_rule": "By fieldname",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "read": 1,
+   "role": "System Manager"
+  }
+ ],
+ "search_fields": "request_id",
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "request_id"
+}

@@ -56,7 +56,7 @@ def rows(*specs):
     return invoices.parse_schedule(out, period_end=datetime.date(2026, 9, 30), today=TODAY)
 
 
-AI_ADAPTERS = {"portal/presubmission.py", "assurance/checks.py"}
+AI_ADAPTERS = {"portal/presubmission.py", "assurance/checks.py", "assistance/runtime.py"}
 
 
 class BoundaryTests(unittest.TestCase):
