@@ -66,7 +66,7 @@
    "set_only_once": 1,
    "in_list_view": 1,
    "in_standard_filter": 1,
-   "options": "case.registered\ncase.status_projected\nevidence.received\nextraction.completed\nextraction.failed\ninvestigation.requested\nfinding.recorded\nevidence_request.recorded\nassurance.requested"
+   "options": "case.registered\ncase.status_projected\nevidence.received\nextraction.completed\nextraction.failed\ninvestigation.requested\nfinding.recorded\nevidence_request.recorded\nassurance.requested\nrsl_outbound.requested"
   },
   {
    "fieldname": "event_id",
@@ -248,7 +248,7 @@
  "in_create": 1,
  "index_web_pages_for_search": 0,
  "links": [],
- "modified": "2026-11-06 16:00:00.000000",
+ "modified": "2026-11-12 12:00:00.000000",
  "modified_by": "Administrator",
  "module": "Vati Tax",
  "name": "Vati Outbox Event",

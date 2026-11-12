@@ -32,6 +32,11 @@ doc_events = {
     },
     # TAX-087: evidence linked to a case enqueues evidence.received (Docling extraction).
     "Vati Service Link": {"after_insert": "vati_tax.pipeline.store.on_service_link_insert"},
+    # TAX-124 (ADR-048): officer-approved results queue outbound messages to RSL.
+    "Vati Decision": {"on_update": "vati_tax.rsl_outbound.store.on_decision_update"},
+    "Vati Evidence Request": {
+        "after_insert": "vati_tax.rsl_outbound.store.on_evidence_request_insert"
+    },
 }
 
 # TAX-033: deliver committed outbox events every minute. Handlers are registered
@@ -51,6 +56,8 @@ vati_outbox_handlers = {
     "extraction.failed": "vati_tax.pipeline.store.handle_extraction_settled",
     # TAX-121 (ADR-042): TAX-112-116 checks over the RSL source fixture and Frappe records.
     "assurance.requested": "vati_tax.assurance.store.handle_assurance_requested",
+    # TAX-124 (ADR-048): findings pack, lane recommendation and evidence notice to RSL.
+    "rsl_outbound.requested": "vati_tax.rsl_outbound.store.handle_rsl_outbound",
 }
 
 # TAX-021: the Vue taxpayer portal owns client routes under /taxpayer; every

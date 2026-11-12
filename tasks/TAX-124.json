@@ -5,7 +5,7 @@
   "owner": "Gupta",
   "area": "integration",
   "phase": "pilot",
-  "status": "BACKLOG",
+  "status": "IN_REVIEW",
   "priority": "P1",
   "depends_on": [
     "TAX-111",
@@ -13,9 +13,9 @@
     "TAX-114",
     "TAX-046"
   ],
-  "claimed_by": null,
-  "branch": null,
-  "pr": null,
+  "claimed_by": "claude-opus-5-5-gupta",
+  "branch": "task/TAX-124",
+  "pr": "https://github.com/Vati-AI/rsl-taxathon/pull/298",
   "scope": "Define and emit assumed outbound contracts so results return to RSL: an approved findings pack for the RSL audit case, the lane recommendation and undisputed amount for the Online Refunds Application or PSRM to act on, and an evidence-requested status with a portal deep link",
   "inputs": [
     "PROJECT.md",
@@ -30,19 +30,19 @@
   "acceptance": [
     {
       "text": "Versioned outbound contracts (findings pack, lane recommendation, evidence-requested notice) with fixture sinks that identify themselves as fixtures; WSO2 API Manager is the stated route",
-      "done": false
+      "done": true
     },
     {
       "text": "Only officer-approved items are emitted; nothing sets RSL status, pays, offsets or assesses; emission is idempotent and recorded in the audit ledger",
-      "done": false
+      "done": true
     },
     {
       "text": "An unavailable RSL sink leaves the item queued and visible as not delivered",
-      "done": false
+      "done": true
     },
     {
       "text": "Record relevant tests and evidence, update task status and open a PR",
-      "done": false
+      "done": true
     }
   ],
   "verification": "Outbox tests: approved items are emitted once to fixture sinks; unapproved items never leave",
@@ -52,7 +52,24 @@
     "update-project-task",
     "finish-task"
   ],
-  "evidence": [],
+  "evidence": [
+    {
+      "criterion": 1,
+      "text": "integration/rsl_sinks/contracts.py: versioned assumed outbound contracts rsl.<system>.findings_pack|lane_recommendation|evidence_requested.v0-assumed, each stating route wso2_api_manager, its authority (findings_for_rsl_review / recommendation_only / notice_only) and the assumed-shape notice. FixtureRslSink returns receipts with fixture: true and FIXTURE- IDs and opens no network connection (ADR-048). tests/integration/test_rsl_sinks.py 11 OK."
+    },
+    {
+      "criterion": 2,
+      "text": "vati_tax.rsl_outbound queues only on an independently approved Vati Decision (findings pack; plus lane recommendation for an Online Refunds claim with a lane proposal) or an officer-authorised Vati Evidence Request; proposed/rejected decisions and non-RSL cases queue nothing and a request withdrawn after queueing is never sent. No contract has a status/payment/offset/assessment field (validator refuses them). One outbox event per item under rsl-outbound:<kind>:<subject>, delivered through the effect ledger; ledger entries rsl_outbound.<kind>.queued and .delivered (message SHA-256, receipt), no duplicate on replay. Disposable site verify-20261112t044122: test_rsl_outbound_bench 9/9 OK; test_rules 14 OK."
+    },
+    {
+      "criterion": 3,
+      "text": "An unavailable sink is retryable: the item stays queued (state queued, last_error_code rsl_sink_unavailable, no receipt, no delivered ledger entry) and is delivered once when RSL answers; after the 20-attempt budget it is not_delivered until an operator retries (outbox.api.retry_event). Officers read the states with rsl_outbound.api.get_case_outbound. Bench tests test_unavailable_sink_keeps_the_item_queued_and_visible_as_not_delivered and test_exhausted_budget_is_not_delivered_until_an_operator_retries OK."
+    },
+    {
+      "criterion": 4,
+      "text": "Disposable site (frappe_dev.py verify): install and two migrations ok; bench suite 230 tests, failing only reminders/test_reminders_bench (3, pre-existing on main); app tests 587 OK. Frappe-free: tests/integration 279 OK, tests/contracts 135 OK, backend discovery 587 run with only the pre-existing Windows path-separator failure in portal/test_presubmission; ruff, ruff format, mypy clean. Hosted CI does not start (org spending limit)."
+    }
+  ],
   "notes": [
     {
       "at": "2026-11-07",
@@ -61,6 +78,14 @@
     {
       "at": "2026-11-11T12:27:49.740246+00:00",
       "text": "2026-11-11 (ADR-045): owner changed from Keletso to Gupta; RSL integration lane. No task in this lane depends on an open task in the other lane."
+    },
+    {
+      "at": "2026-11-12T04:20:27.391543+00:00",
+      "text": "Claimed by claude-opus-5-5-gupta"
+    },
+    {
+      "at": "2026-11-12T04:49:19.419011+00:00",
+      "text": "PR opened with local verification (ADR-038)"
     }
   ],
   "sequence": 23
