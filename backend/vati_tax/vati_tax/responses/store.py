@@ -43,7 +43,7 @@ RESPONSE = "Vati Evidence Response"
 EVIDENCE = "Vati Evidence"
 # Only what the taxpayer view needs; internal columns are never selected.
 _REQUEST_FIELDS = ["name", "tenant_id", "taxpayer_id", "status", "due_date", "items",
-                   "message_to_taxpayer", "created_at"]  # fmt: skip
+                   "message_to_taxpayer", "created_at", "line_items", "already_held"]  # fmt: skip
 _RESPONSE_FIELDS = ["name", "request_id", "items", "message", "responded_at", "request_digest"]
 _UNIQUE = (frappe.UniqueValidationError, frappe.DuplicateEntryError)
 
@@ -175,7 +175,7 @@ def respond(
     row = _owned_request(scope, request_id)
     # The taxpayer may respond only for its own taxpayer (TAX-029 action matrix).
     permissions.require_action(policy.EVIDENCE_RESPOND, row.tenant_id, taxpayer_id=row.taxpayer_id)
-    answer = rules.build_response(body, rules.requested_items(row["items"]))
+    answer = rules.build_response(body, rules.requested_items(row["items"], row["line_items"]))
     digest = answer.digest(row.name)
     registration_key = _scoped_key(row.tenant_id, row.taxpayer_id, answer.idempotency_key)
 

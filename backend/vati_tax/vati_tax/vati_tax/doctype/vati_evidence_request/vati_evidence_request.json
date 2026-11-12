@@ -21,6 +21,9 @@
   "items",
   "finding_ids",
   "message_to_taxpayer",
+  "line_items",
+  "already_held",
+  "gap_proposal_digest",
   "keys_section",
   "registration_key",
   "request_digest"
@@ -142,6 +145,28 @@
    "set_only_once": 1
   },
   {
+   "description": "TAX-127 (ADR-050): per item, the RSL claim line it asks about and the allowed answers (confirm, dispute, attach_proof). Empty for an ordinary request.",
+   "fieldname": "line_items",
+   "fieldtype": "Long Text",
+   "label": "Line items",
+   "read_only": 1
+  },
+  {
+   "description": "TAX-127: claim lines RSL already holds (Lekuka, ASYCUDA or the Online Refunds upload), shown to the taxpayer and not asked for.",
+   "fieldname": "already_held",
+   "fieldtype": "Long Text",
+   "label": "Already held by RSL",
+   "read_only": 1
+  },
+  {
+   "description": "TAX-127: digest of the gap proposal the officer approved.",
+   "fieldname": "gap_proposal_digest",
+   "fieldtype": "Data",
+   "label": "Gap proposal digest",
+   "length": 64,
+   "read_only": 1
+  },
+  {
    "fieldname": "keys_section",
    "fieldtype": "Section Break",
    "label": "Uniqueness keys",
@@ -166,7 +191,7 @@
  "in_create": 1,
  "index_web_pages_for_search": 0,
  "links": [],
- "modified": "2026-11-04 13:00:00.000000",
+ "modified": "2026-11-12 16:00:00.000000",
  "modified_by": "Administrator",
  "module": "Vati Tax",
  "name": "Vati Evidence Request",
