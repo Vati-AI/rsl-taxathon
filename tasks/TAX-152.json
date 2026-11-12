@@ -14,7 +14,7 @@
   ],
   "claimed_by": "claude-code-20261112-friendly-newton",
   "branch": "claude/friendly-newton-iwhm4u",
-  "pr": null,
+  "pr": "https://github.com/Vati-AI/rsl-taxathon/pull/307",
   "scope": "Rebuild the re-centred portal (TAX-125) as an inbox: evidence requests listed like messages grouped by due date with a reading pane, responses as short steps with the TAX-126 checks, My cases with RSL's status labelled as RSL's, and account; remove starter copy, hero titles and card-grid layouts",
   "inputs": [
     "PROJECT.md",
@@ -80,6 +80,10 @@
     {
       "at": "2026-11-12",
       "text": "Claimed by claude-code-20261112-friendly-newton on the session's designated branch claude/friendly-newton-iwhm4u."
+    },
+    {
+      "at": "2026-11-12",
+      "text": "IN_REVIEW in https://github.com/Vati-AI/rsl-taxathon/pull/307."
     }
   ],
   "sequence": 20
