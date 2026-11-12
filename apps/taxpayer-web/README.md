@@ -100,12 +100,20 @@ still be filled in and sent. Helpers: `src/lib/reminders.ts`.
 
 ## Evidence requests (TAX-045)
 
-`/taxpayer/requests` lists the taxpayer's own evidence requests with
-taxpayer-facing statuses only (Response needed, Response sent, No longer
-needed). `/taxpayer/requests/:id` shows the officer's message and the requested
-items. The taxpayer answers every item with uploaded documents (one upload panel
-per item) or a reason it cannot be provided, then sends the response once (one
-idempotency key per response; a repeated send is replayed). Answered and
+`/taxpayer/requests` is an inbox (TAX-152): the taxpayer's own evidence
+requests, with taxpayer-facing statuses only (Response needed, Response sent, No
+longer needed), grouped like messages by reply-by date (past the date, within 7
+days, later, no date), then answered, then no longer needed (`src/lib/inbox.ts`).
+On desktop the list stays beside a reading pane; `/taxpayer/requests/:id` opens one
+request there. Below 1024px the list and the request take turns, with a link back.
+The request shows the officer's message and the requested items. The response is a
+short sequence of steps, one per requested item (upload documents, or give a reason
+the document cannot be provided) and then "Review and send" with an optional
+message; each step fits one viewport and every step stays mounted, so moving between
+steps or an error keeps what was entered. Sending checks every item and opens the
+first one that still needs an answer. The response is sent once (one idempotency key
+per response; a repeated send is replayed). The TAX-126 pre-send checks will run in
+the review step. Answered and
 withdrawn requests are read-only. Rules: `src/lib/responses.ts` mirrors
 `vati_tax/responses/rules.py`.
 

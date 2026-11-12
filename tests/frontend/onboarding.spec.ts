@@ -111,7 +111,7 @@ test.describe('taxpayer onboarding (TAX-082)', () => {
       await pageReady(page, 'Evidence requests');
       await proxy.click(
         page
-          .getByRole('list', { name: 'Evidence requests' })
+          .getByRole('navigation', { name: 'Evidence requests' })
           .getByRole('link')
           .filter({ hasText: 'Response needed' })
           .first(),
@@ -128,6 +128,9 @@ test.describe('taxpayer onboarding (TAX-082)', () => {
           .getByRole('list', { name: 'Documents for item 1' })
           .getByText('Uploaded', { exact: true }),
       ).toBeVisible();
+      // TAX-152: the response is a sequence of steps, one per item.
+      const steps = page.getByRole('list', { name: 'Response steps' });
+      await proxy.click(steps.getByRole('button', { name: /^Item 2/ }), 'step: Item 2');
       await proxy.check(
         page.getByLabel('I cannot provide this document (item 2)'),
         'cannot provide item 2',
@@ -139,8 +142,17 @@ test.describe('taxpayer onboarding (TAX-082)', () => {
       );
       await audit(proxy, 'evidence response');
       await shot(page, 'taxpayer-2-respond', w);
+      await proxy.click(
+        steps.getByRole('button', { name: 'Review and send' }),
+        'step: Review and send',
+      );
       await proxy.click(page.getByRole('button', { name: 'Send response' }), 'Send response');
-      await expect(page.getByText('Response sent', { exact: true }).first()).toBeVisible();
+      await expect(
+        page
+          .locator('[data-kit="request-detail"]')
+          .getByText('Response sent', { exact: true })
+          .first(),
+      ).toBeVisible();
       expect(mock.responses.size).toBe(1);
     });
 
@@ -280,6 +292,12 @@ test.describe('taxpayer onboarding (TAX-082)', () => {
           .getByRole('list', { name: 'Documents for item 1' })
           .getByText('Uploaded', { exact: true }),
       ).toBeVisible();
+      // TAX-152: the response steps are buttons; Enter opens the next one.
+      const steps = page.getByRole('list', { name: 'Response steps' });
+      await proxy.tabTo(steps.getByRole('button', { name: /^Item 2/ }), 'step: Item 2', {
+        backwards: true,
+      });
+      await proxy.press('Enter');
       await proxy.tabTo(
         page.getByLabel('I cannot provide this document (item 2)'),
         'cannot provide item 2',
@@ -287,6 +305,14 @@ test.describe('taxpayer onboarding (TAX-082)', () => {
       await proxy.press('Space');
       await proxy.tabTo(page.getByLabel("Why can't you provide it? (item 2)"), 'reason for item 2');
       await proxy.type('Synthetic: the bank account was closed.');
+      await proxy.tabTo(
+        steps.getByRole('button', { name: 'Review and send' }),
+        'step: Review and send',
+        {
+          backwards: true,
+        },
+      );
+      await proxy.press('Enter');
       await proxy.tabTo(page.getByRole('button', { name: 'Send response' }), 'Send response');
       await shot(page, 'taxpayer-keyboard-send-focused', w);
       await proxy.press('Enter');

@@ -1,15 +1,16 @@
 <script setup lang="ts">
 /**
- * One evidence request (TAX-045). The taxpayer answers every requested item,
+ * One evidence request (TAX-045), in the inbox's reading pane (TAX-152). The response is a
+ * short sequence of steps: one per requested item, then "Review and send". Every step
+ * stays mounted, so moving between steps or meeting an error keeps what was entered. The taxpayer answers every requested item,
  * either with documents (uploaded as private evidence, TAX-032) or with a
  * reason the document cannot be provided, then sends the response once. One
  * idempotency key covers the response, so sending again after a lost
  * connection cannot store it twice. Only taxpayer-facing fields are shown.
  */
-import { Alert, Badge, Breadcrumbs, Button, FormControl, LoadingText } from 'frappe-ui';
+import { Alert, Badge, Button, FormControl, LoadingText } from 'frappe-ui';
 import { computed, nextTick, reactive, ref, shallowRef, watch } from 'vue';
 import DocumentUploads from '../components/DocumentUploads.vue';
-import PortalHeader from '../components/PortalHeader.vue';
 import { fetchEvidenceRequest, PortalError, respondToEvidenceRequest } from '../lib/api';
 import { formatDate } from '../lib/format';
 import {
@@ -25,7 +26,11 @@ import type { EvidenceRequestView } from '../lib/types';
 import { useDocumentUploads, type DocumentUploads as Uploads } from '../lib/uploads';
 import { newIdempotencyKey } from '../lib/validation';
 
+defineOptions({ inheritAttrs: false });
 const props = defineProps<{ id: string }>();
+const emit = defineEmits<{ changed: [] }>();
+/** Step index: one per requested item, then the review-and-send step. */
+const step = ref(0);
 
 const request = ref<EvidenceRequestView | null>(null);
 const loading = ref(true);
@@ -62,6 +67,7 @@ async function load() {
   try {
     request.value = await fetchEvidenceRequest(props.id);
     prepare(request.value);
+    step.value = 0;
     responseKey = newIdempotencyKey('response');
   } catch (err) {
     request.value = null;
@@ -75,6 +81,18 @@ async function load() {
 watch(() => props.id, load, { immediate: true });
 
 const status = computed(() => (request.value ? requestStatusDisplay(request.value.status) : null));
+const reviewStep = computed(() => request.value?.items.length ?? 0);
+const answered = (index: number) =>
+  Boolean(uploads.value[index]?.evidenceIds.value.length) ||
+  (answers[index]?.cannotProvide && answers[index].reason.trim().length > 0);
+
+async function goTo(next: number) {
+  step.value = next;
+  await nextTick();
+  document
+    .getElementById(next === reviewStep.value ? 'review-title' : `item-${next}-title`)
+    ?.focus();
+}
 const errorCount = computed(() => Object.keys(itemErrors.value).length);
 
 async function focusFirstProblem() {
@@ -82,8 +100,15 @@ async function focusFirstProblem() {
   const first = Object.keys(itemErrors.value)
     .map(Number)
     .sort((a, b) => a - b)[0];
-  if (first !== undefined) document.getElementById(`item-${first}-title`)?.focus();
-  else if (messageError.value) document.getElementById('response-message')?.focus();
+  if (first !== undefined) {
+    step.value = first;
+    await nextTick();
+    document.getElementById(`item-${first}-title`)?.focus();
+  } else if (messageError.value) {
+    step.value = reviewStep.value;
+    await nextTick();
+    document.getElementById('response-message')?.focus();
+  }
 }
 
 async function send() {
@@ -127,6 +152,7 @@ async function send() {
     });
     request.value = result.data;
     replayed.value = Boolean(result.replayed);
+    emit('changed');
     await nextTick();
     document.getElementById('sent-title')?.focus();
   } catch (error) {
@@ -169,15 +195,15 @@ async function send() {
 </script>
 
 <template>
-  <section aria-labelledby="page-title" class="max-w-2xl">
+  <section aria-labelledby="request-title" data-kit="request-detail">
     <div v-if="loading" role="status" class="py-8">
       <LoadingText text="Loading the evidence request…" />
     </div>
 
     <template v-else-if="loadError">
-      <PortalHeader
-        :title="loadError.kind === 'not_found' ? 'Request not found' : 'Evidence request'"
-      />
+      <h2 id="request-title" class="mb-3 text-lg font-semibold text-vati-text">
+        {{ loadError.kind === 'not_found' ? 'Request not found' : 'Evidence request' }}
+      </h2>
       <Alert
         :theme="loadError.kind === 'denied' ? 'amber' : 'red'"
         :title="
@@ -197,27 +223,22 @@ async function send() {
     </template>
 
     <template v-else-if="request && status">
-      <PortalHeader
-        title="Evidence request"
-        :description="`Reply by ${formatDate(request.due_date)}`"
-      >
-        <template #breadcrumbs>
-          <Breadcrumbs
-            class="mb-2"
-            :items="[
-              { label: 'Evidence requests', route: { name: 'evidence-requests' } },
-              { label: 'Request' },
-            ]"
-          />
-        </template>
-        <template #actions>
-          <Badge size="lg" :theme="status.theme" :label="status.label" />
-        </template>
-      </PortalHeader>
+      <div class="mb-4 flex flex-wrap items-start justify-between gap-3">
+        <div>
+          <h2 id="request-title" class="text-lg font-semibold text-vati-text">
+            {{ request.items.length }} {{ request.items.length === 1 ? 'document' : 'documents' }}
+            requested
+          </h2>
+          <p v-if="request.due_date" class="text-vati-muted">
+            Reply by {{ formatDate(request.due_date) }}
+          </p>
+        </div>
+        <Badge size="lg" :theme="status.theme" :label="status.label" />
+      </div>
 
-      <div class="mb-6 rounded-lg border border-outline-gray-2 p-5">
-        <h2 class="mb-2 text-base font-semibold text-ink-gray-9">Message from the officer</h2>
-        <p class="whitespace-pre-line break-words text-ink-gray-8">
+      <div class="mb-5 rounded-surface border border-vati-border bg-vati-surface p-4">
+        <h3 class="mb-1 font-semibold text-vati-text">Message from the officer</h3>
+        <p class="whitespace-pre-line break-words text-vati-text">
           {{ request.message_to_taxpayer }}
         </p>
       </div>
@@ -234,11 +255,11 @@ async function send() {
       <section
         v-else-if="request.status === 'response_sent' && request.response"
         aria-labelledby="sent-title"
-        class="space-y-4"
+        class="space-y-3"
       >
-        <h2 id="sent-title" tabindex="-1" class="text-lg font-semibold text-ink-gray-9">
+        <h3 id="sent-title" tabindex="-1" class="text-lg font-semibold text-vati-text">
           Your response
-        </h2>
+        </h3>
         <Alert
           theme="green"
           title="Response sent"
@@ -248,40 +269,84 @@ async function send() {
               : `Sent ${formatDate(request.response.responded_at)}. The officer will review it.`
           "
         />
-        <ol class="space-y-3">
+        <ol class="space-y-2">
           <li
             v-for="answer in request.response.items"
             :key="answer.index"
-            class="rounded-lg border border-outline-gray-2 p-4"
+            class="rounded-surface border border-vati-border p-3"
           >
-            <p class="font-medium text-ink-gray-9">
+            <p class="font-medium text-vati-text">
               Item {{ answer.index + 1 }}:
               {{ requestedTypeLabel(request.items[answer.index]?.document_type ?? '') }}
             </p>
             <ul v-if="answer.documents.length" class="mt-1 space-y-0.5">
-              <li
-                v-for="doc in answer.documents"
-                :key="doc.evidence_id"
-                class="break-all text-ink-gray-8"
-              >
+              <li v-for="doc in answer.documents" :key="doc.evidence_id" class="break-all">
                 {{ doc.name }}
               </li>
             </ul>
-            <p v-if="answer.unavailable_reason" class="mt-1 break-words text-ink-gray-7">
+            <p v-if="answer.unavailable_reason" class="mt-1 break-words text-vati-muted">
               Not provided: {{ answer.unavailable_reason }}
             </p>
           </li>
         </ol>
-        <p v-if="request.response.message" class="break-words text-ink-gray-7">
+        <p v-if="request.response.message" class="break-words text-vati-muted">
           Your message: {{ request.response.message }}
         </p>
       </section>
 
-      <!-- Open: answer every item -->
-      <form v-else novalidate class="space-y-6" @submit.prevent="send">
-        <p class="text-base text-ink-gray-6">
-          Answer every item: upload the document, or tell us why you cannot provide it.
-        </p>
+      <!-- Open: one step per item, then review and send -->
+      <form v-else novalidate class="space-y-4" @submit.prevent="send">
+        <ol aria-label="Response steps" class="flex flex-wrap gap-2" data-kit="response-steps">
+          <li v-for="item in request.items" :key="item.index">
+            <button
+              type="button"
+              :aria-current="step === item.index ? 'step' : undefined"
+              :class="[
+                'inline-flex h-8 items-center gap-1.5 rounded-full border px-3 text-sm',
+                step === item.index
+                  ? 'border-vati-accent bg-vati-accent-subtle font-medium text-vati-accent'
+                  : 'border-vati-border text-vati-text hover:bg-vati-surface-subtle',
+              ]"
+              @click="goTo(item.index)"
+            >
+              <span
+                v-if="answered(item.index)"
+                aria-hidden="true"
+                class="lucide-check size-3.5 text-vati-success-text"
+              />
+              <span
+                v-else-if="itemErrors[item.index]"
+                aria-hidden="true"
+                class="lucide-circle-alert size-3.5 text-vati-danger-text"
+              />
+              Item {{ item.index + 1 }}
+              <span class="vati-sr-only">
+                {{
+                  answered(item.index)
+                    ? '(answered)'
+                    : itemErrors[item.index]
+                      ? '(needs an answer)'
+                      : ''
+                }}
+              </span>
+            </button>
+          </li>
+          <li>
+            <button
+              type="button"
+              :aria-current="step === reviewStep ? 'step' : undefined"
+              :class="[
+                'inline-flex h-8 items-center rounded-full border px-3 text-sm',
+                step === reviewStep
+                  ? 'border-vati-accent bg-vati-accent-subtle font-medium text-vati-accent'
+                  : 'border-vati-border text-vati-text hover:bg-vati-surface-subtle',
+              ]"
+              @click="goTo(reviewStep)"
+            >
+              Review and send
+            </button>
+          </li>
+        </ol>
 
         <Alert
           v-if="errorCount > 0"
@@ -292,31 +357,29 @@ async function send() {
           "
           description="Your other answers have been kept."
         />
-        <Alert
-          v-if="problem"
-          :theme="problem.theme"
-          role="alert"
-          :title="problem.title"
-          :description="problem.description"
-        />
 
         <section
           v-for="item in request.items"
+          v-show="step === item.index"
           :key="item.index"
           :aria-labelledby="`item-${item.index}-title`"
-          class="space-y-4 rounded-lg border border-outline-gray-2 p-5"
+          class="space-y-4 rounded-surface border border-vati-border bg-vati-surface p-4"
         >
           <div>
-            <h2
+            <p class="text-sm text-vati-muted">Step {{ item.index + 1 }} of {{ reviewStep + 1 }}</p>
+            <h3
               :id="`item-${item.index}-title`"
               tabindex="-1"
               :aria-describedby="itemErrors[item.index] ? `item-${item.index}-error` : undefined"
-              class="text-base font-semibold text-ink-gray-9"
+              class="text-base font-semibold text-vati-text"
             >
               Item {{ item.index + 1 }}: {{ requestedTypeLabel(item.document_type) }}
-            </h2>
-            <p class="mt-1 whitespace-pre-line break-words text-ink-gray-7">
+            </h3>
+            <p class="mt-1 whitespace-pre-line break-words text-vati-text">
               {{ item.description }}
+            </p>
+            <p class="mt-1 text-sm text-vati-muted">
+              Upload the document, or tell us why you cannot provide it.
             </p>
           </div>
           <p
@@ -351,36 +414,93 @@ async function send() {
             :rows="3"
             required
           />
+          <div class="flex flex-wrap gap-2 pt-1">
+            <Button
+              v-if="item.index > 0"
+              label="Previous"
+              icon-left="lucide-arrow-left"
+              @click="goTo(item.index - 1)"
+            />
+            <Button
+              variant="solid"
+              :label="
+                item.index + 1 < reviewStep
+                  ? `Next: item ${item.index + 2}`
+                  : 'Next: review and send'
+              "
+              icon-right="lucide-arrow-right"
+              @click="goTo(item.index + 1)"
+            />
+          </div>
         </section>
 
-        <FormControl
-          id="response-message"
-          v-model="message"
-          type="textarea"
-          size="lg"
-          variant="outline"
-          label="Message to the officer (optional)"
-          description="Anything that helps explain your documents. Do not include passwords or bank PINs."
-          :rows="3"
-          :error="messageError"
-        />
-
-        <div class="flex flex-wrap items-center gap-3">
-          <Button
-            type="submit"
-            variant="solid"
-            size="lg"
-            label="Send response"
-            :loading="sending"
-            :disabled="sending || !tenantId"
+        <section
+          v-show="step === reviewStep"
+          aria-labelledby="review-title"
+          class="space-y-4 rounded-surface border border-vati-border bg-vati-surface p-4"
+        >
+          <div>
+            <p class="text-sm text-vati-muted">Step {{ reviewStep + 1 }} of {{ reviewStep + 1 }}</p>
+            <h3 id="review-title" tabindex="-1" class="text-base font-semibold text-vati-text">
+              Review and send
+            </h3>
+          </div>
+          <ul class="space-y-1 text-sm">
+            <li v-for="item in request.items" :key="item.index" class="flex items-center gap-2">
+              <span
+                aria-hidden="true"
+                :class="[
+                  answered(item.index)
+                    ? 'lucide-check text-vati-success-text'
+                    : 'lucide-circle-dashed text-vati-muted',
+                  'size-4',
+                ]"
+              />
+              Item {{ item.index + 1 }}: {{ requestedTypeLabel(item.document_type) }} —
+              {{
+                uploads[item.index]?.evidenceIds.value.length
+                  ? `${uploads[item.index].evidenceIds.value.length} document(s) uploaded`
+                  : answers[item.index]?.cannotProvide
+                    ? 'cannot provide, reason given'
+                    : 'not answered yet'
+              }}
+            </li>
+          </ul>
+          <Alert
+            v-if="problem"
+            :theme="problem.theme"
+            role="alert"
+            :title="problem.title"
+            :description="problem.description"
           />
-          <Button
+          <FormControl
+            id="response-message"
+            v-model="message"
+            type="textarea"
             size="lg"
-            label="Back"
-            icon-left="lucide-arrow-left"
-            :route="{ name: 'evidence-requests' }"
+            variant="outline"
+            label="Message to the officer (optional)"
+            description="Anything that helps explain your documents. Do not include passwords or bank PINs."
+            :rows="3"
+            :error="messageError"
           />
-        </div>
+          <div class="flex flex-wrap items-center gap-2">
+            <Button
+              v-if="reviewStep > 0"
+              label="Previous"
+              icon-left="lucide-arrow-left"
+              @click="goTo(reviewStep - 1)"
+            />
+            <Button
+              type="submit"
+              variant="solid"
+              size="lg"
+              label="Send response"
+              :loading="sending"
+              :disabled="sending || !tenantId"
+            />
+          </div>
+        </section>
       </form>
     </template>
   </section>
