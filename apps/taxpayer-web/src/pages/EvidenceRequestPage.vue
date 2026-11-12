@@ -7,11 +7,23 @@
  * reason the document cannot be provided, then sends the response once. One
  * idempotency key covers the response, so sending again after a lost
  * connection cannot store it twice. Only taxpayer-facing fields are shown.
+ *
+ * TAX-126: "Review and send" checks the uploaded documents first (could each be read;
+ * do its dates, VAT amount and invoice number fit the item) and the page shows the
+ * taxpayer's relevant reminders from earlier claims (TAX-078). Both are guidance: a
+ * check that fails, finds something or cannot run never stops the response being sent.
  */
 import { Alert, Badge, Button, FormControl, LoadingText } from 'frappe-ui';
 import { computed, nextTick, reactive, ref, shallowRef, watch } from 'vue';
+import CorrectionReminders from '../components/CorrectionReminders.vue';
 import DocumentUploads from '../components/DocumentUploads.vue';
-import { fetchEvidenceRequest, PortalError, respondToEvidenceRequest } from '../lib/api';
+import {
+  fetchCorrectionReminders,
+  fetchEvidenceRequest,
+  PortalError,
+  respondToEvidenceRequest,
+  reviewEvidenceResponse,
+} from '../lib/api';
 import { formatDate } from '../lib/format';
 import {
   mapResponseErrors,
@@ -21,8 +33,15 @@ import {
   validateAnswers,
   type ItemErrors,
 } from '../lib/responses';
+import {
+  attentionCount,
+  checksFor,
+  draftKey,
+  relevantReminders,
+  stillReading,
+} from '../lib/responseChecks';
 import { sessionState } from '../lib/session';
-import type { EvidenceRequestView } from '../lib/types';
+import type { CorrectionReminder, EvidenceRequestView, ResponseReview } from '../lib/types';
 import { useDocumentUploads, type DocumentUploads as Uploads } from '../lib/uploads';
 import { newIdempotencyKey } from '../lib/validation';
 
@@ -44,6 +63,13 @@ const message = ref('');
 const answers = reactive<Record<number, { cannotProvide: boolean; reason: string }>>({});
 const uploads = shallowRef<Record<number, Uploads>>({});
 let responseKey = newIdempotencyKey('response');
+// TAX-126: guidance before sending, and reminders from earlier claims. Never blocking.
+const review = ref<ResponseReview | null>(null);
+const reviewing = ref(false);
+const reviewError = ref(false);
+let reviewedKey = '';
+const reminders = ref<CorrectionReminder[]>([]);
+const remindersError = ref<string | null>(null);
 
 const tenantId = computed(() => {
   const state = sessionState.value;
@@ -69,6 +95,9 @@ async function load() {
     prepare(request.value);
     step.value = 0;
     responseKey = newIdempotencyKey('response');
+    review.value = null;
+    reviewedKey = '';
+    if (request.value.status === 'awaiting_response') void loadReminders();
   } catch (err) {
     request.value = null;
     loadError.value =
@@ -80,6 +109,58 @@ async function load() {
 
 watch(() => props.id, load, { immediate: true });
 
+async function loadReminders() {
+  remindersError.value = null;
+  try {
+    reminders.value = await fetchCorrectionReminders();
+  } catch {
+    reminders.value = [];
+    remindersError.value = 'You can still answer and send this request.';
+  }
+}
+
+const shownReminders = computed(() =>
+  request.value ? relevantReminders(request.value.items, reminders.value, review.value) : [],
+);
+
+/** The documents answered so far, per item (items answered with a reason have none). */
+function draftAnswers() {
+  return (request.value?.items ?? []).map((item) => ({
+    item_index: item.index,
+    evidence_ids: answers[item.index]?.cannotProvide
+      ? []
+      : [...(uploads.value[item.index]?.evidenceIds.value ?? [])],
+  }));
+}
+
+/** Check the uploaded documents. Runs again only when the documents changed, or on request. */
+async function runReview(force = false) {
+  if (!request.value || reviewing.value) return;
+  const answered = draftAnswers();
+  const key = draftKey(answered);
+  if (!force && key === reviewedKey && !reviewError.value) return;
+  if (!answered.some((a) => a.evidence_ids.length)) {
+    review.value = null;
+    reviewedKey = key;
+    return;
+  }
+  reviewing.value = true;
+  reviewError.value = false;
+  try {
+    review.value = await reviewEvidenceResponse({
+      request_id: request.value.request_id,
+      items: answered.filter((a) => a.evidence_ids.length),
+    });
+    reviewedKey = key;
+  } catch {
+    review.value = null;
+    reviewError.value = true;
+  } finally {
+    reviewing.value = false;
+  }
+}
+const attention = computed(() => attentionCount(review.value));
+
 const status = computed(() => (request.value ? requestStatusDisplay(request.value.status) : null));
 const reviewStep = computed(() => request.value?.items.length ?? 0);
 const answered = (index: number) =>
@@ -88,6 +169,7 @@ const answered = (index: number) =>
 
 async function goTo(next: number) {
   step.value = next;
+  if (next === reviewStep.value) void runReview();
   await nextTick();
   document
     .getElementById(next === reviewStep.value ? 'review-title' : `item-${next}-title`)
@@ -296,6 +378,13 @@ async function send() {
 
       <!-- Open: one step per item, then review and send -->
       <form v-else novalidate class="space-y-4" @submit.prevent="send">
+        <CorrectionReminders
+          :reminders="shownReminders"
+          :error="remindersError"
+          context="response"
+          @retry="loadReminders"
+        />
+
         <ol aria-label="Response steps" class="flex flex-wrap gap-2" data-kit="response-steps">
           <li v-for="item in request.items" :key="item.index">
             <button
@@ -445,27 +534,103 @@ async function send() {
               Review and send
             </h3>
           </div>
-          <ul class="space-y-1 text-sm">
-            <li v-for="item in request.items" :key="item.index" class="flex items-center gap-2">
-              <span
-                aria-hidden="true"
-                :class="[
-                  answered(item.index)
-                    ? 'lucide-check text-vati-success-text'
-                    : 'lucide-circle-dashed text-vati-muted',
-                  'size-4',
-                ]"
+          <div
+            aria-labelledby="checks-title"
+            role="region"
+            class="space-y-3"
+            data-kit="response-checks"
+          >
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <h4 id="checks-title" class="text-sm font-semibold text-vati-text">
+                Before you send
+              </h4>
+              <Button
+                v-if="stillReading(review) || reviewError"
+                label="Check again"
+                icon-left="lucide-refresh-cw"
+                :loading="reviewing"
+                @click="runReview(true)"
               />
-              Item {{ item.index + 1 }}: {{ requestedTypeLabel(item.document_type) }} —
-              {{
-                uploads[item.index]?.evidenceIds.value.length
-                  ? `${uploads[item.index].evidenceIds.value.length} document(s) uploaded`
-                  : answers[item.index]?.cannotProvide
-                    ? 'cannot provide, reason given'
-                    : 'not answered yet'
-              }}
-            </li>
-          </ul>
+            </div>
+            <p aria-live="polite" class="text-sm text-vati-muted">
+              <template v-if="reviewing">Checking your documents…</template>
+              <template v-else-if="reviewError">
+                The checks could not run just now. You can still send your response.
+              </template>
+              <template v-else-if="attention">
+                {{ attention === 1 ? '1 thing' : `${attention} things` }} to look at. These are
+                suggestions only: you can still send your response.
+              </template>
+              <template v-else-if="review">
+                Nothing to point out in your documents. The officer will still review them.
+              </template>
+              <template v-else>
+                We check uploaded documents for readability, dates and amounts. Guidance only.
+              </template>
+            </p>
+            <ul class="space-y-3" aria-label="Your answers">
+              <li
+                v-for="item in request.items"
+                :key="item.index"
+                class="rounded-surface border border-vati-border p-3"
+                :data-item="item.index"
+              >
+                <p class="flex items-center gap-2 font-medium text-vati-text">
+                  <span
+                    aria-hidden="true"
+                    :class="[
+                      answered(item.index)
+                        ? 'lucide-check text-vati-success-text'
+                        : 'lucide-circle-dashed text-vati-muted',
+                      'size-4 shrink-0',
+                    ]"
+                  />
+                  Item {{ item.index + 1 }}: {{ requestedTypeLabel(item.document_type) }} —
+                  {{
+                    uploads[item.index]?.evidenceIds.value.length
+                      ? `${uploads[item.index].evidenceIds.value.length} document(s) uploaded`
+                      : answers[item.index]?.cannotProvide
+                        ? 'cannot provide, reason given'
+                        : 'not answered yet'
+                  }}
+                </p>
+                <ul v-if="checksFor(review, item.index).length" class="mt-2 space-y-1.5 text-sm">
+                  <li
+                    v-for="(check, n) in checksFor(review, item.index)"
+                    :key="n"
+                    :data-check="check.code"
+                    class="flex gap-2"
+                  >
+                    <span
+                      aria-hidden="true"
+                      :class="[
+                        check.level === 'attention'
+                          ? 'lucide-circle-alert text-vati-warning-text'
+                          : 'lucide-info text-vati-muted',
+                        'mt-0.5 size-4 shrink-0',
+                      ]"
+                    />
+                    <span class="min-w-0 break-words text-vati-text">
+                      <span class="vati-sr-only">
+                        {{ check.level === 'attention' ? 'To look at:' : 'Note:' }}
+                      </span>
+                      {{ check.message }}
+                      <span v-if="check.reminder_id" class="block text-vati-muted">
+                        Also noted on an earlier claim.
+                      </span>
+                    </span>
+                  </li>
+                </ul>
+                <Button
+                  v-if="checksFor(review, item.index).some((c) => c.level === 'attention')"
+                  class="mt-2"
+                  size="sm"
+                  :label="`Change item ${item.index + 1}`"
+                  @click="goTo(item.index)"
+                />
+              </li>
+            </ul>
+          </div>
           <Alert
             v-if="problem"
             :theme="problem.theme"

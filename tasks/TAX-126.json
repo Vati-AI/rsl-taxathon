@@ -5,7 +5,7 @@
   "owner": "Keletso",
   "area": "apps/taxpayer-web",
   "phase": "pilot",
-  "status": "BACKLOG",
+  "status": "IN_PROGRESS",
   "priority": "P1",
   "depends_on": [
     "TAX-125",
@@ -13,8 +13,8 @@
     "TAX-078",
     "TAX-038"
   ],
-  "claimed_by": null,
-  "branch": null,
+  "claimed_by": "claude-code-20261112-friendly-newton",
+  "branch": "claude/friendly-newton-iwhm4u",
   "pr": null,
   "scope": "Move the TAX-044/048 checks and TAX-078 reminders onto the evidence-response page so wrong periods, unreadable files and amounts that do not match the requested item are flagged before sending",
   "inputs": [
@@ -30,15 +30,15 @@
   "acceptance": [
     {
       "text": "Before sending, each answered item shows guidance from the reconciliation and Docling extraction (period, legibility, amount against the requested line); guidance never blocks sending",
-      "done": false
+      "done": true
     },
     {
       "text": "Relevant earlier-claim reminders appear on the response page; failure to load them never blocks the response",
-      "done": false
+      "done": true
     },
     {
       "text": "Record relevant tests and evidence, update task status and open a PR",
-      "done": false
+      "done": true
     }
   ],
   "verification": "Unit and browser tests for each check and the non-blocking behaviour",
@@ -48,7 +48,20 @@
     "update-project-task",
     "finish-task"
   ],
-  "evidence": [],
+  "evidence": [
+    {
+      "criterion": 1,
+      "text": "Observed 2026-11-12: vati_tax/responses/checks.py (pure) gives per-document guidance from the latest Docling extraction on each answered item: legibility (not readable, partly read, still being read), period (dates vs the requested invoice's month or the claim's VAT period), and for TAX-127 line items the VAT amount and invoice number against the requested line; fixed neutral wording, only found dates/amounts quoted back. portal.api.review_evidence_response stores nothing, has the same scope as sending and returns blocks_sending false; respond_to_evidence_request never runs it (test_checks NonBlockingTests). Unread documents are queued once for a Docling read as the pipeline service (pipeline.store.request_draft_extraction / extract_draft, deduplicated per document); the case pipeline reuses that revision after sending. Portal 'Before you send' region on Review and send with per-item guidance, Change item N, Check again; checks unavailable never block sending. Tests: test_checks.py 15 OK; response-checks.spec.ts 18/18 at 1440/1024/390 with axe and overflow; 3 new bench tests in test_responses_bench.py written but NOT run (no Docker/Frappe site in this session)."
+    },
+    {
+      "criterion": 2,
+      "text": "Observed 2026-11-12: TAX-078 reminders relevant to the requested document types (and any reminder the server marked on a check) appear on the response page in a closed-by-default disclosure; checks covered by a reminder say 'Also noted on an earlier claim'. Reminders failing to load show 'You can still answer and send this request' and the response sends (response-checks.spec 'reminders that cannot load never block the response'); first-time claimants see no panel. responseChecks.test.ts 6 OK."
+    },
+    {
+      "criterion": 3,
+      "text": "Observed 2026-11-12: evidence and 18 screenshots in docs/evidence/TAX-126; npm run check passed (one pre-existing eslint warning in apps/shared/components/SideDrawer.vue); dev.py check passed; ruff check and mypy passed; Playwright responses/inbox/reminders/claim specs 78 passed and taxpayer spec passed with the change. Bench tests not run (no Frappe site available)."
+    }
+  ],
   "notes": [
     {
       "at": "2026-11-07",
@@ -57,6 +70,10 @@
     {
       "at": "2026-11-11T12:27:49.740246+00:00",
       "text": "2026-11-11 (ADR-045): Keletso keeps this task in the AI and new UI lane. No task in this lane depends on an open task in the other lane."
+    },
+    {
+      "at": "2026-11-12",
+      "text": "Claimed by claude-code-20261112-friendly-newton on the session's designated branch claude/friendly-newton-iwhm4u."
     }
   ],
   "sequence": 28

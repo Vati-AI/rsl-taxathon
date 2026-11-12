@@ -368,3 +368,85 @@ class EvidenceResponseTests(IntegrationTestCase):
             stored.save(ignore_permissions=True)
         with self.assertRaises(frappe.PermissionError):
             frappe.delete_doc(RESPONSE, stored.name, ignore_permissions=True, force=True)
+
+    # --- TAX-126: checks before sending --------------------------------------------------
+
+    def read(self, evidence_id: str, texts: list[str], status: str = "success") -> None:
+        """Record an extraction revision as the Docling adapter would (synthetic text)."""
+        frappe.set_user("Administrator")
+        evidence = frappe.db.get_value("Vati Evidence", evidence_id,
+                                       ["tenant_id", "taxpayer_id", "document_sha256"],
+                                       as_dict=True)  # fmt: skip
+        frappe.get_doc(
+            {
+                "doctype": "Vati Evidence Extraction",
+                "extraction_id": uid(),
+                "tenant_id": evidence.tenant_id,
+                "taxpayer_id": evidence.taxpayer_id,
+                "evidence_id": evidence_id,
+                "document_sha256": evidence.document_sha256,
+                "revision": 1,
+                "status": status,
+                "error_code": None if status == "success" else "conversion_failed",
+                "extractor": "docling",
+                "extractor_version": "docling-serve-1.38.2",
+                "page_count": 1,
+                "item_count": len(texts),
+                "recorded_at": frappe.utils.now_datetime(),
+                "items": [{"item_index": i, "label": "text", "page": 1, "text": t}
+                          for i, t in enumerate(texts)],
+            }
+        ).insert(ignore_permissions=True)  # fmt: skip
+
+    def review(self, who: str, request_id: str, items):
+        self.as_user(who)
+        frappe.local.request = Request(EnvironBuilder(method="POST").get_environ())
+        return portal_api.review_evidence_response(request_id=request_id, items=items)
+
+    def test_review_gives_guidance_from_the_extraction_and_stores_nothing(self):
+        request_id = self.new_request(self.t1, self.tp_a)
+        read = self.upload("taxpayer-a", self.t1)
+        unreadable = self.upload("taxpayer-a", self.t1)
+        self.read(read, ["Synthetic statement", "Period 01/09/2026 to 30/09/2026"])
+        self.read(unreadable, [], status="failure")
+        responses = frappe.db.count(RESPONSE)
+        result = self.review("taxpayer-a", request_id,
+                             [{"item_index": 0, "evidence_ids": [read, unreadable]}])  # fmt: skip
+        self.assertEqual(result["mode"], "live")
+        checks = result["data"]["items"][0]["checks"]
+        self.assertEqual([c["code"] for c in checks],
+                         ["document_matches_request", "document_not_readable"])  # fmt: skip
+        self.assertIs(result["data"]["blocks_sending"], False)
+        frappe.set_user("Administrator")
+        self.assertEqual(frappe.db.count(RESPONSE), responses)
+        self.assertEqual(frappe.db.get_value(REQUEST, request_id, "status"), "recorded")
+        # Guidance never stops the response being sent.
+        sent = self.respond("taxpayer-a", request_id, self.answers([read, unreadable]))
+        self.assertEqual(sent["data"]["status"], "response_sent")
+
+    def test_an_unread_document_is_queued_for_one_read(self):
+        from unittest import mock
+
+        request_id = self.new_request(self.t1, self.tp_a)
+        evidence = self.upload("taxpayer-a", self.t1)
+        with mock.patch.object(frappe, "enqueue") as enqueue:
+            result = self.review("taxpayer-a", request_id,
+                                 [{"item_index": 0, "evidence_ids": [evidence]}])  # fmt: skip
+        self.assertEqual(result["data"]["items"][0]["checks"][0]["code"],
+                         "document_still_being_read")  # fmt: skip
+        enqueue.assert_called_once()
+        self.assertEqual(enqueue.call_args.kwargs["job_id"], f"vati-draft-extraction-{evidence}")
+        self.assertTrue(enqueue.call_args.kwargs["deduplicate"])
+
+    def test_review_is_scoped_like_sending(self):
+        mine = self.new_request(self.t1, self.tp_a)
+        theirs = self.new_request(self.t1, self.tp_b)
+        their_doc = self.upload("taxpayer-b", self.t1)
+        with self.assertRaises(frappe.DoesNotExistError):
+            self.review("taxpayer-a", theirs, [{"item_index": 0, "evidence_ids": []}])
+        with self.assertRaises(frappe.ValidationError):
+            self.review("taxpayer-a", mine, [{"item_index": 0, "evidence_ids": [their_doc]}])
+        self.assertEqual(self.error()["field_errors"][0]["code"], "not_found")
+        closed = self.new_request(self.t1, self.tp_a, status="withdrawn")
+        with self.assertRaises(frappe.ValidationError):
+            self.review("taxpayer-a", closed, [])

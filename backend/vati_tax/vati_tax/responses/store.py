@@ -35,12 +35,16 @@ from vati_tax.ids.canonical import (
     MappingConflict,
     canonical_uuid,
 )
-from vati_tax.responses import rules
+from vati_tax.responses import checks, rules
 from vati_tax.vati_tax.doctype.vati_refund_claim.vati_refund_claim import foreign_evidence_ids
 
 REQUEST = "Vati Evidence Request"
 RESPONSE = "Vati Evidence Response"
 EVIDENCE = "Vati Evidence"
+EXTRACTION = "Vati Evidence Extraction"
+PROVENANCE = "Vati Extraction Provenance"
+CASE = "Vati Case Identity"
+SUBMISSION = "Vati Submission"
 # Only what the taxpayer view needs; internal columns are never selected.
 _REQUEST_FIELDS = ["name", "tenant_id", "taxpayer_id", "status", "due_date", "items",
                    "message_to_taxpayer", "created_at", "line_items", "already_held"]  # fmt: skip
@@ -257,3 +261,108 @@ def respond(
         ),
     )
     return {**get_request(scope, row.name), "replayed": False}
+
+
+# --- TAX-126: checks before sending -----------------------------------------------------
+
+
+def _draft_answers(raw: object) -> list[dict[str, Any]]:
+    """The draft's item answers, loosely: only what the checks need, nothing validated."""
+    if isinstance(raw, str):
+        try:
+            raw = json.loads(raw)
+        except ValueError:
+            raw = None
+    if not isinstance(raw, list):
+        raise InvalidMapping("Answer each requested item.", "items", "invalid_type")
+    out = []
+    for entry in raw:
+        if not isinstance(entry, dict) or isinstance(entry.get("item_index"), bool):
+            raise InvalidMapping("Answer each requested item.", "items", "invalid_item")
+        ids = entry.get("evidence_ids") or []
+        if not isinstance(ids, list):
+            raise InvalidMapping("A document reference is not valid.", "items", "invalid_uuid")
+        out.append(
+            {
+                "item_index": entry.get("item_index"),
+                "evidence_ids": [canonical_uuid(e, "evidence_ids") for e in ids],
+            }
+        )
+    return out
+
+
+def _claim_period(request_name: str) -> str | None:
+    """The VAT period of the claim the request's case was opened for, if any."""
+    case_id = frappe.db.get_value(REQUEST, request_name, "case_id")
+    submission_id = frappe.db.get_value(CASE, case_id, "submission_id") if case_id else None
+    return frappe.db.get_value(SUBMISSION, submission_id, "period") if submission_id else None
+
+
+def _document_facts(tenant_id: str, taxpayer_id: str, ids: list[str]) -> dict[str, Any]:
+    """Each document's name and its latest extraction's status and text, as data."""
+    if not ids:
+        return {}
+    names = _document_names(tenant_id, taxpayer_id, ids)
+    latest: dict[str, Any] = {}
+    for row in frappe.get_all(
+        EXTRACTION,
+        filters={"evidence_id": ["in", list(names)], "tenant_id": tenant_id},
+        fields=["name", "evidence_id", "revision", "status"],
+        order_by="revision desc",
+    ):
+        latest.setdefault(row.evidence_id, row)
+    texts: dict[str, list[str]] = {}
+    if latest:
+        for item in frappe.get_all(
+            PROVENANCE,
+            filters={"parent": ["in", [r.name for r in latest.values()]], "parenttype": EXTRACTION},
+            fields=["parent", "item_index", "text"],
+            order_by="item_index asc",
+        ):
+            texts.setdefault(item.parent, []).append(item.text or "")
+    facts = {}
+    for evidence_id, name in names.items():
+        row = latest.get(evidence_id)
+        facts[evidence_id] = checks.DocumentFacts(
+            evidence_id=evidence_id,
+            name=name,
+            extraction=row.status if row else "pending",
+            texts=tuple(texts.get(row.name, [])) if row else (),
+        )
+    return facts
+
+
+def review(scope: Scope, request_id: str, items: object) -> dict[str, Any]:
+    """Guidance on a draft response to one of the caller's own open requests.
+
+    Stores nothing about the draft and never blocks sending. Documents Docling has not
+    read yet are queued for one read (``pipeline.store.request_draft_extraction``) and
+    reported as still being read. Reminders that cannot be loaded are left out.
+    """
+    from vati_tax.pipeline import store as pipeline_store
+    from vati_tax.reminders import store as reminder_store
+
+    row = _owned_request(scope, request_id)
+    permissions.require_action(policy.EVIDENCE_RESPOND, row.tenant_id, taxpayer_id=row.taxpayer_id)
+    if row.status not in rules.OPEN_STATUSES:
+        reason = "already_responded" if row.status == "responded" else "request_withdrawn"
+        raise RequestClosed("This request no longer accepts a response.", "request_id", reason)
+    answers = _draft_answers(items)
+    ids = list(dict.fromkeys(e for a in answers for e in a["evidence_ids"]))
+    if foreign_evidence_ids(row.tenant_id, row.taxpayer_id, set(ids)):
+        raise MappingConflict("A document could not be found.", "evidence_ids", "not_found")
+    facts = _document_facts(row.tenant_id, row.taxpayer_id, ids)
+    for evidence_id, fact in facts.items():
+        if fact.extraction == "pending":
+            pipeline_store.request_draft_extraction(row.tenant_id, row.taxpayer_id, evidence_id)
+    try:
+        reminders = reminder_store.taxpayer_reminders([(row.tenant_id, row.taxpayer_id)])
+    except Exception:  # noqa: BLE001 - guidance without reminders is still guidance
+        reminders = []
+    return checks.review(
+        rules.requested_items(row["items"], row["line_items"]),
+        answers,
+        facts,
+        claim_period=_claim_period(row.name),
+        reminders=reminders,
+    )

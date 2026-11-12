@@ -41,7 +41,7 @@ from vati_tax.bridge import rules as bridge_rules
 from vati_tax.bridge import store as bridge_store
 from vati_tax.identity.permissions import get_principal
 from vati_tax.identity.policy import TAXPAYER, canonical_uuid
-from vati_tax.ids.canonical import CaseNotFound, MappingError
+from vati_tax.ids.canonical import CaseNotFound, InvalidMapping, MappingError
 from vati_tax.integrations import config as integration_config
 from vati_tax.integrations import factories
 from vati_tax.portal import claims, presubmission
@@ -598,6 +598,36 @@ def respond_to_evidence_request(
         )
     _log(action, "replayed" if result["replayed"] else "responded", request_id=result["request_id"])
     return {**LIVE_META, "replayed": result.pop("replayed"), "data": result}
+
+
+@frappe.whitelist(methods=["POST"])
+def review_evidence_response(request_id: str | None = None, items: Any = None) -> dict[str, Any]:
+    """TAX-126: guidance on a draft response before it is sent; stores nothing.
+
+    For each item answered with documents: whether each document could be read, and
+    whether its dates, VAT amount and invoice number fit what the item asks for. The
+    guidance never blocks ``respond_to_evidence_request``, which does not run it.
+    """
+    _user, scope = _require_taxpayer()
+    action = "review_evidence_response"
+    try:
+        result = response_store.review(scope, request_id or "", items)
+    except CaseNotFound:
+        raise frappe.DoesNotExistError(_("Evidence request not found.")) from None
+    except InvalidMapping as exc:
+        reason = exc.field_errors[0]["code"] if exc.field_errors else exc.code
+        text = _RESPONSE_MESSAGES.get(str(reason), "Check the highlighted answers.")
+        _fail(422, "invalid_domain_input", text,
+              [response_rules.FieldError("items", str(reason), text)], action)  # fmt: skip
+    except MappingError as exc:
+        reason = exc.field_errors[0]["code"] if exc.field_errors else exc.code
+        field = exc.field_errors[0]["field"] if exc.field_errors else "request_id"
+        text = _RESPONSE_MESSAGES.get(str(reason), "The response could not be checked.")
+        _fail(422, str(exc.code), text, [response_rules.FieldError(str(field), str(reason), text)],
+              action)  # fmt: skip
+    _log(action, "reviewed", request_id=request_id,
+         attention=sum(i["attention"] for i in result["items"]))  # fmt: skip
+    return {**LIVE_META, "data": result}
 
 
 # --- pre-submission reconciliation (TAX-044) --------------------------------------
