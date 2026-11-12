@@ -233,6 +233,31 @@ class FindingBodyTests(unittest.TestCase):
         self.assertEqual(by_code["related_party_fees_with_persistent_losses"]["proposed_action"]
                          ["type"], "specialist_review")  # fmt: skip
 
+    def test_service_payments_outside_service_accounts_ask_for_evidence(self) -> None:
+        # TAX-141: fees booked as general expenses, described as services by the bank.
+        res = result()
+        code = "foreign_service_payments_outside_service_accounts"
+        reason = ("M2.0m paid to F-ZA-2 (ZA) in window is described as services by the bank "
+                  "narration. Ask the taxpayer what the payments were for.")  # fmt: skip
+        res["findings"].append({"code": code, "issue": "untaxed_imported_services",
+                                "reason": reason, "route": route(code)})  # fmt: skip
+        res["three_way"]["rows"].append(
+            {"counterparty": "F-ZA-2",
+             "explanations_tested": ["central_bank_purpose_not_reported",
+                                     "bank_narration_describes_services"]})  # fmt: skip
+        res["three_way"]["flags"].append(
+            {"code": code, "counterparty": "F-ZA-2", "year": "window",
+             "amount": money("50000.00"), "evidence_ids": ["bank:FX-2", "ledger:SI-2"],
+             "reason": reason})  # fmt: skip
+        body = {b["code"]: b for b, _ in bodies(res)}[code]
+        finding_rules.FindingInput.build(body)
+        self.assertEqual(body["category"], "imported_services")
+        self.assertEqual(body["unresolved_amount"], money("50000.00"))
+        self.assertEqual(body["proposed_action"]["type"], "request_evidence")
+        self.assertIn("Tested alternative explanation: bank narration describes services.",
+                      body["alternative_explanations"])  # fmt: skip
+        self.assertIs(body["candidate_route"]["eligible_for_assessment"], False)
+
     def test_same_inputs_give_the_same_keys_and_new_inputs_new_ones(self) -> None:
         self.assertEqual([k for _, k in bodies()], [k for _, k in bodies()])
         other = rules.finding_bodies(result(), sources=SOURCES, bundle_evidence_id=BUNDLE,

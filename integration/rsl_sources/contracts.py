@@ -272,6 +272,9 @@ CONTRACTS: dict[tuple[str, str], SourceContract] = {
                 "currency": "currency",
                 "counterparty_country": "country",
             },
+            # TAX-141: the balance-of-payments purpose, where the report carries one.
+            optional=frozenset({"purpose"}),
+            optional_rules={"purpose": "code"},
         ),
     )
 }

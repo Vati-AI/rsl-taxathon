@@ -1,0 +1,689 @@
+{
+  "after": [
+    {
+      "amount_at_risk": {
+        "imported_services_gap_computed_for_planted_taxpayers": "10546232.22",
+        "imported_services_planted_gap": "10546233.24"
+      },
+      "bank_narration": true,
+      "central_bank_purpose": false,
+      "clean_taxpayers_flagged": {
+        "count": 13,
+        "of": 163,
+        "rate": 0.0798
+      },
+      "detection": {
+        "detected": {
+          "count": 8,
+          "of": 8,
+          "rate": 1.0
+        },
+        "false_positive": {
+          "count": 5,
+          "of": 192,
+          "rate": 0.026
+        }
+      },
+      "errors": [
+        {
+          "issue": "untaxed_imported_services",
+          "reason": "Withholding was declared under a different payee reference, so it did not join to the counterparty; an officer would resolve it with one question.",
+          "tin": "322274375",
+          "type": "false_positive"
+        },
+        {
+          "issue": "untaxed_imported_services",
+          "reason": "Withholding was declared under a different payee reference, so it did not join to the counterparty; an officer would resolve it with one question.",
+          "tin": "511480115",
+          "type": "false_positive"
+        },
+        {
+          "issue": "untaxed_imported_services",
+          "reason": "Withholding was declared under a different payee reference, so it did not join to the counterparty; an officer would resolve it with one question.",
+          "tin": "625110657",
+          "type": "false_positive"
+        },
+        {
+          "issue": "untaxed_imported_services",
+          "reason": "Withholding was declared under a different payee reference, so it did not join to the counterparty; an officer would resolve it with one question.",
+          "tin": "626977948",
+          "type": "false_positive"
+        },
+        {
+          "issue": "untaxed_imported_services",
+          "reason": "Withholding was declared under a different payee reference, so it did not join to the counterparty; an officer would resolve it with one question.",
+          "tin": "922037384",
+          "type": "false_positive"
+        }
+      ],
+      "fees_booked_as_expenses": {
+        "detected": 4,
+        "planted": 4
+      },
+      "new_question_raised": {
+        "taxpayers": 4,
+        "with_planted_issue": 4,
+        "without_planted_issue": 0
+      },
+      "population": "test split",
+      "seed": 20261106,
+      "taxpayers": 200
+    },
+    {
+      "amount_at_risk": {
+        "imported_services_gap_computed_for_planted_taxpayers": "10546232.22",
+        "imported_services_planted_gap": "10546233.24"
+      },
+      "bank_narration": true,
+      "central_bank_purpose": true,
+      "clean_taxpayers_flagged": {
+        "count": 13,
+        "of": 163,
+        "rate": 0.0798
+      },
+      "detection": {
+        "detected": {
+          "count": 8,
+          "of": 8,
+          "rate": 1.0
+        },
+        "false_positive": {
+          "count": 5,
+          "of": 192,
+          "rate": 0.026
+        }
+      },
+      "errors": [
+        {
+          "issue": "untaxed_imported_services",
+          "reason": "Withholding was declared under a different payee reference, so it did not join to the counterparty; an officer would resolve it with one question.",
+          "tin": "322274375",
+          "type": "false_positive"
+        },
+        {
+          "issue": "untaxed_imported_services",
+          "reason": "Withholding was declared under a different payee reference, so it did not join to the counterparty; an officer would resolve it with one question.",
+          "tin": "511480115",
+          "type": "false_positive"
+        },
+        {
+          "issue": "untaxed_imported_services",
+          "reason": "Withholding was declared under a different payee reference, so it did not join to the counterparty; an officer would resolve it with one question.",
+          "tin": "625110657",
+          "type": "false_positive"
+        },
+        {
+          "issue": "untaxed_imported_services",
+          "reason": "Withholding was declared under a different payee reference, so it did not join to the counterparty; an officer would resolve it with one question.",
+          "tin": "626977948",
+          "type": "false_positive"
+        },
+        {
+          "issue": "untaxed_imported_services",
+          "reason": "Withholding was declared under a different payee reference, so it did not join to the counterparty; an officer would resolve it with one question.",
+          "tin": "922037384",
+          "type": "false_positive"
+        }
+      ],
+      "fees_booked_as_expenses": {
+        "detected": 4,
+        "planted": 4
+      },
+      "new_question_raised": {
+        "taxpayers": 4,
+        "with_planted_issue": 4,
+        "without_planted_issue": 0
+      },
+      "population": "test split",
+      "seed": 20261106,
+      "taxpayers": 200
+    },
+    {
+      "amount_at_risk": {
+        "imported_services_gap_computed_for_planted_taxpayers": "4351499.10",
+        "imported_services_planted_gap": "10546233.24"
+      },
+      "bank_narration": false,
+      "central_bank_purpose": false,
+      "clean_taxpayers_flagged": {
+        "count": 13,
+        "of": 163,
+        "rate": 0.0798
+      },
+      "detection": {
+        "detected": {
+          "count": 4,
+          "of": 8,
+          "rate": 0.5
+        },
+        "false_positive": {
+          "count": 5,
+          "of": 192,
+          "rate": 0.026
+        }
+      },
+      "errors": [
+        {
+          "issue": "untaxed_imported_services",
+          "reason": "Withholding was declared under a different payee reference, so it did not join to the counterparty; an officer would resolve it with one question.",
+          "tin": "322274375",
+          "type": "false_positive"
+        },
+        {
+          "issue": "untaxed_imported_services",
+          "reason": "Foreign fees were booked as general operating expenses, so the books do not show them as services and the three-way match did not test them.",
+          "tin": "428557544",
+          "type": "miss"
+        },
+        {
+          "issue": "untaxed_imported_services",
+          "reason": "Withholding was declared under a different payee reference, so it did not join to the counterparty; an officer would resolve it with one question.",
+          "tin": "511480115",
+          "type": "false_positive"
+        },
+        {
+          "issue": "untaxed_imported_services",
+          "reason": "Withholding was declared under a different payee reference, so it did not join to the counterparty; an officer would resolve it with one question.",
+          "tin": "625110657",
+          "type": "false_positive"
+        },
+        {
+          "issue": "untaxed_imported_services",
+          "reason": "Withholding was declared under a different payee reference, so it did not join to the counterparty; an officer would resolve it with one question.",
+          "tin": "626977948",
+          "type": "false_positive"
+        },
+        {
+          "issue": "untaxed_imported_services",
+          "reason": "Foreign fees were booked as general operating expenses, so the books do not show them as services and the three-way match did not test them.",
+          "tin": "767369827",
+          "type": "miss"
+        },
+        {
+          "issue": "untaxed_imported_services",
+          "reason": "Foreign fees were booked as general operating expenses, so the books do not show them as services and the three-way match did not test them.",
+          "tin": "791702552",
+          "type": "miss"
+        },
+        {
+          "issue": "untaxed_imported_services",
+          "reason": "Withholding was declared under a different payee reference, so it did not join to the counterparty; an officer would resolve it with one question.",
+          "tin": "922037384",
+          "type": "false_positive"
+        },
+        {
+          "issue": "untaxed_imported_services",
+          "reason": "Foreign fees were booked as general operating expenses, so the books do not show them as services and the three-way match did not test them.",
+          "tin": "999950701",
+          "type": "miss"
+        }
+      ],
+      "fees_booked_as_expenses": {
+        "detected": 0,
+        "planted": 4
+      },
+      "new_question_raised": {
+        "taxpayers": 0,
+        "with_planted_issue": 0,
+        "without_planted_issue": 0
+      },
+      "population": "test split",
+      "seed": 20261106,
+      "taxpayers": 200
+    },
+    {
+      "amount_at_risk": {
+        "imported_services_gap_computed_for_planted_taxpayers": "5680098.06",
+        "imported_services_planted_gap": "10546233.24"
+      },
+      "bank_narration": false,
+      "central_bank_purpose": true,
+      "clean_taxpayers_flagged": {
+        "count": 13,
+        "of": 163,
+        "rate": 0.0798
+      },
+      "detection": {
+        "detected": {
+          "count": 5,
+          "of": 8,
+          "rate": 0.625
+        },
+        "false_positive": {
+          "count": 5,
+          "of": 192,
+          "rate": 0.026
+        }
+      },
+      "errors": [
+        {
+          "issue": "untaxed_imported_services",
+          "reason": "Withholding was declared under a different payee reference, so it did not join to the counterparty; an officer would resolve it with one question.",
+          "tin": "322274375",
+          "type": "false_positive"
+        },
+        {
+          "issue": "untaxed_imported_services",
+          "reason": "Withholding was declared under a different payee reference, so it did not join to the counterparty; an officer would resolve it with one question.",
+          "tin": "511480115",
+          "type": "false_positive"
+        },
+        {
+          "issue": "untaxed_imported_services",
+          "reason": "Withholding was declared under a different payee reference, so it did not join to the counterparty; an officer would resolve it with one question.",
+          "tin": "625110657",
+          "type": "false_positive"
+        },
+        {
+          "issue": "untaxed_imported_services",
+          "reason": "Withholding was declared under a different payee reference, so it did not join to the counterparty; an officer would resolve it with one question.",
+          "tin": "626977948",
+          "type": "false_positive"
+        },
+        {
+          "issue": "untaxed_imported_services",
+          "reason": "Foreign fees were booked as general operating expenses, so the books do not show them as services and the three-way match did not test them.",
+          "tin": "767369827",
+          "type": "miss"
+        },
+        {
+          "issue": "untaxed_imported_services",
+          "reason": "Foreign fees were booked as general operating expenses, so the books do not show them as services and the three-way match did not test them.",
+          "tin": "791702552",
+          "type": "miss"
+        },
+        {
+          "issue": "untaxed_imported_services",
+          "reason": "Withholding was declared under a different payee reference, so it did not join to the counterparty; an officer would resolve it with one question.",
+          "tin": "922037384",
+          "type": "false_positive"
+        },
+        {
+          "issue": "untaxed_imported_services",
+          "reason": "Foreign fees were booked as general operating expenses, so the books do not show them as services and the three-way match did not test them.",
+          "tin": "999950701",
+          "type": "miss"
+        }
+      ],
+      "fees_booked_as_expenses": {
+        "detected": 1,
+        "planted": 4
+      },
+      "new_question_raised": {
+        "taxpayers": 1,
+        "with_planted_issue": 1,
+        "without_planted_issue": 0
+      },
+      "population": "test split",
+      "seed": 20261106,
+      "taxpayers": 200
+    },
+    {
+      "amount_at_risk": {
+        "imported_services_gap_computed_for_planted_taxpayers": "17299763.64",
+        "imported_services_planted_gap": "17299763.52"
+      },
+      "bank_narration": true,
+      "central_bank_purpose": false,
+      "clean_taxpayers_flagged": {
+        "count": 13,
+        "of": 246,
+        "rate": 0.0528
+      },
+      "detection": {
+        "detected": {
+          "count": 14,
+          "of": 14,
+          "rate": 1.0
+        },
+        "false_positive": {
+          "count": 6,
+          "of": 286,
+          "rate": 0.021
+        }
+      },
+      "errors": [
+        {
+          "issue": "untaxed_imported_services",
+          "reason": "Withholding was declared under a different payee reference, so it did not join to the counterparty; an officer would resolve it with one question.",
+          "tin": "352217258",
+          "type": "false_positive"
+        },
+        {
+          "issue": "untaxed_imported_services",
+          "reason": "Withholding was declared under a different payee reference, so it did not join to the counterparty; an officer would resolve it with one question.",
+          "tin": "438120554",
+          "type": "false_positive"
+        },
+        {
+          "issue": "untaxed_imported_services",
+          "reason": "Withholding was declared under a different payee reference, so it did not join to the counterparty; an officer would resolve it with one question.",
+          "tin": "665455406",
+          "type": "false_positive"
+        },
+        {
+          "issue": "untaxed_imported_services",
+          "reason": "Withholding was declared under a different payee reference, so it did not join to the counterparty; an officer would resolve it with one question.",
+          "tin": "689513512",
+          "type": "false_positive"
+        },
+        {
+          "issue": "untaxed_imported_services",
+          "reason": "Withholding was declared under a different payee reference, so it did not join to the counterparty; an officer would resolve it with one question.",
+          "tin": "915243314",
+          "type": "false_positive"
+        },
+        {
+          "issue": "untaxed_imported_services",
+          "reason": "Withholding was declared under a different payee reference, so it did not join to the counterparty; an officer would resolve it with one question.",
+          "tin": "984840426",
+          "type": "false_positive"
+        }
+      ],
+      "fees_booked_as_expenses": {
+        "detected": 4,
+        "planted": 4
+      },
+      "new_question_raised": {
+        "taxpayers": 4,
+        "with_planted_issue": 4,
+        "without_planted_issue": 0
+      },
+      "population": "whole population",
+      "seed": 20261112,
+      "taxpayers": 300
+    },
+    {
+      "amount_at_risk": {
+        "imported_services_gap_computed_for_planted_taxpayers": "17299763.64",
+        "imported_services_planted_gap": "17299763.52"
+      },
+      "bank_narration": true,
+      "central_bank_purpose": true,
+      "clean_taxpayers_flagged": {
+        "count": 13,
+        "of": 246,
+        "rate": 0.0528
+      },
+      "detection": {
+        "detected": {
+          "count": 14,
+          "of": 14,
+          "rate": 1.0
+        },
+        "false_positive": {
+          "count": 6,
+          "of": 286,
+          "rate": 0.021
+        }
+      },
+      "errors": [
+        {
+          "issue": "untaxed_imported_services",
+          "reason": "Withholding was declared under a different payee reference, so it did not join to the counterparty; an officer would resolve it with one question.",
+          "tin": "352217258",
+          "type": "false_positive"
+        },
+        {
+          "issue": "untaxed_imported_services",
+          "reason": "Withholding was declared under a different payee reference, so it did not join to the counterparty; an officer would resolve it with one question.",
+          "tin": "438120554",
+          "type": "false_positive"
+        },
+        {
+          "issue": "untaxed_imported_services",
+          "reason": "Withholding was declared under a different payee reference, so it did not join to the counterparty; an officer would resolve it with one question.",
+          "tin": "665455406",
+          "type": "false_positive"
+        },
+        {
+          "issue": "untaxed_imported_services",
+          "reason": "Withholding was declared under a different payee reference, so it did not join to the counterparty; an officer would resolve it with one question.",
+          "tin": "689513512",
+          "type": "false_positive"
+        },
+        {
+          "issue": "untaxed_imported_services",
+          "reason": "Withholding was declared under a different payee reference, so it did not join to the counterparty; an officer would resolve it with one question.",
+          "tin": "915243314",
+          "type": "false_positive"
+        },
+        {
+          "issue": "untaxed_imported_services",
+          "reason": "Withholding was declared under a different payee reference, so it did not join to the counterparty; an officer would resolve it with one question.",
+          "tin": "984840426",
+          "type": "false_positive"
+        }
+      ],
+      "fees_booked_as_expenses": {
+        "detected": 4,
+        "planted": 4
+      },
+      "new_question_raised": {
+        "taxpayers": 4,
+        "with_planted_issue": 4,
+        "without_planted_issue": 0
+      },
+      "population": "whole population",
+      "seed": 20261112,
+      "taxpayers": 300
+    },
+    {
+      "amount_at_risk": {
+        "imported_services_gap_computed_for_planted_taxpayers": "11029530.54",
+        "imported_services_planted_gap": "17299763.52"
+      },
+      "bank_narration": false,
+      "central_bank_purpose": false,
+      "clean_taxpayers_flagged": {
+        "count": 13,
+        "of": 246,
+        "rate": 0.0528
+      },
+      "detection": {
+        "detected": {
+          "count": 10,
+          "of": 14,
+          "rate": 0.7143
+        },
+        "false_positive": {
+          "count": 6,
+          "of": 286,
+          "rate": 0.021
+        }
+      },
+      "errors": [
+        {
+          "issue": "untaxed_imported_services",
+          "reason": "Withholding was declared under a different payee reference, so it did not join to the counterparty; an officer would resolve it with one question.",
+          "tin": "352217258",
+          "type": "false_positive"
+        },
+        {
+          "issue": "untaxed_imported_services",
+          "reason": "Foreign fees were booked as general operating expenses, so the books do not show them as services and the three-way match did not test them.",
+          "tin": "437079615",
+          "type": "miss"
+        },
+        {
+          "issue": "untaxed_imported_services",
+          "reason": "Withholding was declared under a different payee reference, so it did not join to the counterparty; an officer would resolve it with one question.",
+          "tin": "438120554",
+          "type": "false_positive"
+        },
+        {
+          "issue": "untaxed_imported_services",
+          "reason": "Foreign fees were booked as general operating expenses, so the books do not show them as services and the three-way match did not test them.",
+          "tin": "586303891",
+          "type": "miss"
+        },
+        {
+          "issue": "untaxed_imported_services",
+          "reason": "Foreign fees were booked as general operating expenses, so the books do not show them as services and the three-way match did not test them.",
+          "tin": "649676093",
+          "type": "miss"
+        },
+        {
+          "issue": "untaxed_imported_services",
+          "reason": "Withholding was declared under a different payee reference, so it did not join to the counterparty; an officer would resolve it with one question.",
+          "tin": "665455406",
+          "type": "false_positive"
+        },
+        {
+          "issue": "untaxed_imported_services",
+          "reason": "Withholding was declared under a different payee reference, so it did not join to the counterparty; an officer would resolve it with one question.",
+          "tin": "689513512",
+          "type": "false_positive"
+        },
+        {
+          "issue": "untaxed_imported_services",
+          "reason": "Foreign fees were booked as general operating expenses, so the books do not show them as services and the three-way match did not test them.",
+          "tin": "694458167",
+          "type": "miss"
+        },
+        {
+          "issue": "untaxed_imported_services",
+          "reason": "Withholding was declared under a different payee reference, so it did not join to the counterparty; an officer would resolve it with one question.",
+          "tin": "915243314",
+          "type": "false_positive"
+        },
+        {
+          "issue": "untaxed_imported_services",
+          "reason": "Withholding was declared under a different payee reference, so it did not join to the counterparty; an officer would resolve it with one question.",
+          "tin": "984840426",
+          "type": "false_positive"
+        }
+      ],
+      "fees_booked_as_expenses": {
+        "detected": 0,
+        "planted": 4
+      },
+      "new_question_raised": {
+        "taxpayers": 0,
+        "with_planted_issue": 0,
+        "without_planted_issue": 0
+      },
+      "population": "whole population",
+      "seed": 20261112,
+      "taxpayers": 300
+    },
+    {
+      "amount_at_risk": {
+        "imported_services_gap_computed_for_planted_taxpayers": "14110954.50",
+        "imported_services_planted_gap": "17299763.52"
+      },
+      "bank_narration": false,
+      "central_bank_purpose": true,
+      "clean_taxpayers_flagged": {
+        "count": 13,
+        "of": 246,
+        "rate": 0.0528
+      },
+      "detection": {
+        "detected": {
+          "count": 12,
+          "of": 14,
+          "rate": 0.8571
+        },
+        "false_positive": {
+          "count": 6,
+          "of": 286,
+          "rate": 0.021
+        }
+      },
+      "errors": [
+        {
+          "issue": "untaxed_imported_services",
+          "reason": "Withholding was declared under a different payee reference, so it did not join to the counterparty; an officer would resolve it with one question.",
+          "tin": "352217258",
+          "type": "false_positive"
+        },
+        {
+          "issue": "untaxed_imported_services",
+          "reason": "Foreign fees were booked as general operating expenses, so the books do not show them as services and the three-way match did not test them.",
+          "tin": "437079615",
+          "type": "miss"
+        },
+        {
+          "issue": "untaxed_imported_services",
+          "reason": "Withholding was declared under a different payee reference, so it did not join to the counterparty; an officer would resolve it with one question.",
+          "tin": "438120554",
+          "type": "false_positive"
+        },
+        {
+          "issue": "untaxed_imported_services",
+          "reason": "Withholding was declared under a different payee reference, so it did not join to the counterparty; an officer would resolve it with one question.",
+          "tin": "665455406",
+          "type": "false_positive"
+        },
+        {
+          "issue": "untaxed_imported_services",
+          "reason": "Withholding was declared under a different payee reference, so it did not join to the counterparty; an officer would resolve it with one question.",
+          "tin": "689513512",
+          "type": "false_positive"
+        },
+        {
+          "issue": "untaxed_imported_services",
+          "reason": "Foreign fees were booked as general operating expenses, so the books do not show them as services and the three-way match did not test them.",
+          "tin": "694458167",
+          "type": "miss"
+        },
+        {
+          "issue": "untaxed_imported_services",
+          "reason": "Withholding was declared under a different payee reference, so it did not join to the counterparty; an officer would resolve it with one question.",
+          "tin": "915243314",
+          "type": "false_positive"
+        },
+        {
+          "issue": "untaxed_imported_services",
+          "reason": "Withholding was declared under a different payee reference, so it did not join to the counterparty; an officer would resolve it with one question.",
+          "tin": "984840426",
+          "type": "false_positive"
+        }
+      ],
+      "fees_booked_as_expenses": {
+        "detected": 2,
+        "planted": 4
+      },
+      "new_question_raised": {
+        "taxpayers": 2,
+        "with_planted_issue": 2,
+        "without_planted_issue": 0
+      },
+      "population": "whole population",
+      "seed": 20261112,
+      "taxpayers": 300
+    }
+  ],
+  "before": {
+    "amount_at_risk": {
+      "imported_services_gap_computed_for_planted_taxpayers": "4351499.10",
+      "imported_services_planted_gap": "10546233.24"
+    },
+    "clean_taxpayers_flagged": {
+      "count": 13,
+      "of": 163,
+      "rate": 0.0798
+    },
+    "detection": {
+      "detected": {
+        "count": 4,
+        "of": 8,
+        "rate": 0.5
+      },
+      "false_positive": {
+        "count": 5,
+        "of": 192,
+        "rate": 0.026
+      }
+    },
+    "fees_booked_as_expenses_missed": 4,
+    "run_at": "2026-11-06T11:56:12+00:00",
+    "seed": 20261106,
+    "source": "docs/evidence/TAX-118/results.json (sealed blind test run)"
+  },
+  "blind": false,
+  "disclosure": "The sealed TAX-118 test split was read before these rules were written, so the after figures on that split are not a blind result. The fresh seed was generated after the rules were fixed and is the better guide to false positives.",
+  "synthetic": true,
+  "task": "TAX-141"
+}

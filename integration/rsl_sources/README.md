@@ -16,7 +16,7 @@ name is claimed. Nothing here opens a network connection.
 | Risk-based audit system (PSRM) | `referral` (audit case reference, selection reason, risk sets whose owner must be `RSL`; TAX-123) | `rsl.audit_system.referral.v0-assumed` |
 | ASYCUDA World | `entry` | `rsl.asycuda.entry.v0-assumed` |
 | Registry | `entity` | `rsl.registry.entity.v0-assumed` |
-| Central Bank | `cross_border_payment` (CMA payments may be absent) | `rsl.central_bank.cross_border_payment.v0-assumed` |
+| Central Bank | `cross_border_payment` (CMA payments may be absent; optional `purpose` code, TAX-141) | `rsl.central_bank.cross_border_payment.v0-assumed` |
 
 Money is a decimal string with at most two places, and floats are refused. Dates use
 `YYYY-MM-DD` and VAT periods use `YYYY-MM`.

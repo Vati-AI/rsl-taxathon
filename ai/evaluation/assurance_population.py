@@ -24,6 +24,10 @@ market-rate loans). Noise: TIN typing slips, late-claimed invoices, DD/MM/YYYY d
 exchange-rate rounding, missing invoice copies, duplicate schedule lines, supplier
 non-declaration, name variations and CMA payments absent from Central Bank data.
 
+TAX-141 adds an opt-in ``central_bank_purpose`` parameter: Central Bank cross-border
+reports then carry their balance-of-payments purpose (``services`` or ``income``). Without
+it the reports are unchanged.
+
 TAX-139 adds an optional sixth issue, ``persistent_credit``, enabled only when the
 ``persistent_credit`` parameter is passed (``{"planted": n, "capex_lookalikes": m}``):
 planted taxpayers are non-exporters that under-declare standard-rated sales in their
@@ -413,17 +417,19 @@ def generate(seed: int, params: dict[str, Any] | None = None) -> tuple[dict, dic
                 ]
             )
             if country not in {"za", "na", "sz"}:
-                records["central_bank.cross_border_payment"].append(
-                    {
-                        "report_id": f"CB-{tin}-{len(bank_rows):05d}",
-                        "resident_tin": tin,
-                        "value_date": _date(pay_period, day),
-                        "direction": "outgoing",
-                        "amount": _s(settled),
-                        "currency": "LSL",
-                        "counterparty_country": country,
-                    }
-                )
+                report = {
+                    "report_id": f"CB-{tin}-{len(bank_rows):05d}",
+                    "resident_tin": tin,
+                    "value_date": _date(pay_period, day),
+                    "direction": "outgoing",
+                    "amount": _s(settled),
+                    "currency": "LSL",
+                    "counterparty_country": country,
+                }
+                if p.get("central_bank_purpose"):
+                    # TAX-141 (opt-in): the report's balance-of-payments purpose.
+                    report["purpose"] = "income" if narration.startswith("Loan") else "services"
+                records["central_bank.cross_border_payment"].append(report)
             return None
 
         payee_variant = not issues and r.random() < 0.05

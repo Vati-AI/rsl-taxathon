@@ -5,16 +5,16 @@
   "owner": "Keletso",
   "area": "ai",
   "phase": "pilot",
-  "status": "BACKLOG",
+  "status": "IN_REVIEW",
   "priority": "P1",
   "depends_on": [
     "TAX-115",
     "TAX-079",
     "TAX-118"
   ],
-  "claimed_by": null,
-  "branch": null,
-  "pr": null,
+  "claimed_by": "claude-code-20261112-friendly-newton",
+  "branch": "claude/friendly-newton-iwhm4u",
+  "pr": "https://github.com/Vati-AI/rsl-taxathon/pull/310",
   "scope": "Close the TAX-118 miss where foreign fees booked as general expenses escape the three-way match, using the central bank cross-border payment contract",
   "inputs": [
     "PROJECT.md",
@@ -29,15 +29,15 @@
   "acceptance": [
     {
       "text": "Cross-border payments without matching imported-services VAT or withholding become questions, not conclusions",
-      "done": false
+      "done": true
     },
     {
       "text": "Re-measured detection and false positives for imported services",
-      "done": false
+      "done": true
     },
     {
       "text": "Record relevant tests and evidence, update task status and open a PR",
-      "done": false
+      "done": true
     }
   ],
   "verification": "Benchmark re-run with differences explained",
@@ -47,7 +47,13 @@
     "update-project-task",
     "finish-task"
   ],
-  "evidence": [],
+  "evidence": [
+    "ai/tools/foreign_payments.py: foreign_service_payments_outside_service_accounts question when the Central Bank purpose or bank narration describes services booked outside service accounts; explanations tested recorded",
+    "integration/rsl_sources/contracts.py: optional Central Bank purpose code",
+    "ai/evaluation/imported_services_remeasure.py and docs/evidence/TAX-141/remeasure.json: detection 4/8 -> 8/8 on the TAX-118 test split (not blind), 14/14 on fresh seed 20261112, false positives unchanged (5/192, 6/286)",
+    "docs/evidence/TAX-141/README.md",
+    "tests/ai/test_imported_services_disguise.py; backend/vati_tax/vati_tax/assurance/test_rules.py"
+  ],
   "notes": [
     {
       "at": "2026-11-07",
@@ -56,6 +62,14 @@
     {
       "at": "2026-11-11T12:27:49.740246+00:00",
       "text": "2026-11-11 (ADR-045): Keletso keeps this task in the AI and new UI lane. No task in this lane depends on an open task in the other lane."
+    },
+    {
+      "at": "2026-11-12",
+      "text": "Claimed by claude-code-20261112-friendly-newton on the session's designated branch claude/friendly-newton-iwhm4u."
+    },
+    {
+      "at": "2026-11-12",
+      "text": "IN_REVIEW in https://github.com/Vati-AI/rsl-taxathon/pull/310."
     }
   ],
   "sequence": 26
