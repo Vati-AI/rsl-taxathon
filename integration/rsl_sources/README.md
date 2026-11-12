@@ -41,3 +41,5 @@ python3 -m unittest tests/integration/test_rsl_sources.py -v
 - TAX-121 assurance checks (`backend/vati_tax/vati_tax/assurance`).
 - TAX-123 audit referrals (`backend/vati_tax/vati_tax/rsl_referrals`, [ADR-047](../../docs/decisions/ADR-047-rsl-audit-referrals.md)): reads `audit_system.referral` per taxpayer, opens one Vati case per RSL audit case reference and keeps RSL's risk sets and scores as RSL-owned inputs. `fixtures/audit_referrals.json` is the synthetic referral fixture in the site fixture format.
 - TAX-122 claim intake (`backend/vati_tax/vati_tax/rsl_intake`, ADR-043): reads `online_refunds.claim` per taxpayer and records each claim as a sent `Vati Submission` with source `rsl_online_refunds`, keeping references and hashes only.
+
+Results go back to RSL through the outbound contracts in [`../rsl_sinks`](../rsl_sinks/README.md) (TAX-124).
