@@ -5,7 +5,7 @@
   "owner": "Gupta",
   "area": "integration",
   "phase": "pilot",
-  "status": "BACKLOG",
+  "status": "IN_REVIEW",
   "priority": "P1",
   "depends_on": [
     "TAX-035",
@@ -13,9 +13,9 @@
     "TAX-066",
     "TAX-067"
   ],
-  "claimed_by": null,
-  "branch": null,
-  "pr": null,
+  "claimed_by": "claude-opus-5-5-gupta",
+  "branch": "task/TAX-131",
+  "pr": "https://github.com/Vati-AI/rsl-taxathon/pull/318",
   "scope": "Jube cases are investigation sub-cases of RSL cases: Jube rules triage referred claims only, RSL scores are shown as RSL's, and calibration and peer baselines become corroboration and feedback for RSL's Risk Unit",
   "inputs": [
     "PROJECT.md",
@@ -30,19 +30,19 @@
   "acceptance": [
     {
       "text": "No Jube rule selects taxpayers from the population; rules run only on cases from TAX-122/123",
-      "done": false
+      "done": true
     },
     {
       "text": "RSL fraud and risk-set scores appear as RSL-owned inputs; Vati output is labelled findings or corroboration, never a risk score",
-      "done": false
+      "done": true
     },
     {
       "text": "TAX-066/067 output is exportable as Risk Unit feedback",
-      "done": false
+      "done": true
     },
     {
       "text": "Record relevant tests and evidence, update task status and open a PR",
-      "done": false
+      "done": true
     }
   ],
   "verification": "Rule configuration tests and a wording check of officer-facing labels",
@@ -52,7 +52,24 @@
     "update-project-task",
     "finish-task"
   ],
-  "evidence": [],
+  "evidence": [
+    {
+      "criterion": 1,
+      "text": "ADR-053. submissions.domain.referred_source: only a claim read from RSL's Online Refunds Application (TAX-122) is sent, or a portal/api/seed send where the Online Refunds simulator stands in for RSL (fixtures, demo). The Vati Submission controller refuses other sends ('File with RSL...'); bridge.rules.submission_origin gives them origin not_referred, so the assurance, bridge and pipeline send hooks open no case and never invoke Jube's rules. Nothing iterates the taxpayer population into Jube (RSL ingests read RSL per taxpayer and do not score). The Jube ruleset and its approved TAX-066 digest are unchanged. TAX-123 referral cases carry no declared facts and do not reach Jube's rules yet (TAX-134). Tests: submissions/test_domain.py ReferredSource 3, bridge/test_rules.py not-referred origin; bench test_submission_bench (portal send refused without the simulator, no case) 14/14, test_bridge_bench 15/15, test_assurance_bench 6/6, test_rsl_intake_bench (RSL claims still evaluated) OK."
+    },
+    {
+      "criterion": 2,
+      "text": "api_v1.projections.rsl_selection_reasons fills Case.selection_reasons with RSL's referral reason and risk-set scores (source audit_system) and the RSL refund-model score from the lane inputs (source online_refunds), each saying \"RSL's score, not a Vati score\"; inputs not owned by RSL are left out. SelectionReason.source accepts RslServiceName. Auditor app: 'Why RSL selected this case', each reason labelled \"RSL's input · <system>\" or 'Vati signal from <service>', note that Vati signals corroborate or question RSL's selection; Jube findings labelled 'Vati rule check'; integrity control labelled 'Case rating' (stored key risk_rating kept). Limitation: referral cases are not listed by /api/v1 because Case requires submission_id (follow-up contract change). Tests: api_v1/test_core RslSelectionReason 3; bench test_rsl_referrals_bench projection 9/9; vitest auditor 145 (new RSL/Vati label test); contract tests 140 (fixture cases with RSL reasons); e2e smoke/review/integrity 42 passed and tests/frontend scenarios 21 passed (Edge, one worker)."
+    },
+    {
+      "criterion": 3,
+      "text": "ai.evaluation.risk_unit_feedback builds vati.risk-unit-feedback/1 (assumed contract rsl.audit_system.risk_unit_feedback.v0-assumed, authority feedback_only, route WSO2): TAX-066 hold-out agreement between rule signals and reviewed outcomes, per-rule signal counts, drift alerts, proposed (inactive) Vati rule changes, and TAX-067 comparison counts per metric. Aggregate only (no case/taxpayer/tenant/TIN or amounts), no score/selection/status field, digest-sealed; validate_pack refuses otherwise. CLI exports to a file (never into the Jube rules directory); --check added to scripts/dev.py. tests/ai/test_risk_unit_feedback.py 8 with calibration and baselines 45 OK."
+    },
+    {
+      "criterion": 4,
+      "text": "Bench on the kept disposable site (verify-20261113t132809), all 24 bench modules one by one: all OK except assistance/test_assistance_bench (duplicate synthetic user on the reused site; untouched). Frappe-free backend 663 with only the Windows path-separator failure; tests/integration Jube bridge, tax-risk, lifecycle and findings OK; ruff, mypy, eslint, vue-tsc clean; validate.py clean. Hosted CI does not start (org spending limit)."
+    }
+  ],
   "notes": [
     {
       "at": "2026-11-07",
@@ -61,6 +78,14 @@
     {
       "at": "2026-11-11T12:27:49.740246+00:00",
       "text": "2026-11-11 (ADR-045): owner changed from Keletso to Gupta; RSL integration lane. No task in this lane depends on an open task in the other lane."
+    },
+    {
+      "at": "2026-11-13T14:40:24.354905+00:00",
+      "text": "Claimed by claude-opus-5-5-gupta"
+    },
+    {
+      "at": "2026-11-13T15:11:56.627682+00:00",
+      "text": "PR opened with local verification (ADR-038)"
     }
   ],
   "sequence": 31

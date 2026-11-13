@@ -20,6 +20,7 @@ try:
     import frappe
     from frappe.tests import IntegrationTestCase
 
+    from vati_tax.api_v1 import backend as api_backend
     from vati_tax.identity import policy
     from vati_tax.identity.permissions import clear_principal_cache
     from vati_tax.identity.provision import ensure_service_identity, ensure_tenant, grant_membership
@@ -186,6 +187,28 @@ class RslReferralBenchTests(IntegrationTestCase):
                                                 "service": "audit_system"}), 3)  # fmt: skip
         again = link_rsl_references.link_all()
         self.assertEqual(again.get("audit_system.linked", 0), 0)
+
+    def test_the_case_shows_rsl_selection_as_rsls_own(self):
+        # TAX-131 (ADR-043 §6): RSL's reason and risk-set scores, labelled as RSL's.
+        self.ingest()
+        first = self.referrals()[0]
+        frappe.set_user(self.users["auditor"])
+        clear_principal_cache()
+        (case,) = api_backend.project_cases(
+            self.tenant,
+            frappe.get_all(
+                CASE, filters={"name": first.case_id}, fields=api_backend._CASE_FIELDS
+            ),  # fmt: skip
+        )
+        reasons = case["selection_reasons"]
+        self.assertEqual([r["code"] for r in reasons],
+                         ["rsl_audit_referral", "rsl_risk_set", "rsl_risk_set"])  # fmt: skip
+        self.assertTrue(all(r["source"] == "audit_system" for r in reasons))
+        self.assertIn("risk_set_threshold", reasons[0]["summary"])
+        self.assertTrue(any("scored 0.8100. RSL's score, not a Vati score." in r["summary"]
+                            for r in reasons))
+        # No Jube rule ran on a referral: nothing claims to be a Vati signal.
+        self.assertFalse([r for r in reasons if r["source"] == "jube"])
 
     def test_a_second_read_replays_and_reuses_the_case(self):
         self.ingest()

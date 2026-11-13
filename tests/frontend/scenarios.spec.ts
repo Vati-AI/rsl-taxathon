@@ -111,7 +111,7 @@ async function walkToReview(page: Page, s: ReturnType<typeof scenario>, w: strin
 
   await row.getByRole('link', { name: s.id }).click();
   await pageReady(page, `${s.id} · ${s.name}`);
-  const why = page.getByRole('region', { name: 'Why this case was selected' });
+  const why = page.getByRole('region', { name: 'Why RSL selected this case' });
   await expect(why).toContainText('They are not findings, assessments or decisions.');
   // TAX-148: the refund claimed sits in the case workspace's key facts.
   await expect(page.locator('[data-kit="key-facts"]')).toContainText(lsl(s.refund_claim));

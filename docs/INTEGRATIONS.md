@@ -4,7 +4,7 @@ The following endpoints describe upstream contracts or proposed Vati contracts; 
 
 | Service | Interface | Responsibility / acceptance |
 |---|---|---|
-| Jube | Deployment Swagger `/swagger`; model endpoint configured from its generated API | Send canonical transaction facts with case/event IDs. Normalize risk score, rule IDs and rule version. Never assume a generic `/score` endpoint exists. Verify one configured tax scenario through the actual model API. |
+| Jube | Deployment Swagger `/swagger`; model endpoint configured from its generated API | Send canonical transaction facts with case/event IDs. Normalize rule signals, rule IDs and rule version: Vati corroboration of RSL's selection, never a competing risk score (ADR-053). Only RSL-referred cases are sent. Never assume a generic `/score` endpoint exists. Verify one configured tax scenario through the actual model API. |
 | OpenAleph | REST API documented by deployed instance and official docs | Create tenant-scoped collection, ingest document/entity, preserve source identity, retrieve evidence. Resolve endpoint/auth from selected release; do not guess an Aleph-compatible path. |
 | FollowTheMoney | Python library, schema-validated entity objects | Map Taxpayer → Company/Person, ownership → Ownership, evidence → Document as supported by the chosen schema. Preserve IDs and evidence links. Validate before indexing. |
 | yente | `POST /match/{dataset}`; query entities with FtM schema/properties | Return candidates, scores and dataset version. Review ambiguous matches; never equate similarity with identity or wrongdoing. Use a synthetic/local dataset first. |

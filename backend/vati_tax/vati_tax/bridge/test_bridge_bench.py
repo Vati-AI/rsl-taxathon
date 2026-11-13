@@ -139,6 +139,9 @@ class BridgeBenchTests(IntegrationTestCase):
         super().tearDownClass()
 
     def setUp(self):
+        # TAX-131: portal sends stand in for RSL only where the simulator runs (TAX-125).
+        self._simulator = frappe.local.conf.get("vati_online_refunds_simulator")
+        frappe.local.conf["vati_online_refunds_simulator"] = True
         # A fresh tenant per test: the outbox worker commits, so tenants keep tests apart.
         frappe.set_user("Administrator")
         clear_principal_cache()
@@ -160,6 +163,7 @@ class BridgeBenchTests(IntegrationTestCase):
         store.set_factories(lambda _t: self.jube, lambda _t: self.jube)
 
     def tearDown(self):
+        frappe.local.conf["vati_online_refunds_simulator"] = self._simulator
         frappe.set_user("Administrator")
         store.set_factories(None, None)
         frappe.local.request = None

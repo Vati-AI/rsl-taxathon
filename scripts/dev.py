@@ -198,6 +198,9 @@ def check():
         # TAX-066 risk calibration and drift evaluation (pure Python) and its baseline gate.
         ["python3", "-m", "unittest", "discover", "-s", "tests/ai", "-p", "test_risk_cal*.py"],
         ["python3", "-m", "ai.evaluation.risk_calibration", "--check"],
+        # TAX-131 Risk Unit feedback pack from TAX-066/067 output (pure Python).
+        ["python3", "-m", "unittest", "discover", "-s", "tests/ai", "-p", "test_risk_unit*.py"],
+        ["python3", "-m", "ai.evaluation.risk_unit_feedback", "--check"],
         # TAX-056 agent evaluation and injection regression; skips without LangGraph.
         ["python3", "-m", "unittest", "discover", "-s", "tests/ai", "-p", "test_agent_eval*.py"],
         # TAX-102 taxpayer-assistant scenarios and leakage checks (pure Python) and the

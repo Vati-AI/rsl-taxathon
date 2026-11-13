@@ -125,6 +125,61 @@ def taxpayer_summary(taxpayer: Mapping[str, Any]) -> dict[str, Any]:
     }
 
 
+MAX_SELECTION_REASONS = 10
+RSL_SCORE_NOTE = "RSL's score, not a Vati score."
+
+
+def _short(text: str) -> str:
+    return text if len(text) <= 280 else text[:279] + "…"
+
+
+def rsl_selection_reasons(
+    referrals: Sequence[Mapping[str, Any]], fraud_score: Any = None
+) -> list[dict[str, Any]]:
+    """TAX-131 (ADR-043 §6): why RSL selected the case, labelled as RSL's.
+
+    ``referrals`` are the stored ``rsl_inputs`` of the case's RSL audit referrals (TAX-123)
+    and ``fraud_score`` the RSL refund-model score kept in the lane inputs (TAX-114). Every
+    reason's ``source`` is the RSL system; a score is quoted as RSL's, never as Vati's. An
+    input not owned by RSL is left out rather than shown under RSL's name.
+    """
+    out: list[dict[str, Any]] = []
+    for inputs in referrals:
+        if inputs.get("owner") != "RSL":
+            continue
+        reason = str(inputs.get("selection_reason") or "not stated")
+        out.append({"code": "rsl_audit_referral", "source": "audit_system",
+                    "summary": _short(f"RSL referred this case for audit (RSL reason: {reason}).")})  # fmt: skip
+        for item in inputs.get("risk_sets") or []:
+            if item.get("owner") != "RSL":
+                continue
+            out.append(
+                {
+                    "code": "rsl_risk_set",
+                    "source": "audit_system",
+                    "summary": _short(
+                        f"RSL risk set {item.get('risk_set_id')} "
+                        f"(version {item.get('risk_set_version')}) scored {item.get('score')}. "
+                        + RSL_SCORE_NOTE
+                    ),
+                }
+            )
+    if isinstance(fraud_score, Mapping) and fraud_score.get("owner") == "RSL":
+        model = " ".join(str(v) for v in (fraud_score.get("model_id"),
+                                           fraud_score.get("model_version")) if v)  # fmt: skip
+        out.append(
+            {
+                "code": "rsl_refund_model",
+                "source": "online_refunds",
+                "summary": _short(
+                    f"RSL's refund model{' ' + model if model else ''} scored this claim "
+                    f"{fraud_score.get('score')}. " + RSL_SCORE_NOTE
+                ),
+            }
+        )
+    return out[:MAX_SELECTION_REASONS]
+
+
 def case(
     identity: Mapping[str, Any],
     *,
@@ -135,13 +190,14 @@ def case(
     lane: str | None,
     links: Sequence[dict[str, Any]],
     updated_at: Any,
+    selection_reasons: Sequence[dict[str, Any]] = (),
 ) -> dict[str, Any]:
     """Contract ``Case``. ``status`` is the Jube projection (``Vati Case Sync``).
 
     A case Jube has not reported on yet is RECEIVED: registration is all that is
     known, and the Jube service link shows whether Jube has acknowledged it.
-    ``assigned_officer_id`` is null and ``selection_reasons`` empty because Frappe
-    holds no copy of Jube's assignment or of RSL's selection reasons (ADR-046).
+    ``assigned_officer_id`` is null because Frappe holds no copy of Jube's assignment
+    (ADR-046). ``selection_reasons`` are RSL's (``rsl_selection_reasons``, TAX-131).
     """
     created = iso(identity.get("creation"))
     updated = iso(updated_at) or created
@@ -151,7 +207,7 @@ def case(
         "display_id": identity["display_id"],
         "taxpayer_id": identity["taxpayer_id"],
         "taxpayer": taxpayer_summary(taxpayer),
-        "selection_reasons": [],
+        "selection_reasons": list(selection_reasons)[:MAX_SELECTION_REASONS],
         "submission_id": identity["submission_id"],
         "status": status if status in CASE_STATUSES else "RECEIVED",
         "status_authority": "jube",

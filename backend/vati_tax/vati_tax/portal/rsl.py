@@ -18,14 +18,15 @@ from collections.abc import Mapping
 from typing import Any
 
 from vati_tax.portal import submissions
+from vati_tax.submissions import domain
 
-SIMULATOR_KEY = "vati_online_refunds_simulator"
+SIMULATOR_KEY = domain.SIMULATOR_KEY
 LINKS_KEY = "vati_rsl_links"
 
 
 def simulator_enabled(conf: Mapping[str, Any]) -> bool:
     """Whether this site offers the fixture-only Online Refunds simulator."""
-    return conf.get(SIMULATOR_KEY) is True or conf.get(SIMULATOR_KEY) == 1
+    return domain.simulator_enabled(conf)
 
 
 def online_refunds_url(conf: Mapping[str, Any]) -> str | None:

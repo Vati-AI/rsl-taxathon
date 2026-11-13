@@ -408,7 +408,7 @@ test.describe('officer onboarding (TAX-082)', () => {
         }
         await pageReady(page, /^SYN-002 · /);
         await expect(
-          page.getByRole('region', { name: 'Why this case was selected' }),
+          page.getByRole('region', { name: 'Why RSL selected this case' }),
         ).toBeVisible();
         await audit(proxy, 'case overview');
         await shot(page, 'auditor-2-case', w);

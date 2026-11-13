@@ -56,6 +56,7 @@ SYNC = "Vati Case Sync"
 TAXPAYER = "Vati Taxpayer"
 CLAIM = "Vati Refund Claim"
 LANE = "Vati Lane Proposal"
+REFERRAL = "Vati RSL Referral"
 LINK = "Vati Service Link"
 AUDIT = "Vati Audit Event"
 DECISION = "Vati Decision"
@@ -226,11 +227,28 @@ def project_cases(tenant_id: str, rows: list[Any]) -> list[dict[str, Any]]:
         frappe.get_all(
             LANE,
             filters={"tenant_id": tenant_id, "case_id": ["in", ids]},
-            fields=["case_id", "lane", "claimed_amount", "currency", "created_at", "revision"],
+            fields=[
+                "case_id",
+                "lane",
+                "claimed_amount",
+                "currency",
+                "created_at",
+                "revision",
+                "body_json",
+            ],  # fmt: skip
         ),
         "case_id",
         lambda r: (r.created_at, r.revision),
     )
+    # TAX-131: RSL's selection inputs (referral risk sets) shown as RSL's.
+    referrals: dict[str, list[Any]] = {}
+    for ref in frappe.get_all(
+        REFERRAL,
+        filters={"tenant_id": tenant_id, "case_id": ["in", ids]},
+        fields=["case_id", "rsl_inputs"],
+        order_by="referred_on asc, referral_id asc",
+    ):
+        referrals.setdefault(ref.case_id, []).append(_json_object(ref.rsl_inputs))
     links: dict[str, list[Any]] = {}
     for link in frappe.get_all(
         LINK,
@@ -273,9 +291,24 @@ def project_cases(tenant_id: str, rows: list[Any]) -> list[dict[str, Any]]:
                 lane=lane.lane if lane else None,
                 links=projections.service_links(links.get(row.case_id, [])),
                 updated_at=updated,
+                selection_reasons=projections.rsl_selection_reasons(
+                    referrals.get(row.case_id, []),
+                    _json_object(lane.body_json).get("inputs", {}).get("rsl_fraud_score")
+                    if lane
+                    else None,
+                ),
             )
         )
     return out
+
+
+def _json_object(raw: Any) -> dict[str, Any]:
+    """A stored JSON object, or ``{}`` for anything else (never raises on old rows)."""
+    try:
+        value = json.loads(raw) if isinstance(raw, str) and raw else raw
+    except ValueError:
+        return {}
+    return value if isinstance(value, dict) else {}
 
 
 def _one_case(tenant_id: str, case_id: str) -> dict[str, Any]:

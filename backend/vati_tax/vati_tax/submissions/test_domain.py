@@ -209,5 +209,30 @@ class StatusAndWriteTests(unittest.TestCase):
         self.assertNotEqual(n("15000.01"), n(15000.0))
 
 
+class ReferredSourceTests(unittest.TestCase):
+    """TAX-131 (ADR-043 §1, §5): only cases RSL refers are sent."""
+
+    def test_an_rsl_claim_is_always_referred(self):
+        for simulator in (True, False):
+            self.assertTrue(domain.referred_source("rsl_online_refunds", simulator=simulator))
+            domain.check_send_source("rsl_online_refunds", simulator=simulator)
+
+    def test_other_sends_need_the_simulator_standing_in_for_rsl(self):
+        for source in ("portal", "api", "synthetic_seed", None):
+            self.assertTrue(domain.referred_source(source, simulator=True))
+            domain.check_send_source(source, simulator=True)
+            self.assertFalse(domain.referred_source(source, simulator=False))
+            with self.assertRaises(domain.TransitionDenied) as ctx:
+                domain.check_send_source(source, simulator=False)
+            self.assertIn("Online Refunds Application", str(ctx.exception))
+
+    def test_the_simulator_flag_is_explicit(self):
+        self.assertTrue(domain.simulator_enabled({domain.SIMULATOR_KEY: True}))
+        self.assertTrue(domain.simulator_enabled({domain.SIMULATOR_KEY: 1}))
+        for value in (None, False, 0, "1", "true"):
+            self.assertFalse(domain.simulator_enabled({domain.SIMULATOR_KEY: value}))
+        self.assertFalse(domain.simulator_enabled({}))
+
+
 if __name__ == "__main__":
     unittest.main()

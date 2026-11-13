@@ -20,6 +20,7 @@ try:
     from vati_tax.identity import policy
     from vati_tax.identity.permissions import clear_principal_cache
     from vati_tax.identity.provision import ensure_service_identity, ensure_tenant, grant_membership
+    from vati_tax.submissions.domain import SIMULATOR_KEY
     from vati_tax.submissions.guard import InvalidDomainInput
 except ImportError as exc:  # pragma: no cover - CI without a bench
     raise unittest.SkipTest(f"Frappe is not installed ({exc}); run with bench run-tests")
@@ -97,9 +98,13 @@ class SubmissionDocTypeTests(IntegrationTestCase):
     def setUp(self):
         frappe.set_user("Administrator")
         clear_principal_cache()
+        # TAX-131: portal sends stand in for RSL only where the simulator runs (TAX-125).
+        self._simulator = frappe.local.conf.get(SIMULATOR_KEY)
+        frappe.local.conf[SIMULATOR_KEY] = True
 
     def tearDown(self):
         frappe.set_user("Administrator")
+        frappe.local.conf[SIMULATOR_KEY] = self._simulator
         frappe.db.rollback()
 
     # Helpers ---------------------------------------------------------------
@@ -216,6 +221,23 @@ class SubmissionDocTypeTests(IntegrationTestCase):
             self.ret_a,
         )[0]
         self.assertEqual([v.rstrip("0") for v in raw], ["166666.67", "-15000."])
+
+    def test_a_send_rsl_did_not_refer_is_refused_without_the_simulator(self):
+        # TAX-131 (ADR-043 §5): without the simulator a portal send is not a referred case.
+        frappe.local.conf[SIMULATOR_KEY] = None
+
+        def declare_and_submit():
+            doc = frappe.get_doc(SUBMISSION, self.sub_a)
+            doc.declaration = 1
+            doc.save()
+            doc.status = "submitted"
+            doc.save()
+
+        with self.assertRaises(frappe.PermissionError) as ctx:
+            self.as_("taxpayer-a", declare_and_submit)
+        self.assertIn("Online Refunds Application", str(ctx.exception))
+        self.assertEqual(frappe.db.get_value(SUBMISSION, self.sub_a, "status"), "draft")
+        self.assertIsNone(frappe.db.get_value(SUBMISSION, self.sub_a, "case_id"))
 
     def test_submit_requires_declaration_and_figures_then_locks(self):
         def submit(name):

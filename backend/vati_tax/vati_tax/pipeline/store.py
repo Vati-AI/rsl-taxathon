@@ -58,6 +58,7 @@ from vati_tax.integrations import config, factories
 from vati_tax.outbox import policy as outbox_policy
 from vati_tax.outbox import store as outbox_store
 from vati_tax.pipeline import rules
+from vati_tax.submissions import domain as submission_domain
 
 SUBMISSION = "Vati Submission"
 CLAIM = "Vati Refund Claim"
@@ -182,7 +183,11 @@ def on_service_link_insert(doc: Any, method: str | None = None) -> None:
 def on_submission_sent(doc: Any, method: str | None = None) -> None:
     """``doc_events``: runs after the bridge registered the case for a sent submission."""
     before = doc.get_doc_before_save()
-    origin = bridge_rules.submission_origin(bool(doc.flags.get("vati_mirror")), doc.get("source"))
+    origin = bridge_rules.submission_origin(
+        bool(doc.flags.get("vati_mirror")),
+        doc.get("source"),
+        simulator=submission_domain.simulator_enabled(frappe.conf),
+    )
     if before is None or not bridge_rules.should_register(before.status, doc.status, origin):
         return
     if not doc.case_id:

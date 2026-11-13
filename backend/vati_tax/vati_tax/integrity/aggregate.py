@@ -195,7 +195,8 @@ def override_patterns(
     labels = {
         "case_assignment": "Case assignment",
         "evidence_due_date": "Evidence due date",
-        "risk_rating": "Risk rating",
+        # Key kept for stored ledger entries; the label says what it is (TAX-131).
+        "risk_rating": "Case rating",
         "playbook_step": "Playbook step",
     }
     cells: dict[str, Cell] = {}

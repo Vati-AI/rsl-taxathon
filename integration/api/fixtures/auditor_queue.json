@@ -25,6 +25,11 @@
       "assigned_officer_id": "80000000-0000-4000-8000-000000000001",
       "selection_reasons": [
         {
+          "code": "rsl_refund_model",
+          "summary": "RSL's refund model SYN-RSL-REFUND fixture-1 scored this claim 0.4200. RSL's score, not a Vati score.",
+          "source": "online_refunds"
+        },
+        {
           "code": "refund_above_usual_pattern",
           "summary": "Refund claim is larger than this taxpayer's previous claims; supporting invoices are on file.",
           "source": "jube"
@@ -78,6 +83,11 @@
       "refund_lane": "targeted",
       "assigned_officer_id": "80000000-0000-4000-8000-000000000001",
       "selection_reasons": [
+        {
+          "code": "rsl_audit_referral",
+          "summary": "RSL referred this case for audit (RSL reason: team_leader_selection).",
+          "source": "audit_system"
+        },
         {
           "code": "related_party_charges",
           "summary": "Management fees are paid to a company that shares a director with the taxpayer.",
