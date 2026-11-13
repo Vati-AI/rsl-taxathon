@@ -5,7 +5,7 @@
   "owner": "Gupta",
   "area": "integration",
   "phase": "pilot",
-  "status": "BACKLOG",
+  "status": "IN_PROGRESS",
   "priority": "P1",
   "depends_on": [
     "TAX-035",
@@ -13,8 +13,8 @@
     "TAX-066",
     "TAX-067"
   ],
-  "claimed_by": null,
-  "branch": null,
+  "claimed_by": "claude-opus-5-5-gupta",
+  "branch": "task/TAX-131",
   "pr": null,
   "scope": "Jube cases are investigation sub-cases of RSL cases: Jube rules triage referred claims only, RSL scores are shown as RSL's, and calibration and peer baselines become corroboration and feedback for RSL's Risk Unit",
   "inputs": [
@@ -61,6 +61,10 @@
     {
       "at": "2026-11-11T12:27:49.740246+00:00",
       "text": "2026-11-11 (ADR-045): owner changed from Keletso to Gupta; RSL integration lane. No task in this lane depends on an open task in the other lane."
+    },
+    {
+      "at": "2026-11-13T14:40:24.354905+00:00",
+      "text": "Claimed by claude-opus-5-5-gupta"
     }
   ],
   "sequence": 31
