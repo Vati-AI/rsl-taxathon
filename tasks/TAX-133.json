@@ -5,7 +5,7 @@
   "owner": "Gupta",
   "area": "backend",
   "phase": "pilot",
-  "status": "IN_PROGRESS",
+  "status": "IN_REVIEW",
   "priority": "P0",
   "depends_on": [
     "TAX-030",
@@ -15,7 +15,7 @@
   ],
   "claimed_by": "claude-opus-5-5-gupta",
   "branch": "task/TAX-133",
-  "pr": null,
+  "pr": "https://github.com/Vati-AI/rsl-taxathon/pull/316",
   "scope": "Add RSL systems (online_refunds, audit_system, psrm, etax, idms, asycuda) to the canonical service links and expose one case reference card (RSL claim, TIN, RSL audit case, Vati case, Jube case, OpenAleph collection) to every Vati surface",
   "inputs": [
     "PROJECT.md",
@@ -29,15 +29,15 @@
   "acceptance": [
     {
       "text": "Vati Service Link accepts the RSL services with the same tenant and conflict rules",
-      "done": false
+      "done": true
     },
     {
       "text": "A case reference endpoint returns every mapped reference the caller may see",
-      "done": false
+      "done": true
     },
     {
       "text": "Record relevant tests and evidence, update task status and open a PR",
-      "done": false
+      "done": true
     }
   ],
   "verification": "Mapping, conflict and tenant-boundary tests",
@@ -47,7 +47,20 @@
     "update-project-task",
     "finish-task"
   ],
-  "evidence": [],
+  "evidence": [
+    {
+      "criterion": 1,
+      "text": "ids.canonical adds online_refunds, audit_system, psrm, etax, idms and asycuda (ADR-052) with record types from the TAX-111 contracts: one RSL claim and one RSL audit case per case; returns, invoices, entries and PSRM records many. Vati Service Link options updated; the same link/slot/event keys enforce tenant and conflict rules. A TIN is not a link (shared across a taxpayer's cases). The TAX-123 referral intake records the audit_system link and the TAX-122 Online Refunds intake the claim link; conflicts are reported as refused. Patch v0_4.link_rsl_references backfills older references. ids/test_canonical.py 33 OK (6 new: types, one-per-case, already-mapped, many returns, tenant separation); bench test_mapping_bench 13/13, test_rsl_referrals_bench 8/8 (links recorded and replayed, backfill, officer card across tenants), test_rsl_intake_bench 7/7."
+    },
+    {
+      "criterion": 2,
+      "text": "vati_tax.references builds one case reference card (tenant, Vati case and display ID, masked TIN, RSL claim, RSL audit case, Jube case, OpenAleph collection, other RSL records). Officers: GET /api/v1/cases/{case_id}/references (getCaseReferences; case.read plus the TAX-142 refund gate), served by the fixture server too (example 49). Taxpayers: portal.api.get_case_references by their own submission or evidence request; the taxpayer view hides Jube, OpenAleph and the RSL record list exactly as if absent. ServiceLink.service accepts RslServiceName so getCase returns RSL links. references/test_rules.py 8 OK; tests/contracts 140 OK incl. test_case_references.py 5; bench test_api_v1_bench 14/14 (contract-checked route, 404 for another tenant, 403 for a taxpayer), test_rsl_intake_bench taxpayer card via the portal, other taxpayers' submissions and unknown requests not found."
+    },
+    {
+      "criterion": 3,
+      "text": "Fresh disposable site (frappe_dev.py verify --keep, verify-20261113t132809): install and two migrations ok (incl. the v0_4 patch). Full bench discovery fails on main and here because assistance/test_service imports ai evaluation data from data/synthetic, which docker-compose.frappe.yml does not mount; so every other app test module was run one by one: 59 modules, 841 tests, all OK except reminders/test_reminders_bench (pre-existing on main) and assistance/test_assistance_bench (duplicate synthetic user on the reused site; assistance code untouched). Frappe-free backend 613 with only the Windows path-separator failure; ruff, mypy, eslint, vue-tsc clean; prettier clean on changed files except auditor_queue.json, which already fails on main and keeps its style; vitest domain 44 OK; auditor e2e (Edge) all 65 tests in the touched specs pass with one worker (parallel runs are flaky on main too: 5-17 failures varying per run); validate.py clean. Hosted CI does not start (org spending limit)."
+    }
+  ],
   "notes": [
     {
       "at": "2026-11-07",
@@ -60,6 +73,10 @@
     {
       "at": "2026-11-13T13:11:40.566198+00:00",
       "text": "Claimed by claude-opus-5-5-gupta"
+    },
+    {
+      "at": "2026-11-13T14:04:48.921444+00:00",
+      "text": "PR opened with local verification (ADR-038)"
     }
   ],
   "sequence": 21
