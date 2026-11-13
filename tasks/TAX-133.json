@@ -5,7 +5,7 @@
   "owner": "Gupta",
   "area": "backend",
   "phase": "pilot",
-  "status": "BACKLOG",
+  "status": "IN_PROGRESS",
   "priority": "P0",
   "depends_on": [
     "TAX-030",
@@ -13,8 +13,8 @@
     "TAX-122",
     "TAX-123"
   ],
-  "claimed_by": null,
-  "branch": null,
+  "claimed_by": "claude-opus-5-5-gupta",
+  "branch": "task/TAX-133",
   "pr": null,
   "scope": "Add RSL systems (online_refunds, audit_system, psrm, etax, idms, asycuda) to the canonical service links and expose one case reference card (RSL claim, TIN, RSL audit case, Vati case, Jube case, OpenAleph collection) to every Vati surface",
   "inputs": [
@@ -56,6 +56,10 @@
     {
       "at": "2026-11-11T12:27:49.740246+00:00",
       "text": "2026-11-11 (ADR-045): owner changed from Keletso to Gupta; RSL integration lane. No task in this lane depends on an open task in the other lane."
+    },
+    {
+      "at": "2026-11-13T13:11:40.566198+00:00",
+      "text": "Claimed by claude-opus-5-5-gupta"
     }
   ],
   "sequence": 21
