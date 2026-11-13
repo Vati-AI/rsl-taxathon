@@ -185,9 +185,12 @@ class RslOutboundBenchTests(IntegrationTestCase):
             "service_target": {"decision_due": "2026-11-30",
                                "decision_target_working_days": 15},
             "claimed_amount": money("15000.00"), "undisputed_amount": money("12000.00"),
-            "undisputed_status": "recommended", "disputed_amount": money("3000.00"),
+            "undisputed_status": "recommendation_for_refund_auditor", "disputed_amount": money("3000.00"),
             "disputed_items": [], "questions": [], "inputs": {}, "line_match": [],
             "authenticity_indicator": False, "requires_officer_review": True, "source_refs": [],
+            # TAX-132: the RSL status the lane was proposed against.
+            "rsl_claim_status": {"status": "audit_in_progress", "reported": True,
+                                 "in_rsl_audit": True, "owner": "RSL"},
         }  # fmt: skip
         proposal_id = str(uuid.uuid4())
         frappe.get_doc({

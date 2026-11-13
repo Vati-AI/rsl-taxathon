@@ -113,7 +113,8 @@ def _latest_lane(tenant_id: str, case_id: str, claim_ref: str) -> Any:
         LANE,
         filters={"tenant_id": tenant_id, "case_id": case_id, "claim_ref": claim_ref},
         fields=["proposal_id", "revision", "period", "lane", "claimed_amount",
-                "undisputed_amount", "disputed_amount", "currency", "decision_due"],
+                "undisputed_amount", "disputed_amount", "currency", "decision_due",
+                "rsl_claim_status"],
         order_by="revision desc",
         limit=1,
     )  # fmt: skip
@@ -207,6 +208,31 @@ def _enqueue(
     return event
 
 
+def rsl_claim_status_now(tenant_id: str, taxpayer_id: str | None, claim_ref: str) -> str | None:
+    """TAX-132: the status RSL's Online Refunds Application reports for the claim now.
+
+    ``None`` when the taxpayer has no TIN, RSL's source is not configured or does not
+    answer, or the record carries no status: an unknown status never withholds anything.
+    """
+    tin = frappe.db.get_value(TAXPAYER, taxpayer_id, "tin") if taxpayer_id else None
+    if not tin:
+        return None
+    try:
+        fixture = factories.rsl_sources(tenant_id)
+        envelope = fixture.sources.read("online_refunds", "claim",
+                                        tenant_id=str(fixture.params["tenant_id"]),
+                                        taxpayer=str(tin))  # fmt: skip
+    except config.ServiceNotConfigured:
+        return None
+    if envelope.get("status") != "ok":
+        return None
+    for record in envelope.get("records") or []:
+        if str(record.get("claim_id")) == claim_ref:
+            status = record.get("status")
+            return str(status) if status else None
+    return None
+
+
 def on_decision_update(doc: Any, method: str | None = None) -> None:
     """``doc_events``: a decision that has just been approved queues its results for RSL."""
     before = doc.get_doc_before_save()
@@ -224,7 +250,15 @@ def on_decision_update(doc: Any, method: str | None = None) -> None:
     has_lane = reference.system == rules.ONLINE_REFUNDS and bool(
         _latest_lane(doc.tenant_id, doc.case_id, reference.record_id)
     )
-    for kind, subject_id in rules.items_for_decision(doc.decision_id, reference, has_lane):
+    status_now = (
+        rsl_claim_status_now(doc.tenant_id, doc.taxpayer_id, reference.record_id)
+        if has_lane
+        else None
+    )
+    items = rules.items_for_decision(doc.decision_id, reference, has_lane, status_now)
+    if has_lane and len(items) == 1:
+        log("enqueue", "lane_not_queued", case_id=doc.case_id, reason=f"rsl_claim_{status_now}")
+    for kind, subject_id in items:
         _enqueue(
             tenant_id=doc.tenant_id,
             case_id=doc.case_id,

@@ -19,12 +19,15 @@ Handler ``handle_assurance_requested`` (``vati_outbox_handlers``):
 2. reads the taxpayer's own records from Frappe: the ``Vati Taxpayer`` (TIN) and the
    latest stored records document (``Vati Evidence`` referencing the taxpayer, re-hashed
    before use), and the claim of the sent submission, matched to its Online Refunds
-   Application record by TIN and period (amounts must agree);
+   Application record by TIN and period (amounts must agree), with the status RSL reports
+  for it (TAX-132);
 3. runs ``ai.evaluation.assurance_pipeline.assess_taxpayer`` (TAX-112-116, unchanged) through
    the ``checks`` adapter;
 4. as the pipeline service identity, records every finding through
    ``vati_tax.findings.store`` (producer ``vati_check``) and the claim's lane in
-   ``Vati Lane Proposal``; a replay writes nothing twice;
+   ``Vati Lane Proposal`` with the RSL status it was proposed against; no lane is
+   proposed for a claim RSL has already processed, rejected or cancelled (TAX-132); a
+   replay writes nothing twice;
 5. keeps one ``Vati Assurance Run`` per event: status, per-check status, which services
    were live, recorded or unavailable, counts and timings.
 
@@ -196,6 +199,9 @@ class FrappeRepository:
                 "currency": body["claimed_amount"]["currency"],
                 "authenticity_indicator": int(bool(body.get("authenticity_indicator"))),
                 "body_json": json.dumps(body, sort_keys=True),
+                # TAX-132: the RSL status the lane was proposed against (RSL's value).
+                "rsl_claim_status": (body.get("rsl_claim_status") or {}).get("status")
+                or "not_reported",
                 "producer": record.producer,
                 "producer_version": record.producer_version,
                 "input_digest": record.input_digest,
@@ -480,16 +486,21 @@ def handle_assurance_requested(delivery: Any) -> None:
                 )
                 for body, idem in bodies
             ]  # fmt: skip
-            lane = engine.record_lane_proposal(
-                permissions.resolve_scope(env.tenant_id),
-                repo,
-                case_id=env.case_id,
-                body=lane_body,
-                producer_version=version,
-                input_digest=digest,
-                run_key=key,
-                now=_utc(),
-                correlation_id=env.correlation_id,
+            # TAX-132: no lane for a claim RSL already decided (the summary says why).
+            lane = (
+                engine.record_lane_proposal(
+                    permissions.resolve_scope(env.tenant_id),
+                    repo,
+                    case_id=env.case_id,
+                    body=lane_body,
+                    producer_version=version,
+                    input_digest=digest,
+                    run_key=key,
+                    now=_utc(),
+                    correlation_id=env.correlation_id,
+                )
+                if lane_body is not None
+                else None
             )
     except MappingError as exc:
         # A refused record is a defect to inspect, not a retry: keep the code only.
@@ -498,7 +509,7 @@ def handle_assurance_requested(delivery: Any) -> None:
     run.update(
         summary=plan["summary"],
         finding_ids=tuple(v["finding_id"] for v in views),
-        lane_proposal_id=lane["proposal_id"],
+        lane_proposal_id=lane["proposal_id"] if lane else None,
         producer_version=version,
         input_digest=digest,
     )

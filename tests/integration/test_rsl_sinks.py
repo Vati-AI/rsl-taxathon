@@ -82,6 +82,7 @@ LANE = {
     "proposal_id": "cccccccc-dddd-4eee-8fff-000000000000",
     "proposal_revision": 2,
     "approved_decision_id": "aaaaaaaa-bbbb-4ccc-8ddd-eeeeeeeeeeee",
+    "rsl_claim_status_at_proposal": "audit_in_progress",
 }
 NOTICE = {
     **envelope("online_refunds", "evidence_requested"),
@@ -127,6 +128,16 @@ class ContractTests(unittest.TestCase):
         for message in (PACK, LANE, NOTICE):
             with self.assertRaises(OutboundContractError):
                 validate_message({**message, "authority": "instruction"})
+
+    def test_lane_recommendation_carries_rsl_status_and_sets_none(self) -> None:
+        # TAX-132: the status the lane was proposed against is context, not an instruction.
+        validate_message({**LANE, "rsl_claim_status_at_proposal": "not_reported"})
+        with self.assertRaises(OutboundContractError):
+            validate_message({k: v for k, v in LANE.items()
+                              if k != "rsl_claim_status_at_proposal"})  # fmt: skip
+        for field in ("rsl_status", "refund_status", "release_amount", "payment"):
+            with self.assertRaises(OutboundContractError):
+                validate_message({**LANE, field: "processed"})
 
     def test_lane_recommendation_goes_only_to_online_refunds(self) -> None:
         wrong = {**LANE, "rsl_reference": {"system": "audit_system", "record_id": "X1"}}

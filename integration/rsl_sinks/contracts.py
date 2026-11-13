@@ -192,6 +192,9 @@ CONTRACTS: dict[tuple[str, str], OutboundContract] = {
                 "proposal_id": "uuid",
                 "proposal_revision": "int",
                 "approved_decision_id": "uuid",
+                # TAX-132: the RSL claim status the lane was proposed against (RSL's own
+                # code, or not_reported); context for RSL, never a status Vati sets.
+                "rsl_claim_status_at_proposal": "code",
             },
         ),
         *(

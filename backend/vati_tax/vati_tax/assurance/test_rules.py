@@ -332,9 +332,12 @@ class FindingsRecordTests(unittest.TestCase):
                                            idempotency_key=key)  # fmt: skip
 
 
+IN_AUDIT = rules.rsl_claim_status({"status": "audit_in_progress"})
+
+
 class LaneTests(unittest.TestCase):
     def lane(self) -> dict[str, Any]:
-        return rules.lane_proposal(result()["claims"][0], sources=SOURCES)
+        return rules.lane_proposal(result()["claims"][0], sources=SOURCES, rsl_status=IN_AUDIT)
 
     def record(self, repo: engine.MemoryRepository, body: dict[str, Any], digest: str = DIGEST,
                who: policy.TenantScope = SERVICE) -> dict[str, Any]:  # fmt: skip
@@ -352,6 +355,40 @@ class LaneTests(unittest.TestCase):
         self.assertEqual([m["status"] for m in lane["line_match"]], ["matched", "unmatched"])
         self.assertEqual(lane["source_refs"][0]["record_id"], "ORA-111-001")
         self.assertNotIn("decision", lane)
+        self.assertEqual(lane["undisputed_status"], "recommendation_for_refund_auditor")
+        self.assertEqual(lane["rsl_claim_status"], {"status": "audit_in_progress",
+                                                    "reported": True, "in_rsl_audit": True,
+                                                    "owner": "RSL"})  # fmt: skip
+
+    def test_the_rsl_status_is_read_as_rsls_and_unknown_codes_are_not_reported(self) -> None:
+        # TAX-132: every TAX-111 status value, and records with none or an unknown one.
+        for status in sorted(rules.RSL_CLAIM_STATUSES):
+            view = rules.rsl_claim_status({"status": status})
+            self.assertEqual((view["status"], view["reported"], view["owner"]),
+                             (status, True, "RSL"))  # fmt: skip
+            self.assertEqual(view["in_rsl_audit"], status == "audit_in_progress")
+            withheld = rules.lane_withheld(view)
+            self.assertEqual(withheld is not None, status in {"processed", "rejected",
+                                                              "cancelled"})  # fmt: skip
+        for record in ({}, {"status": None}, {"status": "paid_out"}):
+            view = rules.rsl_claim_status(record)
+            self.assertEqual((view["status"], view["reported"]), (None, False))
+            self.assertIsNone(rules.lane_withheld(view))
+
+    def test_no_lane_for_a_claim_rsl_already_decided(self) -> None:
+        for status in ("processed", "rejected", "cancelled"):
+            decided = rules.rsl_claim_status({"status": status})
+            with self.subTest(status=status), self.assertRaises(rules.InvalidAssuranceInput):
+                rules.validate_lane({**self.lane(), "rsl_claim_status": decided})
+
+    def test_a_lane_never_sets_status_release_or_payment(self) -> None:
+        lane = self.lane()
+        for change in ({"undisputed_status": "released"}, {"undisputed_status": "approved"},
+                       {"refund_status": "paid"}, {"release_amount": money("1.00")},
+                       {"rsl_claim_status": {**IN_AUDIT, "owner": "Vati"}},
+                       {"rsl_claim_status": {**IN_AUDIT, "status": "paid"}}):  # fmt: skip
+            with self.subTest(change=change), self.assertRaises(rules.InvalidAssuranceInput):
+                rules.validate_lane({**lane, **change})
 
     def test_invalid_lanes_are_refused(self) -> None:
         for change in ({"lane": "pay_now"}, {"undisputed_amount": money("250.00")},
@@ -362,7 +399,7 @@ class LaneTests(unittest.TestCase):
         claim = result()["claims"][0]
         claim["lane"]["decision"] = "approved"
         with self.assertRaises(rules.InvalidAssuranceInput):
-            rules.lane_proposal(claim, sources=SOURCES)
+            rules.lane_proposal(claim, sources=SOURCES, rsl_status=IN_AUDIT)
 
     def test_replay_writes_nothing_and_new_inputs_add_a_revision(self) -> None:
         repo = engine.MemoryRepository()
