@@ -16,6 +16,7 @@ from decimal import Decimal, InvalidOperation
 from typing import Any
 
 from vati_tax.api_v1.core import officer_id
+from vati_tax.ids import canonical
 
 CASE_STATUSES = (
     "RECEIVED",
@@ -30,7 +31,8 @@ OPEN_STATUSES = frozenset(CASE_STATUSES) - {"RESOLVED"}
 # Vati Lane Proposal lanes (ADR-042) -> contract RefundLane (TAX-048 three lanes).
 LANES = {"fast": "fast", "standard": "standard", "investigation": "targeted"}
 OFFICER_ROLES = ("auditor", "specialist", "supervisor")
-CONTRACT_SERVICES = frozenset({"jube", "frappe", "openaleph", "yente", "docling", "langgraph"})
+# ServiceName and RslServiceName in openapi.json (the RSL systems joined in TAX-133).
+CONTRACT_SERVICES = frozenset(canonical.SERVICES)
 ENTITY_SCHEMAS = frozenset(
     {
         "Person",

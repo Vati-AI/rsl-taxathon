@@ -49,6 +49,7 @@ from vati_tax.portal import rsl as portal_rsl
 from vati_tax.portal import submissions as portal_submissions
 from vati_tax.prefiling import rules as prefiling_rules
 from vati_tax.prefiling import store as prefiling_store
+from vati_tax.references import store as references_store
 from vati_tax.reminders import rules as reminder_rules
 from vati_tax.reminders import store as reminder_store
 from vati_tax.responses import rules as response_rules
@@ -720,6 +721,31 @@ def get_correction_reminders() -> dict[str, Any]:
     _user, scope = _require_taxpayer()
     data = reminder_store.taxpayer_reminders(scope)
     _log("get_correction_reminders", "listed", reminders=len(data))
+    return {**LIVE_META, "data": data}
+
+
+@frappe.whitelist()
+def get_case_references(
+    submission_id: str | None = None, request_id: str | None = None
+) -> dict[str, Any]:
+    """TAX-133 (ADR-052): the reference card of the case behind the caller's own
+    submission or evidence request.
+
+    The taxpayer view: the Vati case reference, their masked TIN, and the RSL claim and
+    RSL audit case the case is about. Internal tool references are never included.
+    Anything that is not the caller's is reported exactly like a missing case.
+    """
+    _user, scope = _require_taxpayer()
+    try:
+        data = references_store.taxpayer_card(
+            memberships=scope,
+            submission_id=str(submission_id) if submission_id else None,
+            request_id=str(request_id) if request_id else None,
+        )
+    except MappingError:
+        _log("get_case_references", "not_found")
+        raise frappe.DoesNotExistError(_("Case not found.")) from None
+    _log("get_case_references", "read", case_id=data["case_id"])
     return {**LIVE_META, "data": data}
 
 

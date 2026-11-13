@@ -12,6 +12,8 @@ reference and records the referral (``Vati RSL Referral``) linked to it.
 - RSL's risk sets and scores are stored as RSL-owned inputs, never as a Vati score.
 - RSL not answering is reported as ``unavailable`` (for the run or per taxpayer), never
   as "no referrals".
+- The audit case reference is recorded as an ``audit_system`` service link (TAX-133), so
+  the case reference card and every surface find it in one register.
 - A referral selects nothing on its own and decides nothing: officers investigate.
 
 ``case_referrals`` gives officers the referral behind a case.
@@ -39,6 +41,7 @@ from vati_tax.rsl_referrals import rules
 REFERRAL = "Vati RSL Referral"
 TAXPAYER = "Vati Taxpayer"
 CASE = "Vati Case Identity"
+RSL_SERVICE, RSL_TYPE = "audit_system", "audit_case"
 _UNIQUE = (frappe.UniqueValidationError, frappe.DuplicateEntryError)
 _FIELDS = [
     "referral_id", "tenant_id", "case_id", "taxpayer_id", "audit_case_ref", "referred_on",
@@ -83,6 +86,14 @@ def _record(tenant_id: str, taxpayer_id: str, referral: rules.Referral) -> dict[
     """Open (or reuse) the case and record the referral (caller runs as the service)."""
     case = mapping.register_case(
         tenant_id=tenant_id, idempotency_key=referral.idempotency_key, taxpayer_id=taxpayer_id
+    )
+    # TAX-133: the RSL audit case joins the canonical reference register.
+    mapping.record_link(
+        tenant_id=tenant_id,
+        case_id=case["case_id"],
+        service=RSL_SERVICE,
+        external_type=RSL_TYPE,
+        external_id=referral.audit_case_ref,
     )
     doc = frappe.get_doc(
         {

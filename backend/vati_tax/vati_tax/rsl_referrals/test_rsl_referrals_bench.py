@@ -25,7 +25,9 @@ try:
     from vati_tax.identity.provision import ensure_service_identity, ensure_tenant, grant_membership
     from vati_tax.ids.canonical import CaseNotFound
     from vati_tax.integrations import config
+    from vati_tax.patches.v0_4 import link_rsl_references
     from vati_tax.pipeline import store as pipeline_store
+    from vati_tax.references import store as references_store
     from vati_tax.rsl_referrals import api, store
 except ImportError as exc:  # pragma: no cover - CI without a bench
     raise unittest.SkipTest(f"Frappe is not installed ({exc}); run with bench run-tests")
@@ -46,6 +48,7 @@ FIXTURE: Path = _FOUND[0]
 TIN_A, TIN_B = "510000006", "510000014"
 REFERRAL = "Vati RSL Referral"
 CASE = "Vati Case Identity"
+LINK = "Vati Service Link"
 
 
 class RslReferralBenchTests(IntegrationTestCase):
@@ -151,6 +154,38 @@ class RslReferralBenchTests(IntegrationTestCase):
         # No Vati score, finding or decision is written for a referral.
         for doctype in ("Vati Case Finding", "Vati Decision", "Vati Lane Proposal"):
             self.assertEqual(frappe.db.count(doctype, {"case_id": first.case_id}), 0)
+
+    def test_each_rsl_audit_case_joins_the_reference_register(self):
+        # TAX-133: one audit_system link per referral; a replay records nothing new.
+        self.ingest()
+        rsl = {"tenant_id": self.tenant, "service": "audit_system"}
+        for row in self.referrals():
+            link = frappe.db.get_value(LINK, {**rsl, "case_id": row.case_id},
+                                       ["external_type", "external_id"], as_dict=True)  # fmt: skip
+            self.assertEqual((link.external_type, link.external_id),
+                             ("audit_case", row.audit_case_ref))  # fmt: skip
+        self.assertEqual(frappe.db.count(LINK, rsl), 3)
+        self.ingest()
+        self.assertEqual(frappe.db.count(LINK, rsl), 3)
+        first = self.referrals()[0]
+        frappe.set_user(self.users["auditor"])
+        clear_principal_cache()
+        card = references_store.officer_card(tenant_id=self.tenant, case_id=first.case_id)
+        self.assertEqual(card["rsl_audit_case_ref"], "SYN-AUD-2026-0001")
+        self.assertIsNone(card["rsl_claim_id"])
+        with self.assertRaises(CaseNotFound):
+            references_store.officer_card(tenant_id=self.other, case_id=first.case_id)
+
+    def test_backfill_links_references_stored_before_the_register_had_them(self):
+        # TAX-133 patch: links missing from earlier runs are recorded; a rerun is a no-op.
+        self.ingest()
+        frappe.db.delete(LINK, {"tenant_id": self.tenant, "service": "audit_system"})
+        counts = link_rsl_references.link_all()
+        self.assertGreaterEqual(counts.get("audit_system.linked", 0), 3)
+        self.assertEqual(frappe.db.count(LINK, {"tenant_id": self.tenant,
+                                                "service": "audit_system"}), 3)  # fmt: skip
+        again = link_rsl_references.link_all()
+        self.assertEqual(again.get("audit_system.linked", 0), 0)
 
     def test_a_second_read_replays_and_reuses_the_case(self):
         self.ingest()

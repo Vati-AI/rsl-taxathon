@@ -42,6 +42,18 @@
           "external_type": "case",
           "external_id": "syn-jube-3001",
           "sync": { "state": "synced", "last_attempt_at": "2026-11-03T10:00:02Z", "error_code": null }
+        },
+        {
+          "service": "online_refunds",
+          "external_type": "claim",
+          "external_id": "SYN-ORA-2026-0001",
+          "sync": { "state": "synced", "last_attempt_at": "2026-11-03T10:00:00Z", "error_code": null }
+        },
+        {
+          "service": "etax",
+          "external_type": "vat_return",
+          "external_id": "SYN-VR-2026-09-4101",
+          "sync": { "state": "synced", "last_attempt_at": "2026-11-03T10:00:00Z", "error_code": null }
         }
       ],
       "created_at": "2026-11-03T10:00:00Z",
@@ -95,6 +107,12 @@
           "external_type": "investigation_run",
           "external_id": "syn-run-0002",
           "sync": { "state": "synced", "last_attempt_at": "2026-11-03T12:00:00Z", "error_code": null }
+        },
+        {
+          "service": "audit_system",
+          "external_type": "audit_case",
+          "external_id": "SYN-AUD-2026-0002",
+          "sync": { "state": "synced", "last_attempt_at": "2026-11-03T10:05:00Z", "error_code": null }
         }
       ],
       "created_at": "2026-11-03T10:05:00Z",

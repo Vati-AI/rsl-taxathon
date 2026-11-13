@@ -14,6 +14,9 @@ Model (see docs/decisions/ADR-006-canonical-ids-service-links.md):
   itself, except for Frappe, whose document names are only unique per DocType.
 - Some external types allow one record per case (a Jube case, an OpenAleph
   collection); others allow many (OpenAleph entities, Frappe records).
+- RSL's own systems (TAX-133, ADR-043 §7) join the same register under the same rules,
+  so an RSL claim or audit case reference maps to exactly one Vati case in a tenant.
+  A TIN is not a link: it identifies the taxpayer, who may have many cases.
 - Recording the same link again (for example a replayed event) is a replay, not
   a new row. A changed mapping under a reused event ID, an external ID already
   mapped to another case, a second record in a one-per-case slot and any
@@ -28,7 +31,11 @@ import uuid
 from dataclasses import dataclass
 from typing import Literal
 
-SERVICES = ("jube", "frappe", "openaleph", "yente", "docling", "langgraph")
+CORE_SERVICES = ("jube", "frappe", "openaleph", "yente", "docling", "langgraph")
+# RSL systems Vati reads from or refers to (docs/reference/RSL_LANDSCAPE.md). Vati never
+# writes to them through a link; a link only records which RSL record a case is about.
+RSL_SERVICES = ("online_refunds", "audit_system", "psrm", "etax", "idms", "asycuda")
+SERVICES = CORE_SERVICES + RSL_SERVICES
 
 Cardinality = Literal["one", "many"]
 
@@ -44,6 +51,19 @@ EXTERNAL_TYPES: dict[tuple[str, str], Cardinality] = {
     ("docling", "document"): "many",
     ("docling", "extraction"): "many",
     ("langgraph", "investigation_run"): "many",
+    # RSL (TAX-133). A Vati case is about one RSL claim or one RSL audit case; returns,
+    # invoices, customs entries and PSRM records it relies on may be many. Types match
+    # the record kinds of the TAX-111 RSL source contracts (integration/rsl_sources).
+    ("online_refunds", "claim"): "one",
+    ("audit_system", "audit_case"): "one",
+    ("psrm", "objection"): "many",
+    ("psrm", "payment"): "many",
+    ("etax", "vat_return"): "many",
+    ("etax", "wht_return"): "many",
+    ("etax", "cit_return"): "many",
+    ("etax", "paye_roster"): "many",
+    ("idms", "invoice"): "many",
+    ("asycuda", "entry"): "many",
 }
 
 # Frappe records are identified by DocType name plus document name. Domain DocTypes

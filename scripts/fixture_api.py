@@ -110,6 +110,31 @@ def management_module() -> Any:
     return importlib.import_module("vati_tax.api_v1.management")
 
 
+def references_module() -> Any:
+    """The Frappe-free TAX-133 case reference card rules the live Vati service uses."""
+    if str(BACKEND_DIR) not in sys.path:
+        sys.path.insert(0, str(BACKEND_DIR))
+    return importlib.import_module("vati_tax.references.rules")
+
+
+def case_references(data: dict[str, Any], case_id: str) -> Response | str:
+    """getCaseReferences: the officer card built from the fixture case's service links."""
+    case = next((c for c in data["cases"] if c["case_id"] == case_id), None)
+    if case is None:
+        return "not_found"
+    taxpayer = next((t for t in data["taxpayers"] if t["taxpayer_id"] == case["taxpayer_id"]), None)
+    rules = references_module()
+    card = rules.card(
+        tenant_id=case["tenant_id"],
+        case_id=case["case_id"],
+        display_id=case["display_id"],
+        tin_masked=taxpayer.get("tin_masked") if taxpayer else None,
+        links=case["service_links"],
+        audience=rules.OFFICER,
+    )
+    return 200, {}, {"data": card}
+
+
 def ledger_module() -> Any:
     """The Frappe-free TAX-059 ledger functions, so fixture figures follow the real rules."""
     if str(BACKEND_DIR) not in sys.path:
@@ -376,6 +401,8 @@ def _dispatch(
         result = (200, {}, {"data": item}) if item else "not_found"
     elif op_id == "getTaxpayer":
         result = _get_taxpayer(data, params["taxpayer_id"])
+    elif op_id == "getCaseReferences":
+        result = case_references(data, params["case_id"])
     elif op_id in CASE_RECORD_OPERATIONS:
         kind = CASE_RECORD_OPERATIONS[op_id]
         result = _list_case_records(data, params["case_id"], kind, query)

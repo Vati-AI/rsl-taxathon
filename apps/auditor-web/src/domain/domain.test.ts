@@ -5,6 +5,7 @@ import {
   laneLabel,
   processingState,
   queuePage,
+  serviceLabel,
   statusCounts,
   statusInfo,
   type QueueQuery,
@@ -162,6 +163,13 @@ describe('labels', () => {
     expect(statusInfo('FAILED_PROCESSING')).toEqual({ label: 'Processing failed', theme: 'red' });
     expect(laneLabel(null)).toBe('Not set');
     expect(formatKey('new_status_type')).toBe('New status type');
+  });
+
+  it('labels RSL systems in the reference register as RSL-owned', () => {
+    expect(serviceLabel('online_refunds')).toBe('RSL Online Refunds');
+    expect(serviceLabel('audit_system')).toBe('RSL audit system');
+    expect(serviceLabel('etax')).toBe('RSL e-Tax');
+    expect(serviceLabel('unknown_system')).toBe('Unknown system');
   });
 
   it('counts cases per status in workflow order', () => {
