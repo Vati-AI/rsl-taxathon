@@ -13,6 +13,7 @@ TAX-039 case registration and TAX-087 evidence linking. Nothing new is added dow
 - RSL not answering is reported as ``unavailable`` (for the run or per taxpayer), never as
   "no claims".
 - Nothing decides, pays, denies or assesses; RSL keeps the claim's status.
+- The claim ID is recorded as an ``online_refunds`` service link on the case (TAX-133).
 """
 
 from __future__ import annotations
@@ -25,6 +26,8 @@ from typing import Any
 
 import frappe
 
+from vati_tax.ids import mapping
+from vati_tax.ids.canonical import MappingError
 from vati_tax.integrations import config, factories
 from vati_tax.pipeline import store as pipeline_store
 from vati_tax.rsl_intake import rules
@@ -33,6 +36,7 @@ from vati_tax.submissions import domain
 SUBMISSION = "Vati Submission"
 CLAIM = "Vati Refund Claim"
 TAXPAYER = "Vati Taxpayer"
+RSL_SERVICE, RSL_TYPE = "online_refunds", "claim"
 
 
 _sources: Callable[[str], Any] | None = None
@@ -107,10 +111,17 @@ def _record(tenant_id: str, taxpayer_id: str, claim: rules.IntakeClaim) -> dict[
     sub.reload()
     sub.status = domain.SUBMITTED
     sub.save(ignore_permissions=True)
-    return {
-        "submission_id": sub.name,
-        "case_id": frappe.db.get_value(SUBMISSION, sub.name, "case_id"),
-    }
+    case_id = frappe.db.get_value(SUBMISSION, sub.name, "case_id")
+    if case_id:
+        # TAX-133: the RSL claim joins the canonical reference register.
+        mapping.record_link(
+            tenant_id=tenant_id,
+            case_id=case_id,
+            service=RSL_SERVICE,
+            external_type=RSL_TYPE,
+            external_id=claim.claim_ref,
+        )
+    return {"submission_id": sub.name, "case_id": case_id}
 
 
 def _take(tenant_id: str, taxpayer_id: str, claim: rules.IntakeClaim) -> dict[str, Any]:
@@ -127,6 +138,10 @@ def _take(tenant_id: str, taxpayer_id: str, claim: rules.IntakeClaim) -> dict[st
     try:
         with _atomic():
             ids = _record(tenant_id, taxpayer_id, claim)
+    except MappingError as exc:
+        # E.g. the RSL claim is already mapped to another case: reported, nothing changed.
+        reason = exc.field_errors[0]["code"] if exc.field_errors else exc.code
+        return {**item, "outcome": rules.REFUSED, "reason": reason}
     except (frappe.ValidationError, frappe.PermissionError) as exc:
         # A claim Vati's rules refuse (e.g. a period in the future) is reported, not retried.
         return {**item, "outcome": rules.REFUSED, "reason": type(exc).__name__}

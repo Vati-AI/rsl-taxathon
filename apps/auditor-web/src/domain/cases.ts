@@ -36,6 +36,13 @@ const SERVICES: Record<string, string> = {
   openaleph: 'Explore',
   yente: 'Name screening',
   langgraph: 'Vati assistant',
+  // RSL systems in the reference register (TAX-133).
+  online_refunds: 'RSL Online Refunds',
+  audit_system: 'RSL audit system',
+  psrm: 'RSL PSRM',
+  etax: 'RSL e-Tax',
+  idms: 'RSL Lekuka (IDMS)',
+  asycuda: 'RSL ASYCUDA',
 };
 
 const SYNC_ERRORS: Record<string, string> = {

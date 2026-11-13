@@ -7,7 +7,8 @@ contract body through ``projections``. Sources (ADR-046):
 - cases: ``Vati Case Identity`` (TAX-030), status from ``Vati Case Sync`` (the
   TAX-039 Jube projection), version from the decision trail (TAX-046), refund claim
   from ``Vati Refund Claim`` or the TAX-121 lane proposal, lane from ``Vati Lane
-  Proposal``, links from ``Vati Service Link``;
+  Proposal``, links from ``Vati Service Link``; the reference card (TAX-133) from
+  ``references.store`` over the same links;
 - taxpayers: ``Vati Taxpayer``; evidence: ``evidence.store`` (TAX-032);
 - entities: the TAX-087 FtM mapping of the case, for entities indexed in OpenAleph
   (``Vati Entity Index``) with yente candidates (``Vati Screening Result``);
@@ -47,6 +48,7 @@ from vati_tax.integrations import config
 from vati_tax.integrity import service as integrity_service
 from vati_tax.outbox import policy as outbox_policy
 from vati_tax.pipeline import store as pipeline_store
+from vati_tax.references import store as references_store
 from vati_tax.refund_access import store as refund_access
 
 CASE = "Vati Case Identity"
@@ -310,6 +312,15 @@ def get_case(call: Call) -> Result:
     case_id = call.params["case_id"]
     scope = _authorise(call, policy.CASE_READ, case_id=case_id)
     return Result({"data": _one_case(scope.tenant_id, case_id)})
+
+
+def get_case_references(call: Call) -> Result:
+    """TAX-133: the case reference card (officer view) from the canonical register."""
+    case_id = call.params["case_id"]
+    scope = _authorise(call, policy.CASE_READ, case_id=case_id)
+    return Result(
+        {"data": references_store.officer_card(tenant_id=scope.tenant_id, case_id=case_id)}
+    )
 
 
 def get_taxpayer(call: Call) -> Result:
@@ -637,6 +648,7 @@ _HANDLERS: dict[str, Handler] = {
     "getWorkspaceSession": get_workspace_session,
     "listCases": list_cases,
     "getCase": get_case,
+    "getCaseReferences": get_case_references,
     "getTaxpayer": get_taxpayer,
     "listEvidence": list_evidence,
     "listEntities": list_entities,

@@ -18,6 +18,7 @@ SERVED = frozenset(
         "getWorkspaceSession",
         "listCases",
         "getCase",
+        "getCaseReferences",  # TAX-133
         "getTaxpayer",
         "listEvidence",
         "listEntities",

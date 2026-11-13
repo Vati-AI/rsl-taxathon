@@ -27,11 +27,13 @@ try:
     from vati_tax.identity import policy
     from vati_tax.identity.permissions import clear_principal_cache
     from vati_tax.identity.provision import ensure_service_identity, ensure_tenant, grant_membership
+    from vati_tax.ids.canonical import CaseNotFound
     from vati_tax.integrations import config
     from vati_tax.outbox import store as outbox_store
     from vati_tax.outbox import worker
     from vati_tax.pipeline import store as pipeline_store
     from vati_tax.portal import api as portal_api
+    from vati_tax.references import store as references_store
     from vati_tax.rsl_intake import api, store
 except ImportError as exc:  # pragma: no cover - CI without a bench
     raise unittest.SkipTest(f"Frappe is not installed ({exc}); run with bench run-tests")
@@ -54,6 +56,7 @@ PARAMS = {
 }  # fmt: skip
 CLAIMS_PER_TAXPAYER = 2
 SUBMISSION = "Vati Submission"
+LINK = "Vati Service Link"
 
 
 def _keep_claims(doc: dict[str, Any], tins: list[str]) -> dict[str, Any]:
@@ -277,6 +280,44 @@ class RslIntakeBenchTests(IntegrationTestCase):
                 api.ingest_online_refunds(self.tenant)
         finally:
             self.as_user("Administrator")
+
+    def test_the_rsl_claim_joins_the_reference_register_and_the_card(self) -> None:
+        # TAX-133: one online_refunds link per claim, on the case the claim opened.
+        self.ingest()
+        subs = [s for s in self.submissions() if s.case_id]
+        self.assertEqual(len(subs), sum(len(rows) for rows in self.claims.values()))
+        rsl = {"tenant_id": self.tenant, "service": "online_refunds"}
+        for sub in subs:
+            link = frappe.db.get_value(LINK, {**rsl, "case_id": sub.case_id},
+                                       ["external_type", "external_id"], as_dict=True)  # fmt: skip
+            self.assertEqual((link.external_type, link.external_id), ("claim", sub.source_ref))
+        linked = frappe.db.count(LINK, rsl)
+        self.assertEqual(self.ingest()["counts"], {"replayed": len(subs)})
+        self.assertEqual(frappe.db.count(LINK, rsl), linked)
+
+        sub = subs[0]
+        tin = next(t for t, rows in self.claims.items()
+                   if sub.source_ref in {c["claim_id"] for c in rows})  # fmt: skip
+        self.as_user(self.auditor)
+        card = references_store.officer_card(tenant_id=self.tenant, case_id=sub.case_id)
+        self.assertEqual((card["audience"], card["rsl_claim_id"]), ("officer", sub.source_ref))
+        self.assertEqual(card["tenant_id"], self.tenant)
+        self.assertRegex(card["tin_masked"] or "", r"^\*{4,}[0-9]{2,4}$")
+        self.assertNotIn(tin, repr(card))
+        with self.assertRaises(CaseNotFound):
+            references_store.officer_card(tenant_id=str(uuid.uuid4()), case_id=sub.case_id)
+
+        self.as_user(f"tax121-{tin}-{self.run_id}@example.test")
+        mine = portal_api.get_case_references(submission_id=sub.name)["data"]
+        self.assertEqual((mine["audience"], mine["rsl_claim_id"]), ("taxpayer", sub.source_ref))
+        self.assertIsNone(mine["jube_case_id"])
+        self.assertIsNone(mine["openaleph_collection_id"])
+        self.assertEqual(mine["rsl_records"], [])
+        theirs = next(s for s in subs if s.taxpayer_id != sub.taxpayer_id)
+        for kwargs in ({"submission_id": theirs.name}, {"request_id": str(uuid.uuid4())}, {}):
+            with self.assertRaises(frappe.DoesNotExistError):
+                portal_api.get_case_references(**kwargs)
+        self.as_user("Administrator")
 
     def test_the_taxpayer_sees_rsl_reference_and_status_labelled_with_its_source(self) -> None:
         # TAX-125: the portal reads RSL's status from the site's RSL source on each view.

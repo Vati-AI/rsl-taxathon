@@ -256,6 +256,32 @@ class ApiV1BenchTests(IntegrationTestCase):
         status, _, one = self.call("auditor", "GET", self.case_path())
         self.assertEqual((status, one["data"]["case_id"]), (200, self.case_id))
 
+    def test_case_reference_card_lists_rsl_and_tool_references(self):
+        # TAX-133: the register's RSL links reach the card and the case's service_links.
+        for service, external_type, external_id in (
+            ("online_refunds", "claim", f"SYN-ORA-{key()}"),
+            ("jube", "case", f"syn-jube-{key()}"),
+            ("etax", "vat_return", f"SYN-VR-{key()}"),
+        ):
+            mapping.record_link(tenant_id=self.t1, case_id=self.case_id, service=service,
+                                external_type=external_type, external_id=external_id)  # fmt: skip
+        status, _, body = self.call("auditor", "GET", self.case_path("/references"))
+        self.assertEqual(status, 200)
+        card = body["data"]
+        self.assertEqual((card["case_id"], card["audience"]), (self.case_id, "officer"))
+        self.assertTrue(card["rsl_claim_id"].startswith("SYN-ORA-"))
+        self.assertTrue(card["jube_case_id"].startswith("syn-jube-"))
+        self.assertIsNone(card["rsl_audit_case_ref"])
+        self.assertEqual([r["system"] for r in card["rsl_records"]], ["etax"])
+        _, _, one = self.call("auditor", "GET", self.case_path())
+        services = {link["service"] for link in one["data"]["service_links"]}
+        self.assertTrue({"online_refunds", "etax", "jube"} <= services)
+        status, _, body = self.call("auditor-t2", "GET", self.case_path("/references"),
+                                    tenant=self.t2)  # fmt: skip
+        self.assertEqual((status, body["error"]["code"]), (404, "not_found"))
+        status, _, body = self.call("taxpayer", "GET", self.case_path("/references"))
+        self.assertEqual((status, body["error"]["code"]), (403, "forbidden"))
+
     def test_paging_is_complete_and_stable(self):
         for _ in range(2):
             mapping.register_case(tenant_id=self.t1, idempotency_key=key(),

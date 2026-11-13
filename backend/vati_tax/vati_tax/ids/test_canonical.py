@@ -213,5 +213,68 @@ class DecideCaseTests(unittest.TestCase):
             decide_case(request, None, None, stored_case(case_id=CASE_2))
 
 
+class RslServiceLinkTests(unittest.TestCase):
+    """TAX-133: RSL systems join the register under the same tenant and conflict rules."""
+
+    def test_every_rsl_service_has_a_known_record_type(self):
+        for service, external_type in (
+            ("online_refunds", "claim"),
+            ("audit_system", "audit_case"),
+            ("psrm", "objection"),
+            ("etax", "vat_return"),
+            ("idms", "invoice"),
+            ("asycuda", "entry"),
+        ):
+            built = link(service=service, external_type=external_type, external_id="RSL-1")
+            self.assertEqual(built.service, service)
+
+    def test_unknown_rsl_types_and_a_tin_link_are_rejected(self):
+        for service, external_type in (
+            ("online_refunds", "case"),
+            ("audit_system", "claim"),
+            ("psrm", "taxpayer"),
+            ("etax", "tin"),
+            ("rsl", "claim"),
+        ):
+            with self.assertRaises(InvalidMapping):
+                link(service=service, external_type=external_type)
+
+    def test_a_case_has_one_rsl_claim_and_one_rsl_audit_case(self):
+        for service, external_type in (("online_refunds", "claim"), ("audit_system", "audit_case")):
+            first = link(service=service, external_type=external_type, external_id="REF-1")
+            second = link(service=service, external_type=external_type, external_id="REF-2")
+            with self.assertRaises(MappingConflict) as ctx:
+                decide_link(second, TENANT_A, None, first, None)
+            self.assertEqual(ctx.exception.field_errors[0]["code"], "slot_taken")
+
+    def test_one_rsl_reference_cannot_belong_to_two_cases(self):
+        mine = link(service="audit_system", external_type="audit_case", external_id="AUD-1")
+        other = link(
+            case=CASE_2, service="audit_system", external_type="audit_case", external_id="AUD-1"
+        )
+        self.assertEqual(mine.link_key, other.link_key)
+        with self.assertRaises(MappingConflict) as ctx:
+            decide_link(other, TENANT_A, mine, None, None)
+        self.assertEqual(ctx.exception.field_errors[0]["code"], "already_mapped")
+        self.assertEqual(decide_link(mine, TENANT_A, mine, mine, None), "replay")
+
+    def test_many_returns_may_back_one_case(self):
+        first = link(service="etax", external_type="vat_return", external_id="VR-1")
+        second = link(service="etax", external_type="vat_return", external_id="VR-2")
+        self.assertIsNone(second.slot_key)
+        self.assertEqual(decide_link(second, TENANT_A, None, None, None), "create")
+        self.assertNotEqual(first.link_key, second.link_key)
+
+    def test_the_same_rsl_reference_in_another_tenant_is_separate_and_unprobeable(self):
+        here = link(service="online_refunds", external_type="claim", external_id="CLM-1")
+        there = link(
+            tenant=TENANT_B, service="online_refunds", external_type="claim", external_id="CLM-1"
+        )
+        self.assertNotEqual(here.link_key, there.link_key)
+        with self.assertRaises(TenantBoundaryError) as ctx:
+            decide_link(there, TENANT_A, None, None, None)
+        self.assertEqual(ctx.exception.code, "not_found")
+
+
 if __name__ == "__main__":
     unittest.main()
