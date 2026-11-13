@@ -25,12 +25,13 @@ const SYNC_LABELS = { synced: 'Up to date', pending: 'Waiting', failed: 'Failed'
         id="reasons-heading"
         class="border-b border-outline-gray-1 px-4 py-3 text-lg font-semibold text-ink-gray-9"
       >
-        Why this case was selected
+        Why RSL selected this case
       </h2>
       <div class="px-4 py-4">
         <SelectionReasons :reasons="item.selection_reasons" />
         <p class="mt-3 text-sm text-ink-gray-5">
-          Selection signals route work for review. They are not findings, assessments or decisions.
+          RSL selects cases. Reasons and scores marked RSL are RSL's own; Vati signals corroborate
+          or question them. They are not findings, assessments or decisions.
         </p>
       </div>
     </section>

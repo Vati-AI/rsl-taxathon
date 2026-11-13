@@ -32,7 +32,7 @@ import uuid
 from collections.abc import Iterable, Mapping
 from dataclasses import dataclass
 from decimal import Decimal, InvalidOperation
-from typing import Final, Literal
+from typing import Any, Final, Literal
 
 CURRENCY: Final = "LSL"
 CENT: Final = Decimal("0.01")
@@ -91,6 +91,13 @@ SOURCE_PORTAL: Final = "portal"
 SOURCE_RSL_ONLINE_REFUNDS: Final = "rsl_online_refunds"
 SOURCES: Final = (SOURCE_PORTAL, "api", "synthetic_seed", SOURCE_RSL_ONLINE_REFUNDS)
 RSL_SOURCES: Final = frozenset({SOURCE_RSL_ONLINE_REFUNDS})
+# TAX-125: site key of the fixture-only Online Refunds simulator. Where it is on, a portal
+# send stands in for a claim filed with RSL (fixtures and the demo).
+SIMULATOR_KEY: Final = "vati_online_refunds_simulator"
+NOT_REFERRED_MESSAGE: Final = (
+    "File with RSL: refund claims in the Online Refunds Application, returns in e-Tax. "
+    "Vati works on the cases RSL refers."
+)
 # The only transition the service identity takes, and only for an RSL-sourced claim.
 RSL_INTAKE_TRANSITIONS: Final[dict[tuple[str, str], frozenset[str]]] = {
     (DRAFT, SUBMITTED): frozenset({"service"}),
@@ -393,6 +400,27 @@ def check_transition(before: str, after: str, actor: str, source: str | None = N
         raise TransitionDenied(f"A submission cannot move from {before} to {after}.")
     if actor != "operator" and actor not in allowed:
         raise TransitionDenied(f"Your role cannot move a submission from {before} to {after}.")
+
+
+def simulator_enabled(conf: Mapping[str, Any]) -> bool:
+    """Whether this site offers the fixture-only Online Refunds simulator (TAX-125)."""
+    return conf.get(SIMULATOR_KEY) is True or conf.get(SIMULATOR_KEY) == 1
+
+
+def referred_source(source: str | None, *, simulator: bool) -> bool:
+    """TAX-131 (ADR-043 §1, §5): whether a send comes from a case RSL selected.
+
+    A claim read from RSL's Online Refunds Application is. A portal, API or seeded send is
+    only where the site runs the Online Refunds simulator, which stands in for RSL in
+    fixtures and the demo. Nothing else opens a case or reaches Jube's rules.
+    """
+    return source in RSL_SOURCES or simulator
+
+
+def check_send_source(source: str | None, *, simulator: bool) -> None:
+    """Raise ``TransitionDenied`` for a send that RSL did not refer (see above)."""
+    if not referred_source(source, simulator=simulator):
+        raise TransitionDenied(NOT_REFERRED_MESSAGE)
 
 
 def check_create(actor: str, source: str | None, submission_type: str) -> None:

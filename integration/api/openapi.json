@@ -1169,7 +1169,7 @@
           "selection_reasons": {
             "type": "array",
             "maxItems": 10,
-            "description": "Why the case entered review, in priority order. Empty until risk evaluation has run.",
+            "description": "RSL's selection reasons and scores (source: an RSL system), then any Vati corroborating signals, in priority order. Empty when none are recorded.",
             "items": { "$ref": "#/components/schemas/SelectionReason" }
           },
           "submission_id": { "$ref": "#/components/schemas/Uuid" },
@@ -1255,13 +1255,13 @@
       },
       "SelectionReason": {
         "type": "object",
-        "description": "A routing signal explaining why a case was selected for officer review. Never a finding, assessment, accusation or decision.",
+        "description": "Why RSL selected the case, labelled with the RSL system it came from (its reasons and scores stay RSL's), or a Vati signal that corroborates or questions RSL's selection (TAX-131, ADR-043). Vati selects no case and produces no risk score. Never a finding, assessment, accusation or decision.",
         "additionalProperties": false,
         "required": ["code", "summary", "source"],
         "properties": {
           "code": { "type": "string", "pattern": "^[a-z][a-z0-9_]{2,63}$" },
           "summary": { "type": "string", "minLength": 1, "maxLength": 280 },
-          "source": { "$ref": "#/components/schemas/ServiceName" }
+          "source": { "anyOf": [{ "$ref": "#/components/schemas/ServiceName" }, { "$ref": "#/components/schemas/RslServiceName" }], "description": "An RSL system for RSL's own reasons and scores; a Vati service for a corroborating signal." }
         }
       },
       "TaxpayerType": {

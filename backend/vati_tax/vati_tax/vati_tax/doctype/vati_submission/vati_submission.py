@@ -181,6 +181,12 @@ class VatiSubmission(Document):
 
     def _on_transition(self, before: str) -> None:
         if self.status == domain.SUBMITTED:
+            # TAX-131: only a case RSL referred is sent (the simulator stands in for RSL).
+            guard.domain_call(
+                domain.check_send_source,
+                self.source,
+                simulator=domain.simulator_enabled(frappe.conf),
+            )
             if domain.declaration_required(self.source) and not self.declaration:
                 frappe.throw(
                     "Confirm the declaration before sending the submission.",

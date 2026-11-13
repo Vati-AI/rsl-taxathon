@@ -289,7 +289,7 @@ export const FINDING_KIND_LABELS: Record<Finding['kind'], string> = {
 };
 
 export const PRODUCER_LABELS: Record<Finding['producer'], string> = {
-  jube_rule: 'Risk rule',
+  jube_rule: 'Vati rule check',
   langgraph_run: 'Investigation agent',
   officer: 'Officer',
 };

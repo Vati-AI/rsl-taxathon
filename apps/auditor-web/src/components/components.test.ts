@@ -80,11 +80,32 @@ describe('SelectionReasons', () => {
     expect(compact.text()).toContain('+1 more reason');
     const full = mount(SelectionReasons, { props: { reasons: row.selection_reasons } });
     expect(full.findAll('li')).toHaveLength(2);
-    expect(full.text()).toContain('Signal from Investigation');
+    expect(full.text()).toContain('Vati signal from Investigation');
   });
 
-  it('says when risk evaluation has not run instead of showing nothing', () => {
-    expect(mount(SelectionReasons, { props: { reasons: [] } }).text()).toBe('Not evaluated yet');
+  it('says when no reason is recorded instead of showing nothing', () => {
+    expect(mount(SelectionReasons, { props: { reasons: [] } }).text()).toBe(
+      'No reasons recorded yet',
+    );
+  });
+
+  it("labels RSL's reasons and scores as RSL's, apart from Vati signals", () => {
+    const full = mount(SelectionReasons, {
+      props: {
+        reasons: [
+          {
+            code: 'rsl_risk_set',
+            summary: "RSL risk set SYN-RS-1 scored 0.8100. RSL's score, not a Vati score.",
+            source: 'audit_system',
+          },
+          { code: 'related_party_charges', summary: 'Fees to a related company.', source: 'jube' },
+        ],
+      },
+    });
+    const items = full.findAll('li');
+    expect(items[0].text()).toContain("RSL's input · RSL audit system");
+    expect(items[1].text()).toContain('Vati signal from Investigation');
+    expect(full.text()).not.toMatch(/risk score/i);
   });
 });
 

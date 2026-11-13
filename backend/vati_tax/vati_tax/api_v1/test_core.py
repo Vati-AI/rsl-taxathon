@@ -629,5 +629,49 @@ class ManagementTests(unittest.TestCase):
         self.assertFalse(body["assurance"]["available"])
 
 
+class RslSelectionReasonTests(unittest.TestCase):
+    """TAX-131 (ADR-043 §6): RSL's reasons and scores are shown as RSL's."""
+
+    REFERRAL = {
+        "owner": "RSL",
+        "selection_reason": "risk_set_threshold",
+        "risk_sets": [
+            {"risk_set_id": "SYN-RS-1", "risk_set_version": "f-1", "score": "0.8100",
+             "owner": "RSL"},
+            {"risk_set_id": "SYN-RS-X", "risk_set_version": "f-1", "score": "0.9900",
+             "owner": "Vati"},
+        ],
+    }  # fmt: skip
+
+    def test_referral_reason_and_risk_sets_are_labelled_rsl(self):
+        reasons = projections.rsl_selection_reasons([self.REFERRAL])
+        self.assertEqual([r["code"] for r in reasons], ["rsl_audit_referral", "rsl_risk_set"])
+        self.assertTrue(all(r["source"] == "audit_system" for r in reasons))
+        self.assertIn("risk_set_threshold", reasons[0]["summary"])
+        self.assertIn("RSL's score, not a Vati score", reasons[1]["summary"])
+        # A score not owned by RSL is never shown under RSL's name.
+        self.assertNotIn("0.9900", repr(reasons))
+
+    def test_refund_model_score_is_rsl_owned_or_left_out(self):
+        score = {"score": "0.42", "model_id": "M", "model_version": "1", "owner": "RSL"}
+        (reason,) = projections.rsl_selection_reasons([], score)
+        self.assertEqual((reason["code"], reason["source"]), ("rsl_refund_model", "online_refunds"))
+        self.assertIn("RSL's refund model M 1 scored this claim 0.42", reason["summary"])
+        for other in ("not available", {**score, "owner": "Vati"}, None):
+            self.assertEqual(projections.rsl_selection_reasons([], other), [])
+
+    def test_reasons_fit_the_contract(self):
+        many = {**self.REFERRAL, "risk_sets": [
+            {"risk_set_id": f"R{i}", "risk_set_version": "1", "score": "0.5", "owner": "RSL"}
+            for i in range(20)
+        ]}  # fmt: skip
+        reasons = projections.rsl_selection_reasons([many], None)
+        self.assertEqual(len(reasons), projections.MAX_SELECTION_REASONS)
+        for r in reasons:
+            self.assertRegex(r["code"], r"^[a-z][a-z0-9_]{2,63}$")
+            self.assertLessEqual(len(r["summary"]), 280)
+            self.assertNotRegex(r["summary"].lower(), r"vati (risk )?score:|risk score")
+
+
 if __name__ == "__main__":
     unittest.main()

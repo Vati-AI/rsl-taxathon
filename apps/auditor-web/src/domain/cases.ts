@@ -59,6 +59,20 @@ export function statusInfo(status: CaseStatus) {
   return STATUSES[status] ?? { label: formatKey(status), theme: 'gray' as BadgeTheme };
 }
 
+// RSL systems (RslServiceName, TAX-133). A reason from one of them is RSL's own (TAX-131).
+const RSL_SERVICES = new Set(['online_refunds', 'audit_system', 'psrm', 'etax', 'idms', 'asycuda']);
+
+export function isRslService(service: string): boolean {
+  return RSL_SERVICES.has(service);
+}
+
+/** Who a selection reason belongs to: RSL's own input, or a Vati corroborating signal. */
+export function reasonSourceLabel(source: string): string {
+  return isRslService(source)
+    ? `RSL's input · ${serviceLabel(source)}`
+    : `Vati signal from ${serviceLabel(source)}`;
+}
+
 export function laneLabel(lane: RefundLane | null): string {
   return lane ? LANES[lane] : 'Not set';
 }

@@ -50,7 +50,7 @@ test.describe('navigation', () => {
       'SYN-002 · Synthetic Border Retail',
     );
     const reasons = page
-      .getByRole('region', { name: 'Why this case was selected' })
+      .getByRole('region', { name: 'Why RSL selected this case' })
       .or(page.locator('section[aria-labelledby="reasons-heading"]'));
     await expect(reasons.first()).toContainText('shares a director');
     await expect(reasons.first()).toContainText('several consecutive periods');
@@ -128,7 +128,7 @@ test.describe('processing states', () => {
     await expect(page).toHaveURL(/status=FAILED_PROCESSING/);
     await expect(rows(page)).toHaveCount(2);
     await expect(rows(page).nth(1)).toContainText('Document reading timed out');
-    await expect(rows(page).nth(1)).toContainText('Not evaluated yet');
+    await expect(rows(page).nth(1)).toContainText('No reasons recorded yet');
 
     await page.getByRole('link', { name: 'SYN-006' }).click();
     await expect(page).toHaveURL(new RegExp(`/auditor/cases/${CASE_6}$`));

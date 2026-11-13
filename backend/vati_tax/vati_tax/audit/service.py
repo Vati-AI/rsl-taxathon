@@ -39,7 +39,9 @@ CONTROLS: Final[frozenset[str]] = frozenset(
     {
         "case_assignment",  # moving a case away from its assigned officer
         "evidence_due_date",  # extending a taxpayer's evidence deadline
-        "risk_rating",  # recording a rating that departs from the Jube score
+        # recording a case rating that departs from the Vati rule signals; the key is kept
+        # for stored entries, but Vati has no risk score of its own (TAX-131, ADR-043 §6)
+        "risk_rating",
         "playbook_step",  # skipping a step of an approved playbook
     }
 )

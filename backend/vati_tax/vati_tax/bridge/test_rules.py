@@ -214,11 +214,25 @@ class LoopGuardTests(unittest.TestCase):
         self.assertFalse(rules.should_register("draft", "submitted", "someone_else"))
 
     def test_origin_of_a_change(self):
-        self.assertEqual(rules.submission_origin(True, "rsl_online_refunds"), rules.ORIGIN_MIRROR)
-        self.assertEqual(rules.submission_origin(False, "rsl_online_refunds"),
-                         rules.ORIGIN_RSL_ONLINE_REFUNDS)  # fmt: skip
+        for simulator in (True, False):
+            self.assertEqual(
+                rules.submission_origin(True, "rsl_online_refunds", simulator=simulator),
+                rules.ORIGIN_MIRROR,
+            )
+            self.assertEqual(rules.submission_origin(False, "rsl_online_refunds",
+                                                     simulator=simulator),
+                             rules.ORIGIN_RSL_ONLINE_REFUNDS)  # fmt: skip
         for source in ("portal", "api", "synthetic_seed", None):
-            self.assertEqual(rules.submission_origin(False, source), rules.ORIGIN_TAXPAYER)
+            self.assertEqual(rules.submission_origin(False, source, simulator=True),
+                             rules.ORIGIN_TAXPAYER)  # fmt: skip
+
+    def test_a_send_rsl_did_not_refer_never_reaches_jube(self):
+        # TAX-131 (ADR-043 §5): without the simulator standing in for RSL, a portal, API or
+        # seeded send is not referred: no case, no Jube rules.
+        for source in ("portal", "api", "synthetic_seed", None):
+            origin = rules.submission_origin(False, source, simulator=False)
+            self.assertEqual(origin, rules.ORIGIN_NOT_REFERRED)
+            self.assertFalse(rules.should_register("draft", "submitted", origin))
 
     def test_registration_keys_are_stable_per_send(self):
         key1, payload = rules.registration_event(SUBMISSION, 2)

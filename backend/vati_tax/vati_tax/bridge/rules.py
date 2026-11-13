@@ -51,6 +51,7 @@ from vati_tax.ids.canonical import (
     MappingError,
     canonical_uuid,
 )
+from vati_tax.submissions import domain
 
 # integration/api/openapi.json components.schemas.CaseStatus
 CASE_STATUSES: Final = (
@@ -99,11 +100,15 @@ _JUBE_ID = re.compile(r"^[1-9][0-9]{0,18}$")
 _ISO = re.compile(r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d{1,6})?Z$")
 _NAMESPACE = uuid.UUID("7c1d4a62-0b39-4f8e-9a51-6f3e2d0c9b17")  # TAX-039 observation IDs
 
-Origin = Literal["taxpayer", "staff", "operator", "jube_mirror", "rsl_online_refunds"]
+Origin = Literal[
+    "taxpayer", "staff", "operator", "jube_mirror", "rsl_online_refunds", "not_referred"
+]
 ORIGIN_MIRROR: Final = "jube_mirror"
 ORIGIN_TAXPAYER: Final = "taxpayer"
 # TAX-122 (ADR-043): a claim filed in RSL's Online Refunds Application, sent by the intake.
 ORIGIN_RSL_ONLINE_REFUNDS: Final = "rsl_online_refunds"
+# TAX-131 (ADR-043 §5): a send RSL did not refer never opens a case or reaches Jube's rules.
+ORIGIN_NOT_REFERRED: Final = "not_referred"
 SENDING_ORIGINS: Final = frozenset({ORIGIN_TAXPAYER, ORIGIN_RSL_ONLINE_REFUNDS})
 
 
@@ -117,12 +122,18 @@ class StaleUpdate(MappingError):
 # --- outward: submission -> case.registered ---------------------------------------
 
 
-def submission_origin(mirror: bool, source: str | None) -> str:
-    """Who sent a submission change: the Jube mirror, RSL's intake or the taxpayer."""
+def submission_origin(mirror: bool, source: str | None, *, simulator: bool) -> str:
+    """Who sent a submission change: the Jube mirror, RSL's intake or the taxpayer.
+
+    A taxpayer send counts only where the Online Refunds simulator stands in for RSL
+    (``submissions.domain.referred_source``); otherwise it is ``not_referred``.
+    """
     if mirror:
         return ORIGIN_MIRROR
     if source == ORIGIN_RSL_ONLINE_REFUNDS:
         return ORIGIN_RSL_ONLINE_REFUNDS
+    if not domain.referred_source(source, simulator=simulator):
+        return ORIGIN_NOT_REFERRED
     return ORIGIN_TAXPAYER
 
 
