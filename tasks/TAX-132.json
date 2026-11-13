@@ -5,15 +5,15 @@
   "owner": "Gupta",
   "area": "backend",
   "phase": "pilot",
-  "status": "BACKLOG",
+  "status": "IN_PROGRESS",
   "priority": "P1",
   "depends_on": [
     "TAX-114",
     "TAX-122",
     "TAX-124"
   ],
-  "claimed_by": null,
-  "branch": null,
+  "claimed_by": "claude-opus-5-5-gupta",
+  "branch": "task/TAX-132",
   "pr": null,
   "scope": "Lane proposals apply to claims RSL has placed in audit, read RSL's claim status, and send the lane and undisputed amount to RSL as a recommendation through TAX-124",
   "inputs": [
@@ -55,6 +55,10 @@
     {
       "at": "2026-11-11T12:27:49.740246+00:00",
       "text": "2026-11-11 (ADR-045): owner changed from Keletso to Gupta; RSL integration lane. No task in this lane depends on an open task in the other lane."
+    },
+    {
+      "at": "2026-11-13T15:28:17.091076+00:00",
+      "text": "Claimed by claude-opus-5-5-gupta"
     }
   ],
   "sequence": 32
