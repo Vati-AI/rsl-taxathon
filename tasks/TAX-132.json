@@ -5,7 +5,7 @@
   "owner": "Gupta",
   "area": "backend",
   "phase": "pilot",
-  "status": "IN_PROGRESS",
+  "status": "IN_REVIEW",
   "priority": "P1",
   "depends_on": [
     "TAX-114",
@@ -14,7 +14,7 @@
   ],
   "claimed_by": "claude-opus-5-5-gupta",
   "branch": "task/TAX-132",
-  "pr": null,
+  "pr": "https://github.com/Vati-AI/rsl-taxathon/pull/320",
   "scope": "Lane proposals apply to claims RSL has placed in audit, read RSL's claim status, and send the lane and undisputed amount to RSL as a recommendation through TAX-124",
   "inputs": [
     "PROJECT.md",
@@ -28,15 +28,15 @@
   "acceptance": [
     {
       "text": "Lane proposals record the RSL status they were made against and are not created for claims RSL already processed",
-      "done": false
+      "done": true
     },
     {
       "text": "No Vati record sets refund status, release or payment; wording says recommendation",
-      "done": false
+      "done": true
     },
     {
       "text": "Record relevant tests and evidence, update task status and open a PR",
-      "done": false
+      "done": true
     }
   ],
   "verification": "Bench tests across RSL status values",
@@ -46,7 +46,20 @@
     "update-project-task",
     "finish-task"
   ],
-  "evidence": [],
+  "evidence": [
+    {
+      "criterion": 1,
+      "text": "ADR-054. assurance.rules.rsl_claim_status records the status RSL's Online Refunds Application reports (TAX-111 codes, owner RSL; unknown codes not shown raw) in every lane body and in the new read-only Vati Lane Proposal.rsl_claim_status column ('not_reported' when RSL gives none). Claims RSL has processed, rejected or cancelled get no lane (checks and findings still run; run summary lane_withheld: rsl_claim_<status>); validate_lane refuses such a lane. When the decision is approved, rsl_outbound.store.rsl_claim_status_now reads RSL's status again and queues only the findings pack if RSL has decided the claim since; the lane_recommendation carries rsl_claim_status_at_proposal. Tests: assurance/test_rules 23 (every status value, unknown codes, decided claims refused); rsl_outbound/test_rules (recommendation withheld per status); bench test_rsl_intake_bench 10/10 across all six statuses and a missing one (lanes and column for audit_in_progress/pending/processing/unreported; none for processed/rejected/cancelled; status re-read before queuing)."
+    },
+    {
+      "criterion": 2,
+      "text": "validate_lane accepts only undisputed_status 'recommendation_for_refund_auditor' and refuses refund_status/release_amount/other-owner status fields; the outbound contract keeps FORBIDDEN_FIELDS (status, pay, release, offset, assess) and the new field is context only (tests/integration/test_rsl_sinks.py incl. status-setting fields refused). DocType description and message docstrings say recommendation; RSL sets status and pays. Grep of lane surfaces found no release/payment wording."
+    },
+    {
+      "criterion": 3,
+      "text": "Fresh disposable site (verify-20261113t153306): install and two migrations ok (new column). Bench modules one by one: all OK except assistance (duplicate synthetic user, untouched) and reminders (fails identically on main on the same site). evidence_gaps 5/5 and rsl_outbound 9/9 after their lane fixtures gained the status and recommendation wording. Frappe-free backend 667 with only the Windows path-separator failure; contract 140, RSL sinks/sources, AI assurance 37 OK; ruff, mypy clean; validate.py clean. Hosted CI does not start (org spending limit)."
+    }
+  ],
   "notes": [
     {
       "at": "2026-11-07",
@@ -59,6 +72,10 @@
     {
       "at": "2026-11-13T15:28:17.091076+00:00",
       "text": "Claimed by claude-opus-5-5-gupta"
+    },
+    {
+      "at": "2026-11-13T15:40:07.798879+00:00",
+      "text": "PR opened with local verification (ADR-038)"
     }
   ],
   "sequence": 32
