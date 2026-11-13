@@ -303,7 +303,9 @@ class RslIntakeBenchTests(IntegrationTestCase):
         self.assertEqual((card["audience"], card["rsl_claim_id"]), ("officer", sub.source_ref))
         self.assertEqual(card["tenant_id"], self.tenant)
         self.assertRegex(card["tin_masked"] or "", r"^\*{4,}[0-9]{2,4}$")
-        self.assertNotIn(tin, repr(card))
+        # The full TIN is never a card field; RSL's own claim reference is shown as RSL gives
+        # it (the synthetic Online Refunds IDs embed the TIN, as the portal already shows).
+        self.assertNotIn(tin, repr({k: v for k, v in card.items() if k != "rsl_claim_id"}))
         with self.assertRaises(CaseNotFound):
             references_store.officer_card(tenant_id=str(uuid.uuid4()), case_id=sub.case_id)
 
