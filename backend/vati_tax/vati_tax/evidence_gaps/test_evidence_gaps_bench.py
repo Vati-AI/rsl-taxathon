@@ -160,10 +160,13 @@ class EvidenceGapBenchTests(IntegrationTestCase):
             "claim_ref": CLAIM_REF, "period": "2026-09", "lane": "standard",
             "policy_version": "tax114-v1", "reasons": [], "service_target":
             {"decision_due": "2026-11-30"}, "claimed_amount": money("750.00"),
-            "undisputed_amount": money("450.00"), "undisputed_status": "recommended",
+            "undisputed_amount": money("450.00"), "undisputed_status": "recommendation_for_refund_auditor",
             "disputed_amount": money("300.00"), "disputed_items": [], "questions": [],
             "inputs": {}, "line_match": match, "authenticity_indicator": False,
             "requires_officer_review": True, "source_refs": [],
+            # TAX-132: the RSL status the lane was proposed against.
+            "rsl_claim_status": {"status": "audit_in_progress", "reported": True,
+                                 "in_rsl_audit": True, "owner": "RSL"},
         }  # fmt: skip
         proposal_id = str(uuid.uuid4())
         frappe.get_doc({
