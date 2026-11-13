@@ -2,7 +2,7 @@
  "actions": [],
  "autoname": "field:proposal_id",
  "creation": "2026-11-06 16:00:00.000000",
- "description": "Proposed TAX-114 refund lane for one Online Refunds Application claim, from the TAX-121 assurance checks (ADR-042). Advisory: an officer reviews every lane; nothing here decides, pays or denies a refund. Append-only: changed inputs add a revision that supersedes the previous one. Written only by vati_tax.assurance.",
+ "description": "Proposed TAX-114 refund lane for one Online Refunds Application claim, from the TAX-121 assurance checks (ADR-042). Advisory: an officer reviews every lane; nothing here decides, pays or denies a refund. Lanes are recommendations for claims RSL has not decided, recorded against RSL's reported status (TAX-132). Append-only: changed inputs add a revision that supersedes the previous one. Written only by vati_tax.assurance.",
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
@@ -23,6 +23,7 @@
   "disputed_amount",
   "currency",
   "authenticity_indicator",
+  "rsl_claim_status",
   "body_json",
   "producer_section",
   "producer",
@@ -170,6 +171,15 @@
    "default": "0"
   },
   {
+   "fieldname": "rsl_claim_status",
+   "fieldtype": "Data",
+   "in_list_view": 0,
+   "label": "RSL Claim Status When Proposed (RSL's value)",
+   "length": 32,
+   "read_only": 1,
+   "description": "The status RSL's Online Refunds Application reported when this lane was proposed (TAX-132). RSL keeps the status; Vati never sets it."
+  },
+  {
    "fieldname": "body_json",
    "fieldtype": "Long Text",
    "label": "Lane Proposal (reasons, service target, inputs, line matches JSON)",
@@ -260,7 +270,7 @@
  "in_create": 1,
  "index_web_pages_for_search": 0,
  "links": [],
- "modified": "2026-11-06 16:00:00.000000",
+ "modified": "2026-11-13 18:00:00.000000",
  "modified_by": "Administrator",
  "module": "Vati Tax",
  "name": "Vati Lane Proposal",

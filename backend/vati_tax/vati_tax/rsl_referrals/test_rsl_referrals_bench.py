@@ -205,8 +205,9 @@ class RslReferralBenchTests(IntegrationTestCase):
                          ["rsl_audit_referral", "rsl_risk_set", "rsl_risk_set"])  # fmt: skip
         self.assertTrue(all(r["source"] == "audit_system" for r in reasons))
         self.assertIn("risk_set_threshold", reasons[0]["summary"])
-        self.assertTrue(any("scored 0.8100. RSL's score, not a Vati score." in r["summary"]
-                            for r in reasons))
+        self.assertTrue(
+            any("scored 0.8100. RSL's score, not a Vati score." in r["summary"] for r in reasons)
+        )
         # No Jube rule ran on a referral: nothing claims to be a Vati signal.
         self.assertFalse([r for r in reasons if r["source"] == "jube"])
 

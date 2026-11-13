@@ -76,6 +76,7 @@ LANE = {
     "disputed_amount": "2999.50",
     "currency": "LSL",
     "decision_due": datetime.date(2026, 11, 30),
+    "rsl_claim_status": "audit_in_progress",
 }
 REQUEST = {
     "request_id": REQUEST_ID,
@@ -133,6 +134,15 @@ class ItemTests(unittest.TestCase):
             rules.items_for_decision(DECISION_ID, AUDIT, has_lane=True),
             [("findings_pack", DECISION_ID)],
         )
+
+    def test_no_lane_recommendation_once_rsl_decided_the_claim(self) -> None:
+        # TAX-132: every TAX-111 status value; unknown or unread status withholds nothing.
+        for status in ("processing", "pending", "audit_in_progress", None, "unknown_code"):
+            self.assertIn(("lane_recommendation", DECISION_ID),
+                          rules.items_for_decision(DECISION_ID, CLAIM, True, status))  # fmt: skip
+        for status in ("processed", "rejected", "cancelled"):
+            self.assertEqual(rules.items_for_decision(DECISION_ID, CLAIM, True, status),
+                             [("findings_pack", DECISION_ID)])  # fmt: skip
 
     def test_keys_are_stable_and_valid_outbox_keys(self) -> None:
         key = rules.idempotency_key(rules.FINDINGS_PACK, DECISION_ID)
@@ -225,6 +235,13 @@ class MessageTests(unittest.TestCase):
         self.assertEqual(message["undisputed_amount"], "12000.50")
         self.assertEqual(message["claimed_amount"], "15000.00")
         self.assertEqual(message["decision_due"], "2026-11-30")
+        self.assertEqual(message["rsl_claim_status_at_proposal"], "audit_in_progress")
+        old = rules.lane_recommendation(
+            key=rules.idempotency_key(rules.LANE_RECOMMENDATION, DECISION_ID), reference=CLAIM,
+            case=CASE, decision=DECISION, lane={**LANE, "rsl_claim_status": None},
+            issued_at=ISSUED,
+        )  # fmt: skip
+        self.assertEqual(old["rsl_claim_status_at_proposal"], "not_reported")
         self.assertFalse(set(message) & contracts.FORBIDDEN_FIELDS)
         self.assertTrue(self.deliver(message)["receipt_id"].startswith("FIXTURE-"))
         with self.assertRaises(rules.NotApproved):

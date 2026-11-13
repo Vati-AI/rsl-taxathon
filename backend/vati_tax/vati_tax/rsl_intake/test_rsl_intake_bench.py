@@ -35,6 +35,7 @@ try:
     from vati_tax.portal import api as portal_api
     from vati_tax.references import store as references_store
     from vati_tax.rsl_intake import api, store
+    from vati_tax.rsl_outbound import store as outbound_store
 except ImportError as exc:  # pragma: no cover - CI without a bench
     raise unittest.SkipTest(f"Frappe is not installed ({exc}); run with bench run-tests")
 
@@ -57,6 +58,7 @@ PARAMS = {
 CLAIMS_PER_TAXPAYER = 2
 SUBMISSION = "Vati Submission"
 LINK = "Vati Service Link"
+LANE = "Vati Lane Proposal"
 
 
 def _keep_claims(doc: dict[str, Any], tins: list[str]) -> dict[str, Any]:
@@ -200,6 +202,85 @@ class RslIntakeBenchTests(IntegrationTestCase):
                 self.assertIsNone(view["lane_proposals"][0]["decision"])
         finally:
             self.as_user("Administrator")
+
+    # --- TAX-132: lanes against RSL's claim status ----------------------------------------
+
+    def lanes_against(self, statuses: list[str | None]) -> dict[str, tuple[Any, Any, Any]]:
+        """Ingest with RSL reporting ``statuses`` for the claims; ``{status: (run, lane)}``."""
+        doc = copy.deepcopy(self.doc)
+        rows = doc["records"]["online_refunds.claim"]
+        self.assertEqual(len(rows), len(statuses))
+        for row, status in zip(rows, statuses, strict=True):
+            row.pop("status", None)
+            if status is not None:
+                row["status"] = status
+        path = Path(self.tmp.name) / f"rsl_sources_{self.run_id}.json"
+        path.write_text(json.dumps(doc))
+        self.fixture_path = str(path)
+        self.ingest()
+        self.drain()
+        out: dict[str, tuple[Any, Any, Any]] = {}
+        self.as_user(self.auditor)
+        try:
+            for row, status in zip(rows, statuses, strict=True):
+                case_id = frappe.db.get_value(
+                    SUBMISSION, {"tenant_id": self.tenant, "source_ref": row["claim_id"]},
+                    "case_id",
+                )  # fmt: skip
+                view = assurance_store.case_assurance(tenant_id=self.tenant, case_id=case_id)
+                lane = view["lane_proposals"][0] if view["lane_proposals"] else None
+                out[str(status)] = (view["runs"][0], lane, case_id)
+        finally:
+            self.as_user("Administrator")
+        return out
+
+    def assert_lanes(self, results: dict[str, Any]) -> None:
+        for status, (run, lane, case_id) in results.items():
+            with self.subTest(rsl_status=status):
+                self.assertEqual(run["status"], "completed", run.get("reason"))
+                self.assertEqual(run["summary"]["rsl_claim_status"]["owner"], "RSL")
+                if status in ("processed", "rejected", "cancelled"):
+                    # RSL already decided the claim: no lane, and the run says why.
+                    self.assertIsNone(lane)
+                    self.assertEqual(run["summary"]["lane_withheld"], f"rsl_claim_{status}")
+                    self.assertEqual(frappe.db.count(LANE, {"case_id": case_id}), 0)
+                else:
+                    expected = None if status == "None" else status
+                    self.assertEqual(lane["rsl_claim_status"]["status"], expected)
+                    self.assertEqual(lane["rsl_claim_status"]["in_rsl_audit"],
+                                     status == "audit_in_progress")  # fmt: skip
+                    self.assertEqual(lane["undisputed_status"],
+                                     "recommendation_for_refund_auditor")  # fmt: skip
+                    self.assertIsNone(lane["decision"])
+                    self.assertEqual(frappe.db.get_value(LANE, {"case_id": case_id},
+                                                         "rsl_claim_status"),
+                                     expected or "not_reported")  # fmt: skip
+
+    def test_lanes_record_rsl_status_in_audit_pending_or_unreported(self) -> None:
+        self.assert_lanes(self.lanes_against(["audit_in_progress", "processed", "pending", None]))
+
+    def test_no_lane_for_claims_rsl_rejected_or_cancelled(self) -> None:
+        self.assert_lanes(self.lanes_against(["processing", "rejected", "cancelled",
+                                              "audit_in_progress"]))  # fmt: skip
+
+    def test_the_recommendation_reads_rsl_status_before_it_is_queued(self) -> None:
+        claim = self.claims[self.fake][0]
+        conf_key = config.RSL_SOURCES_KEY
+        previous = frappe.local.conf.get(conf_key)
+        frappe.local.conf[conf_key] = {"fixture_path": self.fixture_path,
+                                       "vati_tenant_id": self.tenant, "unavailable": []}  # fmt: skip
+        try:
+            taxpayer = self.taxpayers[self.fake]["taxpayer_id"]
+            now = outbound_store.rsl_claim_status_now(self.tenant, taxpayer,
+                                                      str(claim["claim_id"]))  # fmt: skip
+            self.assertEqual(now, claim.get("status"))
+            self.assertIsNone(outbound_store.rsl_claim_status_now(self.tenant, taxpayer,
+                                                                  "ORA-NOT-THERE"))  # fmt: skip
+            frappe.local.conf[conf_key]["unavailable"] = ["online_refunds"]
+            self.assertIsNone(outbound_store.rsl_claim_status_now(self.tenant, taxpayer,
+                                                                  str(claim["claim_id"])))  # fmt: skip
+        finally:
+            frappe.local.conf[conf_key] = previous
 
     def test_a_second_read_replays_and_a_changed_record_conflicts(self) -> None:
         first = self.ingest()

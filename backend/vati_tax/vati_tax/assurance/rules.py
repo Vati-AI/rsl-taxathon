@@ -573,14 +573,52 @@ LANE_KEYS: Final = (
     "claim_ref", "period", "lane", "policy_version", "reasons", "service_target",
     "claimed_amount", "undisputed_amount", "undisputed_status", "disputed_amount",
     "disputed_items", "questions", "inputs", "line_match", "authenticity_indicator",
-    "requires_officer_review", "source_refs",
+    "requires_officer_review", "source_refs", "rsl_claim_status",
 )  # fmt: skip
+# TAX-132 (ADR-043 §1): RSL keeps the claim's status. Statuses are the TAX-111 assumed
+# codes of the Online Refunds Application. A lane is a recommendation for a claim RSL has
+# not decided yet; once RSL has processed, rejected or cancelled it, no lane is proposed.
+RSL_CLAIM_STATUSES: Final = frozenset(
+    {"processing", "pending", "audit_in_progress", "processed", "rejected", "cancelled"}
+)
+RSL_DECIDED_STATUSES: Final = frozenset({"processed", "rejected", "cancelled"})
+RSL_IN_AUDIT: Final = "audit_in_progress"
+UNDISPUTED_STATUS: Final = "recommendation_for_refund_auditor"
+
+
+def rsl_claim_status(record: Mapping[str, Any]) -> dict[str, Any]:
+    """The status RSL reported for a claim when the lane is proposed, as RSL's.
+
+    ``reported`` is false when RSL's record carries no status, or one this view does not
+    know (never shown raw). ``in_rsl_audit`` says whether RSL placed the claim in audit.
+    """
+    status = record.get("status")
+    known = status in RSL_CLAIM_STATUSES
+    return {
+        "status": str(status) if known else None,
+        "reported": known,
+        "in_rsl_audit": status == RSL_IN_AUDIT,
+        "owner": "RSL",
+    }
+
+
+def lane_withheld(status: Mapping[str, Any]) -> str | None:
+    """Why no lane is proposed for this claim (RSL already decided it), or ``None``."""
+    if status.get("status") in RSL_DECIDED_STATUSES:
+        return f"rsl_claim_{status['status']}"
+    return None
 
 
 def lane_proposal(
-    claim: Mapping[str, Any], *, sources: Mapping[str, Mapping[str, Any]]
+    claim: Mapping[str, Any],
+    *,
+    sources: Mapping[str, Mapping[str, Any]],
+    rsl_status: Mapping[str, Any],
 ) -> dict[str, Any]:
-    """The TAX-114 lane of one claim as a validated lane-proposal body."""
+    """The TAX-114 lane of one claim as a validated lane-proposal body.
+
+    ``rsl_status`` (``rsl_claim_status``) is the status RSL reported when the lane was
+    made; the lane is a recommendation against it."""
     lane = claim["lane"]
     claim_ref = str(claim["claim_id"])
     ref = sources.get(claim_ref)
@@ -609,6 +647,7 @@ def lane_proposal(
         "authenticity_indicator": bool(claim.get("authenticity_indicator")),
         "requires_officer_review": True,
         "source_refs": [{**ref, "locator": None}] if ref else [],
+        "rsl_claim_status": dict(rsl_status),
     }
     if lane.get("decision") is not None:
         raise _fail("A lane is a proposal, never a decision.", "decision", "decision_not_allowed")
@@ -627,6 +666,21 @@ def validate_lane(body: Mapping[str, Any]) -> dict[str, Any]:
         raise _fail("lane must be fast, standard or investigation.", "lane", "invalid_choice")
     if body["requires_officer_review"] is not True:
         raise _fail("Every lane is reviewed by an officer.", "requires_officer_review", "invalid")
+    if body["undisputed_status"] != UNDISPUTED_STATUS:
+        raise _fail("The undisputed amount is a recommendation only.", "undisputed_status",
+                    "recommendation_only")  # fmt: skip
+    status = body["rsl_claim_status"]
+    if (
+        not isinstance(status, Mapping)
+        or set(status) != {"status", "reported", "in_rsl_audit", "owner"}
+        or status["owner"] != "RSL"
+        or (status["status"] is not None and status["status"] not in RSL_CLAIM_STATUSES)
+    ):
+        raise _fail("rsl_claim_status must be RSL's reported status.", "rsl_claim_status",
+                    "invalid")  # fmt: skip
+    if lane_withheld(status):
+        raise _fail("RSL has already decided this claim; no lane is proposed.",
+                    "rsl_claim_status", "rsl_claim_decided")  # fmt: skip
     amounts = {}
     for field in ("claimed_amount", "undisputed_amount", "disputed_amount"):
         value = body[field]
@@ -755,12 +809,16 @@ def assess_case(
     )
     index = source_index(envelopes)
     claim_result = next(c for c in result["claims"] if c["claim_id"] == plan["claim_ref"])
+    rsl_status = rsl_claim_status(found)
+    withheld = lane_withheld(rsl_status)
     return {
         **plan,
         "version": version,
         "input_digest": digest_value,
         "bodies": finding_bodies(result, sources=index, bundle_evidence_id=bundle_evidence_id,
                                  register_version=register_version, input_digest=digest_value),
-        "lane": lane_proposal(claim_result, sources=index),
-        "summary": run_summary(result),
+        "lane": None if withheld else lane_proposal(claim_result, sources=index,
+                                                    rsl_status=rsl_status),
+        "summary": {**run_summary(result), "rsl_claim_status": rsl_status,
+                    "lane_withheld": withheld},
     }  # fmt: skip

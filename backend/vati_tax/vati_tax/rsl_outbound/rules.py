@@ -119,12 +119,27 @@ def event_payload(kind: str, subject_id: str, reference: RslReference) -> dict[s
     }
 
 
+# TAX-132: once RSL has processed, rejected or cancelled a claim, a lane recommendation
+# for it has nothing left to inform; the findings pack still goes.
+RSL_DECIDED_STATUSES = frozenset({"processed", "rejected", "cancelled"})
+
+
 def items_for_decision(
-    decision_id: str, reference: RslReference, has_lane: bool
+    decision_id: str,
+    reference: RslReference,
+    has_lane: bool,
+    rsl_claim_status: str | None = None,
 ) -> list[tuple[str, str]]:
-    """``(kind, subject_id)`` for an approved decision."""
+    """``(kind, subject_id)`` for an approved decision.
+
+    ``rsl_claim_status`` is the status RSL reports for the claim now (``None`` when RSL's
+    record has none or the source did not answer)."""
     items = [(FINDINGS_PACK, decision_id)]
-    if has_lane and reference.system == ONLINE_REFUNDS:
+    if (
+        has_lane
+        and reference.system == ONLINE_REFUNDS
+        and rsl_claim_status not in RSL_DECIDED_STATUSES
+    ):
         items.append((LANE_RECOMMENDATION, decision_id))
     return items
 
@@ -266,7 +281,8 @@ def lane_recommendation(
     lane: Mapping[str, Any],
     issued_at: datetime,
 ) -> dict[str, Any]:
-    """The latest lane proposal for the claim, released by the officer's approval."""
+    """The latest lane proposal for the claim, sent as a recommendation once an officer
+    approved the decision. RSL sets the claim's status and pays; this only informs it."""
     require_approved_decision(decision)
     if reference.system != ONLINE_REFUNDS:
         raise NotApproved("lane_needs_online_refunds_claim")
@@ -282,6 +298,7 @@ def lane_recommendation(
         "proposal_id": str(lane["proposal_id"]),
         "proposal_revision": int(lane["revision"]),
         "approved_decision_id": str(decision["decision_id"]),
+        "rsl_claim_status_at_proposal": str(lane.get("rsl_claim_status") or "not_reported"),
     }
 
 
